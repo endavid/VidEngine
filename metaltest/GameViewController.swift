@@ -25,7 +25,8 @@ let vertexData:[Float] =
     
     -0.0, 0.25, 0.0, 1.0,
     -0.25, -0.25, 0.0, 1.0,
-    0.25, -0.25, 0.0, 1.0
+    0.25, -0.25, 0.0, 1.0,
+    -0.0, 0.25, 0.0, 1.0,
 ]
 
 let vertexColorData:[Float] =
@@ -40,7 +41,8 @@ let vertexColorData:[Float] =
     
     0.0, 0.0, 1.0, 1.0,
     0.0, 1.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
 ]
 
 class GameViewController:UIViewController, MTKViewDelegate {
@@ -120,11 +122,12 @@ class GameViewController:UIViewController, MTKViewDelegate {
         
         // reset the vertices to default before adding animated offsets
         vData.initializeFrom(vertexData)
-        
+
         // Animate triangle offsets
         let lastTriVertex = 24
         let vertexSize = 4
-        for j in 0..<MaxBuffers {
+        let numVerticesToUpdate = 3
+        for j in 0..<numVerticesToUpdate {
             // update the animation offsets
             xOffset[j] += xDelta[j]
             
@@ -145,6 +148,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
             vData[pos] = xOffset[j]
             vData[pos+1] = yOffset[j]
         }
+        let pos = lastTriVertex + 3*vertexSize
+        vData[pos] = xOffset[0]
+        vData[pos+1] = yOffset[0]
     }
     
     func drawInMTKView(view: MTKView) {
@@ -175,7 +181,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(pipelineState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexColorBuffer, offset:0 , atIndex: 1)
-            renderEncoder.drawPrimitives(.Triangle, vertexStart: 0, vertexCount: 9, instanceCount: 1)
+            renderEncoder.drawPrimitives(.Triangle, vertexStart: 0, vertexCount: 6, instanceCount: 1)
+            renderEncoder.drawPrimitives(.LineStrip, vertexStart: 6, vertexCount: 4, instanceCount: 1)
             
             renderEncoder.popDebugGroup()
             renderEncoder.endEncoding()
