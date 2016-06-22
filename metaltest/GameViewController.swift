@@ -13,37 +13,6 @@ import MetalKit
 let MaxBuffers = 3
 let ConstantBufferSize = 1024*1024
 
-let vertexData:[Float] =
-[
-    -1.0, -1.0, 0.0, 1.0,
-    -1.0,  1.0, 0.0, 1.0,
-    1.0, -1.0, 0.0, 1.0,
-    
-    1.0, -1.0, 0.0, 1.0,
-    -1.0,  1.0, 0.0, 1.0,
-    1.0,  1.0, 0.0, 1.0,
-    
-    -0.0, 0.25, 0.0, 1.0,
-    -0.25, -0.25, 0.0, 1.0,
-    0.25, -0.25, 0.0, 1.0,
-    -0.0, 0.25, 0.0, 1.0,
-]
-
-let vertexColorData:[Float] =
-[
-    0.0, 0.0, 1.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    
-    0.0, 0.0, 1.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    
-    0.0, 0.0, 1.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-]
 
 class GameViewController:UIViewController, MTKViewDelegate {
     
@@ -56,6 +25,15 @@ class GameViewController:UIViewController, MTKViewDelegate {
     
     let inflightSemaphore = dispatch_semaphore_create(MaxBuffers)
     var bufferIndex = 0
+    
+    let vertexData:[Float] =
+        [
+            -0.0, 0.25, 0.0, 1.0,
+            -0.25, -0.25, 0.0, 1.0,
+            0.25, -0.25, 0.0, 1.0,
+            -0.0, 0.25, 0.0, 1.0,
+        ]
+    let vertexAlphaData:[Float] = [1, 1, 1, 1]
     
     // offsets used in animation
     var xOffset:[Float] = [ -1.0, 1.0, -1.0 ]
@@ -109,8 +87,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
         vertexBuffer = device.newBufferWithLength(ConstantBufferSize, options: [])
         vertexBuffer.label = "vertices"
         
-        let vertexColorSize = vertexData.count * sizeofValue(vertexColorData[0])
-        vertexColorBuffer = device.newBufferWithBytes(vertexColorData, length: vertexColorSize, options: [])
+        let vertexColorSize = vertexAlphaData.count * sizeofValue(vertexAlphaData[0])
+        vertexColorBuffer = device.newBufferWithBytes(vertexAlphaData, length: vertexColorSize, options: [])
         vertexColorBuffer.label = "colors"
     }
     
@@ -124,7 +102,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         vData.initializeFrom(vertexData)
 
         // Animate triangle offsets
-        let lastTriVertex = 24
+        let lastTriVertex = 0
         let vertexSize = 4
         let numVerticesToUpdate = 3
         for j in 0..<numVerticesToUpdate {
@@ -181,8 +159,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(pipelineState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexColorBuffer, offset:0 , atIndex: 1)
-            renderEncoder.drawPrimitives(.Triangle, vertexStart: 0, vertexCount: 6, instanceCount: 1)
-            renderEncoder.drawPrimitives(.LineStrip, vertexStart: 6, vertexCount: 4, instanceCount: 1)
+            renderEncoder.drawPrimitives(.LineStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1)
             
             renderEncoder.popDebugGroup()
             renderEncoder.endEncoding()

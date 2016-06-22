@@ -18,12 +18,12 @@ struct VertexInOut
 
 vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
                                      constant packed_float4* position  [[ buffer(0) ]],
-                                     constant packed_float4* color    [[ buffer(1) ]])
+                                     constant float* alpha    [[ buffer(1) ]])
 {
     VertexInOut outVertex;
     
     outVertex.position = position[vid];
-    outVertex.color    = color[vid];
+    outVertex.color    = float4(1,1,1, alpha[vid]);
     
     return outVertex;
 };
