@@ -24,6 +24,7 @@ vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
     
     outVertex.position = position[vid];
     outVertex.color    = float4(1,1,1, alpha[vid]);
+    //outVertex.color    = float4(1,0,0,1);
     
     return outVertex;
 };

@@ -26,15 +26,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     let inflightSemaphore = dispatch_semaphore_create(MaxBuffers)
     var bufferIndex = 0
     
-    let vertexData:[Float] =
-        [
-            -0.0, 0.25, 0.0, 1.0,
-            -0.25, -0.25, 0.0, 1.0,
-            0.25, -0.25, 0.0, 1.0,
-            -0.0, 0.25, 0.0, 1.0,
-        ]
-    let vertexAlphaData:[Float] = [1, 1, 1, 1]
-    
+    var vertexCount = 0
     // offsets used in animation
     var xOffset:[Float] = [ -1.0, 1.0, -1.0 ]
     var yOffset:[Float] = [ 1.0, 0.0, -1.0 ]
@@ -60,7 +52,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         loadAssets()
     }
     
-    func loadAssets() {
+    private func loadAssets() {
         
         // load any resources required for rendering
         let view = self.view as! MTKView
@@ -87,48 +79,49 @@ class GameViewController:UIViewController, MTKViewDelegate {
         vertexBuffer = device.newBufferWithLength(ConstantBufferSize, options: [])
         vertexBuffer.label = "vertices"
         
-        let vertexColorSize = vertexAlphaData.count * sizeofValue(vertexAlphaData[0])
-        vertexColorBuffer = device.newBufferWithBytes(vertexAlphaData, length: vertexColorSize, options: [])
+        vertexColorBuffer = device.newBufferWithLength(ConstantBufferSize, options: [])
         vertexColorBuffer.label = "colors"
+        
+        initVertexBuffer(8)
     }
     
-    func update() {
+    private func initVertexBuffer(numParticles: Int) {
+        // vData is pointer to the MTLBuffer's Float data contents
+        let pData = vertexBuffer.contents()
+        let cData = vertexColorBuffer.contents()
+        if numParticles >= 256 {
+            vertexCount = 0
+            return
+        }
+        vertexCount = 2 * numParticles
+        let vertexSize = 4
+        let dropLength : Float = 0.1
+        for p in 0..<numParticles {
+            let x = 2 * Randf() - 1
+            let y = 2 * Randf() - 1
+            for i in 0..<MaxBuffers {
+                let vDatai = UnsafeMutablePointer<Float>(pData + 256*i)
+                let cDatai = UnsafeMutablePointer<Float>(cData + 256*i)
+                vDatai[2*vertexSize*p] = x
+                vDatai[2*vertexSize*p+1] = y
+                vDatai[2*vertexSize*p+2] = 0
+                vDatai[2*vertexSize*p+3] = 1
+                vDatai[2*vertexSize*p+4] = x
+                vDatai[2*vertexSize*p+5] = y + dropLength
+                vDatai[2*vertexSize*p+6] = 0
+                vDatai[2*vertexSize*p+7] = 1
+                cDatai[2*p] = 0.5
+                cDatai[2*p+1] = 1.0
+            }
+        }
+        
+    }
+    
+    private func update() {
         
         // vData is pointer to the MTLBuffer's Float data contents
         let pData = vertexBuffer.contents()
         let vData = UnsafeMutablePointer<Float>(pData + 256*bufferIndex)
-        
-        // reset the vertices to default before adding animated offsets
-        vData.initializeFrom(vertexData)
-
-        // Animate triangle offsets
-        let lastTriVertex = 0
-        let vertexSize = 4
-        let numVerticesToUpdate = 3
-        for j in 0..<numVerticesToUpdate {
-            // update the animation offsets
-            xOffset[j] += xDelta[j]
-            
-            if(xOffset[j] >= 1.0 || xOffset[j] <= -1.0) {
-                xDelta[j] = -xDelta[j]
-                xOffset[j] += xDelta[j]
-            }
-            
-            yOffset[j] += yDelta[j]
-            
-            if(yOffset[j] >= 1.0 || yOffset[j] <= -1.0) {
-                yDelta[j] = -yDelta[j]
-                yOffset[j] += yDelta[j]
-            }
-            
-            // Update last triangle position with updated animated offsets
-            let pos = lastTriVertex + j*vertexSize
-            vData[pos] = xOffset[j]
-            vData[pos+1] = yOffset[j]
-        }
-        let pos = lastTriVertex + 3*vertexSize
-        vData[pos] = xOffset[0]
-        vData[pos+1] = yOffset[0]
     }
     
     func drawInMTKView(view: MTKView) {
@@ -159,7 +152,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(pipelineState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexColorBuffer, offset:0 , atIndex: 1)
-            renderEncoder.drawPrimitives(.LineStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1)
+            renderEncoder.drawPrimitives(.Line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
             
             renderEncoder.popDebugGroup()
             renderEncoder.endEncoding()
