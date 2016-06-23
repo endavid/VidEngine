@@ -16,6 +16,12 @@ struct VertexInOut
     float4  color;
 };
 
+struct LineParticle
+{
+    float4 start;
+    float4 end;
+};
+
 vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
                                      constant packed_float4* position  [[ buffer(0) ]],
                                      constant float* alpha    [[ buffer(1) ]])
@@ -30,15 +36,18 @@ vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
 
 // can only write to a buffer if the output is set to void
 vertex void updateRaindrops(uint vid [[ vertex_id ]],
-                            constant packed_float4* position  [[ buffer(0) ]],
-                            device packed_float4* updatedPosition  [[ buffer(1) ]])
+                            constant LineParticle* particle  [[ buffer(0) ]],
+                            device LineParticle* updatedParticle  [[ buffer(1) ]])
 {
+    LineParticle outParticle;
     float4 velocity = float4(0, -0.01, 0, 0);
-    float4 pos = position[vid] + velocity;
-    if (pos.y < -1) {
-        pos.y = 1.1;
+    outParticle.start = particle[vid].start + velocity;
+    outParticle.end = particle[vid].end + velocity;
+    if (outParticle.start.y < -1) {
+        outParticle.end.y = 1;
+        outParticle.start.y = outParticle.end.y + 0.1;
     }
-    updatedPosition[vid] = pos;
+    updatedParticle[vid] = outParticle;
 };
 
 fragment half4 passThroughFragment(VertexInOut inFrag [[stage_in]])

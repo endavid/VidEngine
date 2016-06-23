@@ -28,6 +28,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var bufferIndex = 0
     
     var vertexCount = 0
+    var particleCount = 0
     // offsets used in animation
     var xOffset:[Float] = [ -1.0, 1.0, -1.0 ]
     var yOffset:[Float] = [ 1.0, 0.0, -1.0 ]
@@ -101,6 +102,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             vertexCount = 0
             return
         }
+        particleCount = numParticles
         vertexCount = 2 * numParticles
         let vertexSize = 4
         let dropLength : Float = 0.1
@@ -167,7 +169,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(updateState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*((bufferIndex+1)%MaxBuffers), atIndex: 1)
-            renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+            renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
             renderEncoder.popDebugGroup()
 
             renderEncoder.endEncoding()
