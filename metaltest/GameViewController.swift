@@ -20,6 +20,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     
     var commandQueue: MTLCommandQueue! = nil
     var pipelineState: MTLRenderPipelineState! = nil
+    var updateState: MTLRenderPipelineState! = nil
     var vertexBuffer: MTLBuffer! = nil
     var vertexColorBuffer: MTLBuffer! = nil
     
@@ -62,6 +63,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let defaultLibrary = device.newDefaultLibrary()!
         let fragmentProgram = defaultLibrary.newFunctionWithName("passThroughFragment")!
         let vertexProgram = defaultLibrary.newFunctionWithName("passThroughVertex")!
+        let updateProgram = defaultLibrary.newFunctionWithName("updateRaindrops")!
         
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -69,8 +71,14 @@ class GameViewController:UIViewController, MTKViewDelegate {
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         pipelineStateDescriptor.sampleCount = view.sampleCount
         
+        let updateStateDescriptor = MTLRenderPipelineDescriptor()
+        updateStateDescriptor.vertexFunction = updateProgram
+        updateStateDescriptor.rasterizationEnabled = false // vertex output is void
+        updateStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat // pixel format needs to be set
+        
         do {
             try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
+            try updateState = device.newRenderPipelineStateWithDescriptor(updateStateDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
@@ -107,7 +115,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
                 vDatai[2*vertexSize*p+2] = 0
                 vDatai[2*vertexSize*p+3] = 1
                 vDatai[2*vertexSize*p+4] = x
-                vDatai[2*vertexSize*p+5] = y + dropLength
+                vDatai[2*vertexSize*p+5] = y - dropLength
                 vDatai[2*vertexSize*p+6] = 0
                 vDatai[2*vertexSize*p+7] = 1
                 cDatai[2*p] = 0.5
@@ -153,8 +161,15 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexColorBuffer, offset:0 , atIndex: 1)
             renderEncoder.drawPrimitives(.Line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-            
             renderEncoder.popDebugGroup()
+            
+            renderEncoder.pushDebugGroup("update raindrops")
+            renderEncoder.setRenderPipelineState(updateState)
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*((bufferIndex+1)%MaxBuffers), atIndex: 1)
+            renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+            renderEncoder.popDebugGroup()
+
             renderEncoder.endEncoding()
                 
             commandBuffer.presentDrawable(currentDrawable)
