@@ -114,18 +114,19 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let dropLength : Float = 0.1
         for p in 0..<numParticles {
             let x = 2 * Randf() - 1
-            let y = 1 + 2 * Randf()
+            let y = 1 + 2.4 * Randf()
+            let dropSpeed = -0.9 - 0.2 * Randf()
             for i in 0..<MaxBuffers {
                 let vDatai = UnsafeMutablePointer<Float>(pData + 256*i)
                 let cDatai = UnsafeMutablePointer<Float>(cData + 256*i)
                 vDatai[2*vertexSize*p] = x
                 vDatai[2*vertexSize*p+1] = y
                 vDatai[2*vertexSize*p+2] = 0
-                vDatai[2*vertexSize*p+3] = 1
+                vDatai[2*vertexSize*p+3] = dropSpeed
                 vDatai[2*vertexSize*p+4] = x
                 vDatai[2*vertexSize*p+5] = y - dropLength
                 vDatai[2*vertexSize*p+6] = 0
-                vDatai[2*vertexSize*p+7] = 1
+                vDatai[2*vertexSize*p+7] = dropSpeed
                 cDatai[2*p] = 0.5
                 cDatai[2*p+1] = 1.0
             }

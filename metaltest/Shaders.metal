@@ -28,6 +28,7 @@ struct Uniforms {
 
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
 
+float2 uvForNoiseTexture(float clipx);
 
 vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
                                      constant packed_float4* position  [[ buffer(0) ]],
@@ -35,11 +36,23 @@ vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
 {
     VertexInOut outVertex;
     
-    outVertex.position = position[vid];
+    float4 posAndVelocity = position[vid];
+    outVertex.position = float4(posAndVelocity.xy, 0, 1);
     outVertex.color    = float4(vid % 2,1,1, alpha[vid]);
     //outVertex.color    = float4(1,0,0,1);
     return outVertex;
 };
+
+// convert 1D position to UV coordinate
+float2 uvForNoiseTexture(float clipx) {
+    float x = 0.5 * clipx + 0.5;
+    int textureSize = 128;
+    int pixel = int(x * float(textureSize * textureSize));
+    int u = pixel / textureSize;
+    int v = pixel % textureSize;
+    float2 uv = float2(float(u)/float(textureSize), float(v)/float(textureSize));
+    return uv;
+}
 
 // can only write to a buffer if the output is set to void
 vertex void updateRaindrops(uint vid [[ vertex_id ]],
@@ -49,21 +62,31 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
                             texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
-    float4 velocity = float4(0, -uniforms.elapsedTime, 0, 0);
-    outParticle.start = particle[vid].start + velocity;
-    outParticle.end = particle[vid].end + velocity;
-    if (outParticle.start.y < -1) {
-        // convert 1D position to UV coordinate
-        int textureSize = 128;
-        int pixel = int(outParticle.end.x * float(textureSize * textureSize));
-        int u = pixel / textureSize;
-        int v = pixel % textureSize;
-        float2 uv = float2(float(u)/float(textureSize), float(v)/float(textureSize));
+    float4 velocity = uniforms.elapsedTime * float4(particle[vid].start.zw, particle[vid].end.zw);
+    outParticle.start = particle[vid].start + float4(velocity.xy, 0, 0);
+    outParticle.end = particle[vid].end + float4(velocity.zw, 0, 0);
+    if (outParticle.end.y < -1 && velocity.w < 0) { // hit the ground (or obstacle)
+        outParticle.end.zw = float2(0,0);
+    }
+    else if (outParticle.start.y < -1 && velocity.y < 0) { // hit the ground (or obstacle)
+        float2 uv = uvForNoiseTexture(outParticle.end.x);
         float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
+        randomVec.x = 2 * randomVec.x - 1;
+        randomVec.x = randomVec.x < 0 ? 0.1 * randomVec.x - 0.001 : 0.1 * randomVec.x + 0.001;
+        randomVec.y = 0.1 + 0.2 * randomVec.y;
+        outParticle.end.zw = randomVec;
+        outParticle.start.zw = float2(0,0);
+    }
+    else if (outParticle.end.y - outParticle.start.y > 0.05) { // reset particle after bounce
+        float2 uv = uvForNoiseTexture(outParticle.end.x);
+        float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
+        float2 randomVelocity = noiseTexture.sample(pointSampler, randomVec).xy;
         outParticle.end.x = 2 * randomVec.x - 1;
-        outParticle.end.y = 1 + 2 * randomVec.y;
+        outParticle.end.y = 1 + 2.4 * randomVec.y;
+        outParticle.end.zw = float2(0,-0.9 - 0.2 * randomVelocity.y);
         outParticle.start.x = outParticle.end.x;
         outParticle.start.y = outParticle.end.y + 0.1;
+        outParticle.start.zw = outParticle.end.zw;
     }
     updatedParticle[vid] = outParticle;
 };
