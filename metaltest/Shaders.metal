@@ -83,7 +83,7 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
         float2 randomVelocity = noiseTexture.sample(pointSampler, randomVec).xy;
         outParticle.end.x = 2 * randomVec.x - 1;
         outParticle.end.y = 1 + 2.4 * randomVec.y;
-        outParticle.end.zw = float2(0,-0.9 - 0.2 * randomVelocity.y);
+        outParticle.end.zw = float2(0,-2 * (0.9 + 0.2 * randomVelocity.y));
         outParticle.start.x = outParticle.end.x;
         outParticle.start.y = outParticle.end.y + 0.1;
         outParticle.start.zw = outParticle.end.zw;

@@ -115,7 +115,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         for p in 0..<numParticles {
             let x = 2 * Randf() - 1
             let y = 1 + 2.4 * Randf()
-            let dropSpeed = -0.9 - 0.2 * Randf()
+            let dropSpeed = -2 * (0.9 + 0.2 * Randf())
             for i in 0..<MaxBuffers {
                 let vDatai = UnsafeMutablePointer<Float>(pData + 256*i)
                 let cDatai = UnsafeMutablePointer<Float>(cData + 256*i)
@@ -192,18 +192,16 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     
+    // Updates the view’s contents upon receiving a change in layout, resolution, or size.
+    // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
         
     }
     
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
     func newFrame(displayLink: CADisplayLink){
-        if lastFrameTimestamp == 0.0
-        {
-            lastFrameTimestamp = displayLink.timestamp
-        }
-        elapsedTime = displayLink.timestamp - lastFrameTimestamp
-        lastFrameTimestamp = displayLink.timestamp
-        //gameloop(timeSinceLastUpdate: elapsed)
+        // when using timestamps, the interval switches between 16ms and 33ms, 
+        // while the render is always 60fps! Use .duration instead
+        elapsedTime = displayLink.duration
     }
 }
