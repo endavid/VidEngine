@@ -22,6 +22,10 @@ struct LineParticle
     float4 end;
 };
 
+struct Uniforms {
+    float elapsedTime;
+};
+
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
 
 
@@ -41,10 +45,11 @@ vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
 vertex void updateRaindrops(uint vid [[ vertex_id ]],
                             constant LineParticle* particle  [[ buffer(0) ]],
                             device LineParticle* updatedParticle  [[ buffer(1) ]],
+                            constant Uniforms& uniforms  [[ buffer(2) ]],
                             texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
-    float4 velocity = float4(0, -0.01, 0, 0);
+    float4 velocity = float4(0, -uniforms.elapsedTime, 0, 0);
     outParticle.start = particle[vid].start + velocity;
     outParticle.end = particle[vid].end + velocity;
     if (outParticle.start.y < -1) {
@@ -56,7 +61,7 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
         float2 uv = float2(float(u)/float(textureSize), float(v)/float(textureSize));
         float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
         outParticle.end.x = 2 * randomVec.x - 1;
-        outParticle.end.y = 1 + 0.5 * randomVec.y;
+        outParticle.end.y = 1 + 2 * randomVec.y;
         outParticle.start.x = outParticle.end.x;
         outParticle.start.y = outParticle.end.y + 0.1;
     }

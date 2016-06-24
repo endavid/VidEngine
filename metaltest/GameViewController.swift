@@ -23,8 +23,13 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var updateState: MTLRenderPipelineState! = nil
     var vertexBuffer: MTLBuffer! = nil
     var vertexColorBuffer: MTLBuffer! = nil
+    var uniformBuffer: MTLBuffer! = nil
     var noiseTexture: MTLTexture! = nil
-    
+    var timer: CADisplayLink! = nil
+    var lastFrameTimestamp: CFTimeInterval = 0.0
+    var elapsedTime: CFTimeInterval = 0.0
+    let numberOfUniforms = 4 // must be a multiple of 4
+
     let inflightSemaphore = dispatch_semaphore_create(MaxBuffers)
     var bufferIndex = 0
     
@@ -48,6 +53,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
         view.delegate = self
         
         loadAssets()
+        timer = CADisplayLink(target: self, selector: #selector(GameViewController.newFrame(_:)))
+        timer.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
     }
     
     private func loadAssets() {
@@ -87,9 +94,10 @@ class GameViewController:UIViewController, MTKViewDelegate {
         vertexColorBuffer = device.newBufferWithLength(ConstantBufferSize, options: [])
         vertexColorBuffer.label = "colors"
         
+        uniformBuffer = device.newBufferWithLength(sizeof(Float) * numberOfUniforms * MaxBuffers, options: [])
         noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
         
-        initVertexBuffer(8)
+        initVertexBuffer(200)
     }
     
     private func initVertexBuffer(numParticles: Int) {
@@ -106,7 +114,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let dropLength : Float = 0.1
         for p in 0..<numParticles {
             let x = 2 * Randf() - 1
-            let y = 2 * Randf() - 1
+            let y = 1 + 2 * Randf()
             for i in 0..<MaxBuffers {
                 let vDatai = UnsafeMutablePointer<Float>(pData + 256*i)
                 let cDatai = UnsafeMutablePointer<Float>(cData + 256*i)
@@ -126,6 +134,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     private func update() {
+        let uniformB = uniformBuffer.contents()
+        let uniformData = UnsafeMutablePointer<Float>(uniformB + numberOfUniforms * bufferIndex);
+        uniformData[0] = Float(elapsedTime)
     }
     
     func drawInMTKView(view: MTKView) {
@@ -163,6 +174,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(updateState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*((bufferIndex+1)%MaxBuffers), atIndex: 1)
+            renderEncoder.setVertexBuffer(uniformBuffer, offset: numberOfUniforms * bufferIndex, atIndex: 2)
             renderEncoder.setVertexTexture(noiseTexture, atIndex: 0)
             renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
             renderEncoder.popDebugGroup()
@@ -181,5 +193,16 @@ class GameViewController:UIViewController, MTKViewDelegate {
     
     func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
         
+    }
+    
+    // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
+    func newFrame(displayLink: CADisplayLink){
+        if lastFrameTimestamp == 0.0
+        {
+            lastFrameTimestamp = displayLink.timestamp
+        }
+        elapsedTime = displayLink.timestamp - lastFrameTimestamp
+        lastFrameTimestamp = displayLink.timestamp
+        //gameloop(timeSinceLastUpdate: elapsed)
     }
 }
