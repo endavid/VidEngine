@@ -23,17 +23,13 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var updateState: MTLRenderPipelineState! = nil
     var vertexBuffer: MTLBuffer! = nil
     var vertexColorBuffer: MTLBuffer! = nil
+    var noiseTexture: MTLTexture! = nil
     
     let inflightSemaphore = dispatch_semaphore_create(MaxBuffers)
     var bufferIndex = 0
     
     var vertexCount = 0
     var particleCount = 0
-    // offsets used in animation
-    var xOffset:[Float] = [ -1.0, 1.0, -1.0 ]
-    var yOffset:[Float] = [ 1.0, 0.0, -1.0 ]
-    var xDelta:[Float] = [ 0.002, -0.001, 0.003 ]
-    var yDelta:[Float] = [ 0.001,  0.002, -0.001 ]
     
     override func viewDidLoad() {
         
@@ -91,6 +87,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
         vertexColorBuffer = device.newBufferWithLength(ConstantBufferSize, options: [])
         vertexColorBuffer.label = "colors"
         
+        noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
+        
         initVertexBuffer(8)
     }
     
@@ -128,10 +126,6 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     private func update() {
-        
-        // vData is pointer to the MTLBuffer's Float data contents
-        let pData = vertexBuffer.contents()
-        let vData = UnsafeMutablePointer<Float>(pData + 256*bufferIndex)
     }
     
     func drawInMTKView(view: MTKView) {
@@ -169,6 +163,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(updateState)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*bufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 256*((bufferIndex+1)%MaxBuffers), atIndex: 1)
+            renderEncoder.setVertexTexture(noiseTexture, atIndex: 0)
             renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
             renderEncoder.popDebugGroup()
 

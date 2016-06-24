@@ -22,6 +22,9 @@ struct LineParticle
     float4 end;
 };
 
+constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
+
+
 vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
                                      constant packed_float4* position  [[ buffer(0) ]],
                                      constant float* alpha    [[ buffer(1) ]])
@@ -37,14 +40,24 @@ vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
 // can only write to a buffer if the output is set to void
 vertex void updateRaindrops(uint vid [[ vertex_id ]],
                             constant LineParticle* particle  [[ buffer(0) ]],
-                            device LineParticle* updatedParticle  [[ buffer(1) ]])
+                            device LineParticle* updatedParticle  [[ buffer(1) ]],
+                            texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
     float4 velocity = float4(0, -0.01, 0, 0);
     outParticle.start = particle[vid].start + velocity;
     outParticle.end = particle[vid].end + velocity;
     if (outParticle.start.y < -1) {
-        outParticle.end.y = 1;
+        // convert 1D position to UV coordinate
+        int textureSize = 128;
+        int pixel = int(outParticle.end.x * float(textureSize * textureSize));
+        int u = pixel / textureSize;
+        int v = pixel % textureSize;
+        float2 uv = float2(float(u)/float(textureSize), float(v)/float(textureSize));
+        float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
+        outParticle.end.x = 2 * randomVec.x - 1;
+        outParticle.end.y = 1 + 0.5 * randomVec.y;
+        outParticle.start.x = outParticle.end.x;
         outParticle.start.y = outParticle.end.y + 0.1;
     }
     updatedParticle[vid] = outParticle;

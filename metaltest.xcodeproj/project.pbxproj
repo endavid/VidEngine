@@ -16,6 +16,7 @@
 		63DEAA581CAC97AA00B6FA98 /* metaltestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA571CAC97AA00B6FA98 /* metaltestTests.swift */; };
 		63DEAA631CAC97AA00B6FA98 /* metaltestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
+		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metaltestUITests.swift; sourceTree = "<group>"; };
 		63DEAA641CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = math/Math.swift; sourceTree = "<group>"; };
+		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Image.swift; path = gfx/Image.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 		63DEAA3F1CAC97AA00B6FA98 /* metaltest */ = {
 			isa = PBXGroup;
 			children = (
+				63EA89001D1C528D00B97B99 /* gfx */,
 				63EA88FD1D1ABF9000B97B99 /* math */,
 				63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */,
 				63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */,
@@ -137,6 +140,14 @@
 				63EA88FE1D1ABFAF00B97B99 /* Math.swift */,
 			);
 			name = math;
+			sourceTree = "<group>";
+		};
+		63EA89001D1C528D00B97B99 /* gfx */ = {
+			isa = PBXGroup;
+			children = (
+				63EA89011D1C52D900B97B99 /* Image.swift */,
+			);
+			name = gfx;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +285,7 @@
 				63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */,
 				63DEAA411CAC97AA00B6FA98 /* AppDelegate.swift in Sources */,
 				63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */,
+				63EA89021D1C52D900B97B99 /* Image.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
