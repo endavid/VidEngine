@@ -10,6 +10,8 @@ import UIKit
 import Metal
 import MetalKit
 import CoreMotion
+import AVFoundation
+
 
 // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
 let NumSyncBuffers = 3
@@ -43,6 +45,10 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var currentTouchX : Float = 0
     var currentTouchY : Float = -2
     
+    // musica maestro!
+    private var player : AVAudioPlayer?
+
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -64,6 +70,18 @@ class GameViewController:UIViewController, MTKViewDelegate {
         timer.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
         
         setupMotionController()
+        do {
+            // Removed deprecated use of AVAudioSessionDelegate protocol
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+            try AVAudioSession.sharedInstance().setActive(true)
+            let music = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("Rain_Background-Mike_Koenig", ofType: "mp3")!)
+            player = try AVAudioPlayer(contentsOfURL: music)
+            player?.numberOfLoops = -1
+            player?.play()
+        }
+        catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
     private func setupMotionController() {
@@ -197,7 +215,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             let renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
             renderEncoder.label = "render encoder"
             
-            renderEncoder.pushDebugGroup("draw morphing triangle")
+            renderEncoder.pushDebugGroup("draw rain")
             renderEncoder.setRenderPipelineState(pipelineState)
             renderEncoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, atIndex: 0)
             renderEncoder.drawPrimitives(.Line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)

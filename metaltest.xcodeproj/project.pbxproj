@@ -17,6 +17,7 @@
 		63DEAA631CAC97AA00B6FA98 /* metaltestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
 		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
+		63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		63DEAA641CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = math/Math.swift; sourceTree = "<group>"; };
 		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Image.swift; path = gfx/Image.swift; sourceTree = "<group>"; };
+		63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Rain_Background-Mike_Koenig.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 		63DEAA3F1CAC97AA00B6FA98 /* metaltest */ = {
 			isa = PBXGroup;
 			children = (
+				63EA89051D1F1E9B00B97B99 /* Resources */,
 				63EA89001D1C528D00B97B99 /* gfx */,
 				63EA88FD1D1ABF9000B97B99 /* math */,
 				63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */,
@@ -148,6 +151,14 @@
 				63EA89011D1C52D900B97B99 /* Image.swift */,
 			);
 			name = gfx;
+			sourceTree = "<group>";
+		};
+		63EA89051D1F1E9B00B97B99 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63DEAA4D1CAC97AA00B6FA98 /* LaunchScreen.storyboard in Resources */,
+				63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */,
 				63DEAA4A1CAC97AA00B6FA98 /* Assets.xcassets in Resources */,
 				63DEAA481CAC97AA00B6FA98 /* Main.storyboard in Resources */,
 			);
