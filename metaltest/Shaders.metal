@@ -30,16 +30,13 @@ constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repe
 
 float2 uvForNoiseTexture(float clipx);
 
-vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float4* position  [[ buffer(0) ]],
-                                     constant float* alpha    [[ buffer(1) ]])
+vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
+                                      constant packed_float4* position  [[ buffer(0) ]])
 {
     VertexInOut outVertex;
-    
     float4 posAndVelocity = position[vid];
     outVertex.position = float4(posAndVelocity.xy, 0, 1);
-    outVertex.color    = float4(vid % 2,1,1, alpha[vid]);
-    //outVertex.color    = float4(1,0,0,1);
+    outVertex.color    = float4(vid % 2,1,1, 0.5 + 0.5 * (vid % 2));
     return outVertex;
 };
 
