@@ -9,6 +9,7 @@
 import UIKit
 import Metal
 import MetalKit
+import CoreMotion
 
 // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
 let NumSyncBuffers = 3
@@ -36,6 +37,10 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var vertexCount = 0
     var particleCount = 0
     
+    // for motion control
+    let motionManager = CMMotionManager()
+    var currentPitch : Double = 0
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -55,6 +60,30 @@ class GameViewController:UIViewController, MTKViewDelegate {
         loadAssets()
         timer = CADisplayLink(target: self, selector: #selector(GameViewController.newFrame(_:)))
         timer.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+        
+        setupMotionController()
+    }
+    
+    private func setupMotionController() {
+        if motionManager.gyroAvailable {
+            motionManager.deviceMotionUpdateInterval = 0.2;
+            motionManager.startDeviceMotionUpdates()
+            
+            motionManager.gyroUpdateInterval = 0.2
+            if let queue = NSOperationQueue.currentQueue() {
+                motionManager.startGyroUpdatesToQueue(queue) {
+                    [weak self] (gyroData: CMGyroData?, error: NSError?) in
+                    guard let weakSelf = self else { return }
+                    if let motion = weakSelf.motionManager.deviceMotion {
+                        weakSelf.currentPitch = motion.attitude.pitch
+                        //print(motion.attitude)
+                    }
+                    if error != nil {
+                        print("\(error)")
+                    }
+                }
+            }
+        }
     }
     
     private func loadAssets() {
@@ -131,8 +160,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
     
     private func update() {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB + numberOfUniforms * syncBufferIndex);
+        let uniformData = UnsafeMutablePointer<Float>(uniformB + numberOfUniforms * sizeof(Float) * syncBufferIndex);
         uniformData[0] = Float(elapsedTime)
+        uniformData[1] = Float(-sin(currentPitch))
     }
     
     func drawInMTKView(view: MTKView) {
@@ -156,7 +186,10 @@ class GameViewController:UIViewController, MTKViewDelegate {
         
         if let renderPassDescriptor = view.currentRenderPassDescriptor, currentDrawable = view.currentDrawable
         {
+            // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
+            // Check alignment in setVertexBuffer doc
             let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
+            let uniformOffset = numberOfUniforms * sizeof(Float)
             let renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
             renderEncoder.label = "render encoder"
             
@@ -170,7 +203,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(updateState)
             renderEncoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, atIndex: 0)
             renderEncoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), atIndex: 1)
-            renderEncoder.setVertexBuffer(uniformBuffer, offset: numberOfUniforms * syncBufferIndex, atIndex: 2)
+            renderEncoder.setVertexBuffer(uniformBuffer, offset: uniformOffset * syncBufferIndex, atIndex: 2)
             renderEncoder.setVertexTexture(noiseTexture, atIndex: 0)
             renderEncoder.drawPrimitives(.Point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
             renderEncoder.popDebugGroup()

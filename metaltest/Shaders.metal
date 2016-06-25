@@ -24,6 +24,9 @@ struct LineParticle
 
 struct Uniforms {
     float elapsedTime;
+    float windDirection;
+    float padding0;
+    float padding1;
 };
 
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
@@ -59,7 +62,9 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
                             texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
-    float4 velocity = uniforms.elapsedTime * float4(particle[vid].start.zw, particle[vid].end.zw);
+    float4 velocity = float4(particle[vid].start.zw, particle[vid].end.zw);
+    velocity += uniforms.windDirection * float4(1, 0, 1, 0);
+    velocity *= uniforms.elapsedTime;
     outParticle.start = particle[vid].start + float4(velocity.xy, 0, 0);
     outParticle.end = particle[vid].end + float4(velocity.zw, 0, 0);
     if (outParticle.end.y < -1 && velocity.w < 0) { // hit the ground (or obstacle)
@@ -78,10 +83,10 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
         float2 uv = uvForNoiseTexture(outParticle.end.x);
         float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
         float2 randomVelocity = noiseTexture.sample(pointSampler, randomVec).xy;
-        outParticle.end.x = 2 * randomVec.x - 1;
         outParticle.end.y = 1 + 2.4 * randomVec.y;
         outParticle.end.zw = float2(0,-2 * (0.9 + 0.2 * randomVelocity.y));
-        outParticle.start.x = outParticle.end.x;
+        outParticle.start.x = 2 * randomVec.x - 1 - uniforms.windDirection; // apply wind offset to fill the screen
+        outParticle.end.x = outParticle.start.x + 0.1 * uniforms.windDirection;
         outParticle.start.y = outParticle.end.y + 0.1;
         outParticle.start.zw = outParticle.end.zw;
     }
