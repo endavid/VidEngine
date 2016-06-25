@@ -25,8 +25,7 @@ struct LineParticle
 struct Uniforms {
     float elapsedTime;
     float windDirection;
-    float padding0;
-    float padding1;
+    float2 touchPosition;
 };
 
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
@@ -67,10 +66,13 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
     velocity *= uniforms.elapsedTime;
     outParticle.start = particle[vid].start + float4(velocity.xy, 0, 0);
     outParticle.end = particle[vid].end + float4(velocity.zw, 0, 0);
-    if (outParticle.end.y < -1 && velocity.w < 0) { // hit the ground (or obstacle)
+    float fingerWidth = 0.2;
+    bool endHitFinger = outParticle.end.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.y < uniforms.touchPosition.y;
+    bool startHitFinger = outParticle.start.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.y < uniforms.touchPosition.y;
+    if ((outParticle.end.y < -1 || endHitFinger)  && velocity.w < 0) { // hit the ground (or obstacle)
         outParticle.end.zw = float2(0,0);
     }
-    else if (outParticle.start.y < -1 && velocity.y < 0) { // hit the ground (or obstacle)
+    else if ((outParticle.start.y < -1 || startHitFinger) && velocity.y < 0) { // hit the ground (or obstacle)
         float2 uv = uvForNoiseTexture(outParticle.end.x);
         float2 randomVec = noiseTexture.sample(pointSampler, uv).xy;
         randomVec.x = 2 * randomVec.x - 1;

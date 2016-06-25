@@ -40,6 +40,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // for motion control
     let motionManager = CMMotionManager()
     var currentPitch : Double = 0
+    var currentTouchX : Float = 0
+    var currentTouchY : Float = -2
     
     override func viewDidLoad() {
         
@@ -163,6 +165,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let uniformData = UnsafeMutablePointer<Float>(uniformB + numberOfUniforms * sizeof(Float) * syncBufferIndex);
         uniformData[0] = Float(elapsedTime)
         uniformData[1] = Float(-sin(currentPitch))
+        uniformData[2] = currentTouchX
+        uniformData[3] = currentTouchY
     }
     
     func drawInMTKView(view: MTKView) {
@@ -232,5 +236,22 @@ class GameViewController:UIViewController, MTKViewDelegate {
         // when using timestamps, the interval switches between 16ms and 33ms, 
         // while the render is always 60fps! Use .duration instead
         elapsedTime = displayLink.duration
+    }
+    
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        touchesMoved(touches, withEvent: event)
+    }
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let overTheFinger : CGFloat = -30
+        for t in touches {
+            let loc = t.locationInView(view)
+            currentTouchX = 2 * Float(loc.x / view.bounds.width) - 1
+            currentTouchY = 1 - 2 * Float((loc.y + overTheFinger) / view.bounds.height)
+        }
+    }    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        currentTouchX = 0
+        currentTouchY = -2
     }
 }
