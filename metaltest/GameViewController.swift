@@ -109,7 +109,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = .Add
         pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .SourceAlpha
         pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .SourceAlpha
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .One
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .DestinationAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .OneMinusSourceAlpha
         pipelineStateDescriptor.sampleCount = view.sampleCount
         

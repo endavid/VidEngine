@@ -38,7 +38,7 @@ vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
     VertexInOut outVertex;
     float4 posAndVelocity = position[vid];
     outVertex.position = float4(posAndVelocity.xy, 0, 1);
-    outVertex.color    = float4(vid % 2,1,1, 0.5 + 0.5 * (vid % 2));
+    outVertex.color    = float4(vid % 2,1,1, 0.1 + 0.5 * (vid % 2));
     return outVertex;
 };
 
@@ -62,11 +62,13 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
 {
     LineParticle outParticle;
     float4 velocity = float4(particle[vid].start.zw, particle[vid].end.zw);
+    float speed = 1.5;
     velocity += uniforms.windDirection * float4(1, 0, 1, 0);
-    velocity *= uniforms.elapsedTime;
+    velocity *= uniforms.elapsedTime * speed;
     outParticle.start = particle[vid].start + float4(velocity.xy, 0, 0);
     outParticle.end = particle[vid].end + float4(velocity.zw, 0, 0);
     float fingerWidth = 0.2;
+    float dropHeight = 0.2;
     bool endHitFinger = outParticle.end.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.y < uniforms.touchPosition.y;
     bool startHitFinger = outParticle.start.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.y < uniforms.touchPosition.y;
     if ((outParticle.end.y < -1 || endHitFinger)  && velocity.w < 0) { // hit the ground (or obstacle)
@@ -89,7 +91,7 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
         outParticle.end.zw = float2(0,-2 * (0.9 + 0.2 * randomVelocity.y));
         outParticle.start.x = 2 * randomVec.x - 1 - uniforms.windDirection; // apply wind offset to fill the screen
         outParticle.end.x = outParticle.start.x + 0.1 * uniforms.windDirection;
-        outParticle.start.y = outParticle.end.y + 0.1;
+        outParticle.start.y = outParticle.end.y + dropHeight;
         outParticle.start.zw = outParticle.end.zw;
     }
     updatedParticle[vid] = outParticle;
