@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6369BD861D4DF63500E75951 /* Fx.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6369BD851D4DF63500E75951 /* Fx.metal */; };
 		63DEAA411CAC97AA00B6FA98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */; };
 		63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */; };
 		63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA441CAC97AA00B6FA98 /* Shaders.metal */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6369BD851D4DF63500E75951 /* Fx.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fx.metal; sourceTree = "<group>"; };
 		63DEAA3D1CAC97AA00B6FA98 /* VidEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VidEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +84,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6369BD841D4DF5AC00E75951 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				63DEAA441CAC97AA00B6FA98 /* Shaders.metal */,
+				6369BD851D4DF63500E75951 /* Fx.metal */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		63DEAA341CAC97AA00B6FA98 = {
 			isa = PBXGroup;
 			children = (
@@ -105,12 +116,12 @@
 		63DEAA3F1CAC97AA00B6FA98 /* VidEngine */ = {
 			isa = PBXGroup;
 			children = (
+				6369BD841D4DF5AC00E75951 /* Shaders */,
 				63EA89051D1F1E9B00B97B99 /* Resources */,
 				63EA89001D1C528D00B97B99 /* gfx */,
 				63EA88FD1D1ABF9000B97B99 /* math */,
 				63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */,
 				63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */,
-				63DEAA441CAC97AA00B6FA98 /* Shaders.metal */,
 				63DEAA461CAC97AA00B6FA98 /* Main.storyboard */,
 				63DEAA491CAC97AA00B6FA98 /* Assets.xcassets */,
 				63DEAA4B1CAC97AA00B6FA98 /* LaunchScreen.storyboard */,
@@ -296,6 +307,7 @@
 				63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */,
 				63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */,
 				63DEAA411CAC97AA00B6FA98 /* AppDelegate.swift in Sources */,
+				6369BD861D4DF63500E75951 /* Fx.metal in Sources */,
 				63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */,
 				63EA89021D1C52D900B97B99 /* Image.swift in Sources */,
 			);

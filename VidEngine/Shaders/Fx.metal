@@ -1,19 +1,14 @@
 //
-//  Shaders.metal
+//  Fx.metal
+//  VidEngine
 //
-//  Created by David Gavilan on 3/31/16.
+//  Created by David Gavilan on 7/31/16.
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
 #include <metal_stdlib>
-
 using namespace metal;
 
-struct VertexInOut
-{
-    float4  position [[position]];
-    float4  color;
-};
 
 struct LineParticle
 {
@@ -30,16 +25,6 @@ struct Uniforms {
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
 
 float2 uvForNoiseTexture(float clipx);
-
-vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
-                                      constant packed_float4* position  [[ buffer(0) ]])
-{
-    VertexInOut outVertex;
-    float4 posAndVelocity = position[vid];
-    outVertex.position = float4(posAndVelocity.xy, 0, 1);
-    outVertex.color    = float4(vid % 2,1,1, 0.1 + 0.5 * (vid % 2));
-    return outVertex;
-};
 
 // convert 1D position to UV coordinate
 float2 uvForNoiseTexture(float clipx) {
@@ -94,9 +79,4 @@ vertex void updateRaindrops(uint vid [[ vertex_id ]],
         outParticle.start.zw = outParticle.end.zw;
     }
     updatedParticle[vid] = outParticle;
-};
-
-fragment half4 passThroughFragment(VertexInOut inFrag [[stage_in]])
-{
-    return half4(inFrag.color);
 };
