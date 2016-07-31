@@ -1,15 +1,14 @@
 //
-//  metaltestTests.swift
-//  metaltestTests
+//  VidEngineTests.swift
 //
 //  Created by David Gavilan on 3/31/16.
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
 import XCTest
-@testable import metaltest
+@testable import VidEngine
 
-class metaltestTests: XCTestCase {
+class VidEngineTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

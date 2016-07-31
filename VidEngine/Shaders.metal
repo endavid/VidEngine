@@ -1,6 +1,5 @@
 //
 //  Shaders.metal
-//  metaltest
 //
 //  Created by David Gavilan on 3/31/16.
 //  Copyright © 2016 David Gavilan. All rights reserved.

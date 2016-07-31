@@ -13,8 +13,8 @@
 		63DEAA481CAC97AA00B6FA98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63DEAA461CAC97AA00B6FA98 /* Main.storyboard */; };
 		63DEAA4A1CAC97AA00B6FA98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63DEAA491CAC97AA00B6FA98 /* Assets.xcassets */; };
 		63DEAA4D1CAC97AA00B6FA98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63DEAA4B1CAC97AA00B6FA98 /* LaunchScreen.storyboard */; };
-		63DEAA581CAC97AA00B6FA98 /* metaltestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA571CAC97AA00B6FA98 /* metaltestTests.swift */; };
-		63DEAA631CAC97AA00B6FA98 /* metaltestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */; };
+		63DEAA581CAC97AA00B6FA98 /* VidEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA571CAC97AA00B6FA98 /* VidEngineTests.swift */; };
+		63DEAA631CAC97AA00B6FA98 /* VidEngineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA621CAC97AA00B6FA98 /* VidEngineUITests.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
 		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
 		63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */; };
@@ -26,19 +26,19 @@
 			containerPortal = 63DEAA351CAC97AA00B6FA98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 63DEAA3C1CAC97AA00B6FA98;
-			remoteInfo = metaltest;
+			remoteInfo = VidEngine;
 		};
 		63DEAA5F1CAC97AA00B6FA98 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 63DEAA351CAC97AA00B6FA98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 63DEAA3C1CAC97AA00B6FA98;
-			remoteInfo = metaltest;
+			remoteInfo = VidEngine;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		63DEAA3D1CAC97AA00B6FA98 /* metaltest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = metaltest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DEAA3D1CAC97AA00B6FA98 /* VidEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VidEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		63DEAA441CAC97AA00B6FA98 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
@@ -46,11 +46,11 @@
 		63DEAA491CAC97AA00B6FA98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63DEAA4C1CAC97AA00B6FA98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63DEAA4E1CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		63DEAA531CAC97AA00B6FA98 /* metaltestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = metaltestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		63DEAA571CAC97AA00B6FA98 /* metaltestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metaltestTests.swift; sourceTree = "<group>"; };
+		63DEAA531CAC97AA00B6FA98 /* VidEngine.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VidEngine.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DEAA571CAC97AA00B6FA98 /* VidEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VidEngineTests.swift; sourceTree = "<group>"; };
 		63DEAA591CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		63DEAA5E1CAC97AA00B6FA98 /* metaltestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = metaltestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metaltestUITests.swift; sourceTree = "<group>"; };
+		63DEAA5E1CAC97AA00B6FA98 /* VidEngine.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VidEngine.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DEAA621CAC97AA00B6FA98 /* VidEngineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VidEngineUITests.swift; sourceTree = "<group>"; };
 		63DEAA641CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = math/Math.swift; sourceTree = "<group>"; };
 		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Image.swift; path = gfx/Image.swift; sourceTree = "<group>"; };
@@ -85,9 +85,9 @@
 		63DEAA341CAC97AA00B6FA98 = {
 			isa = PBXGroup;
 			children = (
-				63DEAA3F1CAC97AA00B6FA98 /* metaltest */,
-				63DEAA561CAC97AA00B6FA98 /* metaltestTests */,
-				63DEAA611CAC97AA00B6FA98 /* metaltestUITests */,
+				63DEAA3F1CAC97AA00B6FA98 /* VidEngine */,
+				63DEAA561CAC97AA00B6FA98 /* VidEngineTests */,
+				63DEAA611CAC97AA00B6FA98 /* VidEngineUITests */,
 				63DEAA3E1CAC97AA00B6FA98 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,14 +95,14 @@
 		63DEAA3E1CAC97AA00B6FA98 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				63DEAA3D1CAC97AA00B6FA98 /* metaltest.app */,
-				63DEAA531CAC97AA00B6FA98 /* metaltestTests.xctest */,
-				63DEAA5E1CAC97AA00B6FA98 /* metaltestUITests.xctest */,
+				63DEAA3D1CAC97AA00B6FA98 /* VidEngine.app */,
+				63DEAA531CAC97AA00B6FA98 /* VidEngine.xctest */,
+				63DEAA5E1CAC97AA00B6FA98 /* VidEngine.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		63DEAA3F1CAC97AA00B6FA98 /* metaltest */ = {
+		63DEAA3F1CAC97AA00B6FA98 /* VidEngine */ = {
 			isa = PBXGroup;
 			children = (
 				63EA89051D1F1E9B00B97B99 /* Resources */,
@@ -116,25 +116,25 @@
 				63DEAA4B1CAC97AA00B6FA98 /* LaunchScreen.storyboard */,
 				63DEAA4E1CAC97AA00B6FA98 /* Info.plist */,
 			);
-			path = metaltest;
+			path = VidEngine;
 			sourceTree = "<group>";
 		};
-		63DEAA561CAC97AA00B6FA98 /* metaltestTests */ = {
+		63DEAA561CAC97AA00B6FA98 /* VidEngineTests */ = {
 			isa = PBXGroup;
 			children = (
-				63DEAA571CAC97AA00B6FA98 /* metaltestTests.swift */,
+				63DEAA571CAC97AA00B6FA98 /* VidEngineTests.swift */,
 				63DEAA591CAC97AA00B6FA98 /* Info.plist */,
 			);
-			path = metaltestTests;
+			path = VidEngineTests;
 			sourceTree = "<group>";
 		};
-		63DEAA611CAC97AA00B6FA98 /* metaltestUITests */ = {
+		63DEAA611CAC97AA00B6FA98 /* VidEngineUITests */ = {
 			isa = PBXGroup;
 			children = (
-				63DEAA621CAC97AA00B6FA98 /* metaltestUITests.swift */,
+				63DEAA621CAC97AA00B6FA98 /* VidEngineUITests.swift */,
 				63DEAA641CAC97AA00B6FA98 /* Info.plist */,
 			);
-			path = metaltestUITests;
+			path = VidEngineUITests;
 			sourceTree = "<group>";
 		};
 		63EA88FD1D1ABF9000B97B99 /* math */ = {
@@ -164,9 +164,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		63DEAA3C1CAC97AA00B6FA98 /* metaltest */ = {
+		63DEAA3C1CAC97AA00B6FA98 /* VidEngine */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63DEAA671CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltest" */;
+			buildConfigurationList = 63DEAA671CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngine" */;
 			buildPhases = (
 				63DEAA391CAC97AA00B6FA98 /* Sources */,
 				63DEAA3A1CAC97AA00B6FA98 /* Frameworks */,
@@ -176,14 +176,14 @@
 			);
 			dependencies = (
 			);
-			name = metaltest;
-			productName = metaltest;
-			productReference = 63DEAA3D1CAC97AA00B6FA98 /* metaltest.app */;
+			name = VidEngine;
+			productName = VidEngine;
+			productReference = 63DEAA3D1CAC97AA00B6FA98 /* VidEngine.app */;
 			productType = "com.apple.product-type.application";
 		};
-		63DEAA521CAC97AA00B6FA98 /* metaltestTests */ = {
+		63DEAA521CAC97AA00B6FA98 /* VidEngineTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63DEAA6A1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltestTests" */;
+			buildConfigurationList = 63DEAA6A1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngineTests" */;
 			buildPhases = (
 				63DEAA4F1CAC97AA00B6FA98 /* Sources */,
 				63DEAA501CAC97AA00B6FA98 /* Frameworks */,
@@ -194,14 +194,14 @@
 			dependencies = (
 				63DEAA551CAC97AA00B6FA98 /* PBXTargetDependency */,
 			);
-			name = metaltestTests;
-			productName = metaltestTests;
-			productReference = 63DEAA531CAC97AA00B6FA98 /* metaltestTests.xctest */;
+			name = VidEngineTests;
+			productName = VidEngineTests;
+			productReference = 63DEAA531CAC97AA00B6FA98 /* VidEngine.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		63DEAA5D1CAC97AA00B6FA98 /* metaltestUITests */ = {
+		63DEAA5D1CAC97AA00B6FA98 /* VidEngineUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63DEAA6D1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltestUITests" */;
+			buildConfigurationList = 63DEAA6D1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngineUITests" */;
 			buildPhases = (
 				63DEAA5A1CAC97AA00B6FA98 /* Sources */,
 				63DEAA5B1CAC97AA00B6FA98 /* Frameworks */,
@@ -212,9 +212,9 @@
 			dependencies = (
 				63DEAA601CAC97AA00B6FA98 /* PBXTargetDependency */,
 			);
-			name = metaltestUITests;
-			productName = metaltestUITests;
-			productReference = 63DEAA5E1CAC97AA00B6FA98 /* metaltestUITests.xctest */;
+			name = VidEngineUITests;
+			productName = VidEngineUITests;
+			productReference = 63DEAA5E1CAC97AA00B6FA98 /* VidEngine.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -240,7 +240,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 63DEAA381CAC97AA00B6FA98 /* Build configuration list for PBXProject "metaltest" */;
+			buildConfigurationList = 63DEAA381CAC97AA00B6FA98 /* Build configuration list for PBXProject "VidEngine" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -253,9 +253,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				63DEAA3C1CAC97AA00B6FA98 /* metaltest */,
-				63DEAA521CAC97AA00B6FA98 /* metaltestTests */,
-				63DEAA5D1CAC97AA00B6FA98 /* metaltestUITests */,
+				63DEAA3C1CAC97AA00B6FA98 /* VidEngine */,
+				63DEAA521CAC97AA00B6FA98 /* VidEngineTests */,
+				63DEAA5D1CAC97AA00B6FA98 /* VidEngineUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -305,7 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63DEAA581CAC97AA00B6FA98 /* metaltestTests.swift in Sources */,
+				63DEAA581CAC97AA00B6FA98 /* VidEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,7 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63DEAA631CAC97AA00B6FA98 /* metaltestUITests.swift in Sources */,
+				63DEAA631CAC97AA00B6FA98 /* VidEngineUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,12 +322,12 @@
 /* Begin PBXTargetDependency section */
 		63DEAA551CAC97AA00B6FA98 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 63DEAA3C1CAC97AA00B6FA98 /* metaltest */;
+			target = 63DEAA3C1CAC97AA00B6FA98 /* VidEngine */;
 			targetProxy = 63DEAA541CAC97AA00B6FA98 /* PBXContainerItemProxy */;
 		};
 		63DEAA601CAC97AA00B6FA98 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 63DEAA3C1CAC97AA00B6FA98 /* metaltest */;
+			target = 63DEAA3C1CAC97AA00B6FA98 /* VidEngine */;
 			targetProxy = 63DEAA5F1CAC97AA00B6FA98 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -441,10 +441,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = metaltest/Info.plist;
+				INFOPLIST_FILE = VidEngine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltest;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngine;
+				PRODUCT_NAME = VidEngine;
 			};
 			name = Debug;
 		};
@@ -452,10 +452,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = metaltest/Info.plist;
+				INFOPLIST_FILE = VidEngine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltest;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngine;
+				PRODUCT_NAME = VidEngine;
 			};
 			name = Release;
 		};
@@ -464,11 +464,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = metaltestTests/Info.plist;
+				INFOPLIST_FILE = VidEngineTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltestTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/metaltest.app/metaltest";
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineTests;
+				PRODUCT_NAME = VidEngine;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VidEngine.app/VidEngine";
 			};
 			name = Debug;
 		};
@@ -476,11 +476,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = metaltestTests/Info.plist;
+				INFOPLIST_FILE = VidEngineTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltestTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/metaltest.app/metaltest";
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineTests;
+				PRODUCT_NAME = VidEngine;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VidEngine.app/VidEngine";
 			};
 			name = Release;
 		};
@@ -488,29 +488,29 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = metaltestUITests/Info.plist;
+				INFOPLIST_FILE = VidEngineUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltestUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = metaltest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineUITests;
+				PRODUCT_NAME = VidEngine;
+				TEST_TARGET_NAME = VidEngine;
 			};
 			name = Debug;
 		};
 		63DEAA6F1CAC97AA00B6FA98 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = metaltestUITests/Info.plist;
+				INFOPLIST_FILE = VidEngineUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.metaltestUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = metaltest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineUITests;
+				PRODUCT_NAME = VidEngine;
+				TEST_TARGET_NAME = VidEngine;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		63DEAA381CAC97AA00B6FA98 /* Build configuration list for PBXProject "metaltest" */ = {
+		63DEAA381CAC97AA00B6FA98 /* Build configuration list for PBXProject "VidEngine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63DEAA651CAC97AA00B6FA98 /* Debug */,
@@ -519,7 +519,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63DEAA671CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltest" */ = {
+		63DEAA671CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63DEAA681CAC97AA00B6FA98 /* Debug */,
@@ -528,7 +528,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63DEAA6A1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltestTests" */ = {
+		63DEAA6A1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngineTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63DEAA6B1CAC97AA00B6FA98 /* Debug */,
@@ -537,7 +537,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63DEAA6D1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "metaltestUITests" */ = {
+		63DEAA6D1CAC97AA00B6FA98 /* Build configuration list for PBXNativeTarget "VidEngineUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63DEAA6E1CAC97AA00B6FA98 /* Debug */,
