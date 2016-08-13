@@ -47,10 +47,18 @@ class VidEngineTests: XCTestCase {
     func testMatrix4() {
         var m = Matrix4()
         XCTAssertEqual(0, m[3,3])
-        m[0,3] = 1
-        m[1,3] = 3
-        m[2,3] = 9
         XCTAssertEqual(4 * 4 * 4, sizeof(Matrix4))
+        // [column, row], so this sets the translation
+        m[3,0] = 1
+        m[3,1] = 3
+        m[3,2] = 9
+        let unsafe = UnsafeMutablePointer<Float>.alloc(4 * 4)
+        memcpy(unsafe, &m, sizeof(Matrix4))
+        // check that indeed the data is stored in column-major order
+        XCTAssertEqual(1, unsafe[12])
+        XCTAssertEqual(3, unsafe[13])
+        XCTAssertEqual(9, unsafe[14])
+        unsafe.dealloc(4 * 4)
     }
     
 }
