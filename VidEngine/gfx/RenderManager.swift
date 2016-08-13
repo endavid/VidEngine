@@ -27,6 +27,7 @@ class RenderManager {
     private let numberOfUniforms = 4 // must be a multiple of 4
     private var syncBufferIndex = 0
     var data : GraphicsData = GraphicsData()
+    var device : MTLDevice! = nil
 
     var uniformBufferOffset : Int {
         get {
@@ -41,12 +42,13 @@ class RenderManager {
     func initManager(device: MTLDevice, view: MTKView) {
         uniformBuffer = device.newBufferWithLength(sizeof(Float) * numberOfUniforms * NumSyncBuffers, options: [])
         uniformBuffer.label = "uniforms"
-
-        self.initGraphicPlugins(device, view: view)
+        self.device = device
+        self.initGraphicPlugins(view)
     }
 
-    private func initGraphicPlugins(device: MTLDevice, view: MTKView) {
+    private func initGraphicPlugins(view: MTKView) {
         // order is important!
+        plugins.append(PrimitivePlugin(device: device, view: view))
         plugins.append(RainPlugin(device: device, view: view))
     }
     
@@ -73,5 +75,17 @@ class RenderManager {
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
         syncBufferIndex = (syncBufferIndex + 1) % NumSyncBuffers
         commandBuffer.commit()
+    }
+    
+    func createIndexBuffer(label: String, elements: [UInt16]) -> MTLBuffer {
+        let buffer = device.newBufferWithBytes(elements, length: elements.count * sizeof(UInt16), options: .CPUCacheModeDefaultCache)
+        buffer.label = label
+        return buffer
+    }
+    
+    func createTexturedVertexBuffer(label: String, numElements: Int) -> MTLBuffer {
+        let buffer = device.newBufferWithLength(numElements * sizeof(TexturedVertex), options: [])
+        buffer.label = label
+        return buffer
     }
 }

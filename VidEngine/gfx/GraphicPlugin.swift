@@ -14,9 +14,6 @@ class GraphicPlugin {
     init(device: MTLDevice, view: MTKView) {
     }
     
-    func update() {
-        
-    }
     func execute(encoder: MTLRenderCommandEncoder) {
         
     }

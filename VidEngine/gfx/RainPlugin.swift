@@ -61,8 +61,6 @@ class RainPlugin : GraphicPlugin {
         initVertexBuffer(2000)
     }
     
-    override func update() {
-    }
     override func execute(encoder: MTLRenderCommandEncoder) {
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
         // Check alignment in setVertexBuffer doc
