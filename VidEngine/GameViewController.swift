@@ -26,6 +26,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     let motionManager = CMMotionManager()
     var currentPitch : Double = 0
     var currentTouch = Vector2(x: 0, y: -2)
+    var camera = Camera()
     
     // musica maestro!
     private var player : AVAudioPlayer?
@@ -67,6 +68,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
         catch let error as NSError {
             print(error.localizedDescription)
         }
+        
+        let aspect = Float(view.bounds.width / view.bounds.height)
+        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
     }
     
     private func setupMotionController() {
@@ -95,6 +99,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTime)
         RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
         RenderManager.sharedInstance.data.currentTouch = currentTouch
+        RenderManager.sharedInstance.data.projectionMatrix = camera.projectionMatrix
     }
     
     func drawInMTKView(view: MTKView) {
@@ -123,7 +128,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
-        
+        let aspect = Float(view.bounds.width / view.bounds.height)
+        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)        
     }
     
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d

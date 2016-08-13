@@ -45,7 +45,13 @@ vertex VertexInOut passGeometry(uint vid [[ vertex_id ]],
                   float4(0.05,-0.03,-1,-1),
                   float4(0, 0, 19.8, 20));
      */
-    float4x4 m = uniforms.projectionMatrix;
+    float4x4 viewMatrix = float4x4(
+        float4(1,0,0,0),
+        float4(0,1,0,0),
+        float4(0,0,1,0),
+        float4(0,0,-4,1)
+    );
+    float4x4 m = uniforms.projectionMatrix * viewMatrix;
     TexturedVertex v = vdata[vid];
     outVertex.position = m * float4(v.position, 1.0);
     outVertex.color = float4(v.normal, 1);

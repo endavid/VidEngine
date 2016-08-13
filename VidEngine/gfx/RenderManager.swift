@@ -44,7 +44,6 @@ class RenderManager {
         uniformBuffer.label = "uniforms"
         self.device = device
         self.initGraphicPlugins(view)
-        data.projectionMatrix = Matrix4.identity
     }
 
     private func initGraphicPlugins(view: MTKView) {

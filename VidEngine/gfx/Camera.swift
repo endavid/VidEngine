@@ -7,6 +7,7 @@
 //
 
 class Camera {
+    var transform = Transform()         ///< position of the camera
     var projectionMatrix = Matrix4()
     var inverseProjectionMatrix = Matrix4()
     

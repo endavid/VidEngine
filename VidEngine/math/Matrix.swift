@@ -61,11 +61,11 @@ struct Matrix4 {
         var m = Matrix4()
         m[0,0] = 2 * near / (right - left)
         m[1,1] = 2 * near / (top - bottom)
-        m[0,2] = (right + left) / (right - left)
-        m[1,2] = (top + bottom) / (top - bottom)
+        m[2,0] = (right + left) / (right - left)
+        m[2,1] = (top + bottom) / (top - bottom)
         m[2,2] = -(far + near) / (far - near)
-        m[3,2] = -1
-        m[2,3] = -2 * far * near / (far - near)
+        m[2,3] = -1
+        m[3,2] = -2 * far * near / (far - near)
         return m
     }
     static func Perspective(fov fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
@@ -81,11 +81,11 @@ struct Matrix4 {
         let invNear = 0.5 / near;
         let invNearFar = invNear / far
         m[0,0] = (right - left) * invNear
-        m[0,3] = (right + left) * invNear
+        m[3,0] = (right + left) * invNear
         m[1,1] = (top - bottom) * invNear
-        m[1,3] = (top + bottom) * invNear
-        m[2,3] = -1
-        m[3,2] = (near - far) * invNearFar
+        m[3,1] = (top + bottom) * invNear
+        m[3,2] = -1
+        m[2,3] = (near - far) * invNearFar
         m[3,3] = (far + near) * invNearFar
         return m
     }
