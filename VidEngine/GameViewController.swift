@@ -25,8 +25,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // for motion control
     let motionManager = CMMotionManager()
     var currentPitch : Double = 0
-    var currentTouchX : Float = 0
-    var currentTouchY : Float = -2
+    var currentTouch = Vector2(x: 0, y: -2)
     
     // musica maestro!
     private var player : AVAudioPlayer?
@@ -95,8 +94,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     private func dataUpdate() {
         RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTime)
         RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
-        RenderManager.sharedInstance.data.currentTouchX = currentTouchX
-        RenderManager.sharedInstance.data.currentTouchY = currentTouchY
+        RenderManager.sharedInstance.data.currentTouch = currentTouch
     }
     
     func drawInMTKView(view: MTKView) {
@@ -143,12 +141,12 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let overTheFinger : CGFloat = -30
         for t in touches {
             let loc = t.locationInView(view)
-            currentTouchX = 2 * Float(loc.x / view.bounds.width) - 1
-            currentTouchY = 1 - 2 * Float((loc.y + overTheFinger) / view.bounds.height)
+            currentTouch.x = 2 * Float(loc.x / view.bounds.width) - 1
+            currentTouch.y = 1 - 2 * Float((loc.y + overTheFinger) / view.bounds.height)
         }
     }    
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        currentTouchX = 0
-        currentTouchY = -2
+        currentTouch.x = 0
+        currentTouch.y = -2
     }
 }

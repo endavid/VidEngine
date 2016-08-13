@@ -7,6 +7,8 @@
 //
 
 #include <metal_stdlib>
+#include "ShaderCommon.h"
+
 using namespace metal;
 
 
@@ -14,12 +16,6 @@ struct LineParticle
 {
     float4 start;
     float4 end;
-};
-
-struct Uniforms {
-    float elapsedTime;
-    float windDirection;
-    float2 touchPosition;
 };
 
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);

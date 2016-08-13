@@ -32,4 +32,25 @@ class VidEngineTests: XCTestCase {
         }
     }
     
+    func testVector2() {
+        var v = Vector2(x: 0, y: 3)
+        XCTAssertEqual(0, v.x)
+        XCTAssertEqual(3, v.y)
+        XCTAssertEqual(4 * 2, sizeof(Vector2))
+        let unsafe = UnsafeMutablePointer<Float>.alloc(2)
+        memcpy(unsafe, &v, sizeof(Vector2))
+        XCTAssertEqual(0, unsafe[0])
+        XCTAssertEqual(3, unsafe[1])
+        unsafe.dealloc(2)
+    }
+    
+    func testMatrix4() {
+        var m = Matrix4()
+        XCTAssertEqual(0, m[3,3])
+        m[0,3] = 1
+        m[1,3] = 3
+        m[2,3] = 9
+        XCTAssertEqual(4 * 4 * 4, sizeof(Matrix4))
+    }
+    
 }

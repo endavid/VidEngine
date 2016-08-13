@@ -6,6 +6,7 @@
 //
 
 #include <metal_stdlib>
+#include "ShaderCommon.h"
 //#include "ShaderMath.h"
 
 using namespace metal;
@@ -34,13 +35,17 @@ vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
 };
 
 vertex VertexInOut passGeometry(uint vid [[ vertex_id ]],
-                                constant TexturedVertex* vdata [[ buffer(0) ]])
+                                constant TexturedVertex* vdata [[ buffer(0) ]],
+                                constant Uniforms& uniforms  [[ buffer(1) ]])
 {
     VertexInOut outVertex;
+    /*
     float4x4 m = float4x4(float4(2.4,0.03,0.02,0.02), // 1st column
                   float4(-0.04,1.6,-0.02,-0.02), // 2nd col
                   float4(0.05,-0.03,-1,-1),
                   float4(0, 0, 19.8, 20));
+     */
+    float4x4 m = uniforms.projectionMatrix;
     TexturedVertex v = vdata[vid];
     outVertex.position = m * float4(v.position, 1.0);
     outVertex.color = float4(v.normal, 1);

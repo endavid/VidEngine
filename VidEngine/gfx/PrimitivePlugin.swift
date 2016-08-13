@@ -57,6 +57,7 @@ class PrimitivePlugin : GraphicPlugin {
     override func execute(encoder: MTLRenderCommandEncoder) {
         encoder.pushDebugGroup("primitives")
         encoder.setRenderPipelineState(pipelineState)
+        RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {
             p.draw(encoder)
         }

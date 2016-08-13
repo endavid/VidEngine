@@ -10,11 +10,12 @@ import Metal
 import MetalKit
 
 // this data is update by the game (Model in M-V-C)
+// The number of floats must be a multiple of 4
 struct GraphicsData {
     var elapsedTime : Float = 0
     var currentPitch : Float = 0
-    var currentTouchX : Float = 0
-    var currentTouchY : Float = 0
+    var currentTouch = Vector2(x: 0, y: 0)
+    var projectionMatrix = Matrix4()
 }
 
 // (View in M-V-C)
@@ -24,14 +25,13 @@ class RenderManager {
     let NumSyncBuffers = 3
     private var uniformBuffer: MTLBuffer! = nil
     private var plugins : [GraphicPlugin] = []
-    private let numberOfUniforms = 4 // must be a multiple of 4
     private var syncBufferIndex = 0
     var data : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
 
     var uniformBufferOffset : Int {
         get {
-            return numberOfUniforms * sizeof(Float) * syncBufferIndex
+            return sizeof(GraphicsData) * syncBufferIndex
         }
     }
     
@@ -40,10 +40,11 @@ class RenderManager {
     }
     
     func initManager(device: MTLDevice, view: MTKView) {
-        uniformBuffer = device.newBufferWithLength(sizeof(Float) * numberOfUniforms * NumSyncBuffers, options: [])
+        uniformBuffer = device.newBufferWithLength(sizeof(GraphicsData) * NumSyncBuffers, options: [])
         uniformBuffer.label = "uniforms"
         self.device = device
         self.initGraphicPlugins(view)
+        data.projectionMatrix = Matrix4.identity
     }
 
     private func initGraphicPlugins(view: MTKView) {
@@ -54,11 +55,8 @@ class RenderManager {
     
     func updateBuffers() {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB + numberOfUniforms * sizeof(Float) * syncBufferIndex);
-        uniformData[0] = data.elapsedTime
-        uniformData[1] = data.currentPitch
-        uniformData[2] = data.currentTouchX
-        uniformData[3] = data.currentTouchY
+        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(GraphicsData) * syncBufferIndex)
+        memcpy(uniformData, &data, sizeof(GraphicsData))
     }
     
     func draw(view: MTKView, commandBuffer: MTLCommandBuffer) {
