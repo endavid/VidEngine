@@ -30,6 +30,16 @@ class RenderManager {
     var data : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
 
+    
+    func getPlugin<T>() -> T? {
+        for p in plugins {
+            if p is T {
+                return p as? T
+            }
+        }
+        return nil
+    }
+    
     var uniformBufferOffset : Int {
         get {
             return sizeof(GraphicsData) * syncBufferIndex

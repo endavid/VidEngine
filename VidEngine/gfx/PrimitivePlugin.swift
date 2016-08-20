@@ -14,6 +14,21 @@ class PrimitivePlugin : GraphicPlugin {
     private var primitives : [Primitive] = []
     private var pipelineState: MTLRenderPipelineState! = nil
     
+    func queue(primitive: Primitive) {
+        let alreadyQueued = primitives.contains { $0 === primitive }
+        if !alreadyQueued {
+            // @todo insert in priority order
+            primitives.append(primitive)
+        }
+    }
+    
+    func dequeue(primitive: Primitive) {
+        let index = primitives.indexOf { $0 === primitive }
+        if let i = index {
+            primitives.removeAtIndex(i)
+        }
+    }
+    
     override init(device: MTLDevice, view: MTKView) {
         super.init(device: device, view: view)
         
@@ -48,10 +63,7 @@ class PrimitivePlugin : GraphicPlugin {
             try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
-        }
-        
-        // test one cube
-        primitives.append(CubePrimitive())
+        }        
     }
     
     override func execute(encoder: MTLRenderCommandEncoder) {

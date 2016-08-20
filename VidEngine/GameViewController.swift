@@ -28,6 +28,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var currentPitch : Double = 0
     var currentTouch = float2(0, -2)
     var camera = Camera()
+    var world : World?
     
     // musica maestro!
     private var player : AVAudioPlayer?
@@ -72,6 +73,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         
         let aspect = Float(view.bounds.width / view.bounds.height)
         camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
+        world = World(numCubes: 1)
     }
     
     private func setupMotionController() {

@@ -10,8 +10,23 @@ import Metal
 import MetalKit
 
 class Primitive {
+    let priority : Int
     let transform = Transform()
     
+    init(priority: Int) {
+        self.priority = priority
+    }
+    
     func draw(encoder: MTLRenderCommandEncoder) {
+    }
+    
+    func queue() {
+        let plugin : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
+        plugin?.queue(self)
+    }
+    
+    func dequeue() {
+        let plugin : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
+        plugin?.dequeue(self)
     }
 }
