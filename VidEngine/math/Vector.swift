@@ -5,19 +5,8 @@
 //  Copyright (c) 2015 David Gavilan. All rights reserved.
 //
 
-import Foundation
+import simd
 
-// -----------------------------------------------------------
-struct Vector2 : CustomStringConvertible {
-    var x               : Float = 0
-    var y               : Float = 0
-    var description : String {
-        return "(\(x), \(y))"
-    }
-    func toString() -> String {
-        return description
-    }
-}
 
 // -----------------------------------------------------------
 struct Vector3 : CustomStringConvertible {
@@ -188,8 +177,8 @@ func Clamp(v: Vector3, lowest: Float, highest: Float) -> Vector3 {
     return o
 }
 /// 1 / v
-func Inverse(v: Vector3) -> Vector3 {
-    return Vector3( x: fabsf(v.x)>0 ? 1/v.x : 0,
-                    y: fabsf(v.y)>0 ? 1/v.y : 0,
-                    z: fabsf(v.z)>0 ? 1/v.z : 0)
+func Inverse(v: float3) -> float3 {
+    return float3( x: fabsf(v.x)>0 ? 1/v.x : 0,
+                   y: fabsf(v.y)>0 ? 1/v.y : 0,
+                   z: fabsf(v.z)>0 ? 1/v.z : 0)
 }

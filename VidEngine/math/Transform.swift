@@ -6,11 +6,11 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Foundation
+import simd
 
 struct Transform {
-    var position = Vector3()
-    var scale = Vector3(x: 1, y: 1, z: 1)
+    var position = float3(0, 0, 0)
+    var scale = float3(1, 1, 1)
     var rotation = Quaternion()
 }
 

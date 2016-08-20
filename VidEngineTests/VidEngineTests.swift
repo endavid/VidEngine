@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import simd
 @testable import VidEngine
 
 class VidEngineTests: XCTestCase {
@@ -33,12 +34,12 @@ class VidEngineTests: XCTestCase {
     }
     
     func testVector2() {
-        var v = Vector2(x: 0, y: 3)
+        var v = float2(0, 3)
         XCTAssertEqual(0, v.x)
         XCTAssertEqual(3, v.y)
-        XCTAssertEqual(4 * 2, sizeof(Vector2))
+        XCTAssertEqual(4 * 2, sizeof(float2))
         let unsafe = UnsafeMutablePointer<Float>.alloc(2)
-        memcpy(unsafe, &v, sizeof(Vector2))
+        memcpy(unsafe, &v, sizeof(float2))
         XCTAssertEqual(0, unsafe[0])
         XCTAssertEqual(3, unsafe[1])
         unsafe.dealloc(2)

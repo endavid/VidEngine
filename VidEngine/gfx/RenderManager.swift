@@ -8,13 +8,14 @@
 
 import Metal
 import MetalKit
+import simd
 
 // this data is update by the game (Model in M-V-C)
 // The number of floats must be a multiple of 4
 struct GraphicsData {
     var elapsedTime : Float = 0
     var currentPitch : Float = 0
-    var currentTouch = Vector2(x: 0, y: 0)
+    var currentTouch = float2(0, 0)
     var projectionMatrix = Matrix4()
 }
 

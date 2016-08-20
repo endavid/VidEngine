@@ -10,6 +10,7 @@ import Metal
 import MetalKit
 import CoreMotion
 import AVFoundation
+import simd
 
 
 class GameViewController:UIViewController, MTKViewDelegate {
@@ -25,7 +26,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // for motion control
     let motionManager = CMMotionManager()
     var currentPitch : Double = 0
-    var currentTouch = Vector2(x: 0, y: -2)
+    var currentTouch = float2(0, -2)
     var camera = Camera()
     
     // musica maestro!
