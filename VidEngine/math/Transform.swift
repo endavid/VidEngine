@@ -13,3 +13,10 @@ struct Transform {
     var scale = Vector3(x: 1, y: 1, z: 1)
     var rotation = Quaternion()
 }
+
+func Inverse(t: Transform) -> Transform {
+    return Transform(
+        position: -t.position,
+        scale: Inverse(t.scale),
+        rotation: Inverse(t.rotation))
+}

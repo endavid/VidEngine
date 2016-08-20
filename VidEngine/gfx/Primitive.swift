@@ -10,6 +10,8 @@ import Metal
 import MetalKit
 
 class Primitive {
+    let transform = Transform()
+    
     func draw(encoder: MTLRenderCommandEncoder) {
     }
 }

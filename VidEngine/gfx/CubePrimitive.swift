@@ -37,6 +37,7 @@ class CubePrimitive : Primitive {
     }
     
     override func draw(encoder: MTLRenderCommandEncoder) {
+        super.draw(encoder)
         encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, atIndex: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         encoder.drawIndexedPrimitives(.TriangleStrip, indexCount: 14, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0)

@@ -17,5 +17,13 @@ struct Quaternion : CustomStringConvertible {
     func toString() -> String {
         return description
     }
-   
+}
+
+func Conjugate(q: Quaternion) -> Quaternion {
+    return Quaternion(w: q.w, v: -q.v)
+}
+
+func Inverse(q: Quaternion) -> Quaternion {
+    // assume it's a unit quaternion, so just Conjugate
+    return Conjugate(q)
 }

@@ -16,3 +16,7 @@ struct Uniforms {
     float4x4 projectionMatrix;
 };
 
+struct PerInstanceUniforms
+{
+    float4x4 modelMatrix;
+};

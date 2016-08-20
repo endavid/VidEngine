@@ -144,6 +144,9 @@ func - (left: Vector3, right: Vector3) -> Vector3 {
 func -= (inout left: Vector3, right: Vector3) {
     left = left - right
 }
+prefix func - (v: Vector3) -> Vector3 {
+    return Vector3(x: -v.x, y: -v.y, z: -v.z)
+}
 func * (v: Vector3, f: Float) -> Vector3 {
     return Vector3(x: v.x * f, y: v.y * f, z: v.z * f)
 }
@@ -155,6 +158,9 @@ func *= (inout v: Vector3, f: Float) {
 }
 func + (left: Vector4, right: Vector4) -> Vector4 {
     return Vector4(x: left.x + right.x, y: left.y + right.y, z: left.z + right.z, w: left.w + right.w)
+}
+prefix func - (v: Vector4) -> Vector4 {
+    return Vector4(x: -v.x, y: -v.y, z: -v.z, w: -v.w)
 }
 
 // -----------------------------------------------------
@@ -181,4 +187,9 @@ func Clamp(v: Vector3, lowest: Float, highest: Float) -> Vector3 {
     o.z = Clamp(o.z, lowest: lowest, highest: highest)
     return o
 }
-
+/// 1 / v
+func Inverse(v: Vector3) -> Vector3 {
+    return Vector3( x: fabsf(v.x)>0 ? 1/v.x : 0,
+                    y: fabsf(v.y)>0 ? 1/v.y : 0,
+                    z: fabsf(v.z)>0 ? 1/v.z : 0)
+}
