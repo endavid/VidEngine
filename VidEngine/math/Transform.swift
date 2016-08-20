@@ -12,6 +12,10 @@ struct Transform {
     var position = float3(0, 0, 0)
     var scale = float3(1, 1, 1)
     var rotation = Quaternion()
+    
+    func toMatrix4() -> Matrix4 {
+        return Matrix4.identity
+    }
 }
 
 func Inverse(t: Transform) -> Transform {

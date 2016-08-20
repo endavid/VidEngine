@@ -17,4 +17,10 @@ class GraphicPlugin {
     func execute(encoder: MTLRenderCommandEncoder) {
         
     }
+    
+    // this gets called when we need to update the buffers used by the GPU
+    // @param syncBufferIndex the index into a triple-buffer
+    func updateBuffers(syncBufferIndex: Int) {
+        
+    }
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Foundation
+import simd
 
 struct Vec3 {
     let x : Float
@@ -23,4 +23,8 @@ struct TexturedVertex {
     let position : Vec3
     let normal : Vec3
     let uv : Vec2
+}
+
+struct PerInstanceUniforms {
+    let modelMatrix : float4x4
 }

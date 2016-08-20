@@ -75,4 +75,10 @@ class PrimitivePlugin : GraphicPlugin {
         }
         encoder.popDebugGroup()
     }
+    
+    override func updateBuffers(syncBufferIndex: Int) {
+        for p in primitives {
+            p.updateBuffers(syncBufferIndex)
+        }
+    }
 }

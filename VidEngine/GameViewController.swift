@@ -21,7 +21,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: CFTimeInterval = 0.0
     var elapsedTime: CFTimeInterval = 0.0
-    let inflightSemaphore = dispatch_semaphore_create(RenderManager.sharedInstance.NumSyncBuffers)
+    let inflightSemaphore = dispatch_semaphore_create(RenderManager.NumSyncBuffers)
     
     // for motion control
     let motionManager = CMMotionManager()

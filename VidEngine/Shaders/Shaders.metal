@@ -35,8 +35,10 @@ vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
 };
 
 vertex VertexInOut passGeometry(uint vid [[ vertex_id ]],
+                                uint iid [[ instance_id ]],
                                 constant TexturedVertex* vdata [[ buffer(0) ]],
-                                constant Uniforms& uniforms  [[ buffer(1) ]])
+                                constant Uniforms& uniforms  [[ buffer(1) ]],
+                                constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
 {
     VertexInOut outVertex;
     /*
@@ -51,7 +53,8 @@ vertex VertexInOut passGeometry(uint vid [[ vertex_id ]],
         float4(0,0,1,0),
         float4(0,0,-4,1)
     );
-    float4x4 m = uniforms.projectionMatrix * viewMatrix;
+    PerInstanceUniforms iu = perInstanceUniforms[iid];
+    float4x4 m = uniforms.projectionMatrix * viewMatrix * iu.modelMatrix;
     TexturedVertex v = vdata[vid];
     outVertex.position = m * float4(v.position, 1.0);
     outVertex.color = float4(v.normal, 1);

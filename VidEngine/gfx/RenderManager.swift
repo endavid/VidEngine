@@ -23,7 +23,7 @@ struct GraphicsData {
 class RenderManager {
     static let sharedInstance = RenderManager()
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
-    let NumSyncBuffers = 3
+    static let NumSyncBuffers = 3
     private var uniformBuffer: MTLBuffer! = nil
     private var plugins : [GraphicPlugin] = []
     private var syncBufferIndex = 0
@@ -51,7 +51,7 @@ class RenderManager {
     }
     
     func initManager(device: MTLDevice, view: MTKView) {
-        uniformBuffer = device.newBufferWithLength(sizeof(GraphicsData) * NumSyncBuffers, options: [])
+        uniformBuffer = device.newBufferWithLength(sizeof(GraphicsData) * RenderManager.NumSyncBuffers, options: [])
         uniformBuffer.label = "uniforms"
         self.device = device
         self.initGraphicPlugins(view)
@@ -67,6 +67,9 @@ class RenderManager {
         let uniformB = uniformBuffer.contents()
         let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(GraphicsData) * syncBufferIndex)
         memcpy(uniformData, &data, sizeof(GraphicsData))
+        for p in plugins {
+            p.updateBuffers(syncBufferIndex)
+        }
     }
     
     func draw(view: MTKView, commandBuffer: MTLCommandBuffer) {
@@ -81,7 +84,7 @@ class RenderManager {
         renderEncoder.endEncoding()
         commandBuffer.presentDrawable(currentDrawable)
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
-        syncBufferIndex = (syncBufferIndex + 1) % NumSyncBuffers
+        syncBufferIndex = (syncBufferIndex + 1) % RenderManager.NumSyncBuffers
         commandBuffer.commit()
     }
     
@@ -93,6 +96,12 @@ class RenderManager {
     
     func createTexturedVertexBuffer(label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.newBufferWithLength(numElements * sizeof(TexturedVertex), options: [])
+        buffer.label = label
+        return buffer
+    }
+    
+    func createPerInstanceUniformsBuffer(label: String, numElements: Int) -> MTLBuffer {
+        let buffer = device.newBufferWithLength(numElements * sizeof(PerInstanceUniforms), options: [])
         buffer.label = label
         return buffer
     }

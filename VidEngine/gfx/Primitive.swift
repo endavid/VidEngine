@@ -29,4 +29,9 @@ class Primitive {
         let plugin : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.dequeue(self)
     }
+    
+    // this gets called when we need to update the buffers used by the GPU
+    func updateBuffers(syncBufferIndex: Int) {
+        
+    }
 }

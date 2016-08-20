@@ -13,6 +13,12 @@ class CubePrimitive : Primitive {
     // static properties are evaluated lazily :) device should be ready!
     static let indexBuffer : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
     static let vertexBuffer : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
+    let uniformBuffer : MTLBuffer!
+    
+    override init(priority: Int) {
+        uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers)
+        super.init(priority: priority)
+    }
     
     static func createCubeIndexBuffer() -> MTLBuffer {
         // Clock-Wise: 3, 2, 6, 7, 4, 2, 0, 3, 1, 6, 5, 4, 1, 0
@@ -39,6 +45,14 @@ class CubePrimitive : Primitive {
     override func draw(encoder: MTLRenderCommandEncoder) {
         encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, atIndex: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
+        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
         encoder.drawIndexedPrimitives(.TriangleStrip, indexCount: 14, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0)
+    }
+    
+    override func updateBuffers(syncBufferIndex: Int) {
+        var u = PerInstanceUniforms(modelMatrix: self.transform.toMatrix4().m)
+        let uniformB = uniformBuffer.contents()
+        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(PerInstanceUniforms) * syncBufferIndex)
+        memcpy(uniformData, &u, sizeof(PerInstanceUniforms))
     }
 }
