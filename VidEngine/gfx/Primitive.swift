@@ -11,7 +11,7 @@ import MetalKit
 
 class Primitive {
     let priority : Int
-    let transform = Transform()
+    var transform = Transform()
     
     init(priority: Int) {
         self.priority = priority

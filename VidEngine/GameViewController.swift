@@ -73,7 +73,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         
         let aspect = Float(view.bounds.width / view.bounds.height)
         camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
-        world = World(numCubes: 1)
+        world = World(numCubes: 8)
     }
     
     private func setupMotionController() {

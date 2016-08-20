@@ -14,7 +14,13 @@ struct Transform {
     var rotation = Quaternion()
     
     func toMatrix4() -> Matrix4 {
-        return Matrix4.identity
+        let m = float4x4([
+            scale.x * float4(1,0,0,0),
+            scale.y * float4(0,1,0,0),
+            scale.z * float4(0,0,1,0),
+            float4(position.x, position.y, position.z, 1.0)
+            ])
+        return Matrix4(m: m)
     }
 }
 
