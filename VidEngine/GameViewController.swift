@@ -144,6 +144,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         // when using timestamps, the interval switches between 16ms and 33ms, 
         // while the render is always 60fps! Use .duration instead
         elapsedTime = displayLink.duration
+        world?.update(elapsedTime)
     }
     
     

@@ -13,6 +13,11 @@ public extension float3 {
                        y: fabsf(self.y)>0 ? 1/self.y : 0,
                        z: fabsf(self.z)>0 ? 1/self.z : 0)
     }
+    /// similar vectors
+    func isClose(v: float3, epsilon: Float = 0.0001) -> Bool {
+        let diff = self - v
+        return IsClose(length_squared(diff), 0)
+    }
 }
 
 // sizeof(float3) = 16!! sizeof(Vec3) = 12

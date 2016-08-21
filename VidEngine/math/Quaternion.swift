@@ -38,4 +38,78 @@ struct Quaternion : CustomStringConvertible {
         // assume it's a unit quaternion, so just Conjugate
         return conjugate()
     }
+    // Can be used the determine Quaternion neighbourhood
+    func dotQ(q: Quaternion) -> Float {
+        return dot(q.v, self.v) + self.w * q.w
+    }
+    /// Returns a rotation matrix (column major, p' = M * p)
+    func toMatrix4() -> Matrix4 {
+        let w2 = w * w
+        let x2 = v.x * v.x
+        let y2 = v.y * v.y
+        let z2 = v.z * v.z
+        var m = Matrix4()
+        m[0,0] = w2 + x2 - y2 - z2
+        m[0,1] = 2*v.x*v.y - 2*w*v.z
+        m[0,2] = 2*v.x*v.z + 2*w*v.y
+        m[1,0] = 2*v.x*v.y + 2*w*v.z
+        m[1,1] = w2 - x2 + y2 - z2
+        m[1,2] = 2*v.y*v.z - 2*w*v.x
+        m[2,0] = 2*v.x*v.z - 2*w*v.y
+        m[2,1] = 2*v.y*v.z + 2*w*v.x
+        m[2,2] = w2 - x2 - y2 + z2
+        m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
+        return m
+    }
+    
+    
+    static func createRotationAxis(angle: Float, unitVector: float3) -> Quaternion {
+        return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
+    }
+    static func createRotation(start start: float3, end: float3) -> Quaternion {
+        if end.isClose(start, epsilon: 0.01) { // no rotation
+            return Quaternion()
+        }
+        if end.isClose(-start, epsilon: 0.01) { // opposite vectors
+            let axisR = float3(start.x, start.z, start.y)
+            return Quaternion.createRotationAxis(PI, unitVector: axisR)
+        }
+        let angle = acosf(dot(start, end))
+        let axis = normalize(cross(start, end))
+        return Quaternion.createRotationAxis(angle, unitVector: axis)        
+    }
 }
+
+// -----------------------------------------------------------
+func + (a: Quaternion, b: Quaternion) -> Quaternion {
+    return Quaternion(w: a.w + b.w, v: a.v + b.v)
+}
+func * (a: Quaternion, scalar: Float) -> Quaternion {
+    return Quaternion(w: a.w * scalar, v: a.v * scalar)
+}
+// -----------------------------------------------------------
+/// Linear interpolation
+func Lerp(start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
+    return start * (1-t) + end * t
+}
+// -----------------------------------------------------------
+/// Spherical linear interpolation
+func Slerp(start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
+    var w1 : Float
+    var w2 : Float
+    
+    let cosTheta = start.dotQ(end)
+    let theta    = acosf(cosTheta)
+    let sinTheta = sinf(theta)
+    
+    if( sinTheta > 0.001 ) {
+        w1 = sinf((1.0-t)*theta) / sinTheta
+        w2 = sinf(t*theta) / sinTheta
+    } else {
+        // CQuat a ~= CQuat b
+        w1 = 1.0 - t
+        w2 = t
+    }
+    return start*w1 + end*w2
+}
+

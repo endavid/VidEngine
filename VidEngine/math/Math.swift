@@ -47,6 +47,10 @@ func Min(a: Int, b: Int) -> Int {
 func CeilDiv(a: Int, b: Int) -> Int {
     return (a + b - 1) / b
 }
+func IsClose(a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
+    return ( fabsf( a - b ) < epsilon )
+}
+
 /// Clamp
 func Clamp(value: CGFloat, lowest: CGFloat, highest: CGFloat) -> CGFloat {
     return (value<lowest) ?lowest:(value>highest) ?highest:value

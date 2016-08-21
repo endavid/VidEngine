@@ -62,4 +62,11 @@ class VidEngineTests: XCTestCase {
         unsafe.dealloc(4 * 4)
     }
     
+    func testSpherical() {
+        let sph = Spherical(v: float3(0,1,0))
+        XCTAssertEqual(sph.r, 1)
+        XCTAssertEqual(sph.θ, 0)
+        XCTAssertEqual(sph.φ, 0)
+    }
+    
 }
