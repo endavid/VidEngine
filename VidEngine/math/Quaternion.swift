@@ -6,24 +6,36 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Foundation
+import simd
 
 struct Quaternion : CustomStringConvertible {
-    var w : Float	= 1 ///< real part (scalar)
-    var v = Vector3()	///< imaginary part (vector)
+    var q = float4(0, 0, 0, 1) /// xyz: imaginary part; w: real part
+    var w : Float {
+        get {
+            return q.w
+        }
+    }
+    var v : float3 {
+        get {
+            return float3(q.x, q.y, q.z)
+        }
+    }
     var description : String {
-        return "q(w: \(w), v: (\(v.x), \(v.y), \(v.z)))"
+        return "q(w: \(q.w), v: (\(q.x), \(q.y), \(q.z)))"
     }
     func toString() -> String {
         return description
     }
-}
-
-func Conjugate(q: Quaternion) -> Quaternion {
-    return Quaternion(w: q.w, v: -q.v)
-}
-
-func Inverse(q: Quaternion) -> Quaternion {
-    // assume it's a unit quaternion, so just Conjugate
-    return Conjugate(q)
+    init() {
+    }
+    init(w: Float, v: float3) {
+        q = float4(v.x, v.y, v.z, w)
+    }
+    func conjugate() -> Quaternion {
+        return Quaternion(w: self.w, v: -self.v)
+    }
+    func inverse() -> Quaternion {
+        // assume it's a unit quaternion, so just Conjugate
+        return conjugate()
+    }
 }

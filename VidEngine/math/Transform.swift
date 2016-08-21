@@ -22,11 +22,11 @@ struct Transform {
             ])
         return Matrix4(m: m)
     }
+    func inverse() -> Transform {
+        return Transform(
+            position: -self.position,
+            scale: self.scale.inverse(),
+            rotation: self.rotation.inverse())
+    }
 }
 
-func Inverse(t: Transform) -> Transform {
-    return Transform(
-        position: -t.position,
-        scale: Inverse(t.scale),
-        rotation: Inverse(t.rotation))
-}
