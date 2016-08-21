@@ -21,7 +21,7 @@ class World {
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
         let totalHeight = Float(numRows) * cubeSize.y + Float(numRows-1) * marginSize.y
-        let startPoint = float2(-0.5*totalWidth, -0.5*totalHeight)
+        let startPoint = float2(-0.5*totalWidth+0.5*cubeSize.x, -0.5*totalHeight+0.5*cubeSize.y)
         for i in 0..<numRows {
             for j in 0..<numColumns {
                 let x = startPoint.x + Float(j) * (cubeSize.x + marginSize.x)
