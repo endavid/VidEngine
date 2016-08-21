@@ -8,17 +8,6 @@
 
 import simd
 
-struct Vec3 {
-    let x : Float
-    let y : Float
-    let z : Float
-}
-
-struct Vec2 {
-    let x : Float
-    let y : Float
-}
-
 struct TexturedVertex {
     let position : Vec3
     let normal : Vec3

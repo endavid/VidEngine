@@ -25,7 +25,8 @@ struct TexturedVertex {
 }
 
 sizeof(TexturedVertex)
-
+sizeof(float3)
+sizeof(Vec3)
 
 struct Pan {
     let rating : Int
@@ -66,3 +67,5 @@ func ==(lhs: Pan, rhs: Pan) -> Bool {
     return lhs.rating == rhs.rating
 }
 p1 == p2 // true
+
+

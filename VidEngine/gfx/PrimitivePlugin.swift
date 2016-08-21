@@ -76,6 +76,9 @@ class PrimitivePlugin : GraphicPlugin {
         encoder.pushDebugGroup("primitives")
         encoder.setRenderPipelineState(pipelineState)
         encoder.setDepthStencilState(depthState)
+        encoder.setFrontFacingWinding(.CounterClockwise)
+        encoder.setCullMode(.Back)
+
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {
             p.draw(encoder)
