@@ -9,11 +9,31 @@
 import Foundation
 import simd
 
+class RotationAnim {
+    var startRotation = Quaternion()
+    var targetRotation = Quaternion()
+    var alpha : Float = 0
+    let speed : Float = 1.1
+    private func setRandomRotationTarget() {
+        let targetDirection = Spherical.randomSample().toCartesian()
+        startRotation = targetRotation
+        targetRotation = Quaternion.createRotation(start: float3(0,1,0), end: targetDirection)
+    }
+    func update(currentTime: CFTimeInterval) -> Quaternion {
+        alpha = alpha + speed * Float(currentTime)
+        if alpha > 1 {
+            setRandomRotationTarget()
+            alpha = 0
+            return startRotation
+        } else {
+            return Slerp(startRotation, end: targetRotation, t: alpha)
+        }
+    }
+}
+
 class World {
     private var cubes : [CubePrimitive] = []
-    private var startRotation = Quaternion()
-    private var targetRotation = Quaternion()
-    private var alpha : Float = 0
+    private var rotationAnims : [RotationAnim] = []
     
     // should be initialized after all the graphics are initialized
     init(numCubes: Int) {
@@ -33,6 +53,7 @@ class World {
                 cube.transform.position = float3(x, y, 0)
                 cube.queue()
                 cubes.append(cube)
+                rotationAnims.append(RotationAnim())
             }
         }
     }
@@ -43,22 +64,9 @@ class World {
         return (rows, columns)
     }
     
-    private func setRandomRotationTarget() {
-        let targetDirection = Spherical.randomSample().toCartesian()
-        startRotation = targetRotation
-        targetRotation = Quaternion.createRotation(start: float3(0,1,0), end: targetDirection)
-    }
-    
     func update(currentTime: CFTimeInterval) {
-        alpha = alpha + Float(currentTime)
-        if alpha > 1 {
-            setRandomRotationTarget()
-            alpha = 0
-        } else {
-            let q = Slerp(startRotation, end: targetRotation, t: alpha)
-            for c in cubes {
-                c.transform.rotation = q
-            }
+        for i in 0..<cubes.count {
+            cubes[i].transform.rotation = rotationAnims[i].update(currentTime)
         }
     }
 }
