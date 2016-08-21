@@ -13,6 +13,7 @@ class PrimitivePlugin : GraphicPlugin {
     
     private var primitives : [Primitive] = []
     private var pipelineState: MTLRenderPipelineState! = nil
+    private var depthState : MTLDepthStencilState! = nil
     
     func queue(primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
@@ -58,17 +59,23 @@ class PrimitivePlugin : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
+        pipelineStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
         
         do {
             try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
-        }        
+        }
+        let depthDescriptor = MTLDepthStencilDescriptor()
+        depthDescriptor.depthWriteEnabled = true
+        depthDescriptor.depthCompareFunction = .Less
+        depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
     }
     
     override func execute(encoder: MTLRenderCommandEncoder) {
         encoder.pushDebugGroup("primitives")
         encoder.setRenderPipelineState(pipelineState)
+        encoder.setDepthStencilState(depthState)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {
             p.draw(encoder)

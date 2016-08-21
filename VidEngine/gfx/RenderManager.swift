@@ -27,6 +27,7 @@ class RenderManager {
     private var uniformBuffer: MTLBuffer! = nil
     private var plugins : [GraphicPlugin] = []
     private var syncBufferIndex = 0
+    private var depthTex : MTLTexture! = nil
     var data : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
 
@@ -43,6 +44,12 @@ class RenderManager {
     var uniformBufferOffset : Int {
         get {
             return sizeof(GraphicsData) * syncBufferIndex
+        }
+    }
+    
+    var depthTexture : MTLTexture {
+        get {
+            return depthTex
         }
     }
     
@@ -73,9 +80,18 @@ class RenderManager {
     }
     
     func draw(view: MTKView, commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor, currentDrawable = view.currentDrawable else {
+        guard let currentDrawable = view.currentDrawable else {
             return
         }
+        let zWidth = depthTex?.width ?? 0
+        let zHeight = depthTex?.height ?? 0
+        if let metalLayer = view.layer as? CAMetalLayer {
+            let size = metalLayer.drawableSize
+            if zWidth != Int(size.width) || zHeight != Int(size.height ){
+                createDepthTexture(size)
+            }
+        }
+        let renderPassDescriptor = createRenderPassWithColorAttachmentTexture(currentDrawable.texture)
         let renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
         renderEncoder.label = "render encoder"
         for plugin in plugins {
@@ -86,6 +102,19 @@ class RenderManager {
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
         syncBufferIndex = (syncBufferIndex + 1) % RenderManager.NumSyncBuffers
         commandBuffer.commit()
+    }
+    
+    private func createRenderPassWithColorAttachmentTexture(texture: MTLTexture) -> MTLRenderPassDescriptor {
+        let renderPass = MTLRenderPassDescriptor()
+        renderPass.colorAttachments[0].texture = texture
+        renderPass.colorAttachments[0].loadAction = .Clear
+        renderPass.colorAttachments[0].storeAction = .Store
+        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0.2, 0.5, 0.95, 1.0);
+        renderPass.depthAttachment.texture = self.depthTexture
+        renderPass.depthAttachment.loadAction = .Clear
+        renderPass.depthAttachment.storeAction = .Store
+        renderPass.depthAttachment.clearDepth = 1.0
+        return renderPass
     }
     
     func createIndexBuffer(label: String, elements: [UInt16]) -> MTLBuffer {
@@ -104,5 +133,11 @@ class RenderManager {
         let buffer = device.newBufferWithLength(numElements * sizeof(PerInstanceUniforms), options: [])
         buffer.label = label
         return buffer
+    }
+    
+    private func createDepthTexture(size: CGSize) {
+        let descriptor = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.Depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTex = device.newTextureWithDescriptor(descriptor)
+        depthTex.label = "Main Depth"
     }
 }
