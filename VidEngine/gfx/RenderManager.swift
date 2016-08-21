@@ -17,6 +17,7 @@ struct GraphicsData {
     var currentPitch : Float = 0
     var currentTouch = float2(0, 0)
     var projectionMatrix = Matrix4()
+    var viewMatrix = Matrix4()
 }
 
 // (View in M-V-C)

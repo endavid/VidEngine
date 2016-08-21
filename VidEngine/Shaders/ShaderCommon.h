@@ -14,6 +14,7 @@ struct Uniforms {
     float windDirection;
     float2 touchPosition;
     float4x4 projectionMatrix;
+    float4x4 viewMatrix;
 };
 
 struct PerInstanceUniforms

@@ -73,6 +73,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         
         let aspect = Float(view.bounds.width / view.bounds.height)
         camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
+        camera.transform.position = float3(0, 0, 4)
         world = World(numCubes: 12)
     }
     
@@ -103,6 +104,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
         RenderManager.sharedInstance.data.currentTouch = currentTouch
         RenderManager.sharedInstance.data.projectionMatrix = camera.projectionMatrix
+        RenderManager.sharedInstance.data.viewMatrix = camera.viewTransformMatrix
     }
     
     func drawInMTKView(view: MTKView) {
@@ -132,7 +134,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
         let aspect = Float(view.bounds.width / view.bounds.height)
-        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)        
+        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
+        let z : Float = aspect >= 1 ? 8 : 4
+        camera.transform.position = float3(0, 0, z)
     }
     
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
