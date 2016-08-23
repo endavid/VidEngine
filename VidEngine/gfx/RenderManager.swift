@@ -68,7 +68,7 @@ class RenderManager {
     private func initGraphicPlugins(view: MTKView) {
         // order is important!
         plugins.append(PrimitivePlugin(device: device, view: view))
-        plugins.append(RainPlugin(device: device, view: view))
+        //plugins.append(RainPlugin(device: device, view: view))
     }
     
     func updateBuffers() {
@@ -110,7 +110,7 @@ class RenderManager {
         renderPass.colorAttachments[0].texture = texture
         renderPass.colorAttachments[0].loadAction = .Clear
         renderPass.colorAttachments[0].storeAction = .Store
-        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0.2, 0.5, 0.95, 1.0);
+        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0);
         renderPass.depthAttachment.texture = self.depthTexture
         renderPass.depthAttachment.loadAction = .Clear
         renderPass.depthAttachment.storeAction = .Store
