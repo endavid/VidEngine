@@ -87,6 +87,16 @@ func + (a: Quaternion, b: Quaternion) -> Quaternion {
 func * (a: Quaternion, scalar: Float) -> Quaternion {
     return Quaternion(w: a.w * scalar, v: a.v * scalar)
 }
+func * (a: Quaternion, b: Quaternion) -> Quaternion {
+    let scalar = a.w * b.w - dot(a.v, b.v)
+    let v = cross(a.v, b.v) + a.w * b.v + b.w * a.v
+    return Quaternion(w: scalar, v: v)
+}
+/// rotation of a vector by a UNIT quaternion
+func * (q: Quaternion, v: float3) -> float3 {
+    let p = q * Quaternion(w: 0, v: v) * q.inverse()
+    return p.v
+}
 // -----------------------------------------------------------
 /// Linear interpolation
 func Lerp(start: Quaternion, end: Quaternion, t: Float) -> Quaternion {

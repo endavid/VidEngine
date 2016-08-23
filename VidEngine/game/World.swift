@@ -13,11 +13,16 @@ class RotationAnim {
     var startRotation = Quaternion()
     var targetRotation = Quaternion()
     var alpha : Float = 0
-    let speed : Float = 1.1
+    var speed : Float = 1.1
     private func setRandomRotationTarget() {
+        let up = float3(0, 1, 0)
         let targetDirection = Spherical.randomSample().toCartesian()
         startRotation = targetRotation
-        targetRotation = Quaternion.createRotation(start: float3(0,1,0), end: targetDirection)
+        targetRotation = Quaternion.createRotation(start: up, end: targetDirection)
+        let startDirection = startRotation * up
+        let cosa = dot(startDirection, targetDirection)
+        let a = acos(cosa)
+        speed = 2 - a / PI
     }
     func update(currentTime: CFTimeInterval) -> Quaternion {
         alpha = alpha + speed * Float(currentTime)
@@ -36,10 +41,7 @@ class World {
     private var rotationAnims : [RotationAnim] = []
     
     // should be initialized after all the graphics are initialized
-    init(numCubes: Int) {
-        let size = getRowsPerColumns(numCubes)
-        let numColumns = size.1
-        let numRows = size.0
+    init(numRows: Int, numColumns: Int) {
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
@@ -57,13 +59,7 @@ class World {
             }
         }
     }
-    
-    private func getRowsPerColumns(objectCount: Int) -> (Int, Int) {
-        let rows = 4
-        let columns = Int(ceil( Double(objectCount) / Double(rows)))
-        return (rows, columns)
-    }
-    
+        
     func update(currentTime: CFTimeInterval) {
         for i in 0..<cubes.count {
             cubes[i].transform.rotation = rotationAnims[i].update(currentTime)

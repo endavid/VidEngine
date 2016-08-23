@@ -20,7 +20,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var commandQueue: MTLCommandQueue! = nil
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: CFTimeInterval = 0.0
-    var elapsedTime: CFTimeInterval = 0.0
+    var elapsedTimeGPU: CFTimeInterval = 0.0
     let inflightSemaphore = dispatch_semaphore_create(RenderManager.NumSyncBuffers)
     
     // for motion control
@@ -71,10 +71,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
             print(error.localizedDescription)
         }
         
-        let aspect = Float(view.bounds.width / view.bounds.height)
-        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
-        camera.transform.position = float3(0, 0, 4)
-        world = World(numCubes: 12)
+        setCamera(view.bounds)
+        world = World(numRows: 12, numColumns: 20)
     }
     
     private func setupMotionController() {
@@ -100,7 +98,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     private func dataUpdate() {
-        RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTime)
+        RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTimeGPU)
         RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
         RenderManager.sharedInstance.data.currentTouch = currentTouch
         RenderManager.sharedInstance.data.projectionMatrix = camera.projectionMatrix
@@ -133,18 +131,27 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
-        let aspect = Float(view.bounds.width / view.bounds.height)
+        setCamera(view.bounds)
+    }
+    
+    private func setCamera(bounds: CGRect) {
+        let aspect = Float(bounds.width / bounds.height)
         camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
-        let z : Float = aspect >= 1 ? 8 : 4
+        let z : Float = aspect >= 1 ? 32 : 16
         camera.transform.position = float3(0, 0, z)
     }
     
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
     func newFrame(displayLink: CADisplayLink){
-        // when using timestamps, the interval switches between 16ms and 33ms, 
-        // while the render is always 60fps! Use .duration instead
-        elapsedTime = displayLink.duration
-        world?.update(elapsedTime)
+        if lastFrameTimestamp == 0.0 {
+            lastFrameTimestamp = displayLink.timestamp
+        }
+        let elapsed = displayLink.timestamp - lastFrameTimestamp
+        // when using timestamps, the interval switches between 16ms and 33ms,
+        // while the render is always 60fps! Use .duration for GPU updates
+        elapsedTimeGPU = displayLink.duration
+        lastFrameTimestamp = displayLink.timestamp
+        world?.update(elapsed)
     }
     
     
