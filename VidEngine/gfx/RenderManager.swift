@@ -136,6 +136,12 @@ class RenderManager {
         return buffer
     }
     
+    func createTransformsBuffer(label: String, numElements: Int) -> MTLBuffer {
+        let buffer = device.newBufferWithLength(numElements * sizeof(Transform), options: [])
+        buffer.label = label
+        return buffer
+    }
+    
     private func createDepthTexture(size: CGSize) {
         let descriptor = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.Depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTex = device.newTextureWithDescriptor(descriptor)

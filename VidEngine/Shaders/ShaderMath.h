@@ -10,61 +10,35 @@
 
 using namespace metal;
 
-class Quat ;
-inline Quat Inverse(const Quat& q);
+float4 quatInv(const float4 q);
+float4 quatDot(const float4 q1, const float4 q2);
+float3 quatMul(const float4 q, const float3 v);
 
-// ===========================================================
-/** @brief Class that represents a UNIT quaternion
- Note that only unit quaternions represent ROTATIONS!
- */
-class Quat {
-public:
-    // -----------------------------------------------------------
-    // constructors
-    // -----------------------------------------------------------
-    Quat()
-    : m_q(0)
-    {}
-    Quat(const float w, const float3 xyz)
-    : m_q(xyz, w)
-    {}
-    Quat(const float4 q)
-    : m_q(q)
-    {}
-    // -----------------------------------------------------------
-    // getters
-    // -----------------------------------------------------------
-    const float GetW() const { return m_q.w; }
-    const float GetXYZ() const { return m_q.xyz; }
-    // -----------------------------------------------------------
-    // setters
-    // -----------------------------------------------------------
-    Quat& SetW(const float w) {
-        m_q.w = w;
-        return *this;
-    }
-    // -----------------------------------------------------------
-    // operators
-    // -----------------------------------------------------------
-    /// rotation of a vector by a UNIT quaternion
-    inline float3 operator* (const float3 v) const {
-        Quat p(0, v);
-        p = (*this) * p * Inverse(*this);
-        return p.GetXYZ();
-    }
+struct Transform {
+    float4 position;    // only xyz actually used
+    float4 scale;       // only xyz actually used
+    float4 rotation;    // unit quaternion; w is the scalar
     
-private:
-    float4 m_q;
+    float3 operator* (const float3 v) const {
+        return position.xyz + quatMul(rotation, v * scale.xyz);
+    }
 };
 
-// -----------------------------------------------------------
-/// Conjugate
-inline Quat Conjugate(const Quat& q) {
-    return Quat( q.GetW(), -q.GetXYZ() );
-}
-// -----------------------------------------------------------
-/// Inverse
-inline Quat Inverse(const Quat& q) {
+/// Quaternion Inverse
+float4 quatInv(const float4 q) {
     // assume it's a unit quaternion, so just Conjugate
-    return Conjugate(q);
+    return float4( -q.xyz, q.w );
+}
+
+/// Quaternion multiplication
+float4 quatDot(const float4 q1, const float4 q2) {
+    float scalar = q1.w * q2.w - dot(q1.xyz, q2.xyz);
+    float3 v = cross(q1.xyz, q2.xyz) + q1.w * q2.xyz + q2.w * q1.xyz;
+    return float4(v, scalar);
+}
+
+/// Apply unit quaternion to vector (rotate vector)
+float3 quatMul(const float4 q, const float3 v) {
+    float4 r = quatDot(q, quatDot(float4(v, 0), quatInv(q)));
+    return r.xyz;
 }

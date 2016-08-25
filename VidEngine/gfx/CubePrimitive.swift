@@ -24,7 +24,7 @@ class CubePrimitive : Primitive {
     let uniformBuffer : MTLBuffer!
     
     override init(priority: Int) {
-        uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers)
+        uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers)
         super.init(priority: priority)
     }
     
@@ -86,9 +86,9 @@ class CubePrimitive : Primitive {
     }
     
     override func updateBuffers(syncBufferIndex: Int) {
-        var u = PerInstanceUniforms(modelMatrix: self.transform.toMatrix4().m)
+        var u = self.transform
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(PerInstanceUniforms) * syncBufferIndex)
-        memcpy(uniformData, &u, sizeof(PerInstanceUniforms))
+        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(Transform) * syncBufferIndex)
+        memcpy(uniformData, &u, sizeof(Transform))
     }
 }
