@@ -37,11 +37,12 @@ class RotationAnim {
 }
 
 class World {
-    private var cubes : [CubePrimitive] = []
+    private var cubes : CubeSetPrimitive!
     private var rotationAnims : [RotationAnim] = []
     
     // should be initialized after all the graphics are initialized
     init(numRows: Int, numColumns: Int) {
+        cubes = CubeSetPrimitive(priority: 0, numInstances: numRows * numColumns)
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
@@ -51,18 +52,17 @@ class World {
             for j in 0..<numColumns {
                 let x = startPoint.x + Float(j) * (cubeSize.x + marginSize.x)
                 let y = startPoint.y + Float(i) * (cubeSize.y + marginSize.y)
-                let cube = CubePrimitive(priority: i)
-                cube.transform.position = float3(x, y, 0)
-                cube.queue()
-                cubes.append(cube)
+                let index = i * numColumns + j
+                cubes.instanceTransforms[index].position = float3(x, y, 0)
                 rotationAnims.append(RotationAnim())
             }
         }
+        cubes.queue()
     }
-        
+    
     func update(currentTime: CFTimeInterval) {
-        for i in 0..<cubes.count {
-            cubes[i].transform.rotation = rotationAnims[i].update(currentTime)
+        for i in 0..<cubes.instanceTransforms.count {
+            cubes.instanceTransforms[i].rotation = rotationAnims[i].update(currentTime)
         }
     }
 }
