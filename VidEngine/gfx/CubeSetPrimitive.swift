@@ -28,7 +28,7 @@ class CubeSetPrimitive : Primitive {
     
     init(priority: Int, numInstances: Int) {
         self.instanceTransforms = [Transform](count: numInstances, repeatedValue: Transform())
-        uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
+        uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
         super.init(priority: priority)
     }
     
@@ -91,7 +91,10 @@ class CubeSetPrimitive : Primitive {
     
     override func updateBuffers(syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(Transform) * instanceTransforms.count * syncBufferIndex)
-        memcpy(uniformData, &instanceTransforms, sizeof(Transform) * instanceTransforms.count)
+        for i in 0..<instanceTransforms.count {
+            let uniformData = UnsafeMutablePointer<Float>(uniformB + sizeof(PerInstanceUniforms) * (instanceTransforms.count * syncBufferIndex + i))
+            var u = PerInstanceUniforms(modelMatrix: instanceTransforms[i].toMatrix4().m)
+            memcpy(uniformData, &u, sizeof(PerInstanceUniforms))
+        }
     }
 }
