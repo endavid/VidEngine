@@ -30,6 +30,11 @@ struct Vec3 {
         self.y = y
         self.z = z
     }
+    init(_ v: float3) {
+        self.x = v.x
+        self.y = v.y
+        self.z = v.z
+    }
 }
 
 struct Vec2 {

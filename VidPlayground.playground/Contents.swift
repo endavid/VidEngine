@@ -68,4 +68,11 @@ func ==(lhs: Pan, rhs: Pan) -> Bool {
 }
 p1 == p2 // true
 
+var int3Array = [int3](count: 10, repeatedValue: int3(0,0,0))
+var arrayCopy = int3Array
+int3Array[0] = int3(1, 2, 3)
+int3Array[0]
+arrayCopy[0] // unaffected because int3 is not a ref value
+
+
 
