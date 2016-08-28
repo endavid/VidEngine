@@ -9,12 +9,15 @@
 import Metal
 import MetalKit
 
+/// All Primitives should allow instancing
+/// To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
 class Primitive {
     let priority : Int
-    var transform = Transform()
+    var transforms : [Transform] ///< One transform per instance
     
-    init(priority: Int) {
+    init(priority: Int, numInstances: Int) {
         self.priority = priority
+        self.transforms = [Transform](count: numInstances, repeatedValue: Transform())
     }
     
     func draw(encoder: MTLRenderCommandEncoder) {

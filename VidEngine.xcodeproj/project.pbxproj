@@ -17,7 +17,6 @@
 		63D0E6CB1D5F1853004DF37E /* Primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6CA1D5F1853004DF37E /* Primitive.swift */; };
 		63D0E6CD1D5F186D004DF37E /* CubePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6CC1D5F186D004DF37E /* CubePrimitive.swift */; };
 		63D0E6CF1D5F2BFE004DF37E /* GfxData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6CE1D5F2BFE004DF37E /* GfxData.swift */; };
-		63D0E6D11D5F338C004DF37E /* CubeSetPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D01D5F338C004DF37E /* CubeSetPrimitive.swift */; };
 		63D0E6D31D5F746B004DF37E /* Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D21D5F746B004DF37E /* Vector.swift */; };
 		63D0E6D51D5F7499004DF37E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D41D5F7499004DF37E /* Matrix.swift */; };
 		63D0E6D71D5F77C3004DF37E /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D61D5F77C3004DF37E /* Camera.swift */; };
@@ -70,7 +69,6 @@
 		63D0E6CA1D5F1853004DF37E /* Primitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Primitive.swift; sourceTree = "<group>"; };
 		63D0E6CC1D5F186D004DF37E /* CubePrimitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubePrimitive.swift; sourceTree = "<group>"; };
 		63D0E6CE1D5F2BFE004DF37E /* GfxData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GfxData.swift; sourceTree = "<group>"; };
-		63D0E6D01D5F338C004DF37E /* CubeSetPrimitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeSetPrimitive.swift; sourceTree = "<group>"; };
 		63D0E6D21D5F746B004DF37E /* Vector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector.swift; sourceTree = "<group>"; };
 		63D0E6D41D5F7499004DF37E /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		63D0E6D61D5F77C3004DF37E /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
@@ -213,7 +211,6 @@
 			isa = PBXGroup;
 			children = (
 				63D0E6CC1D5F186D004DF37E /* CubePrimitive.swift */,
-				63D0E6D01D5F338C004DF37E /* CubeSetPrimitive.swift */,
 				63D0E6CE1D5F2BFE004DF37E /* GfxData.swift */,
 				63D0E6C21D532A78004DF37E /* GraphicPlugin.swift */,
 				63EA89011D1C52D900B97B99 /* Image.swift */,
@@ -384,7 +381,6 @@
 				6312964B1D68BD8A00E5979E /* World.swift in Sources */,
 				63EA89021D1C52D900B97B99 /* Image.swift in Sources */,
 				63D0E6D51D5F7499004DF37E /* Matrix.swift in Sources */,
-				63D0E6D11D5F338C004DF37E /* CubeSetPrimitive.swift in Sources */,
 				63D0E6C71D5D0E96004DF37E /* RenderManager.swift in Sources */,
 				63D0E6C31D532A78004DF37E /* GraphicPlugin.swift in Sources */,
 			);
