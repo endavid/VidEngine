@@ -16,15 +16,15 @@ class SpherePrimitive : Primitive {
     let uniformBuffer : MTLBuffer!
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
-    init(priority: Int, numInstances: Int, tesselationLevel: Int) {
+    init(priority: Int, numInstances: Int, tessellationLevel: Int) {
         uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("sphereUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
         super.init(priority: priority, numInstances: numInstances)
-        initBuffers(tesselationLevel)
+        initBuffers(tessellationLevel)
     }
     
-    private func initBuffers(tesselationLevel: Int) {
+    private func initBuffers(tessellationLevel: Int) {
         let ps = PlatonicSolid.createIcosahedron()
-        for _ in 0..<tesselationLevel {
+        for _ in 0..<tessellationLevel {
             ps.subdivide()
         }
         var triangleList = [UInt16](count: ps.faces.count * 3, repeatedValue: 0)

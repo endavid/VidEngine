@@ -42,7 +42,7 @@ class World {
     
     // should be initialized after all the graphics are initialized
     init(numRows: Int, numColumns: Int) {
-        prims = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tesselationLevel: 4)
+        prims = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
