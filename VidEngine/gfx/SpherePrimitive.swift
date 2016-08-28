@@ -17,7 +17,7 @@ class SpherePrimitive : Primitive {
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
     init(priority: Int, numInstances: Int, tesselationLevel: Int) {
-        uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("sphereUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
+        uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("sphereUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
         super.init(priority: priority, numInstances: numInstances)
         initBuffers(tesselationLevel)
     }
@@ -54,7 +54,10 @@ class SpherePrimitive : Primitive {
     
     override func updateBuffers(syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(Transform) * transforms.count * syncBufferIndex)
-        memcpy(uniformData, &transforms, sizeof(Transform) * transforms.count)
+        for i in 0..<transforms.count {
+            let uniformData = UnsafeMutablePointer<Float>(uniformB + sizeof(PerInstanceUniforms) * (transforms.count * syncBufferIndex + i))
+            var u = PerInstanceUniforms(modelMatrix: transforms[i].toMatrix4().m)
+            memcpy(uniformData, &u, sizeof(PerInstanceUniforms))
+        }
     }
 }
