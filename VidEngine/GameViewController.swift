@@ -65,7 +65,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
             let music = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("Rain_Background-Mike_Koenig", ofType: "mp3")!)
             player = try AVAudioPlayer(contentsOfURL: music)
             player?.numberOfLoops = -1
-            player?.play()
+            //player?.play()
         }
         catch let error as NSError {
             print(error.localizedDescription)
