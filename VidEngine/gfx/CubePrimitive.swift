@@ -21,10 +21,8 @@ class CubePrimitive : Primitive {
         13, 12, 15, 12, 14, 15, // down
         16, 18, 17, 18, 19, 17, // front
         23, 20, 21, 23, 21, 22] // back
-    let uniformBuffer : MTLBuffer!
     
     override init(priority: Int, numInstances: Int) {
-        uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("cubeUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
         super.init(priority: priority, numInstances: numInstances)
     }
     
@@ -83,11 +81,5 @@ class CubePrimitive : Primitive {
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
         encoder.drawIndexedPrimitives(.Triangle, indexCount: CubePrimitive.triangleList.count, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: transforms.count)
-    }
-    
-    override func updateBuffers(syncBufferIndex: Int) {
-        let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(Transform) * transforms.count * syncBufferIndex)
-        memcpy(uniformData, &transforms, sizeof(Transform) * transforms.count)
     }
 }

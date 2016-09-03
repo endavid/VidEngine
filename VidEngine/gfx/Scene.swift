@@ -15,11 +15,24 @@ class Scene {
     var primitives : [Primitive] = []
     
     func setCamera(bounds: CGRect) {
+        camera.setBounds(bounds)
     }
     
     func updateBuffers() {
         RenderManager.sharedInstance.data.projectionMatrix = camera.projectionMatrix
         RenderManager.sharedInstance.data.viewMatrix = camera.viewTransformMatrix
+    }
+    
+    func queueAll() {
+        for p in primitives {
+            p.queue()
+        }
+    }
+    
+    func dequeueAll() {
+        for p in primitives {
+            p.dequeue()
+        }
     }
     
     func update(currentTime: CFTimeInterval) {

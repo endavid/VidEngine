@@ -67,17 +67,21 @@ struct Quaternion : CustomStringConvertible {
         return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
     }
     static func createRotation(start start: float3, end: float3) -> Quaternion {
+        let up = float3(start.x, start.z, start.y)
+        return createRotation(start: start, end: end, up: up)
+    }
+    static func createRotation(start start: float3, end: float3, up: float3) -> Quaternion {
         if end.isClose(start, epsilon: 0.01) { // no rotation
             return Quaternion()
         }
         if end.isClose(-start, epsilon: 0.01) { // opposite vectors
-            let axisR = float3(start.x, start.z, start.y)
-            return Quaternion.createRotationAxis(PI, unitVector: axisR)
+            return Quaternion.createRotationAxis(PI, unitVector: up)
         }
         let angle = acosf(dot(start, end))
         let axis = normalize(cross(start, end))
-        return Quaternion.createRotationAxis(angle, unitVector: axis)        
+        return Quaternion.createRotationAxis(angle, unitVector: axis)
     }
+
 }
 
 // -----------------------------------------------------------

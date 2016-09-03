@@ -41,7 +41,8 @@ class GridScene : Scene {
     private var rotationAnims : [RotationAnim] = []
 
     init(numRows: Int, numColumns: Int) {
-        let prim = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
+        //let prim = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
+        let prim = CubePrimitive(priority: 0, numInstances: numRows * numColumns)
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x

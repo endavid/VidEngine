@@ -42,6 +42,7 @@
 		63DEAA631CAC97AA00B6FA98 /* VidEngineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA621CAC97AA00B6FA98 /* VidEngineUITests.swift */; };
 		63E622981D78C54200CAEF58 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622971D78C54200CAEF58 /* Scene.swift */; };
 		63E6229B1D78C71C00CAEF58 /* GridScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E6229A1D78C71C00CAEF58 /* GridScene.swift */; };
+		63E6229E1D78CDF900CAEF58 /* MdlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E6229D1D78CDF900CAEF58 /* MdlParser.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
 		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
 		63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */; };
@@ -102,6 +103,7 @@
 		63DEAA641CAC97AA00B6FA98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63E622971D78C54200CAEF58 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		63E6229A1D78C71C00CAEF58 /* GridScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridScene.swift; sourceTree = "<group>"; };
+		63E6229D1D78CDF900CAEF58 /* MdlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MdlParser.swift; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Rain_Background-Mike_Koenig.mp3"; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 		63DEAA3F1CAC97AA00B6FA98 /* VidEngine */ = {
 			isa = PBXGroup;
 			children = (
+				63E6229C1D78CDD000CAEF58 /* parsers */,
 				63E622991D78C67D00CAEF58 /* demo */,
 				63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */,
 				63DEAA491CAC97AA00B6FA98 /* Assets.xcassets */,
@@ -231,6 +234,14 @@
 				63E6229A1D78C71C00CAEF58 /* GridScene.swift */,
 			);
 			path = demo;
+			sourceTree = "<group>";
+		};
+		63E6229C1D78CDD000CAEF58 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				63E6229D1D78CDF900CAEF58 /* MdlParser.swift */,
+			);
+			path = parsers;
 			sourceTree = "<group>";
 		};
 		63EA88FD1D1ABF9000B97B99 /* math */ = {
@@ -407,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63E6229E1D78CDF900CAEF58 /* MdlParser.swift in Sources */,
 				6312964D1D6A1FD000E5979E /* Spherical.swift in Sources */,
 				63D0E6C51D532C12004DF37E /* RainPlugin.swift in Sources */,
 				63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */,

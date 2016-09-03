@@ -8,6 +8,9 @@
 import simd
 
 public extension float3 {
+    internal init(_ v: Vec3) {
+        self.init(v.x, v.y, v.z)
+    }
     func inverse() -> float3 {
         return float3( x: fabsf(self.x)>0 ? 1/self.x : 0,
                        y: fabsf(self.y)>0 ? 1/self.y : 0,

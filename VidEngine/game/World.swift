@@ -15,7 +15,14 @@ class World {
     
     // should be initialized after all the graphics are initialized
     init() {
-        scene = GridScene(numRows: 12, numColumns: 20)
+        if let path = NSBundle.mainBundle().pathForResource("CornellBox", ofType: "mdla") {
+            print(path)
+            let parser = MdlParser(path: path)
+            scene = parser.parse()
+            scene.queueAll()
+        } else {
+            scene = GridScene(numRows: 12, numColumns: 20)
+        }
     }
     
     func updateBuffers() {
