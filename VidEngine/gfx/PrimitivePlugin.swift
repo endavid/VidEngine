@@ -14,6 +14,7 @@ class PrimitivePlugin : GraphicPlugin {
     private var primitives : [Primitive] = []
     private var pipelineState: MTLRenderPipelineState! = nil
     private var depthState : MTLDepthStencilState! = nil
+    private var whiteTexture : MTLTexture! = nil
     
     func queue(primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
@@ -34,8 +35,8 @@ class PrimitivePlugin : GraphicPlugin {
         super.init(device: device, view: view)
         
         let defaultLibrary = device.newDefaultLibrary()!
-        let fragmentProgram = defaultLibrary.newFunctionWithName("passThroughFragment")!
-        let vertexProgram = defaultLibrary.newFunctionWithName("passGeometry")!
+        let fragmentProgram = defaultLibrary.newFunctionWithName("passLightFragment")!
+        let vertexProgram = defaultLibrary.newFunctionWithName("passLightGeometry")!
         
         // check TexturedVertex
         let vertexDesc = MTLVertexDescriptor()
@@ -70,6 +71,7 @@ class PrimitivePlugin : GraphicPlugin {
         depthDescriptor.depthWriteEnabled = true
         depthDescriptor.depthCompareFunction = .Less
         depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
+        whiteTexture = RenderManager.sharedInstance.createWhiteTexture()
     }
     
     override func execute(encoder: MTLRenderCommandEncoder) {
@@ -78,6 +80,7 @@ class PrimitivePlugin : GraphicPlugin {
         encoder.setDepthStencilState(depthState)
         encoder.setFrontFacingWinding(.CounterClockwise)
         encoder.setCullMode(.Back)
+        encoder.setFragmentTexture(whiteTexture, atIndex: 0)
 
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {

@@ -147,4 +147,13 @@ class RenderManager {
         depthTex = device.newTextureWithDescriptor(descriptor)
         depthTex.label = "Main Depth"
     }
+    
+    func createWhiteTexture() -> MTLTexture {
+        let data : [UInt32] = [0xffffffff]
+        let texDescriptor = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.RGBA8Unorm, width: 1, height: 1, mipmapped: false)
+        let texture = device.newTextureWithDescriptor(texDescriptor)
+        let region = MTLRegionMake2D(0, 0, 1, 1)
+        texture.replaceRegion(region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
+        return texture
+    }
 }

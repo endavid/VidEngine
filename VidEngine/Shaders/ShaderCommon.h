@@ -9,6 +9,18 @@
 #pragma once
 using namespace metal;
 
+struct VertexInOut {
+    float4  position [[position]];
+    float4  color;
+};
+
+struct TexturedVertex
+{
+    packed_float3 position [[attribute(0)]];
+    packed_float3 normal [[attribute(1)]];
+    packed_float2 texCoords [[attribute(2)]];
+};
+
 struct Uniforms {
     float elapsedTime;
     float windDirection;
@@ -21,3 +33,6 @@ struct PerInstanceUniforms
 {
     float4x4 modelMatrix;
 };
+
+constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);
+constexpr sampler linearSampler(coord::normalized, filter::linear, address::repeat);
