@@ -80,6 +80,6 @@ class CubePrimitive : Primitive {
         encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, atIndex: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
-        encoder.drawIndexedPrimitives(.Triangle, indexCount: CubePrimitive.triangleList.count, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: transforms.count)
+        encoder.drawIndexedPrimitives(.Triangle, indexCount: CubePrimitive.triangleList.count, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }
 }

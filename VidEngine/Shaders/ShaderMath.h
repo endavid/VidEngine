@@ -23,3 +23,6 @@ struct Transform {
         return position.xyz + quatMul(rotation, v * scale.xyz);
     }
 };
+
+float linearRgbToNormalizedSrgb(float c);
+float4 linearRgbToSrgba(float4 rgba);

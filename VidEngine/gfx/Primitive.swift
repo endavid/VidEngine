@@ -13,13 +13,19 @@ import MetalKit
 /// To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
 class Primitive {
     let priority : Int
-    var transforms : [Transform] ///< One transform per instance
+    var perInstanceUniforms : [PerInstanceUniforms]
     let uniformBuffer : MTLBuffer!
+    
+    var numInstances : Int {
+        get {
+            return perInstanceUniforms.count
+        }
+    }
 
     init(priority: Int, numInstances: Int) {
         self.priority = priority
-        self.transforms = [Transform](count: numInstances, repeatedValue: Transform())
-        self.uniformBuffer = RenderManager.sharedInstance.createTransformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
+        self.perInstanceUniforms = [PerInstanceUniforms](count: numInstances, repeatedValue: PerInstanceUniforms(transform: Transform(), material: Material.white))
+        self.uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
     }
     
     func draw(encoder: MTLRenderCommandEncoder) {
@@ -38,7 +44,7 @@ class Primitive {
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(Transform) * transforms.count * syncBufferIndex)
-        memcpy(uniformData, &transforms, sizeof(Transform) * transforms.count)        
+        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(PerInstanceUniforms) * perInstanceUniforms.count * syncBufferIndex)
+        memcpy(uniformData, &perInstanceUniforms, sizeof(PerInstanceUniforms) * perInstanceUniforms.count)
     }
 }

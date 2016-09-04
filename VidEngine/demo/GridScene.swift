@@ -53,7 +53,7 @@ class GridScene : Scene {
                 let x = startPoint.x + Float(j) * (cubeSize.x + marginSize.x)
                 let y = startPoint.y + Float(i) * (cubeSize.y + marginSize.y)
                 let index = i * numColumns + j
-                prim.transforms[index].position = float3(x, y, 0)
+                prim.perInstanceUniforms[index].transform.position = float3(x, y, 0)
                 rotationAnims.append(RotationAnim())
             }
         }
@@ -70,8 +70,8 @@ class GridScene : Scene {
     }
     
     override func update(currentTime: CFTimeInterval) {
-        for i in 0..<primitives[0].transforms.count {
-            primitives[0].transforms[i].rotation = rotationAnims[i].update(currentTime)
+        for i in 0..<primitives[0].numInstances {
+            primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)
         }
     }
 }

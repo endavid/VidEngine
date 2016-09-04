@@ -74,5 +74,10 @@ int3Array[0] = int3(1, 2, 3)
 int3Array[0]
 arrayCopy[0] // unaffected because int3 is not a ref value
 
+let str : String = "mtrl \"la mare\" hello"
+let i0 = str.characters.indexOf("\"")
+let split = str.characters.split("\"")
+let name : String = String(split[1])
+
 
 

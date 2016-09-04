@@ -47,6 +47,6 @@ class SpherePrimitive : Primitive {
         encoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
-        encoder.drawIndexedPrimitives(.Triangle, indexCount: numIndices, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: transforms.count)
+        encoder.drawIndexedPrimitives(.Triangle, indexCount: numIndices, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }    
 }

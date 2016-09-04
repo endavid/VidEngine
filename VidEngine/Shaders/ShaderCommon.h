@@ -7,6 +7,7 @@
 //
 
 #pragma once
+#include "ShaderMath.h"
 using namespace metal;
 
 struct VertexInOut {
@@ -29,9 +30,14 @@ struct Uniforms {
     float4x4 viewMatrix;
 };
 
+struct Material {
+    float4 diffuse;
+};
+
 struct PerInstanceUniforms
 {
-    float4x4 modelMatrix;
+    Transform transform;
+    Material material;
 };
 
 constexpr sampler pointSampler(coord::normalized, filter::nearest, address::repeat);

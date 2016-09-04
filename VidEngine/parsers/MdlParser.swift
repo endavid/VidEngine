@@ -17,6 +17,9 @@ class MdlParser {
     private var fnMap : [String : (String) -> ()] = [:]
     private var vertices : [TexturedVertex] = []
     private var triangles : [UInt16] = []
+    private var spectral : [Int : Float] = [:]
+    private var materials : [String : Material] = [:]
+    private var materialName : String = ""
     
     init(path: String) {
         self.path = path
@@ -24,8 +27,13 @@ class MdlParser {
         fnMap = [
             "cmplxPly": readComplexPolygon,
             "cmr": readCamera,
+            "lmbrtn": readLambertian,
+            "mtrlNm": readMaterialName,
+            "nmdMtrl": readMaterial,
             "plnrMsh": readPlanarMesh,
             "plygn": readPolygon,
+            "pLmnr": readPhongLuminaire,
+            "spctrl": readSpectral,
             "vrtxPstn": readVertexPosition
         ]
     }
@@ -98,6 +106,9 @@ class MdlParser {
         }
         computeNormals()
         let model = ModelPrimitive(vertices: vertices, triangles: triangles)
+        if let mat = materials[materialName] {
+            model.perInstanceUniforms[0].material = mat
+        }
         scene.primitives.append(model)
         vertices.removeAll()
         triangles.removeAll()
@@ -188,6 +199,68 @@ class MdlParser {
             if let h = advance() {
                 head = h
             }
+        }
+    }
+    
+    private func readMaterial(header: String) {
+        let split = header.characters.split("\"")
+        let name = String(split[1])
+        let c = getComponents(header)
+        var head = c.last ?? ""
+        var line = head
+        while head != "end" {
+            if let fn = fnMap[head] {
+                fn(line)
+            }
+            line = lines.removeAtIndex(0)
+            head = getComponents(line)[0]
+        }
+        let spectrum = Spectrum(data: self.spectral)
+        let xyz = spectrum.toXYZ()
+        let rgba = xyz.toRGBA()
+        let material = Material(diffuse: rgba)
+        self.materials[name] = material
+    }
+    
+    private func readLambertian(header: String) {
+        var head = ""
+        while head != "end" {
+            if let h = advance() {
+                head = h
+            }
+        }
+    }
+    
+    private func readPhongLuminaire(header: String) {
+        var head = ""
+        while head != "end" {
+            if let h = advance() {
+                head = h
+            }
+        }        
+    }
+    
+    private func readSpectral(header: String) {
+        var head = ""
+        while head != "end" {
+            let c = getComponents(lines.removeAtIndex(0))
+            if c.count == 2 {
+                let wavelength = Int(Float(c[0]) ?? 0)
+                let intensity = Float(c[1]) ?? 0
+                self.spectral[wavelength] = intensity
+            }
+            head = c[0]
+        }
+    }
+    
+    private func readMaterialName(header: String) {
+        let split = header.characters.split("\"")
+        self.materialName = String(split[1])
+        let c = getComponents(header)
+        var head = c.last ?? ""
+        while head != "end" {
+            let c = getComponents(lines.removeAtIndex(0))
+            head = c[0]
         }
     }
 }

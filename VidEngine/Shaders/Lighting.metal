@@ -16,18 +16,18 @@ vertex VertexInOut passLightGeometry(uint vid [[ vertex_id ]],
                                 uint iid [[ instance_id ]],
                                 constant TexturedVertex* vdata [[ buffer(0) ]],
                                 constant Uniforms& uniforms  [[ buffer(1) ]],
-                                constant Transform* perInstanceUniforms [[ buffer(2) ]])
+                                constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
 {
     VertexInOut outVertex;
-    Transform t = perInstanceUniforms[iid];
+    Transform t = perInstanceUniforms[iid].transform;
+    Material mat = perInstanceUniforms[iid].material;
     float4x4 m = uniforms.projectionMatrix * uniforms.viewMatrix;
     TexturedVertex v = vdata[vid];
     float3 sunDirection = normalize(float3(1,1,-0.5));
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
     float cosTi = dot(worldNormal, sunDirection);
-
     outVertex.position = m * float4(t * v.position, 1.0);
-    outVertex.color = float4(cosTi, cosTi, cosTi, 1);
+    outVertex.color = mat.diffuse * float4(cosTi, cosTi, cosTi, 1);
     return outVertex;
 }
 
@@ -35,5 +35,8 @@ fragment half4 passLightFragment(VertexInOut inFrag [[stage_in]],
                                  texture2d<float> tex [[ texture(0) ]])
 {
     float4 texColor = tex.sample(linearSampler, float2(0,0));
-    return half4(texColor * inFrag.color);
+    float4 out = texColor * inFrag.color;
+    // convert to sRGB (should be done automatically if format is correctly set)
+    out = linearRgbToSrgba(out);
+    return half4(out);
 };

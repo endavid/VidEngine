@@ -28,3 +28,17 @@ float3 quatMul(const float4 q, const float3 v) {
     float4 r = quatDot(q, quatDot(float4(v, 0), quatInv(q)));
     return r.xyz;
 }
+
+float linearRgbToNormalizedSrgb(float c) {
+    if (c <= 0.0031308) {
+        return c * 12.92;
+    }
+    return pow(c * 1.055, 1/2.4) - 0.055;
+}
+
+float4 linearRgbToSrgba(float4 rgba) {
+    return float4(linearRgbToNormalizedSrgb(rgba.r),
+                  linearRgbToNormalizedSrgb(rgba.g),
+                  linearRgbToNormalizedSrgb(rgba.b),
+                  rgba.a);
+}

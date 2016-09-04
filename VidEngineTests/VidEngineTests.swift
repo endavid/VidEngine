@@ -69,4 +69,24 @@ class VidEngineTests: XCTestCase {
         XCTAssertEqual(sph.φ, 0)
     }
     
+    func testSpectrum() {
+        let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
+        let m1 = spectrum.getIntensity(404)
+        let m2 = spectrum.getIntensity(405)
+        XCTAssertEqual(0.445, m1)
+        XCTAssertEqual(0.471500009, m2)
+    }
+    
+    func testXYZtoRGB() {
+        // http://www.brucelindbloom.com
+        // Model: sRGB, Gamma: 1.0
+        let xyz = CieXYZ(xyz: float3(0.422683, 0.636309, 0.384312))
+        let rgba = xyz.toRGBA()
+        let epsilon : Float = 0.0001
+        XCTAssertEqual(1, rgba.a)
+        XCTAssertLessThanOrEqual(fabs(rgba.r - 0.2), epsilon)
+        XCTAssertLessThanOrEqual(fabs(rgba.g - 0.8), epsilon)
+        XCTAssertLessThanOrEqual(fabs(rgba.b - 0.3), epsilon)
+    }
+    
 }

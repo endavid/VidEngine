@@ -15,5 +15,6 @@ struct TexturedVertex {
 }
 
 struct PerInstanceUniforms {
-    let modelMatrix : float4x4
+    var transform : Transform
+    var material : Material
 }
