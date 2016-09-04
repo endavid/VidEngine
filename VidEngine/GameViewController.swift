@@ -48,6 +48,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
         let view = self.view as! MTKView
         view.device = device
         view.delegate = self
+        // our shaders will be in linear RGB, so automatically apply γ
+        view.colorPixelFormat = .BGRA8Unorm_sRGB
         
         RenderManager.sharedInstance.initManager(device, view: self.view as! MTKView)
         commandQueue = device.newCommandQueue()

@@ -36,7 +36,5 @@ fragment half4 passLightFragment(VertexInOut inFrag [[stage_in]],
 {
     float4 texColor = tex.sample(linearSampler, float2(0,0));
     float4 out = texColor * inFrag.color;
-    // convert to sRGB (should be done automatically if format is correctly set)
-    out = linearRgbToSrgba(out);
     return half4(out);
 };

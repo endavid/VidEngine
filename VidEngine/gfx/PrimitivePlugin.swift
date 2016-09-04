@@ -57,8 +57,7 @@ class PrimitivePlugin : GraphicPlugin {
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.vertexDescriptor = vertexDesc
-        // @todo this should be .RGBA8Unorm_sRGB to automatically apply γ
-        // instead of the default .BGRA8Unorm
+        // should be .BGRA8Unorm_sRGB
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         print(view.colorPixelFormat)
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
