@@ -75,19 +75,23 @@ class PrimitivePlugin : GraphicPlugin {
         whiteTexture = RenderManager.sharedInstance.createWhiteTexture()
     }
     
-    override func execute(encoder: MTLRenderCommandEncoder) {
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAndDepthAttachmentTexture(drawable.texture)
+        let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
+        encoder.label = "Primitives Encoder"
         encoder.pushDebugGroup("primitives")
         encoder.setRenderPipelineState(pipelineState)
         encoder.setDepthStencilState(depthState)
         encoder.setFrontFacingWinding(.CounterClockwise)
         encoder.setCullMode(.Back)
         encoder.setFragmentTexture(whiteTexture, atIndex: 0)
-
+        
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {
             p.draw(encoder)
         }
         encoder.popDebugGroup()
+        encoder.endEncoding()
     }
     
     override func updateBuffers(syncBufferIndex: Int) {

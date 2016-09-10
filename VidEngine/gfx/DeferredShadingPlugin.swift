@@ -11,7 +11,6 @@ import MetalKit
 
 class DeferredShadingPlugin : GraphicPlugin {
     private var pipelineState: MTLRenderPipelineState! = nil
-    private var depthState : MTLDepthStencilState! = nil
     private let indexBuffer : MTLBuffer!
     private let vertexBuffer : MTLBuffer!
     private var noiseTexture: MTLTexture! = nil
@@ -41,13 +40,8 @@ class DeferredShadingPlugin : GraphicPlugin {
         print(view.colorPixelFormat)
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
-        pipelineStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
-        let depthDescriptor = MTLDepthStencilDescriptor()
-        depthDescriptor.depthWriteEnabled = false
-        depthDescriptor.depthCompareFunction = .Always
         do {
             try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
-            depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
@@ -55,13 +49,16 @@ class DeferredShadingPlugin : GraphicPlugin {
 
     }
     
-    override func execute(encoder: MTLRenderCommandEncoder) {
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture)
+        let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
+        encoder.label = "Deferred Shading Encoder"
         encoder.pushDebugGroup("deferredShading")
         encoder.setRenderPipelineState(pipelineState)
-        encoder.setDepthStencilState(depthState)
         encoder.setFragmentTexture(noiseTexture, atIndex: 0)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
         encoder.drawIndexedPrimitives(.TriangleStrip, indexCount: 4, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0)
         encoder.popDebugGroup()
-    }
+        encoder.endEncoding()
+    }    
 }

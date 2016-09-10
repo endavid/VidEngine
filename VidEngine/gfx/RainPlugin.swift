@@ -39,15 +39,12 @@ class RainPlugin : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .SourceAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .DestinationAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .OneMinusSourceAlpha
-        pipelineStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
         pipelineStateDescriptor.sampleCount = view.sampleCount
         
         let updateStateDescriptor = MTLRenderPipelineDescriptor()
         updateStateDescriptor.vertexFunction = updateRaindropProgram
         updateStateDescriptor.rasterizationEnabled = false // vertex output is void
         updateStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat // pixel format needs to be set
-        updateStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
-
         
         do {
             try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
@@ -64,7 +61,9 @@ class RainPlugin : GraphicPlugin {
         initVertexBuffer(2000)
     }
     
-    override func execute(encoder: MTLRenderCommandEncoder) {
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture)
+        let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
         // Check alignment in setVertexBuffer doc
         let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
@@ -83,6 +82,7 @@ class RainPlugin : GraphicPlugin {
         encoder.popDebugGroup()
         // swap buffers
         doubleBufferIndex = (doubleBufferIndex + 1) % 2
+        encoder.endEncoding()
     }
     
     private func initVertexBuffer(numParticles: Int) {

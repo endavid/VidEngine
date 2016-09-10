@@ -14,10 +14,10 @@ class GraphicPlugin {
     init(device: MTLDevice, view: MTKView) {
     }
     
-    func execute(encoder: MTLRenderCommandEncoder) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
         
     }
-    
+        
     // this gets called when we need to update the buffers used by the GPU
     // @param syncBufferIndex the index into a triple-buffer
     func updateBuffers(syncBufferIndex: Int) {

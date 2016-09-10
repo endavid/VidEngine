@@ -93,20 +93,25 @@ class RenderManager {
                 createDepthTexture(size)
             }
         }
-        let renderPassDescriptor = createRenderPassWithColorAttachmentTexture(currentDrawable.texture)
-        let renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
-        renderEncoder.label = "render encoder"
         for plugin in plugins {
-            plugin.execute(renderEncoder)
+            plugin.draw(currentDrawable, commandBuffer: commandBuffer)
         }
-        renderEncoder.endEncoding()
         commandBuffer.presentDrawable(currentDrawable)
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
         syncBufferIndex = (syncBufferIndex + 1) % RenderManager.NumSyncBuffers
         commandBuffer.commit()
     }
     
-    private func createRenderPassWithColorAttachmentTexture(texture: MTLTexture) -> MTLRenderPassDescriptor {
+    func createRenderPassWithColorAttachmentTexture(texture: MTLTexture) -> MTLRenderPassDescriptor {
+        let renderPass = MTLRenderPassDescriptor()
+        renderPass.colorAttachments[0].texture = texture
+        renderPass.colorAttachments[0].loadAction = .Clear
+        renderPass.colorAttachments[0].storeAction = .Store
+        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0);
+        return renderPass
+    }
+    
+    func createRenderPassWithColorAndDepthAttachmentTexture(texture: MTLTexture) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = texture
         renderPass.colorAttachments[0].loadAction = .Clear
@@ -118,6 +123,7 @@ class RenderManager {
         renderPass.depthAttachment.clearDepth = 1.0
         return renderPass
     }
+
     
     func createIndexBuffer(label: String, elements: [UInt16]) -> MTLBuffer {
         let buffer = device.newBufferWithBytes(elements, length: elements.count * sizeof(UInt16), options: .CPUCacheModeDefaultCache)
