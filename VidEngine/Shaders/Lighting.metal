@@ -27,6 +27,7 @@ vertex VertexInOut passLightGeometry(uint vid [[ vertex_id ]],
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
     float cosTi = dot(worldNormal, sunDirection);
     outVertex.position = m * float4(t * v.position, 1.0);
+    outVertex.uv = float2(0,0);
     outVertex.color = mat.diffuse * float4(cosTi, cosTi, cosTi, 1);
     return outVertex;
 }
@@ -34,7 +35,7 @@ vertex VertexInOut passLightGeometry(uint vid [[ vertex_id ]],
 fragment half4 passLightFragment(VertexInOut inFrag [[stage_in]],
                                  texture2d<float> tex [[ texture(0) ]])
 {
-    float4 texColor = tex.sample(linearSampler, float2(0,0));
+    float4 texColor = tex.sample(linearSampler, inFrag.uv);
     float4 out = texColor * inFrag.color;
     return half4(out);
 };

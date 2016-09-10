@@ -23,6 +23,25 @@ public extension float3 {
     }
 }
 
+struct Vec4 {
+    let x : Float
+    let y : Float
+    let z : Float
+    let w : Float
+    init(_ x: Float, _ y: Float, _ z: Float, _ w: Float) {
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
+    }
+    init(_ v: float4) {
+        self.x = v.x
+        self.y = v.y
+        self.z = v.z
+        self.w = v.w
+    }
+}
+
 // sizeof(float3) = 16!! sizeof(Vec3) = 12
 struct Vec3 {
     let x : Float

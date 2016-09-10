@@ -13,6 +13,7 @@ using namespace metal;
 struct VertexInOut {
     float4  position [[position]];
     float4  color;
+    float2  uv;
 };
 
 struct TexturedVertex

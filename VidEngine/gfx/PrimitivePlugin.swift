@@ -63,16 +63,15 @@ class PrimitivePlugin : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
-        
-        do {
-            try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
-        } catch let error {
-            print("Failed to create pipeline state, error \(error)")
-        }
         let depthDescriptor = MTLDepthStencilDescriptor()
         depthDescriptor.depthWriteEnabled = true
         depthDescriptor.depthCompareFunction = .Less
-        depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
+        do {
+            try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
+            depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
+        } catch let error {
+            print("Failed to create pipeline state, error \(error)")
+        }
         whiteTexture = RenderManager.sharedInstance.createWhiteTexture()
     }
     

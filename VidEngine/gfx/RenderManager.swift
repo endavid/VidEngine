@@ -68,6 +68,7 @@ class RenderManager {
     private func initGraphicPlugins(view: MTKView) {
         // order is important!
         plugins.append(PrimitivePlugin(device: device, view: view))
+        plugins.append(DeferredShadingPlugin(device: device, view: view))
         //plugins.append(RainPlugin(device: device, view: view))
     }
     
