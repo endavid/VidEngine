@@ -28,7 +28,7 @@ class RenderManager {
     private var uniformBuffer: MTLBuffer! = nil
     private var plugins : [GraphicPlugin] = []
     private var syncBufferIndex = 0
-    private var depthTex : MTLTexture! = nil
+    private var _gBuffer : GBuffer! = nil
     var data : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
 
@@ -48,9 +48,9 @@ class RenderManager {
         }
     }
     
-    var depthTexture : MTLTexture {
+    var gBuffer : GBuffer {
         get {
-            return depthTex
+            return _gBuffer
         }
     }
     
@@ -61,6 +61,8 @@ class RenderManager {
     func initManager(device: MTLDevice, view: MTKView) {
         uniformBuffer = device.newBufferWithLength(sizeof(GraphicsData) * RenderManager.NumSyncBuffers, options: [])
         uniformBuffer.label = "uniforms"
+        // dummy buffer so _gBuffer is never null
+        _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
         self.initGraphicPlugins(view)
     }
@@ -85,12 +87,12 @@ class RenderManager {
         guard let currentDrawable = view.currentDrawable else {
             return
         }
-        let zWidth = depthTex?.width ?? 0
-        let zHeight = depthTex?.height ?? 0
+        let w = _gBuffer?.width ?? 0
+        let h = _gBuffer?.height ?? 0
         if let metalLayer = view.layer as? CAMetalLayer {
             let size = metalLayer.drawableSize
-            if zWidth != Int(size.width) || zHeight != Int(size.height ){
-                createDepthTexture(size)
+            if w != Int(size.width) || h != Int(size.height ){
+                _gBuffer = GBuffer(device: device, size: size)
             }
         }
         for plugin in plugins {
@@ -111,13 +113,17 @@ class RenderManager {
         return renderPass
     }
     
-    func createRenderPassWithColorAndDepthAttachmentTexture(texture: MTLTexture) -> MTLRenderPassDescriptor {
+    func createRenderPassWithGBuffer(clear: Bool) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
-        renderPass.colorAttachments[0].texture = texture
-        renderPass.colorAttachments[0].loadAction = .Clear
+        renderPass.colorAttachments[0].texture = gBuffer.albedoTexture
+        renderPass.colorAttachments[0].loadAction = clear ? .Clear : .Load
         renderPass.colorAttachments[0].storeAction = .Store
-        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0);
-        renderPass.depthAttachment.texture = self.depthTexture
+        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
+        renderPass.colorAttachments[1].texture = gBuffer.normalTexture
+        renderPass.colorAttachments[1].loadAction = clear ? .Clear : .Load
+        renderPass.colorAttachments[1].storeAction = .Store
+        renderPass.colorAttachments[1].clearColor = MTLClearColorMake(0, 1, 0, 0)
+        renderPass.depthAttachment.texture = gBuffer.depthTexture
         renderPass.depthAttachment.loadAction = .Clear
         renderPass.depthAttachment.storeAction = .Store
         renderPass.depthAttachment.clearDepth = 1.0
@@ -147,12 +153,6 @@ class RenderManager {
         let buffer = device.newBufferWithLength(numElements * sizeof(Transform), options: [])
         buffer.label = label
         return buffer
-    }
-    
-    private func createDepthTexture(size: CGSize) {
-        let descriptor = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.Depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTex = device.newTextureWithDescriptor(descriptor)
-        depthTex.label = "Main Depth"
     }
     
     func createWhiteTexture() -> MTLTexture {

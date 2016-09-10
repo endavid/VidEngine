@@ -52,17 +52,17 @@ class PrimitivePlugin : GraphicPlugin {
         vertexDesc.layouts[0].stepFunction = .PerVertex
         vertexDesc.layouts[0].stride = sizeof(TexturedVertex)
         
-        
+        let gBuffer = RenderManager.sharedInstance.gBuffer
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.vertexDescriptor = vertexDesc
-        // should be .BGRA8Unorm_sRGB
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
-        print(view.colorPixelFormat)
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = gBuffer.albedoTexture.pixelFormat
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
+        pipelineStateDescriptor.colorAttachments[1].pixelFormat = gBuffer.normalTexture.pixelFormat
+        pipelineStateDescriptor.colorAttachments[1].blendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
-        pipelineStateDescriptor.depthAttachmentPixelFormat = .Depth32Float
+        pipelineStateDescriptor.depthAttachmentPixelFormat = gBuffer.depthTexture.pixelFormat
         let depthDescriptor = MTLDepthStencilDescriptor()
         depthDescriptor.depthWriteEnabled = true
         depthDescriptor.depthCompareFunction = .Less
@@ -76,7 +76,7 @@ class PrimitivePlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAndDepthAttachmentTexture(drawable.texture)
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
         encoder.label = "Primitives Encoder"
         encoder.pushDebugGroup("primitives")

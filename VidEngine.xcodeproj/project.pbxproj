@@ -51,6 +51,7 @@
 		63E622A91D7C3BE000CAEF58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A31D7C32F500CAEF58 /* Color.swift */; };
 		63E622AB1D7C78F400CAEF58 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AA1D7C78F400CAEF58 /* Material.swift */; };
 		63E622AD1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */; };
+		63E622AF1D846C7300CAEF58 /* GBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AE1D846C7300CAEF58 /* GBuffer.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
 		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
 		63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */; };
@@ -118,6 +119,7 @@
 		63E622A61D7C376100CAEF58 /* Collections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
 		63E622AA1D7C78F400CAEF58 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
 		63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredShadingPlugin.swift; sourceTree = "<group>"; };
+		63E622AE1D846C7300CAEF58 /* GBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GBuffer.swift; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Rain_Background-Mike_Koenig.mp3"; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 				63E622971D78C54200CAEF58 /* Scene.swift */,
 				631A4A771D72FA86000978F6 /* SpherePrimitive.swift */,
 				63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */,
+				63E622AE1D846C7300CAEF58 /* GBuffer.swift */,
 			);
 			path = gfx;
 			sourceTree = "<group>";
@@ -458,6 +461,7 @@
 				63D0E6CF1D5F2BFE004DF37E /* GfxData.swift in Sources */,
 				63E622A71D7C376100CAEF58 /* Collections.swift in Sources */,
 				63D0E6C91D5D1D0C004DF37E /* PrimitivePlugin.swift in Sources */,
+				63E622AF1D846C7300CAEF58 /* GBuffer.swift in Sources */,
 				63D0E6D31D5F746B004DF37E /* Vector.swift in Sources */,
 				63D0E6DD1D5FD96F004DF37E /* Quaternion.swift in Sources */,
 				63D0E6E01D5FD986004DF37E /* Transform.swift in Sources */,

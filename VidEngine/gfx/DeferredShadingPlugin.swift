@@ -13,7 +13,6 @@ class DeferredShadingPlugin : GraphicPlugin {
     private var pipelineState: MTLRenderPipelineState! = nil
     private let indexBuffer : MTLBuffer!
     private let vertexBuffer : MTLBuffer!
-    private var noiseTexture: MTLTexture! = nil
 
     override init(device: MTLDevice, view: MTKView) {
         indexBuffer = RenderManager.sharedInstance.createIndexBuffer("fullscreen IB", elements: [0, 2, 1, 3])
@@ -23,13 +22,13 @@ class DeferredShadingPlugin : GraphicPlugin {
         
         let vb = UnsafeMutablePointer<Vec4>(vertexBuffer.contents())
         // (x, y, u, v)
-        vb[0] = Vec4(-1, -1, 0, 0)
-        vb[1] = Vec4(-1,  1, 0, 1)
-        vb[2] = Vec4( 1, -1, 1, 0)
-        vb[3] = Vec4( 1,  1, 1, 1)
+        vb[0] = Vec4(-1, -1, 0, 1)
+        vb[1] = Vec4(-1,  1, 0, 0)
+        vb[2] = Vec4( 1, -1, 1, 1)
+        vb[3] = Vec4( 1,  1, 1, 0)
         
         let defaultLibrary = device.newDefaultLibrary()!
-        let fragmentProgram = defaultLibrary.newFunctionWithName("passThroughTexturedFragment")!
+        let fragmentProgram = defaultLibrary.newFunctionWithName("passLightShading")!
         let vertexProgram = defaultLibrary.newFunctionWithName("passThrough2DVertex")!
         
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
@@ -37,7 +36,6 @@ class DeferredShadingPlugin : GraphicPlugin {
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         // should be .BGRA8Unorm_sRGB
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
-        print(view.colorPixelFormat)
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
         do {
@@ -45,17 +43,17 @@ class DeferredShadingPlugin : GraphicPlugin {
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
-        noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
-
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+        let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture)
         let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
         encoder.label = "Deferred Shading Encoder"
         encoder.pushDebugGroup("deferredShading")
         encoder.setRenderPipelineState(pipelineState)
-        encoder.setFragmentTexture(noiseTexture, atIndex: 0)
+        encoder.setFragmentTexture(gBuffer.albedoTexture, atIndex: 0)
+        encoder.setFragmentTexture(gBuffer.normalTexture, atIndex: 1)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
         encoder.drawIndexedPrimitives(.TriangleStrip, indexCount: 4, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0)
         encoder.popDebugGroup()

@@ -16,6 +16,13 @@ struct VertexInOut {
     float2  uv;
 };
 
+struct VertexGBuffer {
+    float4  position [[position]];
+    float4  color;
+    float3  normal;
+    float2  uv;
+};
+
 struct TexturedVertex
 {
     packed_float3 position [[attribute(0)]];
