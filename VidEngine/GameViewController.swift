@@ -21,7 +21,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: CFTimeInterval = 0.0
     var elapsedTimeGPU: CFTimeInterval = 0.0
-    let inflightSemaphore = dispatch_semaphore_create(RenderManager.NumSyncBuffers)
+    let inflightSemaphore = DispatchSemaphore(value: RenderManager.NumSyncBuffers)
     
     // for motion control
     let motionManager = CMMotionManager()
@@ -30,7 +30,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var world : World?
     
     // musica maestro!
-    private var player : AVAudioPlayer?
+    fileprivate var player : AVAudioPlayer?
 
     
     override func viewDidLoad() {
@@ -49,22 +49,22 @@ class GameViewController:UIViewController, MTKViewDelegate {
         view.device = device
         view.delegate = self
         // our shaders will be in linear RGB, so automatically apply γ
-        view.colorPixelFormat = .BGRA8Unorm_sRGB
+        view.colorPixelFormat = .bgra8Unorm_srgb
         
         RenderManager.sharedInstance.initManager(device, view: self.view as! MTKView)
-        commandQueue = device.newCommandQueue()
+        commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
 
         timer = CADisplayLink(target: self, selector: #selector(GameViewController.newFrame(_:)))
-        timer.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
         
         setupMotionController()
         do {
             // Removed deprecated use of AVAudioSessionDelegate protocol
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
             try AVAudioSession.sharedInstance().setActive(true)
-            let music = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("Rain_Background-Mike_Koenig", ofType: "mp3")!)
-            player = try AVAudioPlayer(contentsOfURL: music)
+            let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
+            player = try AVAudioPlayer(contentsOf: music)
             player?.numberOfLoops = -1
             //player?.play()
         }
@@ -76,15 +76,16 @@ class GameViewController:UIViewController, MTKViewDelegate {
         world?.scene.setCamera(view.bounds)
     }
     
-    private func setupMotionController() {
-        if motionManager.gyroAvailable {
+    fileprivate func setupMotionController() {
+        if motionManager.isGyroAvailable {
             motionManager.deviceMotionUpdateInterval = 0.2;
             motionManager.startDeviceMotionUpdates()
             
             motionManager.gyroUpdateInterval = 0.2
-            if let queue = NSOperationQueue.currentQueue() {
-                motionManager.startGyroUpdatesToQueue(queue) {
-                    [weak self] (gyroData: CMGyroData?, error: NSError?) in
+            if let queue = OperationQueue.current {
+                motionManager.startGyroUpdates()
+                motionManager.startGyroUpdates(to: queue) {
+                    [weak self] (gyroData: CMGyroData?, error: Error?) in
                     guard let weakSelf = self else { return }
                     if let motion = weakSelf.motionManager.deviceMotion {
                         weakSelf.currentPitch = motion.attitude.pitch
@@ -98,29 +99,30 @@ class GameViewController:UIViewController, MTKViewDelegate {
         }
     }
     
-    private func dataUpdate() {
+    fileprivate func dataUpdate() {
         RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTimeGPU)
         RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
         RenderManager.sharedInstance.data.currentTouch = currentTouch
     }
     
-    func drawInMTKView(view: MTKView) {
+    func draw(in view: MTKView) {
         
         // use semaphore to encode 3 frames ahead
-        dispatch_semaphore_wait(inflightSemaphore, DISPATCH_TIME_FOREVER)
+        let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        // could check here for .timedOut to count number of skipped frames
         
         self.dataUpdate()
         world?.updateBuffers()
         RenderManager.sharedInstance.updateBuffers()
         
-        let commandBuffer = commandQueue.commandBuffer()
+        let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer.label = "Frame command buffer"
         
         // use completion handler to signal the semaphore when this frame is completed allowing the encoding of the next frame to proceed
         // use capture list to avoid any retain cycles if the command buffer gets retained anywhere besides this stack frame
         commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
             if let strongSelf = self {
-                dispatch_semaphore_signal(strongSelf.inflightSemaphore)
+                strongSelf.inflightSemaphore.signal()
             }
             return
         }        
@@ -130,12 +132,12 @@ class GameViewController:UIViewController, MTKViewDelegate {
     
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
-    func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         world?.scene.setCamera(view.bounds)
     }
         
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
-    func newFrame(displayLink: CADisplayLink){
+    func newFrame(_ displayLink: CADisplayLink){
         if lastFrameTimestamp == 0.0 {
             lastFrameTimestamp = displayLink.timestamp
         }
@@ -148,18 +150,18 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        touchesMoved(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchesMoved(touches, with: event)
     }
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let overTheFinger : CGFloat = -30
         for t in touches {
-            let loc = t.locationInView(view)
+            let loc = t.location(in: view)
             currentTouch.x = 2 * Float(loc.x / view.bounds.width) - 1
             currentTouch.y = 1 - 2 * Float((loc.y + overTheFinger) / view.bounds.height)
         }
     }    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         currentTouch.x = 0
         currentTouch.y = -2
     }

@@ -28,7 +28,7 @@ class Camera {
         }
     }
 
-    func setBounds(bounds: CGRect) {
+    func setBounds(_ bounds: CGRect) {
         self.bounds = bounds
         setPerspectiveProjection(fov: fov, near: near, far: far)
     }
@@ -38,21 +38,21 @@ class Camera {
         return transform.rotation * float3(0,1,0)
     }
     
-    func setViewDirection(dir: float3, up: float3) {
+    func setViewDirection(_ dir: float3, up: float3) {
         // at start, camera is looking at -Z
         transform.rotation = Quaternion.createRotation(start: float3(0,0,-1), end: dir, up: up)
     }
     
-    func setEyePosition(pos: float3) {
+    func setEyePosition(_ pos: float3) {
         transform.position = transform.rotation * pos
     }
     
-    func setPerspectiveProjection(fov fov: Float, near: Float, far: Float) {
+    func setPerspectiveProjection(fov: Float, near: Float, far: Float) {
         let aspect = Float(bounds.width / bounds.height)
         setPerspectiveProjection(fov: fov, near: near, far: far, aspectRatio: aspect)
     }
     
-    func setPerspectiveProjection(fov fov: Float, near: Float, far: Float, aspectRatio: Float)
+    func setPerspectiveProjection(fov: Float, near: Float, far: Float, aspectRatio: Float)
     {
         self.fov = fov
         self.near = near

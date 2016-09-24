@@ -14,7 +14,7 @@ class Scene {
     var camera = Camera()
     var primitives : [Primitive] = []
     
-    func setCamera(bounds: CGRect) {
+    func setCamera(_ bounds: CGRect) {
         camera.setBounds(bounds)
     }
     
@@ -35,6 +35,6 @@ class Scene {
         }
     }
     
-    func update(currentTime: CFTimeInterval) {
+    func update(_ currentTime: CFTimeInterval) {
     }
 }

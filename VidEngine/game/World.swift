@@ -15,7 +15,7 @@ class World {
     
     // should be initialized after all the graphics are initialized
     init() {
-        if let path = NSBundle.mainBundle().pathForResource("CornellBox", ofType: "mdla") {
+        if let path = Bundle.main.path(forResource: "CornellBox", ofType: "mdla") {
             print(path)
             let parser = MdlParser(path: path)
             scene = parser.parse()
@@ -29,7 +29,7 @@ class World {
         scene.updateBuffers()
     }
     
-    func update(currentTime: CFTimeInterval) {
+    func update(_ currentTime: CFTimeInterval) {
         scene.update(currentTime)
     }
 }

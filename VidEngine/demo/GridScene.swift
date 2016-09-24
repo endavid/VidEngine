@@ -15,7 +15,7 @@ class RotationAnim {
     var targetRotation = Quaternion()
     var alpha : Float = 0
     var speed : Float = 1.1
-    private func setRandomRotationTarget() {
+    fileprivate func setRandomRotationTarget() {
         let up = float3(0, 1, 0)
         let targetDirection = Spherical.randomSample().toCartesian()
         startRotation = targetRotation
@@ -25,7 +25,7 @@ class RotationAnim {
         let a = acos(cosa)
         speed = 2 - a / PI
     }
-    func update(currentTime: CFTimeInterval) -> Quaternion {
+    func update(_ currentTime: CFTimeInterval) -> Quaternion {
         alpha = alpha + speed * Float(currentTime)
         if alpha > 1 {
             setRandomRotationTarget()
@@ -38,7 +38,7 @@ class RotationAnim {
 }
 
 class GridScene : Scene {
-    private var rotationAnims : [RotationAnim] = []
+    fileprivate var rotationAnims : [RotationAnim] = []
 
     init(numRows: Int, numColumns: Int) {
         //let prim = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
@@ -62,14 +62,14 @@ class GridScene : Scene {
         primitives.append(prim)
     }
     
-    override func setCamera(bounds: CGRect) {
+    override func setCamera(_ bounds: CGRect) {
         let aspect = Float(bounds.width / bounds.height)
         camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
         let z : Float = aspect >= 1 ? 32 : 16
         camera.transform.position = float3(0, 0, z)
     }
     
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: CFTimeInterval) {
         for i in 0..<primitives[0].numInstances {
             primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)
         }

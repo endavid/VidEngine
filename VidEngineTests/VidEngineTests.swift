@@ -28,7 +28,7 @@ class VidEngineTests: XCTestCase {
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measureBlock {
+        self.measure {
             // Put the code you want to measure the time of here.
         }
     }
@@ -37,29 +37,29 @@ class VidEngineTests: XCTestCase {
         var v = float2(0, 3)
         XCTAssertEqual(0, v.x)
         XCTAssertEqual(3, v.y)
-        XCTAssertEqual(4 * 2, sizeof(float2))
-        let unsafe = UnsafeMutablePointer<Float>.alloc(2)
-        memcpy(unsafe, &v, sizeof(float2))
+        XCTAssertEqual(4 * 2, MemoryLayout<float2>.size)
+        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 2)
+        memcpy(unsafe, &v, MemoryLayout<float2>.size)
         XCTAssertEqual(0, unsafe[0])
         XCTAssertEqual(3, unsafe[1])
-        unsafe.dealloc(2)
+        unsafe.deallocate(capacity: 2)
     }
     
     func testMatrix4() {
         var m = Matrix4()
         XCTAssertEqual(0, m[3,3])
-        XCTAssertEqual(4 * 4 * 4, sizeof(Matrix4))
+        XCTAssertEqual(4 * 4 * 4, MemoryLayout<Matrix4>.size)
         // [column, row], so this sets the translation
         m[3,0] = 1
         m[3,1] = 3
         m[3,2] = 9
-        let unsafe = UnsafeMutablePointer<Float>.alloc(4 * 4)
-        memcpy(unsafe, &m, sizeof(Matrix4))
+        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 4 * 4)
+        memcpy(unsafe, &m, MemoryLayout<Matrix4>.size)
         // check that indeed the data is stored in column-major order
         XCTAssertEqual(1, unsafe[12])
         XCTAssertEqual(3, unsafe[13])
         XCTAssertEqual(9, unsafe[14])
-        unsafe.dealloc(4 * 4)
+        unsafe.deallocate(capacity: 4 * 4)
     }
     
     func testSpherical() {

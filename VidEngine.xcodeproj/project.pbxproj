@@ -15,6 +15,8 @@
 		6365986B1D78173C009C5215 /* ModelPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6365986A1D78173C009C5215 /* ModelPrimitive.swift */; };
 		6365986E1D78191A009C5215 /* CornellBox.mdla in Resources */ = {isa = PBXBuildFile; fileRef = 6365986D1D78191A009C5215 /* CornellBox.mdla */; };
 		6369BD861D4DF63500E75951 /* Fx.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6369BD851D4DF63500E75951 /* Fx.metal */; };
+		63C6DD641D96B9AD00D7CAC2 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C6DD631D96B9AD00D7CAC2 /* Metal.framework */; };
+		63C6DD661D96B9B500D7CAC2 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C6DD651D96B9B500D7CAC2 /* MetalKit.framework */; };
 		63D0E6C31D532A78004DF37E /* GraphicPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6C21D532A78004DF37E /* GraphicPlugin.swift */; };
 		63D0E6C51D532C12004DF37E /* RainPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6C41D532C12004DF37E /* RainPlugin.swift */; };
 		63D0E6C71D5D0E96004DF37E /* RenderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6C61D5D0E96004DF37E /* RenderManager.swift */; };
@@ -52,6 +54,8 @@
 		63E622AB1D7C78F400CAEF58 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AA1D7C78F400CAEF58 /* Material.swift */; };
 		63E622AD1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */; };
 		63E622AF1D846C7300CAEF58 /* GBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AE1D846C7300CAEF58 /* GBuffer.swift */; };
+		63E622B11D87E23000CAEF58 /* LightSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622B01D87E23000CAEF58 /* LightSource.swift */; };
+		63E622B31D87E50A00CAEF58 /* DeferredLightingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622B21D87E50A00CAEF58 /* DeferredLightingPlugin.swift */; };
 		63EA88FF1D1ABFAF00B97B99 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
 		63EA89021D1C52D900B97B99 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA89011D1C52D900B97B99 /* Image.swift */; };
 		63EA89071D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */; };
@@ -82,6 +86,8 @@
 		6365986A1D78173C009C5215 /* ModelPrimitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelPrimitive.swift; sourceTree = "<group>"; };
 		6365986D1D78191A009C5215 /* CornellBox.mdla */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CornellBox.mdla; sourceTree = "<group>"; };
 		6369BD851D4DF63500E75951 /* Fx.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fx.metal; sourceTree = "<group>"; };
+		63C6DD631D96B9AD00D7CAC2 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		63C6DD651D96B9B500D7CAC2 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		63D0E6C11D51D4AA004DF37E /* ShaderMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderMath.h; sourceTree = "<group>"; };
 		63D0E6C21D532A78004DF37E /* GraphicPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicPlugin.swift; sourceTree = "<group>"; };
 		63D0E6C41D532C12004DF37E /* RainPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RainPlugin.swift; sourceTree = "<group>"; };
@@ -120,6 +126,8 @@
 		63E622AA1D7C78F400CAEF58 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
 		63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredShadingPlugin.swift; sourceTree = "<group>"; };
 		63E622AE1D846C7300CAEF58 /* GBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GBuffer.swift; sourceTree = "<group>"; };
+		63E622B01D87E23000CAEF58 /* LightSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightSource.swift; sourceTree = "<group>"; };
+		63E622B21D87E50A00CAEF58 /* DeferredLightingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredLightingPlugin.swift; sourceTree = "<group>"; };
 		63EA88FE1D1ABFAF00B97B99 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		63EA89011D1C52D900B97B99 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		63EA89061D1F1E9B00B97B99 /* Rain_Background-Mike_Koenig.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Rain_Background-Mike_Koenig.mp3"; sourceTree = "<group>"; };
@@ -130,6 +138,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63C6DD661D96B9B500D7CAC2 /* MetalKit.framework in Frameworks */,
+				63C6DD641D96B9AD00D7CAC2 /* Metal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +197,15 @@
 			path = Shaders;
 			sourceTree = "<group>";
 		};
+		63C6DD621D96B9AD00D7CAC2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				63C6DD651D96B9B500D7CAC2 /* MetalKit.framework */,
+				63C6DD631D96B9AD00D7CAC2 /* Metal.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		63DEAA341CAC97AA00B6FA98 = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +213,7 @@
 				63DEAA561CAC97AA00B6FA98 /* VidEngineTests */,
 				63DEAA611CAC97AA00B6FA98 /* VidEngineUITests */,
 				63DEAA3E1CAC97AA00B6FA98 /* Products */,
+				63C6DD621D96B9AD00D7CAC2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -290,9 +310,13 @@
 				63D0E6D61D5F77C3004DF37E /* Camera.swift */,
 				63E622A31D7C32F500CAEF58 /* Color.swift */,
 				63D0E6CC1D5F186D004DF37E /* CubePrimitive.swift */,
+				63E622B21D87E50A00CAEF58 /* DeferredLightingPlugin.swift */,
+				63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */,
+				63E622AE1D846C7300CAEF58 /* GBuffer.swift */,
 				63D0E6CE1D5F2BFE004DF37E /* GfxData.swift */,
 				63D0E6C21D532A78004DF37E /* GraphicPlugin.swift */,
 				63EA89011D1C52D900B97B99 /* Image.swift */,
+				63E622B01D87E23000CAEF58 /* LightSource.swift */,
 				63E622AA1D7C78F400CAEF58 /* Material.swift */,
 				6365986A1D78173C009C5215 /* ModelPrimitive.swift */,
 				63D0E6CA1D5F1853004DF37E /* Primitive.swift */,
@@ -301,8 +325,6 @@
 				63D0E6C61D5D0E96004DF37E /* RenderManager.swift */,
 				63E622971D78C54200CAEF58 /* Scene.swift */,
 				631A4A771D72FA86000978F6 /* SpherePrimitive.swift */,
-				63E622AC1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift */,
-				63E622AE1D846C7300CAEF58 /* GBuffer.swift */,
 			);
 			path = gfx;
 			sourceTree = "<group>";
@@ -379,18 +401,22 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "David Gavilan";
 				TargetAttributes = {
 					63DEAA3C1CAC97AA00B6FA98 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 7JBVTX94L2;
+						LastSwiftMigration = 0800;
 					};
 					63DEAA521CAC97AA00B6FA98 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 						TestTargetID = 63DEAA3C1CAC97AA00B6FA98;
 					};
 					63DEAA5D1CAC97AA00B6FA98 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 						TestTargetID = 63DEAA3C1CAC97AA00B6FA98;
 					};
 				};
@@ -455,7 +481,9 @@
 				63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */,
 				63E622AD1D7EACCF00CAEF58 /* DeferredShadingPlugin.swift in Sources */,
 				63D0E6D71D5F77C3004DF37E /* Camera.swift in Sources */,
+				63E622B31D87E50A00CAEF58 /* DeferredLightingPlugin.swift in Sources */,
 				63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */,
+				63E622B11D87E23000CAEF58 /* LightSource.swift in Sources */,
 				63D0E6CB1D5F1853004DF37E /* Primitive.swift in Sources */,
 				63DEAA411CAC97AA00B6FA98 /* AppDelegate.swift in Sources */,
 				63D0E6CF1D5F2BFE004DF37E /* GfxData.swift in Sources */,
@@ -558,8 +586,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -604,8 +634,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -624,6 +656,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -633,10 +666,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7JBVTX94L2;
 				INFOPLIST_FILE = VidEngine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngine;
 				PRODUCT_NAME = VidEngine;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -644,10 +679,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7JBVTX94L2;
 				INFOPLIST_FILE = VidEngine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngine;
 				PRODUCT_NAME = VidEngine;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -660,6 +697,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineTests;
 				PRODUCT_NAME = VidEngineTests;
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VidEngine.app/VidEngine";
 			};
 			name = Debug;
@@ -672,6 +710,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineTests;
 				PRODUCT_NAME = VidEngineTests;
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VidEngine.app/VidEngine";
 			};
 			name = Release;
@@ -684,6 +723,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineUITests;
 				PRODUCT_NAME = VidEngine;
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = VidEngine;
 			};
 			name = Debug;
@@ -695,6 +735,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endavid.VidEngineUITests;
 				PRODUCT_NAME = VidEngine;
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = VidEngine;
 			};
 			name = Release;

@@ -11,12 +11,12 @@ import MetalKit
 
 class PrimitivePlugin : GraphicPlugin {
     
-    private var primitives : [Primitive] = []
-    private var pipelineState: MTLRenderPipelineState! = nil
-    private var depthState : MTLDepthStencilState! = nil
-    private var whiteTexture : MTLTexture! = nil
+    fileprivate var primitives : [Primitive] = []
+    fileprivate var pipelineState: MTLRenderPipelineState! = nil
+    fileprivate var depthState : MTLDepthStencilState! = nil
+    fileprivate var whiteTexture : MTLTexture! = nil
     
-    func queue(primitive: Primitive) {
+    func queue(_ primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
         if !alreadyQueued {
             // @todo insert in priority order
@@ -24,10 +24,10 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
     
-    func dequeue(primitive: Primitive) {
-        let index = primitives.indexOf { $0 === primitive }
+    func dequeue(_ primitive: Primitive) {
+        let index = primitives.index { $0 === primitive }
         if let i = index {
-            primitives.removeAtIndex(i)
+            primitives.remove(at: i)
         }
     }
     
@@ -35,22 +35,22 @@ class PrimitivePlugin : GraphicPlugin {
         super.init(device: device, view: view)
         
         let defaultLibrary = device.newDefaultLibrary()!
-        let fragmentProgram = defaultLibrary.newFunctionWithName("passLightFragment")!
-        let vertexProgram = defaultLibrary.newFunctionWithName("passLightGeometry")!
+        let fragmentProgram = defaultLibrary.makeFunction(name: "passLightFragment")!
+        let vertexProgram = defaultLibrary.makeFunction(name: "passLightGeometry")!
         
         // check TexturedVertex
         let vertexDesc = MTLVertexDescriptor()
-        vertexDesc.attributes[0].format = .Float3
+        vertexDesc.attributes[0].format = .float3
         vertexDesc.attributes[0].offset = 0
         vertexDesc.attributes[0].bufferIndex = 0
-        vertexDesc.attributes[1].format = .Float3
-        vertexDesc.attributes[1].offset = sizeof(Vec3)
+        vertexDesc.attributes[1].format = .float3
+        vertexDesc.attributes[1].offset = MemoryLayout<Vec3>.size
         vertexDesc.attributes[1].bufferIndex = 0
-        vertexDesc.attributes[2].format = .Float2
-        vertexDesc.attributes[2].offset = sizeof(Vec3) * 2
+        vertexDesc.attributes[2].format = .float2
+        vertexDesc.attributes[2].offset = MemoryLayout<Vec3>.size * 2
         vertexDesc.attributes[2].bufferIndex = 0
-        vertexDesc.layouts[0].stepFunction = .PerVertex
-        vertexDesc.layouts[0].stride = sizeof(TexturedVertex)
+        vertexDesc.layouts[0].stepFunction = .perVertex
+        vertexDesc.layouts[0].stride = MemoryLayout<TexturedVertex>.size
         
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
@@ -58,33 +58,33 @@ class PrimitivePlugin : GraphicPlugin {
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.vertexDescriptor = vertexDesc
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = gBuffer.albedoTexture.pixelFormat
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = false
+        pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = false
         pipelineStateDescriptor.colorAttachments[1].pixelFormat = gBuffer.normalTexture.pixelFormat
-        pipelineStateDescriptor.colorAttachments[1].blendingEnabled = false
+        pipelineStateDescriptor.colorAttachments[1].isBlendingEnabled = false
         pipelineStateDescriptor.sampleCount = view.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = gBuffer.depthTexture.pixelFormat
         let depthDescriptor = MTLDepthStencilDescriptor()
-        depthDescriptor.depthWriteEnabled = true
-        depthDescriptor.depthCompareFunction = .Less
+        depthDescriptor.isDepthWriteEnabled = true
+        depthDescriptor.depthCompareFunction = .less
         do {
-            try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
-            depthState = device.newDepthStencilStateWithDescriptor(depthDescriptor)
+            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+            depthState = device.makeDepthStencilState(descriptor: depthDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
         whiteTexture = RenderManager.sharedInstance.createWhiteTexture()
     }
     
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+    override func draw(_ drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
-        let encoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
+        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Primitives Encoder"
         encoder.pushDebugGroup("primitives")
         encoder.setRenderPipelineState(pipelineState)
         encoder.setDepthStencilState(depthState)
-        encoder.setFrontFacingWinding(.CounterClockwise)
-        encoder.setCullMode(.Back)
-        encoder.setFragmentTexture(whiteTexture, atIndex: 0)
+        encoder.setFrontFacing(.counterClockwise)
+        encoder.setCullMode(.back)
+        encoder.setFragmentTexture(whiteTexture, at: 0)
         
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
         for p in self.primitives {
@@ -94,7 +94,7 @@ class PrimitivePlugin : GraphicPlugin {
         encoder.endEncoding()
     }
     
-    override func updateBuffers(syncBufferIndex: Int) {
+    override func updateBuffers(_ syncBufferIndex: Int) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

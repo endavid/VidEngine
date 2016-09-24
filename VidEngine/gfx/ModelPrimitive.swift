@@ -10,9 +10,9 @@ import Metal
 import MetalKit
 
 class ModelPrimitive : Primitive {
-    private var indexBuffer : MTLBuffer!
-    private var vertexBuffer : MTLBuffer!
-    private var numIndices : Int = 0
+    fileprivate var indexBuffer : MTLBuffer!
+    fileprivate var vertexBuffer : MTLBuffer!
+    fileprivate var numIndices : Int = 0
 
     init(vertices: [TexturedVertex], triangles: [UInt16]) {
         super.init(priority: 0, numInstances: 1)
@@ -23,20 +23,20 @@ class ModelPrimitive : Primitive {
         super.init(priority: priority, numInstances: numInstances)
     }
     
-    func initBuffers(vertices: [TexturedVertex], triangles: [UInt16]) {
+    func initBuffers(_ vertices: [TexturedVertex], triangles: [UInt16]) {
         indexBuffer = RenderManager.sharedInstance.createIndexBuffer("model IB", elements: triangles)
         vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("model VB", numElements: vertices.count)
         numIndices = triangles.count
-        let vb = UnsafeMutablePointer<TexturedVertex>(vertexBuffer.contents())
+        let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<vertices.count {
             vb[i] = vertices[i]
         }
     }
 
-    override func draw(encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
+    override func draw(_ encoder: MTLRenderCommandEncoder) {
+        encoder.setVertexBuffer(vertexBuffer, offset: 0, at: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
-        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
-        encoder.drawIndexedPrimitives(.Triangle, indexCount: numIndices, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
+        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, at: 2)
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }
 }

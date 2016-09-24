@@ -15,14 +15,14 @@ class PlatonicSolid {
     var vertices : [float3]
     var faces : [int3]
     var numEdges : Int
-    private var edgeWalk : Int = 0
-    private var start : [Int] = []
-    private var end : [Int] = []
-    private var midpoint : [Int] = []
+    fileprivate var edgeWalk : Int = 0
+    fileprivate var start : [Int] = []
+    fileprivate var end : [Int] = []
+    fileprivate var midpoint : [Int] = []
     
     init(numVertices: Int, numFaces: Int, numEdges: Int) {
-        vertices = [float3](count: numVertices, repeatedValue: float3(0,0,0))
-        faces = [int3](count: numFaces, repeatedValue: int3(0,0,0))
+        vertices = [float3](repeating: float3(0,0,0), count: numVertices)
+        faces = [int3](repeating: int3(0,0,0), count: numFaces)
         self.numEdges = numEdges
     }
     
@@ -104,9 +104,9 @@ class PlatonicSolid {
         // numFacesNew = 4 * faces.count
         edgeWalk = 0
         numEdges = 2 * vertices.count + 3 * faces.count
-        start = [Int](count: numEdges, repeatedValue: 0)
-        end = [Int](count: numEdges, repeatedValue: 0)
-        midpoint = [Int](count: numEdges, repeatedValue: 0)
+        start = [Int](repeating: 0, count: numEdges)
+        end = [Int](repeating: 0, count: numEdges)
+        midpoint = [Int](repeating: 0, count: numEdges)
         let facesOld = faces // it will copy the contents
         for i in 0..<faces.count {
             let f = facesOld[i]
@@ -120,7 +120,7 @@ class PlatonicSolid {
         }
     }
     
-    private func searchMidpoint(indexStart: Int, indexEnd: Int) -> Int {
+    fileprivate func searchMidpoint(_ indexStart: Int, indexEnd: Int) -> Int {
         for i in 0..<edgeWalk {
             if (start[i] == indexStart && end[i] == indexEnd)
                 || (start[i] == indexEnd && end[i] == indexStart) {

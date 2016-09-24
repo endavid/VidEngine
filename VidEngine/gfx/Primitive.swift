@@ -24,11 +24,11 @@ class Primitive {
 
     init(priority: Int, numInstances: Int) {
         self.priority = priority
-        self.perInstanceUniforms = [PerInstanceUniforms](count: numInstances, repeatedValue: PerInstanceUniforms(transform: Transform(), material: Material.white))
+        self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: Material.white), count: numInstances)
         self.uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
     }
     
-    func draw(encoder: MTLRenderCommandEncoder) {
+    func draw(_ encoder: MTLRenderCommandEncoder) {
     }
     
     func queue() {
@@ -42,9 +42,9 @@ class Primitive {
     }
     
     // this gets called when we need to update the buffers used by the GPU
-    func updateBuffers(syncBufferIndex: Int) {
+    func updateBuffers(_ syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        let uniformData = UnsafeMutablePointer<Float>(uniformB +  sizeof(PerInstanceUniforms) * perInstanceUniforms.count * syncBufferIndex)
-        memcpy(uniformData, &perInstanceUniforms, sizeof(PerInstanceUniforms) * perInstanceUniforms.count)
+        let uniformData = uniformB.advanced(by: MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count * syncBufferIndex).assumingMemoryBound(to: Float.self)
+        memcpy(uniformData, &perInstanceUniforms, MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count)
     }
 }

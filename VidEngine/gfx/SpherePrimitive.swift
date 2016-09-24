@@ -10,9 +10,9 @@ import Metal
 import MetalKit
 
 class SpherePrimitive : Primitive {
-    private var indexBuffer : MTLBuffer!
-    private var vertexBuffer : MTLBuffer!
-    private var numIndices : Int = 0
+    fileprivate var indexBuffer : MTLBuffer!
+    fileprivate var vertexBuffer : MTLBuffer!
+    fileprivate var numIndices : Int = 0
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
     init(priority: Int, numInstances: Int, tessellationLevel: Int) {
@@ -20,12 +20,12 @@ class SpherePrimitive : Primitive {
         initBuffers(tessellationLevel)
     }
     
-    private func initBuffers(tessellationLevel: Int) {
+    fileprivate func initBuffers(_ tessellationLevel: Int) {
         let ps = PlatonicSolid.createIcosahedron()
         for _ in 0..<tessellationLevel {
             ps.subdivide()
         }
-        var triangleList = [UInt16](count: ps.faces.count * 3, repeatedValue: 0)
+        var triangleList = [UInt16](repeating: 0, count: ps.faces.count * 3)
         for i in 0..<ps.faces.count {
             triangleList[3 * i] = UInt16(ps.faces[i].x)
             triangleList[3 * i + 1] = UInt16(ps.faces[i].y)
@@ -34,7 +34,7 @@ class SpherePrimitive : Primitive {
         numIndices = ps.faces.count * 3
         indexBuffer = RenderManager.sharedInstance.createIndexBuffer("sphere IB", elements: triangleList)
         vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("sphere VB", numElements: ps.vertices.count)
-        let vb = UnsafeMutablePointer<TexturedVertex>(vertexBuffer.contents())
+        let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<ps.vertices.count {
             let uv = Vec2(0, 0)
             let x = Vec3(ps.vertices[i])
@@ -43,10 +43,10 @@ class SpherePrimitive : Primitive {
         }
     }
     
-    override func draw(encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
+    override func draw(_ encoder: MTLRenderCommandEncoder) {
+        encoder.setVertexBuffer(vertexBuffer, offset: 0, at: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
-        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
-        encoder.drawIndexedPrimitives(.Triangle, indexCount: numIndices, indexType: .UInt16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
+        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, at: 2)
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }    
 }

@@ -39,7 +39,7 @@ struct Quaternion : CustomStringConvertible {
         return conjugate()
     }
     // Can be used the determine Quaternion neighbourhood
-    func dotQ(q: Quaternion) -> Float {
+    func dotQ(_ q: Quaternion) -> Float {
         return dot(q.v, self.v) + self.w * q.w
     }
     /// Returns a rotation matrix (column major, p' = M * p)
@@ -63,14 +63,14 @@ struct Quaternion : CustomStringConvertible {
     }
     
     
-    static func createRotationAxis(angle: Float, unitVector: float3) -> Quaternion {
+    static func createRotationAxis(_ angle: Float, unitVector: float3) -> Quaternion {
         return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
     }
-    static func createRotation(start start: float3, end: float3) -> Quaternion {
+    static func createRotation(start: float3, end: float3) -> Quaternion {
         let up = float3(start.x, start.z, start.y)
         return createRotation(start: start, end: end, up: up)
     }
-    static func createRotation(start start: float3, end: float3, up: float3) -> Quaternion {
+    static func createRotation(start: float3, end: float3, up: float3) -> Quaternion {
         if end.isClose(start, epsilon: 0.01) { // no rotation
             return Quaternion()
         }
@@ -103,12 +103,12 @@ func * (q: Quaternion, v: float3) -> float3 {
 }
 // -----------------------------------------------------------
 /// Linear interpolation
-func Lerp(start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
+func Lerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
     return start * (1-t) + end * t
 }
 // -----------------------------------------------------------
 /// Spherical linear interpolation
-func Slerp(start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
+func Slerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
     var w1 : Float
     var w2 : Float
     

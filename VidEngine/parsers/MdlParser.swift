@@ -12,14 +12,14 @@ import simd
 class MdlParser {
     let path : String
     let scene : Scene
-    let separators = NSCharacterSet.whitespaceCharacterSet()
-    private var lines : [String] = []
-    private var fnMap : [String : (String) -> ()] = [:]
-    private var vertices : [TexturedVertex] = []
-    private var triangles : [UInt16] = []
-    private var spectral : [Int : Float] = [:]
-    private var materials : [String : Material] = [:]
-    private var materialName : String = ""
+    let separators = CharacterSet.whitespaces
+    fileprivate var lines : [String] = []
+    fileprivate var fnMap : [String : (String) -> ()] = [:]
+    fileprivate var vertices : [TexturedVertex] = []
+    fileprivate var triangles : [UInt16] = []
+    fileprivate var spectral : [Int : Float] = [:]
+    fileprivate var materials : [String : Material] = [:]
+    fileprivate var materialName : String = ""
     
     init(path: String) {
         self.path = path
@@ -40,10 +40,10 @@ class MdlParser {
     
     func parse() -> Scene {
         do {
-            let text = try String(contentsOfFile: path, encoding: NSUTF8StringEncoding)
-            lines = text.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+            let text = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
+            lines = text.components(separatedBy: CharacterSet.newlines)
             while !lines.isEmpty {
-                let line = lines.removeAtIndex(0)
+                let line = lines.remove(at: 0)
                 let components = getComponents(line)
                 if components.count > 0 {
                     if let fn = fnMap[components[0]] {
@@ -57,14 +57,14 @@ class MdlParser {
         return scene
     }
     
-    private func getComponents(line: String) -> [String] {
-        var components = line.componentsSeparatedByCharactersInSet(separators)
+    fileprivate func getComponents(_ line: String) -> [String] {
+        var components = line.components(separatedBy: separators)
         components = components.filter { $0 != "" }
         return components
     }
     
-    private func advance() -> String? {
-        let line = lines.removeAtIndex(0)
+    fileprivate func advance() -> String? {
+        let line = lines.remove(at: 0)
         let components = getComponents(line)
         if components.count > 0 {
             if let fn = fnMap[components[0]] {
@@ -76,7 +76,7 @@ class MdlParser {
         return nil
     }
     
-    private func computeNormals() {
+    fileprivate func computeNormals() {
         let numTriangles = triangles.count / 3
         for i in 0..<numTriangles {
             let i0 = Int(triangles[3 * i])
@@ -97,7 +97,7 @@ class MdlParser {
         }
     }
     
-    private func readPlanarMesh(header: String) {
+    fileprivate func readPlanarMesh(_ header: String) {
         var head = ""
         while head != "end" {
             if let h = advance() {
@@ -114,10 +114,10 @@ class MdlParser {
         triangles.removeAll()
     }
     
-    private func readVertexPosition(header: String) {
+    fileprivate func readVertexPosition(_ header: String) {
         var head = ""
         while head != "end" {
-            let line = lines.removeAtIndex(0)
+            let line = lines.remove(at: 0)
             let components = getComponents(line)
             if components.count == 3 {
                 let x = Float(components[0])
@@ -132,7 +132,7 @@ class MdlParser {
         }
     }
     
-    private func readComplexPolygon(header: String) {
+    fileprivate func readComplexPolygon(_ header: String) {
         var head = ""
         while head != "end" {
             if let h = advance() {
@@ -141,24 +141,24 @@ class MdlParser {
         }
     }
     
-    private func readPolygon(header: String) {
+    fileprivate func readPolygon(_ header: String) {
         var polygon : [UInt16] = []
         var components = getComponents(header)
-        var head = components.removeAtIndex(0)
+        var head = components.remove(at: 0)
         while head != "end" {
             if let i = UInt16(head) {
                 polygon.append(i)
             }
             if components.isEmpty {
-                let line = lines.removeAtIndex(0)
+                let line = lines.remove(at: 0)
                 components = getComponents(line)
             }
-            head = components.removeAtIndex(0)
+            head = components.remove(at: 0)
         }
         triangles = triangularizePolygon(polygon)
     }
     
-    private func triangularizePolygon(indices: [UInt16]) -> [UInt16] {
+    fileprivate func triangularizePolygon(_ indices: [UInt16]) -> [UInt16] {
         var tris : [UInt16] = []
         // should apply something like the ear-clipping algorithm, but for now assume we only have quads in our data
         let numTriangles = CeilDiv(indices.count, b: 3)
@@ -173,25 +173,25 @@ class MdlParser {
         return tris
     }
     
-    private func readCamera(header: String) {
-        var c = getComponents(lines.removeAtIndex(0))
+    fileprivate func readCamera(_ header: String) {
+        var c = getComponents(lines.remove(at: 0))
         let eyePoint = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         //scene.camera.transform.position = eyePoint
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         let viewDirection = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         let up = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         scene.camera.setViewDirection(viewDirection, up: up)
         scene.camera.setEyePosition(eyePoint)
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         let focalDistance = Float(c[0]) ?? 0
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         //let width = Float(c[0]) ?? 0
         //let height = Float(c[1]) ?? 0
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         //let centerx = Float(c[0]) ?? 0
         //let centery = Float(c[1]) ?? 0
-        c = getComponents(lines.removeAtIndex(0))
+        c = getComponents(lines.remove(at: 0))
         //let time = Float(c[0]) ?? 0
         scene.camera.setPerspectiveProjection(fov: 45, near: focalDistance, far: 5000)
         var head = ""
@@ -202,8 +202,8 @@ class MdlParser {
         }
     }
     
-    private func readMaterial(header: String) {
-        let split = header.characters.split("\"")
+    fileprivate func readMaterial(_ header: String) {
+        let split = header.characters.split(separator: "\"")
         let name = String(split[1])
         let c = getComponents(header)
         var head = c.last ?? ""
@@ -212,7 +212,7 @@ class MdlParser {
             if let fn = fnMap[head] {
                 fn(line)
             }
-            line = lines.removeAtIndex(0)
+            line = lines.remove(at: 0)
             head = getComponents(line)[0]
         }
         let spectrum = Spectrum(data: self.spectral)
@@ -222,7 +222,7 @@ class MdlParser {
         self.materials[name] = material
     }
     
-    private func readLambertian(header: String) {
+    fileprivate func readLambertian(_ header: String) {
         var head = ""
         while head != "end" {
             if let h = advance() {
@@ -231,7 +231,7 @@ class MdlParser {
         }
     }
     
-    private func readPhongLuminaire(header: String) {
+    fileprivate func readPhongLuminaire(_ header: String) {
         var head = ""
         while head != "end" {
             if let h = advance() {
@@ -240,10 +240,10 @@ class MdlParser {
         }        
     }
     
-    private func readSpectral(header: String) {
+    fileprivate func readSpectral(_ header: String) {
         var head = ""
         while head != "end" {
-            let c = getComponents(lines.removeAtIndex(0))
+            let c = getComponents(lines.remove(at: 0))
             if c.count == 2 {
                 let wavelength = Int(Float(c[0]) ?? 0)
                 let intensity = Float(c[1]) ?? 0
@@ -253,13 +253,13 @@ class MdlParser {
         }
     }
     
-    private func readMaterialName(header: String) {
-        let split = header.characters.split("\"")
+    fileprivate func readMaterialName(_ header: String) {
+        let split = header.characters.split(separator: "\"")
         self.materialName = String(split[1])
         let c = getComponents(header)
         var head = c.last ?? ""
         while head != "end" {
-            let c = getComponents(lines.removeAtIndex(0))
+            let c = getComponents(lines.remove(at: 0))
             head = c[0]
         }
     }

@@ -41,7 +41,7 @@ struct Matrix4 {
         }
     }
     
-    static func CreateFrustum(left left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
+    static func CreateFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
     {
         let m = float4x4([
             float4(2 * near / (right - left), 0, 0, 0),
@@ -51,14 +51,14 @@ struct Matrix4 {
         )
         return Matrix4(m: m)
     }
-    static func Perspective(fov fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
+    static func Perspective(fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
         let size = near * tanf(0.5*DegToRad(fov))
         return Matrix4.CreateFrustum(left: -size, right: size,
                                      bottom: -size / aspectRatio, top: size / aspectRatio,
                                      near: near, far: far)
     }
     // Inverses
-    static func CreateFrustumInverse(left left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
+    static func CreateFrustumInverse(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
     {
         let invNear = 0.5 / near;
         let invNearFar = invNear / far
@@ -70,7 +70,7 @@ struct Matrix4 {
         )
         return Matrix4(m: m)
     }
-    static func PerspectiveInverse(fov fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
+    static func PerspectiveInverse(fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
         let size = near * tanf(0.5*DegToRad(fov))
         return Matrix4.CreateFrustumInverse(left: -size, right: size,
                                      bottom: -size / aspectRatio, top: size / aspectRatio,

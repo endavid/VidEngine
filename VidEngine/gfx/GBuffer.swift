@@ -16,18 +16,22 @@ struct GBuffer {
     let depthTexture : MTLTexture
     let albedoTexture : MTLTexture
     let normalTexture : MTLTexture
+    let lightTexture : MTLTexture // light accumulation buffer
     
     init(device: MTLDevice, size: CGSize) {
         width = Int(size.width)
         height = Int(size.height)
-        let depthDesc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.Depth32Float, width: width, height: height, mipmapped: false)
-        let albedoDesc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.RGBA8Unorm_sRGB, width: width, height: height, mipmapped: false)
-        let normalDesc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(.RGBA16Snorm, width: width, height: height, mipmapped: false)
-        depthTexture = device.newTextureWithDescriptor(depthDesc)
+        let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
+        let albedoDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
+        let normalDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
+        let lightDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
+        depthTexture = device.makeTexture(descriptor: depthDesc)
         depthTexture.label = "GBuffer:Depth"
-        albedoTexture = device.newTextureWithDescriptor(albedoDesc)
+        albedoTexture = device.makeTexture(descriptor: albedoDesc)
         albedoTexture.label = "GBuffer:Albedo"
-        normalTexture = device.newTextureWithDescriptor(normalDesc)
+        normalTexture = device.makeTexture(descriptor: normalDesc)
         normalTexture.label = "GBuffer:Normal"
+        lightTexture = device.makeTexture(descriptor: lightDesc)
+        lightTexture.label = "LightAccumulation"
     }
 }

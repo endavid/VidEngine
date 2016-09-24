@@ -11,10 +11,10 @@ import MetalKit
 
 class CubePrimitive : Primitive {
     // static properties are evaluated lazily :) device should be ready!
-    private static let indexBuffer : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
-    private static let vertexBuffer : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
+    fileprivate static let indexBuffer : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
+    fileprivate static let vertexBuffer : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
     // CCW list of triangles
-    private static let triangleList : [UInt16] = [
+    fileprivate static let triangleList : [UInt16] = [
         0, 1, 2, 1, 3, 2, // left
         5, 4, 6, 5, 6, 7, // right
         11, 8, 10, 9, 8, 11, // up
@@ -34,7 +34,7 @@ class CubePrimitive : Primitive {
     static func createCubeVertexBuffer() -> MTLBuffer {
         let uv0 = Vec2(0, 0)
         let buffer = RenderManager.sharedInstance.createTexturedVertexBuffer("cube VB", numElements: 6 * 4)
-        let vb = UnsafeMutablePointer<TexturedVertex>(buffer.contents())
+        let vb = buffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         let a = 0.5 * Vec3(-1, +1, +1)
         let b = 0.5 * Vec3(-1, +1, -1)
         let c = 0.5 * Vec3(-1, -1, +1)
@@ -76,10 +76,10 @@ class CubePrimitive : Primitive {
         return buffer
     }
     
-    override func draw(encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, atIndex: 0)
+    override func draw(_ encoder: MTLRenderCommandEncoder) {
+        encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, at: 0)
         RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
-        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, atIndex: 2)
-        encoder.drawIndexedPrimitives(.Triangle, indexCount: CubePrimitive.triangleList.count, indexType: .UInt16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
+        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, at: 2)
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: CubePrimitive.triangleList.count, indexType: .uint16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }
 }

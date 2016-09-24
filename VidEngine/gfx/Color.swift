@@ -94,17 +94,17 @@ struct CieXYZ {
 }
 
 class Spectrum {
-    private let data : [Int : Float]
-    private let sortedKeys : [Int]
+    fileprivate let data : [Int : Float]
+    fileprivate let sortedKeys : [Int]
     
     init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
-        sortedKeys = keys.sort { $0 < $1 }
+        sortedKeys = keys.sorted { $0 < $1 }
     }
     
     // linearly interpolate between the closest wavelengths (in nm)
-    func getIntensity(wavelength: Int) -> Float {
+    func getIntensity(_ wavelength: Int) -> Float {
         // exact match
         if let me = data[wavelength] {
             return me
@@ -118,7 +118,7 @@ class Spectrum {
         }
         // interpolate
         let i1 = sortedKeys.binarySearch { wavelength > $0 }
-        let i0 = i1.predecessor()
+        let i0 = (i1 - 1)
         let w1 = sortedKeys[i1]
         let w0 = sortedKeys[i0]
         let alpha = Float(wavelength - w0) / Float(w1 - w0)
