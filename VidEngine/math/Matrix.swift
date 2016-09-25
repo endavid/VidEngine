@@ -9,21 +9,14 @@ import Foundation
 import Accelerate
 import simd
 
-/* 4x4 Matrix, Column-major
- * m[column, row]
- * m[column] returns a Vector4 column
- */
-struct Matrix4 {
-    static let identity : Matrix4 = Matrix4(
-        m: float4x4([
-            float4(1, 0, 0, 0),
-            float4(0, 1, 0, 0),
-            float4(0, 0, 1, 0),
-            float4(0, 0, 0, 1)]))
-    
-    var m = float4x4()
-    
-    
+// column-major
+public extension float4x4 {
+    static let identity = float4x4([
+        float4(1,0,0,0),
+        float4(0,1,0,0),
+        float4(0,0,1,0),
+        float4(0,0,0,1)
+    ])
     subscript(column: Int, row: Int) -> Float {
         get {
             return self[column][row]
@@ -32,16 +25,7 @@ struct Matrix4 {
             self[column][row] = newValue
         }
     }
-    subscript(column: Int) -> float4 {
-        get {
-            return m[column]
-        }
-        set {
-            m[column] = newValue
-        }
-    }
-    
-    static func CreateFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
+    static func createFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
     {
         let m = float4x4([
             float4(2 * near / (right - left), 0, 0, 0),
@@ -49,16 +33,16 @@ struct Matrix4 {
             float4((right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near), -1),
             float4(0, 0, -2 * far * near / (far - near), 0)]
         )
-        return Matrix4(m: m)
+        return m
     }
-    static func Perspective(fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
+    static func perspective(fov: Float,near: Float, far: Float, aspectRatio: Float) -> float4x4 {
         let size = near * tanf(0.5*DegToRad(fov))
-        return Matrix4.CreateFrustum(left: -size, right: size,
+        return float4x4.createFrustum(left: -size, right: size,
                                      bottom: -size / aspectRatio, top: size / aspectRatio,
                                      near: near, far: far)
     }
     // Inverses
-    static func CreateFrustumInverse(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> Matrix4
+    static func createFrustumInverse(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
     {
         let invNear = 0.5 / near;
         let invNearFar = invNear / far
@@ -68,32 +52,12 @@ struct Matrix4 {
             float4(0, 0, 0, (near - far) * invNearFar),
             float4((right + left) * invNear, (top + bottom) * invNear, -1, (far + near) * invNearFar)]
         )
-        return Matrix4(m: m)
+        return m
     }
-    static func PerspectiveInverse(fov: Float,near: Float, far: Float, aspectRatio: Float) -> Matrix4 {
+    static func perspectiveInverse(fov: Float,near: Float, far: Float, aspectRatio: Float) -> float4x4 {
         let size = near * tanf(0.5*DegToRad(fov))
-        return Matrix4.CreateFrustumInverse(left: -size, right: size,
-                                     bottom: -size / aspectRatio, top: size / aspectRatio,
-                                     near: near, far: far)
-    }    
-}
-
-// -----------------------------------------------------------
-// operators
-// -----------------------------------------------------------
-
-func + (left: Matrix4, right: Matrix4) -> Matrix4 {
-    return Matrix4(m: left.m + right.m)
-}
-
-func * (m: Matrix4, v: float4) -> float4 {
-    return m.m * v
-}
-
-func * (v: float4, m: Matrix4) -> float4 {
-    return v * m.m
-}
-
-func * (a: Matrix4, b: Matrix4) -> Matrix4 {
-    return Matrix4(m: a.m * b.m)
+        return float4x4.createFrustumInverse(left: -size, right: size,
+                                            bottom: -size / aspectRatio, top: size / aspectRatio,
+                                            near: near, far: far)
+    }
 }

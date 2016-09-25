@@ -10,8 +10,8 @@ import UIKit
 
 class Camera {
     var transform = Transform()         ///< position of the camera
-    var projectionMatrix = Matrix4()
-    var inverseProjectionMatrix = Matrix4()
+    var projectionMatrix = float4x4()
+    var inverseProjectionMatrix = float4x4()
     var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
     var fov : Float = 45
     var near : Float = 0.1
@@ -22,7 +22,7 @@ class Camera {
             return transform.inverse()
         }
     }
-    var viewTransformMatrix : Matrix4 {
+    var viewTransformMatrix : float4x4 {
         get {
             return self.viewTransform.toMatrix4()
         }
@@ -57,9 +57,9 @@ class Camera {
         self.fov = fov
         self.near = near
         self.far = far
-        projectionMatrix = Matrix4.Perspective(fov: fov, near: near, far: far, aspectRatio: aspectRatio)
+        projectionMatrix = float4x4.perspective(fov: fov, near: near, far: far, aspectRatio: aspectRatio)
         // remember inverse projection as well. Handy for casting rays
-        inverseProjectionMatrix = Matrix4.PerspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
+        inverseProjectionMatrix = float4x4.perspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
     }
 
 }

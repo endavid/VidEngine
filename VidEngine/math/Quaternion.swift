@@ -43,12 +43,12 @@ struct Quaternion : CustomStringConvertible {
         return dot(q.v, self.v) + self.w * q.w
     }
     /// Returns a rotation matrix (column major, p' = M * p)
-    func toMatrix4() -> Matrix4 {
+    func toMatrix4() -> float4x4 {
         let w2 = w * w
         let x2 = v.x * v.x
         let y2 = v.y * v.y
         let z2 = v.z * v.z
-        var m = Matrix4()
+        var m = float4x4()
         m[0,0] = w2 + x2 - y2 - z2
         m[0,1] = 2*v.x*v.y - 2*w*v.z
         m[0,2] = 2*v.x*v.z + 2*w*v.y
