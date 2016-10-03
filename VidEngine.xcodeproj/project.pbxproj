@@ -176,6 +176,27 @@
 			path = geometry;
 			sourceTree = "<group>";
 		};
+		635320CE1DA30C1400A6EF94 /* sdk */ = {
+			isa = PBXGroup;
+			children = (
+				63E622A51D7C373B00CAEF58 /* data */,
+				631A4A731D72EB81000978F6 /* geometry */,
+				63EA89001D1C528D00B97B99 /* gfx */,
+				63EA88FD1D1ABF9000B97B99 /* math */,
+				63E6229C1D78CDD000CAEF58 /* parsers */,
+				635320CF1DA30D1200A6EF94 /* prims */,
+			);
+			path = sdk;
+			sourceTree = "<group>";
+		};
+		635320CF1DA30D1200A6EF94 /* prims */ = {
+			isa = PBXGroup;
+			children = (
+				63D0E6CA1D5F1853004DF37E /* Primitive.swift */,
+			);
+			path = prims;
+			sourceTree = "<group>";
+		};
 		6365986C1D78189A009C5215 /* scenes */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,19 +251,15 @@
 		63DEAA3F1CAC97AA00B6FA98 /* VidEngine */ = {
 			isa = PBXGroup;
 			children = (
-				63E622A51D7C373B00CAEF58 /* data */,
-				63E6229C1D78CDD000CAEF58 /* parsers */,
+				635320CE1DA30C1400A6EF94 /* sdk */,
 				63E622991D78C67D00CAEF58 /* demo */,
 				63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */,
 				63DEAA491CAC97AA00B6FA98 /* Assets.xcassets */,
 				631296491D68BD4500E5979E /* game */,
 				63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */,
-				631A4A731D72EB81000978F6 /* geometry */,
-				63EA89001D1C528D00B97B99 /* gfx */,
 				63DEAA4E1CAC97AA00B6FA98 /* Info.plist */,
 				63DEAA4B1CAC97AA00B6FA98 /* LaunchScreen.storyboard */,
 				63DEAA461CAC97AA00B6FA98 /* Main.storyboard */,
-				63EA88FD1D1ABF9000B97B99 /* math */,
 				63EA89051D1F1E9B00B97B99 /* Resources */,
 				6369BD841D4DF5AC00E75951 /* Shaders */,
 			);
@@ -319,7 +336,6 @@
 				63E622B01D87E23000CAEF58 /* LightSource.swift */,
 				63E622AA1D7C78F400CAEF58 /* Material.swift */,
 				6365986A1D78173C009C5215 /* ModelPrimitive.swift */,
-				63D0E6CA1D5F1853004DF37E /* Primitive.swift */,
 				63D0E6C81D5D1D0C004DF37E /* PrimitivePlugin.swift */,
 				63D0E6C41D532C12004DF37E /* RainPlugin.swift */,
 				63D0E6C61D5D0E96004DF37E /* RenderManager.swift */,
