@@ -181,8 +181,9 @@ class MdlParser {
         let viewDirection = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         c = getComponents(lines.remove(at: 0))
         let up = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
-        scene.camera.setViewDirection(viewDirection, up: up)
-        scene.camera.setEyePosition(eyePoint)
+        let camera = Camera()
+        camera.setViewDirection(viewDirection, up: up)
+        camera.setEyePosition(eyePoint)
         c = getComponents(lines.remove(at: 0))
         let focalDistance = Float(c[0]) ?? 0
         c = getComponents(lines.remove(at: 0))
@@ -193,7 +194,8 @@ class MdlParser {
         //let centery = Float(c[1]) ?? 0
         c = getComponents(lines.remove(at: 0))
         //let time = Float(c[0]) ?? 0
-        scene.camera.setPerspectiveProjection(fov: 45, near: focalDistance, far: 5000)
+        camera.setPerspectiveProjection(fov: 45, near: focalDistance, far: 5000)
+        scene.camera = camera
         var head = ""
         while head != "end" {
             if let h = advance() {

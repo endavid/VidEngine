@@ -30,6 +30,13 @@ struct TexturedVertex
     packed_float2 texCoords [[attribute(2)]];
 };
 
+struct ColoredUnlitTexturedVertex
+{
+    packed_float3 position [[attribute(0)]];
+    packed_float2 texCoords [[attribute(1)]];
+    packed_uchar4 color [[attribute(2)]];
+};
+
 struct Uniforms {
     float elapsedTime;
     float windDirection;

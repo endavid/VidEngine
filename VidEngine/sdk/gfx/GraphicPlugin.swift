@@ -14,7 +14,7 @@ class GraphicPlugin {
     init(device: MTLDevice, view: MTKView) {
     }
     
-    func draw(_ drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         
     }
         

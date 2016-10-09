@@ -74,3 +74,6 @@ func * (v: Vec3, f: Float) -> Vec3 {
 func * (f: Float, v: Vec3) -> Vec3 {
     return v * f
 }
+func + (v0: Vec3, v1: Vec3) -> Vec3 {
+    return Vec3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
+}

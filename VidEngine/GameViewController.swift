@@ -29,6 +29,15 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var currentTouch = float2(0, -2)
     var world : World?
     
+    var camera : Camera {
+        get {
+            return RenderManager.sharedInstance.camera
+        }
+        set {
+            RenderManager.sharedInstance.camera = newValue
+        }
+    }
+    
     // musica maestro!
     fileprivate var player : AVAudioPlayer?
 
@@ -73,7 +82,10 @@ class GameViewController:UIViewController, MTKViewDelegate {
         }
         
         world = World()
-        world?.scene.setCamera(view.bounds)
+        if let cam = world?.scene.camera {
+            camera = cam
+        }
+        camera.setBounds(view.bounds)
     }
     
     fileprivate func setupMotionController() {
@@ -112,7 +124,6 @@ class GameViewController:UIViewController, MTKViewDelegate {
         // could check here for .timedOut to count number of skipped frames
         
         self.dataUpdate()
-        world?.updateBuffers()
         RenderManager.sharedInstance.updateBuffers()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
@@ -133,7 +144,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        world?.scene.setCamera(view.bounds)
+        camera.setBounds(view.bounds)
     }
         
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d

@@ -14,7 +14,6 @@ class PrimitivePlugin : GraphicPlugin {
     fileprivate var primitives : [Primitive] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil
-    fileprivate var whiteTexture : MTLTexture! = nil
     
     func queue(_ primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
@@ -72,10 +71,10 @@ class PrimitivePlugin : GraphicPlugin {
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
-        whiteTexture = RenderManager.sharedInstance.createWhiteTexture()
     }
     
-    override func draw(_ drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+        let whiteTexture = RenderManager.sharedInstance.whiteTexture
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Primitives Encoder"

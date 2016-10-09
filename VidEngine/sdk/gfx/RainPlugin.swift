@@ -53,7 +53,6 @@ class RainPlugin : GraphicPlugin {
             print("Failed to create pipeline state, error \(error)")
         }
         
-        // generate a large enough buffer to allow streaming vertices for 3 semaphore controlled frames
         raindropDoubleBuffer = device.makeBuffer(length: 2 * maxNumberOfRaindrops * sizeOfLineParticle, options: [])
         raindropDoubleBuffer.label = "raindrop buffer"
         noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
@@ -61,8 +60,8 @@ class RainPlugin : GraphicPlugin {
         initVertexBuffer(2000)
     }
     
-    override func draw(_ drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture)
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
         // Check alignment in setVertexBuffer doc

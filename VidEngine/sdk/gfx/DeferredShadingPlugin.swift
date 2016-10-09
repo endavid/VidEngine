@@ -45,9 +45,9 @@ class DeferredShadingPlugin : GraphicPlugin {
         }
     }
     
-    override func draw(_ drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer) {
+    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture)
+        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Deferred Shading Encoder"
         encoder.pushDebugGroup("deferredShading")

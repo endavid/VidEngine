@@ -30,9 +30,16 @@ class RenderManager {
     fileprivate var plugins : [GraphicPlugin] = []
     fileprivate var syncBufferIndex = 0
     fileprivate var _gBuffer : GBuffer! = nil
+    fileprivate var _whiteTexture : MTLTexture! = nil
     var data : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
-
+    var camera : Camera = Camera()
+    
+    var whiteTexture : MTLTexture {
+        get {
+            return _whiteTexture
+        }
+    }
     
     func getPlugin<T>() -> T? {
         for p in plugins {
@@ -65,6 +72,7 @@ class RenderManager {
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
+        _whiteTexture = createWhiteTexture()
         self.initGraphicPlugins(view)
     }
 
@@ -73,11 +81,14 @@ class RenderManager {
         plugins.append(PrimitivePlugin(device: device, view: view))
         plugins.append(DeferredShadingPlugin(device: device, view: view))
         //plugins.append(RainPlugin(device: device, view: view))
+        plugins.append(Primitive2DPlugin(device: device, view: view))
     }
     
     func updateBuffers() {
         let uniformB = uniformBuffer.contents()
         let uniformData = uniformB.advanced(by: MemoryLayout<GraphicsData>.size * syncBufferIndex).assumingMemoryBound(to: Float.self)
+        data.projectionMatrix = camera.projectionMatrix
+        data.viewMatrix = camera.viewTransformMatrix
         memcpy(uniformData, &data, MemoryLayout<GraphicsData>.size)
         for p in plugins {
             p.updateBuffers(syncBufferIndex)
@@ -97,7 +108,7 @@ class RenderManager {
             }
         }
         for plugin in plugins {
-            plugin.draw(currentDrawable, commandBuffer: commandBuffer)
+            plugin.draw(drawable: currentDrawable, commandBuffer: commandBuffer, camera: camera)
         }
         commandBuffer.present(currentDrawable)
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
@@ -105,10 +116,10 @@ class RenderManager {
         commandBuffer.commit()
     }
     
-    func createRenderPassWithColorAttachmentTexture(_ texture: MTLTexture) -> MTLRenderPassDescriptor {
+    func createRenderPassWithColorAttachmentTexture(_ texture: MTLTexture, clear: Bool) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = texture
-        renderPass.colorAttachments[0].loadAction = .clear
+        renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
         renderPass.colorAttachments[0].storeAction = .store
         renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0);
         return renderPass
@@ -156,7 +167,7 @@ class RenderManager {
         return buffer
     }
     
-    func createWhiteTexture() -> MTLTexture {
+    private func createWhiteTexture() -> MTLTexture {
         let data : [UInt32] = [0xffffffff]
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
         let texture = device.makeTexture(descriptor: texDescriptor)

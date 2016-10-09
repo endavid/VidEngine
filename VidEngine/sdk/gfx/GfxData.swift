@@ -9,9 +9,15 @@
 import simd
 
 struct TexturedVertex {
-    let position : Vec3
-    let normal : Vec3
-    let uv : Vec2
+    var position : Vec3
+    var normal : Vec3
+    var uv : Vec2
+}
+
+struct ColoredUnlitTexturedVertex {
+    var position : Vec3
+    var uv : Vec2
+    var color : UInt32
 }
 
 struct PerInstanceUniforms {

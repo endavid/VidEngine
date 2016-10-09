@@ -61,14 +61,7 @@ class GridScene : Scene {
         super.init()
         primitives.append(prim)
     }
-    
-    override func setCamera(_ bounds: CGRect) {
-        let aspect = Float(bounds.width / bounds.height)
-        camera.setPerspectiveProjection(fov: 45, near: 0.01, far: 120, aspectRatio: aspect)
-        let z : Float = aspect >= 1 ? 32 : 16
-        camera.transform.position = float3(0, 0, z)
-    }
-    
+        
     override func update(_ currentTime: CFTimeInterval) {
         for i in 0..<primitives[0].numInstances {
             primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)
