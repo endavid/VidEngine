@@ -11,11 +11,6 @@
 #include "ShaderMath.h"
 using namespace metal;
 
-struct FragmentGBuffer {
-    half4 albedo [[ color(0) ]];
-    float4 normal [[ color(1) ]];
-};
-
 vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
                                 uint iid [[ instance_id ]],
                                 constant TexturedVertex* vdata [[ buffer(0) ]],

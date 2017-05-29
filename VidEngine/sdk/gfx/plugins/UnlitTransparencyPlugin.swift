@@ -73,6 +73,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder.setDepthStencilState(depthState)
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
+        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 1)
         drawPrimitives(primitives, encoder: encoder)
         encoder.setRenderPipelineState(textPipelineState)
         drawPrimitives(textPrimitives, encoder: encoder)

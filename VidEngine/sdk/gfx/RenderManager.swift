@@ -91,6 +91,9 @@ class RenderManager {
             // order is important!
             plugins.append(PrimitivePlugin(device: device, library: library, view: view))
             plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
+            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view))
+            plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view))
+            plugins.append(PostEffectPlugin(device: device, library: library, view: view))
             //plugins.append(RainPlugin(device: device, library: library, view: view))
             plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
         } else {

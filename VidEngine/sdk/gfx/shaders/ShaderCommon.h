@@ -23,6 +23,23 @@ struct VertexGBuffer {
     float2  uv;
 };
 
+struct VertexOIT {
+    float4  position [[position]];
+    float4  color;
+    float2  uv;
+    float   weight;
+};
+
+struct FragmentGBuffer {
+    half4 albedo [[ color(0) ]];
+    float4 normal [[ color(1) ]];
+};
+
+struct FragmentOIT {
+    float4 accumulation [[ color(0) ]];
+    float reveal [[ color(1) ]];
+};
+
 struct TexturedVertex
 {
     packed_float3 position [[attribute(0)]];
