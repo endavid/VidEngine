@@ -11,8 +11,8 @@ import MetalKit
 
 class CubePrimitive : Primitive {
     // static properties are evaluated lazily :) device should be ready!
-    fileprivate static let indexBuffer : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
-    fileprivate static let vertexBuffer : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
+    fileprivate static let cubeIB : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
+    fileprivate static let cubeVB : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
     // CCW list of triangles
     fileprivate static let triangleList : [UInt16] = [
         0, 1, 2, 1, 3, 2, // left
@@ -24,6 +24,9 @@ class CubePrimitive : Primitive {
     
     override init(numInstances: Int) {
         super.init(numInstances: numInstances)
+        vertexBuffer = CubePrimitive.cubeVB
+        let mesh = Mesh(numIndices: CubePrimitive.triangleList.count, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil)
+        submeshes.append(mesh)
     }
     
     static func createCubeIndexBuffer() -> MTLBuffer {

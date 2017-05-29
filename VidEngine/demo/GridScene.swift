@@ -60,8 +60,12 @@ class GridScene : Scene {
         prim.queue()
         super.init()
         primitives.append(prim)
+        camera = Camera()
+        camera?.setViewDirection(float3(0,0,-1), up: float3(0,1,0))
+        camera?.setEyePosition(float3(0,2,20))
+        camera?.setPerspectiveProjection(fov: 40, near: 0.1, far: 100)
     }
-        
+    
     override func update(_ currentTime: CFTimeInterval) {
         for i in 0..<primitives[0].numInstances {
             primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)

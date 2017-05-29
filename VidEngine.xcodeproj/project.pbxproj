@@ -29,6 +29,7 @@
 		632745D51EDC3C0F00435681 /* DeferredLightingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745D01EDC3C0F00435681 /* DeferredLightingPlugin.swift */; };
 		632745D61EDC3C0F00435681 /* GraphicPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745D11EDC3C0F00435681 /* GraphicPlugin.swift */; };
 		632745D81EDC3F8F00435681 /* PostEffectPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745D71EDC3F8F00435681 /* PostEffectPlugin.swift */; };
+		632745DA1EDC436D00435681 /* PlanePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745D91EDC436D00435681 /* PlanePrimitive.swift */; };
 		635320D11DA30EBE00A6EF94 /* Primitive2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635320D01DA30EBE00A6EF94 /* Primitive2D.swift */; };
 		6365986B1D78173C009C5215 /* ModelPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6365986A1D78173C009C5215 /* ModelPrimitive.swift */; };
 		6365986E1D78191A009C5215 /* CornellBox.mdla in Resources */ = {isa = PBXBuildFile; fileRef = 6365986D1D78191A009C5215 /* CornellBox.mdla */; };
@@ -114,6 +115,7 @@
 		632745D01EDC3C0F00435681 /* DeferredLightingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredLightingPlugin.swift; sourceTree = "<group>"; };
 		632745D11EDC3C0F00435681 /* GraphicPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicPlugin.swift; sourceTree = "<group>"; };
 		632745D71EDC3F8F00435681 /* PostEffectPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEffectPlugin.swift; sourceTree = "<group>"; };
+		632745D91EDC436D00435681 /* PlanePrimitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanePrimitive.swift; sourceTree = "<group>"; };
 		635320D01DA30EBE00A6EF94 /* Primitive2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Primitive2D.swift; sourceTree = "<group>"; };
 		6365986A1D78173C009C5215 /* ModelPrimitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelPrimitive.swift; sourceTree = "<group>"; };
 		6365986D1D78191A009C5215 /* CornellBox.mdla */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CornellBox.mdla; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 				635320D01DA30EBE00A6EF94 /* Primitive2D.swift */,
 				631A4A771D72FA86000978F6 /* SpherePrimitive.swift */,
 				6302B9701EDC26B7008DC90D /* TextPrimitive.swift */,
+				632745D91EDC436D00435681 /* PlanePrimitive.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -555,6 +558,7 @@
 				6302B96C1EDC22C9008DC90D /* Texture.swift in Sources */,
 				6312964D1D6A1FD000E5979E /* Spherical.swift in Sources */,
 				637358791DAABE1D00C3FE3B /* Sprites.metal in Sources */,
+				632745DA1EDC436D00435681 /* PlanePrimitive.swift in Sources */,
 				63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */,
 				63D0E6D71D5F77C3004DF37E /* Camera.swift in Sources */,
 				63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */,

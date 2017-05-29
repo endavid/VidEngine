@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import simd
 
 
@@ -15,24 +16,47 @@ class World {
     
     // should be initialized after all the graphics are initialized
     init() {
-        if let path = Bundle.main.path(forResource: "CornellBox", ofType: "mdla") {
+        /*if let path = Bundle.main.path(forResource: "CornellBox", ofType: "mdla") {
             print(path)
             let parser = MdlParser(path: path)
             scene = parser.parse()
             scene.queueAll()
-        } else {
+        } else {*/
             scene = GridScene(numRows: 12, numColumns: 20)
-        }
+        //}
         initSprites()
+        initTextDemo()
     }
     
     private func initSprites() {
         let sprite = SpritePrimitive2D(priority: 0)
         sprite.options = [.alignCenter]
-        sprite.position = Vec3(0, -0.75, 0)
+        sprite.position = Vec3(-0.75, -0.75, 0)
         sprite.width = 40
         sprite.height = 20
         sprite.queue()
+    }
+    
+    private func initTextDemo() {
+        if let fontAtlas = try? FontAtlas.createFontAtlas(font: UIFont.systemFont(ofSize: 14), textureSize: 2048) {
+            let makeItStand = Quaternion.createRotationAxis(.pi / 2, unitVector: float3(1,0,0))
+            let tiltToOneSide = Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0))
+            let prim = TextPrimitive(numInstances: 1, font: fontAtlas, text: "Hello World! :)", fontSizeMeters: 1, enclosingFrame: CGRect(x: -2, y: -5, width: 4, height: 10))
+            prim.transform.position = float3(0,0,12)
+            prim.transform.rotation = tiltToOneSide * makeItStand
+            prim.queue()
+            self.scene?.primitives.append(prim)
+            // debug the font atlas
+            let debugPanel = PlanePrimitive(numInstances: 1)
+            debugPanel.lightingType = .UnlitTransparent
+            debugPanel.transform = Transform(position: float3(0, 1.5, 18), scale: float3(1,1,1), rotation: makeItStand)
+            debugPanel.albedoTexture = fontAtlas.fontTexture
+            debugPanel.queue()
+            self.scene?.primitives.append(debugPanel)
+            
+        } else {
+            NSLog("Error initializing FontAtlas")
+        }
     }
     
     func update(_ currentTime: CFTimeInterval) {
