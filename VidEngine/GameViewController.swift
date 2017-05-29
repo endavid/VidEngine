@@ -103,8 +103,8 @@ class GameViewController:UIViewController, MTKViewDelegate {
                         weakSelf.currentPitch = motion.attitude.pitch
                         //print(motion.attitude)
                     }
-                    if error != nil {
-                        print("\(error)")
+                    if let error = error {
+                        NSLog("setupMotionController: \(error.localizedDescription)")
                     }
                 }
             }

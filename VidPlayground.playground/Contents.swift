@@ -2,10 +2,21 @@
 
 import simd
 
+infix operator >>> : BitwiseShiftPrecedence
+
+func >>> (lhs: Int64, rhs: Int64) -> Int64 {
+    return Int64(bitPattern: UInt64(bitPattern: lhs) >> UInt64(rhs))
+}
+Int64(-7) >> 16
+Int64(-7) >>> 16
+let a : Int64 = 203227649148896
+a >>> 16
+
+
 let nums : [Float] = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-let numsVoid = UnsafeMutablePointer<Void>(nums)
-let numsOffset = UnsafeMutablePointer<Float>(numsVoid + sizeof(Float) * 3)
-numsOffset[0]
+let numsVoid = UnsafeMutableRawPointer(mutating: nums)
+let numsOffset = numsVoid.assumingMemoryBound(to: Float.self)
+numsOffset[2]
 
 struct Vec3 {
     let x : Float
@@ -24,9 +35,9 @@ struct TexturedVertex {
     let uv : Vec2
 }
 
-sizeof(TexturedVertex)
-sizeof(float3)
-sizeof(Vec3)
+MemoryLayout<TexturedVertex>.size
+MemoryLayout<float3>.size
+MemoryLayout<Vec3>.size
 
 struct Pan {
     let rating : Int
@@ -68,15 +79,15 @@ func ==(lhs: Pan, rhs: Pan) -> Bool {
 }
 p1 == p2 // true
 
-var int3Array = [int3](count: 10, repeatedValue: int3(0,0,0))
+var int3Array = [int3](repeating: int3(0,0,0), count: 10)
 var arrayCopy = int3Array
 int3Array[0] = int3(1, 2, 3)
 int3Array[0]
 arrayCopy[0] // unaffected because int3 is not a ref value
 
 let str : String = "mtrl \"la mare\" hello"
-let i0 = str.characters.indexOf("\"")
-let split = str.characters.split("\"")
+let i0 = str.characters.index(of: "\"")
+let split = str.characters.split(separator: "\"")
 let name : String = String(split[1])
 
 
