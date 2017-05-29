@@ -35,12 +35,11 @@ class Primitive2DPlugin : GraphicPlugin {
             }
         }
     }
-    override init(device: MTLDevice, view: MTKView) {
-        super.init(device: device, view: view)
+    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+        super.init(device: device, library: library, view: view)
         
-        let defaultLibrary = device.newDefaultLibrary()!
-        let fragmentProgram = defaultLibrary.makeFunction(name: "passThroughTexturedFragment")!
-        let vertexProgram = defaultLibrary.makeFunction(name: "passSprite2DVertex")!
+        let fragmentProgram = library.makeFunction(name: "passThroughTexturedFragment")!
+        let vertexProgram = library.makeFunction(name: "passSprite2DVertex")!
         
         // check ColoredUnlitTexturedVertex
         let vertexDesc = MTLVertexDescriptor()

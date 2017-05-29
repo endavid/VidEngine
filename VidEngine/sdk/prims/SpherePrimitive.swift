@@ -9,44 +9,71 @@
 import Metal
 import MetalKit
 
-class SpherePrimitive : Primitive {
-    fileprivate var indexBuffer : MTLBuffer!
-    fileprivate var vertexBuffer : MTLBuffer!
-    fileprivate var numIndices : Int = 0
+public struct SphereDescriptor {
+    public let isRegularGrid: Bool
+    public let isInterior: Bool
+    public let tessellationLevel: Int // only for non-regular grids
+    public let widthSegments: Int // only for regular grids
+    public let heightSegments: Int // only for regular grids
+    public init(isInterior: Bool, tessellationLevel: Int) {
+        self.isRegularGrid = false
+        self.isInterior = isInterior
+        self.tessellationLevel = tessellationLevel
+        self.widthSegments = 0
+        self.heightSegments = 0
+    }
+    public init(isInterior: Bool, widthSegments: Int, heightSegments: Int) {
+        self.isRegularGrid = true
+        self.isInterior = isInterior
+        self.tessellationLevel = 0
+        self.widthSegments = widthSegments
+        self.heightSegments = heightSegments
+    }
+}
+
+/// A 3D object that represents a sphere.
+public class SpherePrimitive : Primitive {
+    // this could probably be a series of flags, hasInterior & hasExterior
+    fileprivate let isInterior : Bool
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
-    init(priority: Int, numInstances: Int, tessellationLevel: Int) {
-        super.init(priority: priority, numInstances: numInstances)
-        initBuffers(tessellationLevel)
+    public init(numInstances: Int, descriptor: SphereDescriptor) {
+        self.isInterior = descriptor.isInterior
+        super.init(numInstances: numInstances)
+        if descriptor.isRegularGrid {
+            let ss = SubdivisionSphere(widthSegments: descriptor.widthSegments, heightSegments: descriptor.heightSegments)
+            initBuffers(vertices: ss.vertices, faces: ss.faces, uvs: ss.uvs)
+        }
+        else {
+            let ps = PlatonicSolid.createIcosahedron()
+            for _ in 0..<descriptor.tessellationLevel {
+                ps.subdivide()
+            }
+            let uvs = ps.computeTexCoordsFromSphericalProjection()
+            initBuffers(vertices: ps.vertices, faces: ps.faces, uvs: uvs)
+        }
     }
     
-    fileprivate func initBuffers(_ tessellationLevel: Int) {
-        let ps = PlatonicSolid.createIcosahedron()
-        for _ in 0..<tessellationLevel {
-            ps.subdivide()
+    fileprivate func initBuffers(vertices: [float3], faces: [int3], uvs: [Vec2]) {
+        var triangleList = [UInt16](repeating: 0, count: faces.count * 3)
+        for i in 0..<faces.count {
+            // isInterior -> CW winding
+            let a = isInterior ? 3 * i + 2 : 3 * i
+            let b = 3 * i + 1
+            let c = isInterior ? 3 * i : 3 * i + 2
+            triangleList[a] = UInt16(faces[i].x)
+            triangleList[b] = UInt16(faces[i].y)
+            triangleList[c] = UInt16(faces[i].z)
         }
-        var triangleList = [UInt16](repeating: 0, count: ps.faces.count * 3)
-        for i in 0..<ps.faces.count {
-            triangleList[3 * i] = UInt16(ps.faces[i].x)
-            triangleList[3 * i + 1] = UInt16(ps.faces[i].y)
-            triangleList[3 * i + 2] = UInt16(ps.faces[i].z)
-        }
-        numIndices = ps.faces.count * 3
-        indexBuffer = RenderManager.sharedInstance.createIndexBuffer("sphere IB", elements: triangleList)
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("sphere VB", numElements: ps.vertices.count)
+        let numIndices = faces.count * 3
+        let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("sphere IB", elements: triangleList)
+        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("sphere VB", numElements: vertices.count)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
-        for i in 0..<ps.vertices.count {
-            let uv = Vec2(0, 0)
-            let x = Vec3(ps.vertices[i])
-            let n = Vec3(normalize(ps.vertices[i]))
-            vb[i] = TexturedVertex(position: x, normal: n, uv: uv)
+        for i in 0..<vertices.count {
+            let x = Vec3(vertices[i])
+            let n = Vec3((isInterior ? -1.0 : 1.0) * normalize(vertices[i]))
+            vb[i] = TexturedVertex(position: x, normal: n, uv: uvs[i])
         }
+        submeshes.append(Mesh(numIndices: numIndices, indexBuffer: indexBuffer, albedoTexture: nil))
     }
-    
-    override func draw(_ encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(vertexBuffer, offset: 0, at: 0)
-        RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
-        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, at: 2)
-        encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
-    }    
 }

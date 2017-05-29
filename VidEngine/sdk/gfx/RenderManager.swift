@@ -26,14 +26,16 @@ class RenderManager {
     static let sharedInstance = RenderManager()
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let NumSyncBuffers = 3
-    fileprivate var uniformBuffer: MTLBuffer! = nil
+    fileprivate var graphicsDataBuffer: MTLBuffer! = nil
     fileprivate var plugins : [GraphicPlugin] = []
     fileprivate var syncBufferIndex = 0
     fileprivate var _gBuffer : GBuffer! = nil
     fileprivate var _whiteTexture : MTLTexture! = nil
-    var data : GraphicsData = GraphicsData()
+    fileprivate var _fullScreenQuad : FullScreenQuad! = nil
+    var graphicsData : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
     var camera : Camera = Camera()
+    let textureLibrary = TextureLibrary()
     
     var whiteTexture : MTLTexture {
         get {
@@ -62,34 +64,46 @@ class RenderManager {
         }
     }
     
-    func setUniformBuffer(_ encoder: MTLRenderCommandEncoder, atIndex: Int) {
-        encoder.setVertexBuffer(uniformBuffer, offset: uniformBufferOffset, at: atIndex)
+    var fullScreenQuad : FullScreenQuad {
+        get {
+            return _fullScreenQuad
+        }
+    }
+    
+    func setGraphicsDataBuffer(_ encoder: MTLRenderCommandEncoder, atIndex: Int) {
+        encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, at: atIndex)
     }
     
     func initManager(_ device: MTLDevice, view: MTKView) {
-        uniformBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * RenderManager.NumSyncBuffers, options: [])
-        uniformBuffer.label = "uniforms"
+        graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * RenderManager.NumSyncBuffers, options: [])
+        graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
         _whiteTexture = createWhiteTexture()
+        _fullScreenQuad = FullScreenQuad(device: device)
         self.initGraphicPlugins(view)
     }
 
     fileprivate func initGraphicPlugins(_ view: MTKView) {
-        // order is important!
-        plugins.append(PrimitivePlugin(device: device, view: view))
-        plugins.append(DeferredShadingPlugin(device: device, view: view))
-        //plugins.append(RainPlugin(device: device, view: view))
-        plugins.append(Primitive2DPlugin(device: device, view: view))
+        // @todo library should come from a different bundle when making the engine a Framework
+        if let library = device.newDefaultLibrary() {
+            // order is important!
+            plugins.append(PrimitivePlugin(device: device, library: library, view: view))
+            plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
+            //plugins.append(RainPlugin(device: device, library: library, view: view))
+            plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
+        } else {
+            NSLog("initGraphicPlugins: failed to make shader library")
+        }
     }
     
     func updateBuffers() {
-        let uniformB = uniformBuffer.contents()
+        let uniformB = graphicsDataBuffer.contents()
         let uniformData = uniformB.advanced(by: MemoryLayout<GraphicsData>.size * syncBufferIndex).assumingMemoryBound(to: Float.self)
-        data.projectionMatrix = camera.projectionMatrix
-        data.viewMatrix = camera.viewTransformMatrix
-        memcpy(uniformData, &data, MemoryLayout<GraphicsData>.size)
+        graphicsData.projectionMatrix = camera.projectionMatrix
+        graphicsData.viewMatrix = camera.viewTransformMatrix
+        memcpy(uniformData, &graphicsData, MemoryLayout<GraphicsData>.size)
         for p in plugins {
             p.updateBuffers(syncBufferIndex)
         }
@@ -123,6 +137,38 @@ class RenderManager {
         renderPass.colorAttachments[0].storeAction = .store
         renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0);
         return renderPass
+    }
+    
+    
+    func createUnlitRenderPass() -> MTLRenderPassDescriptor {
+        // load color and depth, assuming they've been cleared before
+        let rp = MTLRenderPassDescriptor()
+        rp.colorAttachments[0].texture = gBuffer.shadedTexture
+        rp.colorAttachments[0].loadAction = .load
+        rp.colorAttachments[0].storeAction = .store
+        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0)
+        rp.depthAttachment.texture = gBuffer.depthTexture
+        rp.depthAttachment.loadAction = .load
+        rp.depthAttachment.storeAction = .store
+        rp.depthAttachment.clearDepth = 1.0
+        return rp
+    }
+    
+    // Transparency
+    func createOITRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
+        let rp = MTLRenderPassDescriptor()
+        rp.colorAttachments[0].texture = gBuffer.lightTexture
+        rp.colorAttachments[0].loadAction = clear ? .clear : .load
+        rp.colorAttachments[0].storeAction = .store
+        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1) // important for OIT!
+        rp.colorAttachments[1].texture = gBuffer.revealTexture
+        rp.colorAttachments[1].loadAction = clear ? .clear : .load
+        rp.colorAttachments[1].storeAction = .store
+        rp.colorAttachments[1].clearColor = MTLClearColorMake(0, 0, 0, 1)
+        rp.depthAttachment.texture = gBuffer.depthTexture
+        rp.depthAttachment.loadAction = .load
+        rp.depthAttachment.storeAction = .dontCare
+        return rp
     }
     
     func createRenderPassWithGBuffer(_ clear: Bool) -> MTLRenderPassDescriptor {

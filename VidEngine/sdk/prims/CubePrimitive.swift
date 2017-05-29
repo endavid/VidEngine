@@ -22,8 +22,8 @@ class CubePrimitive : Primitive {
         16, 18, 17, 18, 19, 17, // front
         23, 20, 21, 23, 21, 22] // back
     
-    override init(priority: Int, numInstances: Int) {
-        super.init(priority: priority, numInstances: numInstances)
+    override init(numInstances: Int) {
+        super.init(numInstances: numInstances)
     }
     
     static func createCubeIndexBuffer() -> MTLBuffer {
@@ -74,12 +74,5 @@ class CubePrimitive : Primitive {
         vb[22] = TexturedVertex(position: d, normal: back, uv: uv0)
         vb[23] = TexturedVertex(position: b, normal: back, uv: uv0)
         return buffer
-    }
-    
-    override func draw(_ encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(CubePrimitive.vertexBuffer, offset: 0, at: 0)
-        RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 1)
-        encoder.setVertexBuffer(self.uniformBuffer, offset: 0, at: 2)
-        encoder.drawIndexedPrimitives(type: .triangle, indexCount: CubePrimitive.triangleList.count, indexType: .uint16, indexBuffer: CubePrimitive.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }
 }

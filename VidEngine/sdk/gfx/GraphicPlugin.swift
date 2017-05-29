@@ -11,7 +11,7 @@ import MetalKit
 
 class GraphicPlugin {
     
-    init(device: MTLDevice, view: MTKView) {
+    init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
     }
     
     func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {

@@ -10,7 +10,7 @@ import simd
 
 // http://student.ulb.ac.be/~claugero/sphere/index.html
 
-
+/// Creates a platonic solid. Used for creating spheres with different tesselation levels.
 class PlatonicSolid {
     var vertices : [float3]
     var faces : [int3]
@@ -118,6 +118,16 @@ class PlatonicSolid {
             faces.append(int3(ca, bc, f.z))
             faces.append(int3(ab, f.y, bc))
         }
+    }
+    
+    func computeTexCoordsFromSphericalProjection() -> [Vec2] {
+        var uvs : [Vec2] = []
+        for v in vertices {
+            let sp = Spherical(v: v)
+            let uv = Vec2(1.0 - (sp.φ * 0.5) / .pi, sp.θ / .pi)
+            uvs.append(uv)
+        }
+        return uvs
     }
     
     fileprivate func searchMidpoint(_ indexStart: Int, indexEnd: Int) -> Int {

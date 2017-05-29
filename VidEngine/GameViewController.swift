@@ -68,6 +68,16 @@ class GameViewController:UIViewController, MTKViewDelegate {
         timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
         
         setupMotionController()
+        //setupBgm()
+        
+        world = World()
+        if let cam = world?.scene.camera {
+            camera = cam
+        }
+        camera.setBounds(view.bounds)
+    }
+    
+    fileprivate func setupBgm() {
         do {
             // Removed deprecated use of AVAudioSessionDelegate protocol
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
@@ -75,17 +85,11 @@ class GameViewController:UIViewController, MTKViewDelegate {
             let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
             player = try AVAudioPlayer(contentsOf: music)
             player?.numberOfLoops = -1
-            //player?.play()
+            player?.play()
         }
-        catch let error as NSError {
-            print(error.localizedDescription)
+        catch let error {
+            NSLog("setupBgm: \(error.localizedDescription)")
         }
-        
-        world = World()
-        if let cam = world?.scene.camera {
-            camera = cam
-        }
-        camera.setBounds(view.bounds)
     }
     
     fileprivate func setupMotionController() {
@@ -112,9 +116,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
     
     fileprivate func dataUpdate() {
-        RenderManager.sharedInstance.data.elapsedTime = Float(elapsedTimeGPU)
-        RenderManager.sharedInstance.data.currentPitch = Float(-sin(currentPitch))
-        RenderManager.sharedInstance.data.currentTouch = currentTouch
+        RenderManager.sharedInstance.graphicsData.elapsedTime = Float(elapsedTimeGPU)
+        RenderManager.sharedInstance.graphicsData.currentPitch = Float(-sin(currentPitch))
+        RenderManager.sharedInstance.graphicsData.currentTouch = currentTouch
     }
     
     func draw(in view: MTKView) {

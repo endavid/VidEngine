@@ -9,7 +9,16 @@
 import Foundation
 import simd
 
-struct Material {
+public struct Material {
     static let white = Material(diffuse: LinearRGBA(rgb: float3(1,1,1)))
     var diffuse : LinearRGBA
+}
+
+/// Used to select the rendering phase.
+public enum LightingType {
+    case
+    /// Opaque lit objects.
+    LitOpaque,
+    /// Unlit transparent objects.
+    UnlitTransparent
 }

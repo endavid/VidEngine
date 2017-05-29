@@ -20,13 +20,12 @@ class RainPlugin : GraphicPlugin {
     fileprivate var particleCount = 0
     fileprivate var doubleBufferIndex = 0
 
-    override init(device: MTLDevice, view: MTKView) {
-        super.init(device: device, view: view)
+    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+        super.init(device: device, library: library, view: view)
         
-        let defaultLibrary = device.newDefaultLibrary()!
-        let fragmentProgram = defaultLibrary.makeFunction(name: "passThroughFragment")!
-        let vertexRaindropProgram = defaultLibrary.makeFunction(name: "passVertexRaindrop")!
-        let updateRaindropProgram = defaultLibrary.makeFunction(name: "updateRaindrops")!
+        let fragmentProgram = library.makeFunction(name: "passThroughFragment")!
+        let vertexRaindropProgram = library.makeFunction(name: "passVertexRaindrop")!
+        let updateRaindropProgram = library.makeFunction(name: "updateRaindrops")!
         
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexRaindropProgram
@@ -75,7 +74,7 @@ class RainPlugin : GraphicPlugin {
         encoder.setRenderPipelineState(updateState)
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, at: 0)
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), at: 1)
-        RenderManager.sharedInstance.setUniformBuffer(encoder, atIndex: 2)
+        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 2)
         encoder.setVertexTexture(noiseTexture, at: 0)
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
         encoder.popDebugGroup()

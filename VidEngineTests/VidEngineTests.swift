@@ -45,23 +45,6 @@ class VidEngineTests: XCTestCase {
         unsafe.deallocate(capacity: 2)
     }
     
-    func testMatrix4() {
-        var m = Matrix4()
-        XCTAssertEqual(0, m[3,3])
-        XCTAssertEqual(4 * 4 * 4, MemoryLayout<Matrix4>.size)
-        // [column, row], so this sets the translation
-        m[3,0] = 1
-        m[3,1] = 3
-        m[3,2] = 9
-        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 4 * 4)
-        memcpy(unsafe, &m, MemoryLayout<Matrix4>.size)
-        // check that indeed the data is stored in column-major order
-        XCTAssertEqual(1, unsafe[12])
-        XCTAssertEqual(3, unsafe[13])
-        XCTAssertEqual(9, unsafe[14])
-        unsafe.deallocate(capacity: 4 * 4)
-    }
-    
     func testSpherical() {
         let sph = Spherical(v: float3(0,1,0))
         XCTAssertEqual(sph.r, 1)

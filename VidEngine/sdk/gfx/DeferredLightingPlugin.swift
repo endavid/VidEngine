@@ -25,8 +25,8 @@ class DeferredLightingPlugin : GraphicPlugin {
             lights.remove(at: i)
         }
     }
-    override init(device: MTLDevice, view: MTKView) {
-        super.init(device: device, view: view)
+    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+        super.init(device: device, library: library, view: view)
     }
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
