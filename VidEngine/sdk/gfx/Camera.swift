@@ -74,10 +74,10 @@ class Camera {
     func worldFromScreenCoordinates(x: Float, y: Float) -> float3 {
         let screenHalfway = float4(x, y, 0.75, 1)
         let viewW = inverseProjectionMatrix * screenHalfway
-        let mierda = inverseProjectionMatrix * transform.toMatrix4() * screenHalfway
-        //let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
-        //let worldHalfWay = transform * viewHalfWay
-        let worldHalfWay = float3(mierda.x, mierda.y, mierda.z) * (1.0 / mierda.w)
+        //let mierda = transform.toMatrix4() * inverseProjectionMatrix * screenHalfway
+        //let worldHalfWay = float3(mierda.x, mierda.y, mierda.z) * (1.0 / mierda.w)
+        let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
+        let worldHalfWay = transform * viewHalfWay
         print("\(transform.position) \(viewW)")
         return worldHalfWay
     }

@@ -17,14 +17,6 @@ public extension float4x4 {
         float4(0,0,1,0),
         float4(0,0,0,1)
     ])
-    subscript(column: Int, row: Int) -> Float {
-        get {
-            return self[column][row]
-        }
-        set {
-            self[column][row] = newValue
-        }
-    }
     static func createFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
     {
         let m = float4x4([

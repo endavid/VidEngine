@@ -79,7 +79,9 @@ class VidEngineTests: XCTestCase {
         XCTAssertLessThanOrEqual(distance(p1, float3(1.82843, 14.0, -6.57107)), epsilon)
         let p2 = t.inverse() * p1
         XCTAssertLessThanOrEqual(distance(p2, p0), epsilon)
-        let p2w = t.inverse().toMatrix4() * float4(p1.x, p1.y, p1.z, 1.0)
+        let m = t.inverse().toMatrix4()
+        XCTAssertLessThanOrEqual(abs(m[3,3]-1), epsilon)
+        let p2w = m * float4(p1.x, p1.y, p1.z, 1.0)
         print(p2w)
         XCTAssertLessThanOrEqual(distance(p2w, float4(p0.x, p0.y, p0.z, 1.0)), epsilon)
     }

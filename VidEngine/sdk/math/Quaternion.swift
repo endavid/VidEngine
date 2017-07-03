@@ -44,19 +44,23 @@ struct Quaternion : CustomStringConvertible {
     }
     /// Returns a rotation matrix (column major, p' = M * p)
     func toMatrix4() -> float4x4 {
+        // 1 - 2.0f*qy*qy - 2.0f*qz*qz, 2*qx*qy - 2*qz*qw, 2*qx*qz + 2*qy*qw, 0.0f,
+        // 2*qx*qy + 2*qz*qw, 1 - 2*qx*qx - 2*qz*qz, 2*qy*qz - 2*qx*qw, 0.0f,
+        // 2*qx*qz - 2*qy*qw, 2*qy*qz + 2*qx*qw, 1 - 2*qx*qx - 2*qy*qy, 0.0f,
+        // 0.0f, 0.0f, 0.0f, 1.0f
         let w2 = w * w
-        let x2 = v.x * v.x
-        let y2 = v.y * v.y
-        let z2 = v.z * v.z
+        let x2 = q.x * q.x
+        let y2 = q.y * q.y
+        let z2 = q.z * q.z
         var m = float4x4()
         m[0,0] = w2 + x2 - y2 - z2
-        m[0,1] = 2*v.x*v.y - 2*w*v.z
-        m[0,2] = 2*v.x*v.z + 2*w*v.y
-        m[1,0] = 2*v.x*v.y + 2*w*v.z
+        m[1,0] = 2*q.x*q.y - 2*w*q.z
+        m[2,0] = 2*q.x*q.z + 2*w*q.y
+        m[0,1] = 2*q.x*q.y + 2*w*q.z
         m[1,1] = w2 - x2 + y2 - z2
-        m[1,2] = 2*v.y*v.z - 2*w*v.x
-        m[2,0] = 2*v.x*v.z - 2*w*v.y
-        m[2,1] = 2*v.y*v.z + 2*w*v.x
+        m[2,1] = 2*q.y*q.z - 2*w*q.x
+        m[0,2] = 2*q.x*q.z - 2*w*q.y
+        m[1,2] = 2*q.y*q.z + 2*w*q.x
         m[2,2] = w2 - x2 - y2 + z2
         m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
         return m
