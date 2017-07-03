@@ -17,6 +17,15 @@ class Camera {
     var near : Float = 0.1
     var far : Float = 100
     
+    var rotation : Quaternion {
+        get {
+            return transform.rotation
+        }
+        set {
+            transform.rotation = newValue
+        }
+    }
+    
     var viewTransform : Transform {
         get {
             return transform.inverse()
@@ -62,4 +71,14 @@ class Camera {
         inverseProjectionMatrix = float4x4.perspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
     }
 
+    func worldFromScreenCoordinates(x: Float, y: Float) -> float3 {
+        let screenHalfway = float4(x, y, 0.75, 1)
+        let viewW = inverseProjectionMatrix * screenHalfway
+        let mierda = inverseProjectionMatrix * transform.toMatrix4() * screenHalfway
+        //let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
+        //let worldHalfWay = transform * viewHalfWay
+        let worldHalfWay = float3(mierda.x, mierda.y, mierda.z) * (1.0 / mierda.w)
+        print("\(transform.position) \(viewW)")
+        return worldHalfWay
+    }
 }

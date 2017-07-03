@@ -8,7 +8,7 @@
 
 import simd
 
-class Spherical {
+public class Spherical {
     var r       : Float = 1     ///< Radial distance
     var θ       : Float = 0     ///< Inclination (theta) {0,π}
     var φ       : Float = 0     ///< Azimuth (phi) {0,2π}

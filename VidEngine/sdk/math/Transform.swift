@@ -21,11 +21,23 @@ public struct Transform {
         let tt = float4(position.x, position.y, position.z, 1.0)
         return float4x4([xx, yy, zz, tt])
     }
-    func inverse() -> Transform {
+    public func inverse() -> Transform {
+        let r = rotation.inverse()
+        let s = scale.inverse()
         return Transform(
-            position: -self.position,
-            scale: self.scale.inverse(),
-            rotation: self.rotation.inverse())
+            position: r * (s * -self.position),
+            scale: s,
+            rotation: r)
     }
 }
 
+public func * (t1: Transform, t2: Transform) -> Transform {
+    let q = t1.rotation * t2.rotation
+    let s = t1.scale * t2.scale
+    let x = t1.scale * (t1.rotation * t2.position) + t1.position
+    return Transform(position: x, scale: s, rotation: q)
+}
+
+public func * (t: Transform, v: float3) -> float3 {
+    return t.position + t.rotation * (t.scale * v)
+}

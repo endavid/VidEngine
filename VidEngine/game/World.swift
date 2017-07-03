@@ -25,7 +25,7 @@ class World {
             scene = GridScene(numRows: 12, numColumns: 20)
         //}
         initSprites()
-        initTextDemo()
+        //initTextDemo()
     }
     
     private func initSprites() {

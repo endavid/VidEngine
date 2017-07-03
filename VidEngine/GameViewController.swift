@@ -28,6 +28,9 @@ class GameViewController:UIViewController, MTKViewDelegate {
     var currentPitch : Double = 0
     var currentTouch = float2(0, -2)
     var world : World?
+    private var cameraAngleX: Float = 0
+    private var cameraAngleY: Float = 0
+    private var debugCube: CubePrimitive!
     
     var camera : Camera {
         get {
@@ -75,6 +78,15 @@ class GameViewController:UIViewController, MTKViewDelegate {
             camera = cam
         }
         camera.setBounds(view.bounds)
+        
+        let tapGest = UITapGestureRecognizer(target: self, action: #selector(GameViewController.screenTap(_:)))
+        tapGest.numberOfTouchesRequired = 1
+        tapGest.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tapGest)
+        
+        debugCube = CubePrimitive(numInstances: 1)
+        debugCube.transform.scale = float3(0.1,0.1,0.1)
+        debugCube.queue()
     }
     
     fileprivate func setupBgm() {
@@ -175,9 +187,31 @@ class GameViewController:UIViewController, MTKViewDelegate {
             currentTouch.x = 2 * Float(loc.x / view.bounds.width) - 1
             currentTouch.y = 1 - 2 * Float((loc.y + overTheFinger) / view.bounds.height)
         }
-    }    
+        if let touch = touches.first {
+            let p0 = touch.previousLocation(in: self.view)
+            let p1 = touch.location(in: self.view)
+            // normalize delta using the FOV
+            let fov = 2.0 * DegToRad(camera.fov)
+            let x = fov * Float((p1.x - p0.x) / self.view.frame.width)
+            let y = fov * Float((p1.y - p0.y) / self.view.frame.height)
+            cameraAngleX += x
+            cameraAngleY += y
+            let qx = Quaternion.createRotationAxis(cameraAngleX, unitVector: float3(0,1,0))
+            let qy = Quaternion.createRotationAxis(cameraAngleY, unitVector: float3(1,0,0))
+            camera.transform.rotation = qy * qx
+        }
+    }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         currentTouch.x = 0
         currentTouch.y = -2
+    }
+    
+    func screenTap(_ sender: UITapGestureRecognizer) {
+        let p = sender.location(in: self.view)
+        let x = Float(2.0 * p.x / self.view.frame.width - 1.0)
+        let y = Float(-2.0 * p.y / self.view.frame.height + 1.0)
+        let w = camera.worldFromScreenCoordinates(x: x, y: y)
+        print("screenTap: \(x),\(y) \(w)")
+        debugCube.transform.position = w
     }
 }

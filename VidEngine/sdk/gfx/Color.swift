@@ -107,7 +107,7 @@ struct CieXYZ {
     }
 }
 
-class Spectrum {
+public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
     

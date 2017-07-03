@@ -14,14 +14,12 @@
 		6302B9731EDC2AA1008DC90D /* FullScreenQuad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9721EDC2AA1008DC90D /* FullScreenQuad.swift */; };
 		6302B9751EDC2D55008DC90D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9741EDC2D55008DC90D /* Errors.swift */; };
 		6302B9771EDC31E7008DC90D /* SubdivisonSphere.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9761EDC31E7008DC90D /* SubdivisonSphere.swift */; };
-		6302B9781EDC3330008DC90D /* Spherical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6312964C1D6A1FD000E5979E /* Spherical.swift */; };
 		6302B97A1EDC3A03008DC90D /* ResolveWeightBlendedTransparency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9791EDC3A03008DC90D /* ResolveWeightBlendedTransparency.swift */; };
 		6302B97C1EDC3A60008DC90D /* Transparency.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6302B97B1EDC3A60008DC90D /* Transparency.metal */; };
 		6302B97E1EDC3A8E008DC90D /* TextRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6302B97D1EDC3A8E008DC90D /* TextRendering.metal */; };
 		6312964B1D68BD8A00E5979E /* World.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6312964A1D68BD8A00E5979E /* World.swift */; };
 		6312964D1D6A1FD000E5979E /* Spherical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6312964C1D6A1FD000E5979E /* Spherical.swift */; };
 		631A4A751D72EBB7000978F6 /* PlatonicSolid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631A4A741D72EBB7000978F6 /* PlatonicSolid.swift */; };
-		631A4A761D72EBB7000978F6 /* PlatonicSolid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631A4A741D72EBB7000978F6 /* PlatonicSolid.swift */; };
 		631A4A781D72FA86000978F6 /* SpherePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631A4A771D72FA86000978F6 /* SpherePrimitive.swift */; };
 		632745D21EDC3C0F00435681 /* PrimitivePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745CD1EDC3C0F00435681 /* PrimitivePlugin.swift */; };
 		632745D31EDC3C0F00435681 /* RainPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632745CE1EDC3C0F00435681 /* RainPlugin.swift */; };
@@ -45,13 +43,8 @@
 		63D0E6D31D5F746B004DF37E /* Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D21D5F746B004DF37E /* Vector.swift */; };
 		63D0E6D51D5F7499004DF37E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D41D5F7499004DF37E /* Matrix.swift */; };
 		63D0E6D71D5F77C3004DF37E /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D61D5F77C3004DF37E /* Camera.swift */; };
-		63D0E6D91D5FBA06004DF37E /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EA88FE1D1ABFAF00B97B99 /* Math.swift */; };
-		63D0E6DA1D5FBA06004DF37E /* Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D21D5F746B004DF37E /* Vector.swift */; };
-		63D0E6DB1D5FBA06004DF37E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6D41D5F7499004DF37E /* Matrix.swift */; };
 		63D0E6DD1D5FD96F004DF37E /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6DC1D5FD96F004DF37E /* Quaternion.swift */; };
-		63D0E6DE1D5FD96F004DF37E /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6DC1D5FD96F004DF37E /* Quaternion.swift */; };
 		63D0E6E01D5FD986004DF37E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6DF1D5FD986004DF37E /* Transform.swift */; };
-		63D0E6E11D5FD986004DF37E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D0E6DF1D5FD986004DF37E /* Transform.swift */; };
 		63DEAA411CAC97AA00B6FA98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA401CAC97AA00B6FA98 /* AppDelegate.swift */; };
 		63DEAA431CAC97AA00B6FA98 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA421CAC97AA00B6FA98 /* GameViewController.swift */; };
 		63DEAA451CAC97AA00B6FA98 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63DEAA441CAC97AA00B6FA98 /* Shaders.metal */; };
@@ -67,8 +60,6 @@
 		63E622A21D7B6B7000CAEF58 /* ShaderMath.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A11D7B6B7000CAEF58 /* ShaderMath.metal */; };
 		63E622A41D7C32F500CAEF58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A31D7C32F500CAEF58 /* Color.swift */; };
 		63E622A71D7C376100CAEF58 /* Collections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A61D7C376100CAEF58 /* Collections.swift */; };
-		63E622A81D7C376100CAEF58 /* Collections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A61D7C376100CAEF58 /* Collections.swift */; };
-		63E622A91D7C3BE000CAEF58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622A31D7C32F500CAEF58 /* Color.swift */; };
 		63E622AB1D7C78F400CAEF58 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AA1D7C78F400CAEF58 /* Material.swift */; };
 		63E622AF1D846C7300CAEF58 /* GBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622AE1D846C7300CAEF58 /* GBuffer.swift */; };
 		63E622B11D87E23000CAEF58 /* LightSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E622B01D87E23000CAEF58 /* LightSource.swift */; };
@@ -611,15 +602,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6302B9781EDC3330008DC90D /* Spherical.swift in Sources */,
-				63E622A91D7C3BE000CAEF58 /* Color.swift in Sources */,
-				63D0E6DE1D5FD96F004DF37E /* Quaternion.swift in Sources */,
-				63D0E6D91D5FBA06004DF37E /* Math.swift in Sources */,
-				63D0E6DA1D5FBA06004DF37E /* Vector.swift in Sources */,
-				63E622A81D7C376100CAEF58 /* Collections.swift in Sources */,
-				631A4A761D72EBB7000978F6 /* PlatonicSolid.swift in Sources */,
-				63D0E6DB1D5FBA06004DF37E /* Matrix.swift in Sources */,
-				63D0E6E11D5FD986004DF37E /* Transform.swift in Sources */,
 				63DEAA581CAC97AA00B6FA98 /* VidEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
