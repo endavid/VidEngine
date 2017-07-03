@@ -72,6 +72,18 @@ class VidEngineTests: XCTestCase {
         XCTAssertLessThanOrEqual(fabs(rgba.b - 0.3), epsilon)
     }
     
+    func testTransform() {
+        let p0 = float3(7, 12, -3)
+        let t = Transform(position: float3(-1, 2, 0.5), scale: float3(1, 1, 1), rotation: Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0)))
+        let p1 = t * p0
+        XCTAssertLessThanOrEqual(distance(p1, float3(1.82843, 14.0, -6.57107)), epsilon)
+        let p2 = t.inverse() * p1
+        XCTAssertLessThanOrEqual(distance(p2, p0), epsilon)
+        let p2w = t.inverse().toMatrix4() * float4(p1.x, p1.y, p1.z, 1.0)
+        print(p2w)
+        XCTAssertLessThanOrEqual(distance(p2w, float4(p0.x, p0.y, p0.z, 1.0)), epsilon)
+    }
+    
     func testCameraProjection() {
         let camera = Camera()
         camera.setPerspectiveProjection(fov: 90, near: 0.1, far: 100, aspectRatio: 1)
