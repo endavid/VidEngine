@@ -171,12 +171,13 @@ public class FontAtlas: NSObject, NSSecureCoding {
         //let distanceField = [Float](repeating: 1.0, count: FontAtlas.atlasSize * FontAtlas.atlasSize)
         // Downsample the signed-distance field to the expected texture resolution
         let scaleFactor = FontAtlas.atlasSize / self.textureSize
-        guard let scaledField = try? createResampledData(distanceField, width: FontAtlas.atlasSize, height: FontAtlas.atlasSize, scaleFactor: scaleFactor) else {
-            return
+        if let scaledField = try? createResampledData(distanceField, width: FontAtlas.atlasSize, height: FontAtlas.atlasSize, scaleFactor: scaleFactor) {
+            let spread = Float(estimatedLineWidthForFont(parentFont) * 0.5)
+            // Quantize the downsampled distance field into an 8-bit grayscale array suitable for use as a texture
+            textureData = createQuantizedDistanceField(scaledField.0, width: textureSize, height: textureSize, normalizationFactor: spread)
+            scaledField.0.deallocate(capacity: scaledField.1)
         }
-        let spread = Float(estimatedLineWidthForFont(parentFont) * 0.5)
-        // Quantize the downsampled distance field into an 8-bit grayscale array suitable for use as a texture
-        textureData = createQuantizedDistanceField(scaledField, width: textureSize, height: textureSize, normalizationFactor: spread)
+        distanceField.deallocate(capacity: FontAtlas.atlasSize * FontAtlas.atlasSize)
     }
     
     private func createAtlasForFont(context: CGContext, font: UIFont, width: Int, height: Int) {
@@ -286,13 +287,19 @@ public class FontAtlas: NSObject, NSSecureCoding {
     
     /// Compute signed-distance field for an 8-bpp grayscale image (values greater than 127 are considered "on")
     /// For details of this algorithm, see "The 'dead reckoning' signed distance transform" [Grevera 2004]
-    private func createSignedDistanceFieldForGrayscaleImage(imageData: UnsafeMutablePointer<UInt8>, width: Int, height: Int) -> [Float] {
+    private func createSignedDistanceFieldForGrayscaleImage(imageData: UnsafeMutablePointer<UInt8>, width: Int, height: Int) -> UnsafeMutablePointer<Float> {
         let maxDist = hypot(Float(width), Float(height))
         // Initialization phase
+        let count = width * height
         // distance to nearest boundary point map - set all distances to "infinity"
-        var distanceMap = [Float](repeating: maxDist, count: width * height)
+        let distanceMap = UnsafeMutablePointer<Float>.allocate(capacity: count)
         // nearest boundary point map - zero out nearest boundary point map
-        var boundaryPointMap = [int2](repeating: int2(0,0), count: width * height)
+        let boundaryPointMap = UnsafeMutablePointer<int2>.allocate(capacity: count)
+        let zero = int2(0)
+        for i in 0..<count {
+            distanceMap[i] = maxDist
+            boundaryPointMap[i] = zero
+        }
         let distUnit :Float = 1
         let distDiag :Float = sqrtf(2)
         // Immediate interior/exterior phase: mark all points along the boundary as such
@@ -365,17 +372,22 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 }
             }
         }
+        boundaryPointMap.deallocate(capacity: count)
         return distanceMap
     }
     
-    private func createResampledData(_ inData: [Float], width: Int, height: Int, scaleFactor: Int) throws -> [Float] {
+    private func createResampledData(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, scaleFactor: Int) throws -> (UnsafeMutablePointer<Float>, Int) {
         if width % scaleFactor != 0 || height % scaleFactor != 0 {
             // Scale factor does not evenly divide width and height of source distance field
             throw FontAtlasError.UnsupportedTextureSize
         }
         let scaledWidth = width / scaleFactor
         let scaledHeight = height / scaleFactor
-        var outData = [Float](repeating: 0, count: scaledWidth * scaledHeight)
+        let count = scaledWidth * scaledHeight
+        let outData = UnsafeMutablePointer<Float>.allocate(capacity: count)
+        for i in 0..<count {
+            outData[i] = 0
+        }
         for y in stride(from: 0, to: height, by: scaleFactor) {
             for x in stride(from: 0, to: width, by: scaleFactor) {
                 var accum :Float = 0
@@ -388,11 +400,12 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 outData[(y / scaleFactor) * scaledWidth + (x / scaleFactor)] = accum
             }
         }
-        return outData
+        return (outData, count)
     }
     
-    private func createQuantizedDistanceField(_ inData: [Float], width: Int, height: Int, normalizationFactor: Float) -> [UInt8] {
-        var outData = [UInt8](repeating: 0, count: width * height)
+    private func createQuantizedDistanceField(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, normalizationFactor: Float) -> [UInt8] {
+        let count = width * height
+        let outData = UnsafeMutablePointer<UInt8>.allocate(capacity: count)
         for y in 0..<height {
             for x in 0..<width {
                 let dist = inData[y * width + x]
@@ -402,6 +415,8 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 outData[y * width + x] = UInt8(value)
             }
         }
-        return outData
+        let array = Array(UnsafeBufferPointer(start: outData, count: count))
+        outData.deallocate(capacity: count)
+        return array
     }
 }
