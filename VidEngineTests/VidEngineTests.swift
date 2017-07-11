@@ -22,18 +22,6 @@ class VidEngineTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
     func testVector2() {
         var v = float2(0, 3)
         XCTAssertEqual(0, v.x)
@@ -115,7 +103,7 @@ class VidEngineTests: XCTestCase {
         p = camera.inverseProjectionMatrix * p
         p = p * (1.0 / p.w)
         XCTAssertLessThanOrEqual(distance(viewPoint4, p), epsilon)
-        var wp = camera.transform * float3(p.x, p.y, p.z)
+        let wp = camera.transform * float3(p.x, p.y, p.z)
         XCTAssertLessThanOrEqual(distance(worldPoint, wp), epsilon)
         let qx = Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0))
         camera.rotation = qx
@@ -126,6 +114,38 @@ class VidEngineTests: XCTestCase {
         print(viewPoint4)
         XCTAssertLessThanOrEqual(distance(viewPoint4, float4(18.1019, -0.8, -17.2534, 1.0)), epsilon)
     }
-    
-    
+
+    // average: 0.027 secs
+    func testBaselinePerformance() {
+        self.measure {
+            let count = 2048 * 2048
+            var v : Float = 0
+            for i in 0..<count {
+                v = Float(i)
+            }
+            v += 1
+        }
+    }
+    // average: 0.461 seconds (iPhone6 iOS 10.2) ~5.8 times slower than native arrays
+    func testArrayPerformance() {
+        self.measure {
+            var array = [Float](repeating: 1, count: 2048 * 2048)
+            for i in 0..<array.count {
+                array[(i+1)%array.count] = Float(i)
+            }
+        }
+    }
+
+    // average: 0.079 seconds
+    func testNativeArrayPerformance() {
+        self.measure {
+            let count = 2048 * 2048
+            let array = UnsafeMutablePointer<Float>.allocate(capacity: count)
+            for i in 0..<count {
+                array[(i+1)%count] = Float(i)
+            }
+            array.deallocate(capacity: count)
+        }
+    }
+
 }
