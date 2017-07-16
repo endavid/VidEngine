@@ -325,48 +325,62 @@ public class FontAtlas: NSObject, NSSecureCoding {
         // Forward dead-reckoning pass
         for y in 1..<(height-2) {
             for x in 1..<(width-2) {
-                let d = distanceMap[y * width + x]
-                let n = boundaryPointMap[y * width + x]
-                let h = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                var d = distanceMap[y * width + x]
+                var n = boundaryPointMap[y * width + x]
                 if distanceMap[(y - 1) * width + x - 1] + distDiag < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y - 1) * width + (x - 1)]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y - 1) * width + (x - 1)]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[(y - 1) * width + x] + distUnit < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y - 1) * width + x]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y - 1) * width + x]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[(y - 1) * width + x + 1] + distDiag < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y - 1) * width + (x + 1)]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y - 1) * width + (x + 1)]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[y * width + x - 1] + distUnit < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[y * width + (x - 1)]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[y * width + (x - 1)]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
             }
         }
         // Backward dead-reckoning pass
         for y in (1...(height-2)).reversed() {
             for x in (1...(width-2)).reversed() {
-                let d = distanceMap[y * width + x]
-                let n = boundaryPointMap[y * width + x]
-                let h = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                var d = distanceMap[y * width + x]
+                var n = boundaryPointMap[y * width + x]
                 if distanceMap[y * width + x + 1] + distUnit < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[y * width + x + 1]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[y * width + x + 1]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[(y + 1) * width + x - 1] + distDiag < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y + 1) * width + x - 1]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y + 1) * width + x - 1]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[(y + 1) * width + x] + distUnit < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y + 1) * width + x]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y + 1) * width + x]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
                 if distanceMap[(y + 1) * width + x + 1] + distDiag < d {
-                    boundaryPointMap[y * width + x] = boundaryPointMap[(y + 1) * width + x + 1]
-                    distanceMap[y * width + x] = h
+                    n = boundaryPointMap[(y + 1) * width + x + 1]
+                    d = hypot(Float(x) - Float(n.x), Float(y) - Float(n.y))
+                    boundaryPointMap[y * width + x] = n
+                    distanceMap[y * width + x] = d
                 }
             }
         }
