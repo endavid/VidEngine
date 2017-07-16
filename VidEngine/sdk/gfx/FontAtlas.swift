@@ -180,9 +180,12 @@ public class FontAtlas: NSObject, NSSecureCoding {
             // Quantize the downsampled distance field into an 8-bit grayscale array suitable for use as a texture
             let texData = createQuantizedDistanceField(scaledField.0, width: textureSize, height: textureSize, normalizationFactor: spread)
             _textureData = NSData(bytesNoCopy: texData, length: textureSize*textureSize, freeWhenDone: true)
+            scaledField.0.deinitialize(count: scaledField.1)
             scaledField.0.deallocate(capacity: scaledField.1)
         }
-        distanceField.deallocate(capacity: FontAtlas.atlasSize * FontAtlas.atlasSize)
+        let atlasSize2 = FontAtlas.atlasSize * FontAtlas.atlasSize
+        distanceField.deinitialize(count: atlasSize2)
+        distanceField.deallocate(capacity: atlasSize2)
     }
     
     private func createAtlasForFont(context: CGContext, font: UIFont, width: Int, height: Int) {
@@ -298,13 +301,11 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let count = width * height
         // distance to nearest boundary point map - set all distances to "infinity"
         let distanceMap = UnsafeMutablePointer<Float>.allocate(capacity: count)
+        distanceMap.initialize(to: maxDist, count: count)
         // nearest boundary point map - zero out nearest boundary point map
         let boundaryPointMap = UnsafeMutablePointer<int2>.allocate(capacity: count)
         let zero = int2(0)
-        for i in 0..<count {
-            distanceMap[i] = maxDist
-            boundaryPointMap[i] = zero
-        }
+        boundaryPointMap.initialize(to: zero, count: count)
         let distUnit :Float = 1
         let distDiag :Float = sqrtf(2)
         // Immediate interior/exterior phase: mark all points along the boundary as such
@@ -377,6 +378,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 }
             }
         }
+        boundaryPointMap.deinitialize(count: count)
         boundaryPointMap.deallocate(capacity: count)
         return distanceMap
     }
@@ -390,9 +392,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let scaledHeight = height / scaleFactor
         let count = scaledWidth * scaledHeight
         let outData = UnsafeMutablePointer<Float>.allocate(capacity: count)
-        for i in 0..<count {
-            outData[i] = 0
-        }
+        outData.initialize(to: 0, count: count)
         for y in stride(from: 0, to: height, by: scaleFactor) {
             for x in stride(from: 0, to: width, by: scaleFactor) {
                 var accum :Float = 0
@@ -411,6 +411,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
     private func createQuantizedDistanceField(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, normalizationFactor: Float) -> UnsafeMutablePointer<UInt8> {
         let count = width * height
         let outData = UnsafeMutablePointer<UInt8>.allocate(capacity: count)
+        outData.initialize(to: 0, count: count)
         for y in 0..<height {
             for x in 0..<width {
                 let dist = inData[y * width + x]
