@@ -38,7 +38,7 @@ class World {
     }
     
     private func initTextDemo() {
-        if let fontAtlas = try? FontAtlas.createFontAtlas(font: UIFont.systemFont(ofSize: 14), textureSize: 2048) {
+        if let fontAtlas = try? FontAtlas.createFontAtlas(font: UIFont.systemFont(ofSize: 14), textureSize: 2048, archive: true) {
             let makeItStand = Quaternion.createRotationAxis(.pi / 2, unitVector: float3(1,0,0))
             let tiltToOneSide = Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0))
             let prim = TextPrimitive(numInstances: 1, font: fontAtlas, text: "Hello World! :)", fontSizeMeters: 1, enclosingFrame: CGRect(x: -2, y: -5, width: 4, height: 10))

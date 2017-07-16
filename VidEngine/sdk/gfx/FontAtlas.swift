@@ -13,7 +13,7 @@ import MetalKit
 import simd
 
 enum FontAtlasError : Error {
-    case UnsupportedTextureSize, AtlasNotProperlyInitialized
+    case UnsupportedTextureSize, AtlasNotProperlyInitialized, AtlasNotInitialized
 }
 
 class GlyphDescriptor: NSObject, NSSecureCoding {
@@ -46,10 +46,10 @@ public class FontAtlas: NSObject, NSSecureCoding {
     static let atlasSize: Int = 2048 //Texture.maxSize
     var glyphs : [GlyphDescriptor] = []
     let parentFont: UIFont
-    var fontPointSize: CGFloat
+    var fontPointSize: Float
     let textureSize: Int
-    var textureData: [UInt8] = []
     private var _fontTexture: MTLTexture!
+    private var _textureData: NSData?
     public var fontTexture: MTLTexture {
         get {
             return _fontTexture
@@ -57,19 +57,20 @@ public class FontAtlas: NSObject, NSSecureCoding {
     }
     
     /// If the FontAtlas has been created before, it will attempt to load it from disk
-    public static func createFontAtlas(font: UIFont, textureSize: Int) throws -> FontAtlas {
+    public static func createFontAtlas(font: UIFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
         let candidates = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if let documentsPath = candidates.first {
             let dirUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
             let fontUrl = dirUrl.appendingPathComponent(font.fontName).appendingPathExtension("sdff")
-            print(fontUrl)
             if let fontAtlas = NSKeyedUnarchiver.unarchiveObject(withFile: fontUrl.path) as? FontAtlas {
+                NSLog("FontAtlas found at location: \(fontUrl)")
                 return fontAtlas
             }
             // cache miss
             let fontAtlas = try FontAtlas(font: font, textureSize: textureSize)
-            // @todo archive! At the moment, it runs out of memory...
-            //NSKeyedArchiver.archiveRootObject(fontAtlas, toFile: fontUrl.path)
+            if archive {
+                NSKeyedArchiver.archiveRootObject(fontAtlas, toFile: fontUrl.path)
+            }
             return fontAtlas
         } else {
             NSLog("Failed to get documentsPath. Can't cache the texture.")
@@ -86,7 +87,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         if (FontAtlas.atlasSize % textureSize) != 0 {
             throw TextureError.UnsupportedSize
         }
-        fontPointSize = font.pointSize
+        fontPointSize = Float(font.pointSize)
         super.init()
         createTextureData()
         do {
@@ -99,12 +100,12 @@ public class FontAtlas: NSObject, NSSecureCoding {
             NSLog("Invalid font name")
             return nil
         }
-        fontPointSize = CGFloat(aDecoder.decodeFloat(forKey: "FontSize"))
+        fontPointSize = aDecoder.decodeFloat(forKey: "FontSize")
         if fontPointSize <= 0 {
             NSLog("Invalid font size")
             return nil
         }
-        guard let font = UIFont(name: fontName, size: fontPointSize) else {
+        guard let font = UIFont(name: fontName, size: CGFloat(fontPointSize)) else {
             NSLog("Invalid font: \(fontName):\(fontPointSize)")
             return nil
         }
@@ -119,11 +120,11 @@ public class FontAtlas: NSObject, NSSecureCoding {
             return nil
         }
         glyphs = gd
-        guard let td = aDecoder.decodeObject(forKey: "TextureData") as? [UInt8] else {
+        guard let td = aDecoder.decodeObject(forKey: "TextureData") as? NSData else {
             NSLog("Texture data is empty")
             return nil
         }
-        textureData = td
+        _textureData = td
         super.init()
         do {
             guard let texture = try? createTexture(device: RenderManager.sharedInstance.device) else {
@@ -136,19 +137,22 @@ public class FontAtlas: NSObject, NSSecureCoding {
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(parentFont.fontName, forKey: "FontName")
         aCoder.encode(fontPointSize, forKey: "FontSize")
-        aCoder.encode(textureData, forKey: "TextureData")
+        aCoder.encode(_textureData, forKey: "TextureData")
         aCoder.encode(textureSize, forKey: "TextureSize")
         aCoder.encode(glyphs, forKey: "GlyphDescriptors")
     }
     
     func createTexture(device: MTLDevice) throws -> MTLTexture {
-        if textureData.count != textureSize * textureSize {
+        guard let texData = _textureData else {
+            throw FontAtlasError.AtlasNotInitialized
+        }
+        if texData.length != textureSize * textureSize {
             throw FontAtlasError.AtlasNotProperlyInitialized
         }
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: textureSize, height: textureSize, mipmapped: false)
         let texture = device.makeTexture(descriptor: texDescriptor)
         let region = MTLRegionMake2D(0, 0, textureSize, textureSize)
-        texture.replace(region: region, mipmapLevel: 0, withBytes: textureData, bytesPerRow: textureSize)
+        texture.replace(region: region, mipmapLevel: 0, withBytes: texData.bytes, bytesPerRow: textureSize)
         return texture
     }
     
@@ -174,7 +178,8 @@ public class FontAtlas: NSObject, NSSecureCoding {
         if let scaledField = try? createResampledData(distanceField, width: FontAtlas.atlasSize, height: FontAtlas.atlasSize, scaleFactor: scaleFactor) {
             let spread = Float(estimatedLineWidthForFont(parentFont) * 0.5)
             // Quantize the downsampled distance field into an 8-bit grayscale array suitable for use as a texture
-            textureData = createQuantizedDistanceField(scaledField.0, width: textureSize, height: textureSize, normalizationFactor: spread)
+            let texData = createQuantizedDistanceField(scaledField.0, width: textureSize, height: textureSize, normalizationFactor: spread)
+            _textureData = NSData(bytesNoCopy: texData, length: textureSize*textureSize, freeWhenDone: true)
             scaledField.0.deallocate(capacity: scaledField.1)
         }
         distanceField.deallocate(capacity: FontAtlas.atlasSize * FontAtlas.atlasSize)
@@ -193,8 +198,8 @@ public class FontAtlas: NSObject, NSSecureCoding {
         context.fill(fullRect)
         
         fontPointSize = pointSizeThatFitsForFont(font, rect:CGRect(x: 0, y: 0, width: width, height: height))
-        let ctFont = CTFontCreateWithName(font.fontName as CFString, fontPointSize, nil)
-        guard let parentFont = UIFont(name: font.fontName, size: fontPointSize) else {
+        let ctFont = CTFontCreateWithName(font.fontName as CFString, CGFloat(fontPointSize), nil)
+        guard let parentFont = UIFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
             // should throw an exception
             return
         }
@@ -246,12 +251,12 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
     }
     
-    private func pointSizeThatFitsForFont(_ font: UIFont, rect: CGRect) -> CGFloat {
-        var fittedSize = font.pointSize
-        while isLikelyToFit(font: font, size: fittedSize, rect: rect) {
+    private func pointSizeThatFitsForFont(_ font: UIFont, rect: CGRect) -> Float {
+        var fittedSize = Float(font.pointSize)
+        while isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
             fittedSize += 1
         }
-        while !isLikelyToFit(font: font, size: fittedSize, rect: rect) {
+        while !isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
             fittedSize -= 1
         }
         return fittedSize
@@ -403,7 +408,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         return (outData, count)
     }
     
-    private func createQuantizedDistanceField(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, normalizationFactor: Float) -> [UInt8] {
+    private func createQuantizedDistanceField(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, normalizationFactor: Float) -> UnsafeMutablePointer<UInt8> {
         let count = width * height
         let outData = UnsafeMutablePointer<UInt8>.allocate(capacity: count)
         for y in 0..<height {
@@ -415,8 +420,6 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 outData[y * width + x] = UInt8(value)
             }
         }
-        let array = Array(UnsafeBufferPointer(start: outData, count: count))
-        outData.deallocate(capacity: count)
-        return array
+        return outData
     }
 }
