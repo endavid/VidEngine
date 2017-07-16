@@ -43,7 +43,7 @@ class GlyphDescriptor: NSObject, NSSecureCoding {
 public class FontAtlas: NSObject, NSSecureCoding {
     public static var supportsSecureCoding: Bool { get { return true } }
     
-    static let atlasSize: Int = 2048 //Texture.maxSize
+    static let atlasSize: Int = 4096
     var glyphs : [GlyphDescriptor] = []
     let parentFont: UIFont
     var fontPointSize: Float
