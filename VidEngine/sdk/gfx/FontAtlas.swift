@@ -230,9 +230,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             let glyphOriginX = origin.x - boundingRect.origin.x + 0.5 * glyphMargin
             let glyphOriginY = origin.y + glyphMargin * 0.5
             var glyphTransform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: glyphOriginX, ty: glyphOriginY)
-            guard let path = CTFontCreatePathForGlyph(ctFont, glyph, &glyphTransform) else {
-                continue
-            }
+            let path = CTFontCreatePathForGlyph(ctFont, glyph, &glyphTransform) ?? CGPath(rect: CGRect.null, transform: nil)
             context.addPath(path)
             context.fillPath()
             var glyphPathBoundingRect = path.boundingBox
