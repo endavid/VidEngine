@@ -8,7 +8,7 @@
 
 import MetalKit
 
-class PrimitivePlugin : GraphicPlugin {
+final class PrimitivePlugin : GraphicPlugin {
 
     fileprivate var primitives : [Primitive] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil

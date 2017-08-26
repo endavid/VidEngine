@@ -10,7 +10,7 @@ import Foundation
 import MetalKit
 
 /// Uses Weight-blended OIT
-class UnlitTransparencyPlugin : GraphicPlugin {
+final class UnlitTransparencyPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var textPipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil

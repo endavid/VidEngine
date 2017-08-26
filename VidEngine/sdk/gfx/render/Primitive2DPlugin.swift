@@ -8,7 +8,7 @@
 
 import MetalKit
 
-class Primitive2DPlugin : GraphicPlugin {
+final class Primitive2DPlugin : GraphicPlugin {
     let maxNumSprites = 2000
     fileprivate var sprites : [SpritePrimitive2D] = []
     fileprivate var bounds = CGRect()

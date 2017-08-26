@@ -8,7 +8,7 @@
 
 import MetalKit
 
-class DeferredShadingPlugin : GraphicPlugin {
+final class DeferredShadingPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
 
     required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {

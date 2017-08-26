@@ -8,7 +8,7 @@
 
 import MetalKit
 
-class RainPlugin : GraphicPlugin {
+final class RainPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil
     fileprivate var raindropDoubleBuffer: MTLBuffer! = nil

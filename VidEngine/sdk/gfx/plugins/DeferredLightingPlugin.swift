@@ -8,7 +8,7 @@
 
 import MetalKit
 
-class DeferredLightingPlugin : GraphicPlugin {
+final class DeferredLightingPlugin : GraphicPlugin {
     // @todo split in different queues, one per type
     fileprivate var lights : [LightSource] = []
 

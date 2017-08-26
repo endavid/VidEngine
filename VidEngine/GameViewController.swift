@@ -45,24 +45,21 @@ class GameViewController:UIViewController, MTKViewDelegate {
 
 
     override func viewDidLoad() {
-
         super.viewDidLoad()
 
-        device = MTLCreateSystemDefaultDevice()
-        guard device != nil else { // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
+        let view = self.view as! MTKView
+        guard let device = MTLCreateSystemDefaultDevice() else { // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
             print("Metal is not supported on this device")
             self.view = UIView(frame: self.view.frame)
             return
         }
 
-        // setup view properties
-        let view = self.view as! MTKView
         view.device = device
         view.delegate = self
         // our shaders will be in linear RGB, so automatically apply γ
         view.colorPixelFormat = .bgra8Unorm_srgb
 
-        RenderManager.sharedInstance.initManager(device, view: self.view as! MTKView)
+        RenderManager.sharedInstance.initManager(device, view: view)
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
 

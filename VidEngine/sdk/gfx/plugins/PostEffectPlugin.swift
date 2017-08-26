@@ -10,7 +10,7 @@ import Foundation
 import MetalKit
 
 // At the moment, it just passes through
-class PostEffectPlugin : GraphicPlugin {
+final class PostEffectPlugin : GraphicPlugin {
     fileprivate var passThroughPipeline: MTLRenderPipelineState! = nil
 
     required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
