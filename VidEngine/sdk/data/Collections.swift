@@ -28,3 +28,39 @@ extension Collection where Index: Strideable {
         return low
     }
 }
+
+extension Sequence where Iterator.Element : IntegerArithmetic & ExpressibleByIntegerLiteral {
+    func sum() -> Iterator.Element {
+        return reduce(0, +)
+    }
+}
+
+struct CFArrayEx<Element> : Collection, RandomAccessCollection {
+    typealias Index = Int
+
+    private let ref : CFArray
+
+    init(ref: CFArray) {
+        self.ref = ref
+    }
+
+    var startIndex : Index {
+        return 0
+    }
+
+    var endIndex: Index {
+        return CFArrayGetCount(ref)
+    }
+
+    subscript(index: Index) -> Element {
+        return unsafeBitCast(CFArrayGetValueAtIndex(ref, index), to: Element.self)
+    }
+
+    func index(after i: Index) -> Index {
+        return i + 1
+    }
+
+    func index(before i: Index) -> Index {
+        return i - 1
+    }
+}

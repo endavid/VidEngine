@@ -6,52 +6,12 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import UIKit
 import simd
-
-extension UIColor {
-    convenience init(argb: UInt32) {
-        let alpha = CGFloat(0x000000FF & (argb >> 24)) / 255.0
-        let red = CGFloat(0x000000FF & (argb >> 16)) / 255.0
-        let green = CGFloat(0x000000FF & (argb >> 8)) / 255.0
-        let blue = CGFloat(0x000000FF & argb) / 255.0
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
-    }
-    
-    var argb : UInt32 {
-        get {
-            var fRed : CGFloat = 0
-            var fGreen : CGFloat = 0
-            var fBlue : CGFloat = 0
-            var fAlpha : CGFloat = 0
-            self.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
-            let alpha = UInt32(255.0 * fAlpha)
-            let red = UInt32(255.0 * fRed)
-            let green = UInt32(255.0 * fGreen)
-            let blue = UInt32(255.0 * fBlue)
-            return (alpha << 24 | red << 16 | green << 8 | blue)
-        }
-    }
-    var rgba : UInt32 {
-        get {
-            var fRed : CGFloat = 0
-            var fGreen : CGFloat = 0
-            var fBlue : CGFloat = 0
-            var fAlpha : CGFloat = 0
-            self.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
-            let alpha = UInt32(255.0 * fAlpha)
-            let red = UInt32(255.0 * fRed)
-            let green = UInt32(255.0 * fGreen)
-            let blue = UInt32(255.0 * fBlue)
-            return (red << 24 | green << 16 | blue << 8 | alpha)
-        }
-    }
-}
 
 // linear RGB with alpha
 struct LinearRGBA {
     let rgba : float4
-    
+
     var r : Float {
         get {
             return rgba.x
@@ -72,7 +32,7 @@ struct LinearRGBA {
             return rgba.w
         }
     }
-    
+
     init(rgb: float3) {
         rgba = float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
@@ -95,7 +55,7 @@ struct CieXYZ {
             return xyz.z
         }
     }
-    
+
     func toRGBA() -> LinearRGBA {
         let m = float3x3(rows: [
             float3(3.2406, -1.5372, -0.4986),
@@ -110,13 +70,13 @@ struct CieXYZ {
 public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
-    
+
     init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
         sortedKeys = keys.sorted { $0 < $1 }
     }
-    
+
     // linearly interpolate between the closest wavelengths (in nm)
     func getIntensity(_ wavelength: Int) -> Float {
         // exact match
@@ -140,13 +100,13 @@ public class Spectrum {
         let m0 = data[w0]!
         return (1-alpha) * m0 + alpha * m1
     }
-    
+
     // http://www.fourmilab.ch/documents/specrend/
     func toXYZ() -> CieXYZ {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
-         
+
          cie_colour_match[(lambda - 380) / 5][0] = xBar
          cie_colour_match[(lambda - 380) / 5][1] = yBar
          cie_colour_match[(lambda - 380) / 5][2] = zBar
@@ -180,7 +140,7 @@ public class Spectrum {
             float3(0.0002,0.0001,0.0000), float3(0.0002,0.0001,0.0000), float3(0.0001,0.0000,0.0000),
             float3(0.0001,0.0000,0.0000), float3(0.0001,0.0000,0.0000), float3(0.0000,0.0000,0.0000)
         ]
-        
+
         var lambda : Int = 380
         var xyz = float3(0,0,0)
         for i in 0..<cieColourMatch.count {

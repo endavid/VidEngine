@@ -12,7 +12,7 @@ public struct Transform {
     var position = float3(0, 0, 0)
     var scale = float3(1, 1, 1)
     var rotation = Quaternion()
-    
+
     func toMatrix4() -> float4x4 {
         let rm = rotation.toMatrix4()
         let xx = scale.x * rm[0]

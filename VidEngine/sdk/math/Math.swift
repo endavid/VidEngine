@@ -6,43 +6,27 @@
 //
 
 import Foundation
-import UIKit
+import CoreGraphics
 
-let PI      : Float = 3.1415926535897932384626433832795
-let PI_2    = 0.5 * PI
-let PI2     = 2.0 * PI
-let PI_INV  = 1.0 / PI
+extension Float {
+    static let pi : Float = 3.1415926535897932384626433832795
+    static let tau : Float = .pi * 2
+    static let halfPi : Float = .pi / 2
+    static let piInv : Float = 1.0 / .pi
+}
+
 let NORM_SQR_ERROR_TOLERANCE : Float = 0.001
-let π       : Double = Double(PI)
+
+extension Double {
+    static let pi : Double = Double(Float.pi)
+}
+
 
 /// Converts angle in degrees to radians
 func DegToRad(_ angle: Float) -> Float {
-    return angle * (PI/180.0)
+    return angle * (Float.pi/180.0)
 }
-/// Gets the sign of a number
-func Sign(_ n: Float) -> Float {
-    return (n>=0) ?1:-1
-}
-/// Max
-func Max(_ a: CGFloat, b: CGFloat) -> CGFloat {
-    return (a>=b) ?a:b
-}
-func Max(_ a: Float, b: Float) -> Float {
-    return (a>=b) ?a:b
-}
-func Max(_ a: Int, b: Int) -> Int {
-    return (a>=b) ?a:b
-}
-/// Min
-func Min(_ a: CGFloat, b: CGFloat) -> CGFloat {
-    return (a<=b) ?a:b
-}
-func Min(_ a: Float, b: Float) -> Float {
-    return (a<=b) ?a:b
-}
-func Min(_ a: Int, b: Int) -> Int {
-    return (a<=b) ?a:b
-}
+
 /// Ceil for ints
 func CeilDiv(_ a: Int, b: Int) -> Int {
     return (a + b - 1) / b
@@ -51,16 +35,19 @@ func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
     return ( fabsf( a - b ) < epsilon )
 }
 
-/// Clamp
-func Clamp(_ value: CGFloat, lowest: CGFloat, highest: CGFloat) -> CGFloat {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+extension ClosedRange {
+    public func clamp(_ value: Bound) -> Bound {
+        return min(max(value, lowerBound), upperBound)
+    }
 }
-func Clamp(_ value: Float, lowest: Float, highest: Float) -> Float {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+
+extension CGSize {
+    @inline(__always)
+    static func *(lhs: CGSize, rhs: CGFloat) -> CGSize {
+        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+    }
 }
-func Clamp(_ value: Int, lowest: Int, highest: Int) -> Int {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
-}
+
 /// Random Int. Preferred to rand() % upperBound
 func Rand(_ upperBound: UInt32) -> UInt32 {
     return arc4random_uniform(upperBound)

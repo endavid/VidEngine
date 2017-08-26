@@ -7,18 +7,17 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
 
 /// Uses Weight-blended OIT
-class UnlitTransparencyPlugin : GraphicPlugin {
+final class UnlitTransparencyPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var textPipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil
     fileprivate var textPrimitives : [TextPrimitive] = []
     fileprivate var primitives : [Primitive] = []
-    
-    
+
+
     func queue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
             let alreadyQueued = textPrimitives.contains { $0 === textPrim }
@@ -32,7 +31,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
+
     func dequeue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
             let index = textPrimitives.index { $0 === textPrim }
@@ -46,13 +45,12 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
-        
+
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
         let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library)
         let textPipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
-        
+
         let depthDescriptor = RenderManager.sharedInstance.gBuffer.createDepthStencilDescriptor()
         depthDescriptor.isDepthWriteEnabled = false
         do {
@@ -63,8 +61,8 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             print("Failed to create pipeline state, error \(error)")
         }
     }
-    
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createOITRenderPass(clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Unlit Transparency Encoder"
@@ -80,18 +78,18 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
     }
-        
+
     private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {
         let whiteTexture = RenderManager.sharedInstance.whiteTexture
         var currentAlbedoTexture : MTLTexture? = nil
-        
+
         for p in prims {
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, at: 0)
                 encoder.setVertexBuffer(p.uniformBuffer, offset: 0, at: 2)
             }
             for mesh in p.submeshes {
-                
+
                 if currentAlbedoTexture !== mesh.albedoTexture {
                     if let tex = mesh.albedoTexture {
                         encoder.setFragmentTexture(tex, at: 0)
@@ -106,8 +104,8 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
-    override func updateBuffers(_ syncBufferIndex: Int) {
+
+     func updateBuffers(_ syncBufferIndex: Int) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

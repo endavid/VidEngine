@@ -8,7 +8,15 @@
 
 import simd
 
-struct Quaternion : CustomStringConvertible {
+extension float4 : Equatable {
+
+    @inline(__always)
+    public static func ==(lhs: float4, rhs: float4) -> Bool {
+        return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w
+    }
+}
+
+struct Quaternion : CustomStringConvertible, Equatable {
     var q = float4(0, 0, 0, 1) /// xyz: imaginary part; w: real part
     var w : Float {
         get {
@@ -23,24 +31,25 @@ struct Quaternion : CustomStringConvertible {
     var description : String {
         return "q(w: \(q.w), v: (\(q.x), \(q.y), \(q.z)))"
     }
-    func toString() -> String {
-        return description
-    }
+
     init() {
+
     }
+
     init(w: Float, v: float3) {
         q = float4(v.x, v.y, v.z, w)
     }
     func conjugate() -> Quaternion {
         return Quaternion(w: self.w, v: -self.v)
     }
+
     func inverse() -> Quaternion {
         // assume it's a unit quaternion, so just Conjugate
         return conjugate()
     }
     // Can be used the determine Quaternion neighbourhood
     func dotQ(_ q: Quaternion) -> Float {
-        return dot(q.v, self.v) + self.w * q.w
+        return dot(q.v, v) + self.w * q.w
     }
     /// Returns a rotation matrix (column major, p' = M * p)
     func toMatrix4() -> float4x4 {
@@ -61,8 +70,11 @@ struct Quaternion : CustomStringConvertible {
         m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
         return m
     }
-    
-    
+
+    static func ==(lhs: Quaternion, rhs: Quaternion) -> Bool {
+        return lhs.q == rhs.q
+    }
+
     static func createRotationAxis(_ angle: Float, unitVector: float3) -> Quaternion {
         return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
     }
@@ -75,32 +87,36 @@ struct Quaternion : CustomStringConvertible {
             return Quaternion()
         }
         if end.isClose(-start, epsilon: 0.01) { // opposite vectors
-            return Quaternion.createRotationAxis(PI, unitVector: up)
+            return Quaternion.createRotationAxis(.pi, unitVector: up)
         }
         let angle = acosf(dot(start, end))
         let axis = normalize(cross(start, end))
         return Quaternion.createRotationAxis(angle, unitVector: axis)
     }
 
+    // -----------------------------------------------------------
+    static func + (a: Quaternion, b: Quaternion) -> Quaternion {
+        return Quaternion(w: a.w + b.w, v: a.v + b.v)
+    }
+
+    static func * (a: Quaternion, scalar: Float) -> Quaternion {
+        return Quaternion(w: a.w * scalar, v: a.v * scalar)
+    }
+
+    static func * (a: Quaternion, b: Quaternion) -> Quaternion {
+        let scalar = a.w * b.w - dot(a.v, b.v)
+        let v = cross(a.v, b.v) + a.w * b.v + b.w * a.v
+        return Quaternion(w: scalar, v: v)
+    }
+
+    /// rotation of a vector by a UNIT quaternion
+    static func * (q: Quaternion, v: float3) -> float3 {
+        let p = q * Quaternion(w: 0, v: v) * q.inverse()
+        return p.v
+    }
 }
 
-// -----------------------------------------------------------
-func + (a: Quaternion, b: Quaternion) -> Quaternion {
-    return Quaternion(w: a.w + b.w, v: a.v + b.v)
-}
-func * (a: Quaternion, scalar: Float) -> Quaternion {
-    return Quaternion(w: a.w * scalar, v: a.v * scalar)
-}
-func * (a: Quaternion, b: Quaternion) -> Quaternion {
-    let scalar = a.w * b.w - dot(a.v, b.v)
-    let v = cross(a.v, b.v) + a.w * b.v + b.w * a.v
-    return Quaternion(w: scalar, v: v)
-}
-/// rotation of a vector by a UNIT quaternion
-func * (q: Quaternion, v: float3) -> float3 {
-    let p = q * Quaternion(w: 0, v: v) * q.inverse()
-    return p.v
-}
+
 // -----------------------------------------------------------
 /// Linear interpolation
 func Lerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
@@ -111,11 +127,11 @@ func Lerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
 func Slerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
     var w1 : Float
     var w2 : Float
-    
+
     let cosTheta = start.dotQ(end)
     let theta    = acosf(cosTheta)
     let sinTheta = sinf(theta)
-    
+
     if( sinTheta > 0.001 ) {
         w1 = sinf((1.0-t)*theta) / sinTheta
         w2 = sinf(t*theta) / sinTheta

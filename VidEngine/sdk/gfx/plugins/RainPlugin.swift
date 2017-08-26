@@ -6,10 +6,9 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
-class RainPlugin : GraphicPlugin {
+final class RainPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil
     fileprivate var raindropDoubleBuffer: MTLBuffer! = nil
@@ -20,13 +19,12 @@ class RainPlugin : GraphicPlugin {
     fileprivate var particleCount = 0
     fileprivate var doubleBufferIndex = 0
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
-        
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
         let fragmentProgram = library.makeFunction(name: "passThroughFragment")!
         let vertexRaindropProgram = library.makeFunction(name: "passVertexRaindrop")!
         let updateRaindropProgram = library.makeFunction(name: "updateRaindrops")!
-        
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexRaindropProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -39,27 +37,31 @@ class RainPlugin : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .destinationAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         pipelineStateDescriptor.sampleCount = view.sampleCount
-        
+
         let updateStateDescriptor = MTLRenderPipelineDescriptor()
         updateStateDescriptor.vertexFunction = updateRaindropProgram
         updateStateDescriptor.isRasterizationEnabled = false // vertex output is void
         updateStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat // pixel format needs to be set
-        
+
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             try updateState = device.makeRenderPipelineState(descriptor: updateStateDescriptor)
         } catch let error {
             print("Failed to create pipeline state, error \(error)")
         }
-        
+
         raindropDoubleBuffer = device.makeBuffer(length: 2 * maxNumberOfRaindrops * sizeOfLineParticle, options: [])
         raindropDoubleBuffer.label = "raindrop buffer"
-        noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
-        
+        noiseTexture = device.makeNoiseTexture(width: 128, height: 128)
+
         initVertexBuffer(2000)
     }
-    
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+
+    func updateBuffers(_ syncBufferIndex: Int) {
+
+    }
+
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
@@ -82,11 +84,11 @@ class RainPlugin : GraphicPlugin {
         doubleBufferIndex = (doubleBufferIndex + 1) % 2
         encoder.endEncoding()
     }
-    
+
     fileprivate func initVertexBuffer(_ numParticles: Int) {
         // vData is pointer to the MTLBuffer's Float data contents
         let pData = raindropDoubleBuffer.contents()
-        particleCount = Min(maxNumberOfRaindrops, b: numParticles)
+        particleCount = min(maxNumberOfRaindrops, numParticles)
         vertexCount = 2 * particleCount
         let vertexSize = 4
         let dropLength : Float = 0.1

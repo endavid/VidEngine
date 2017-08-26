@@ -6,13 +6,12 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
-class DeferredLightingPlugin : GraphicPlugin {
+final class DeferredLightingPlugin : GraphicPlugin {
     // @todo split in different queues, one per type
     fileprivate var lights : [LightSource] = []
-    
+
     func queue(_ light: LightSource) {
         let alreadyQueued = lights.contains { $0 === light }
         if !alreadyQueued {
@@ -25,10 +24,10 @@ class DeferredLightingPlugin : GraphicPlugin {
             lights.remove(at: i)
         }
     }
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
     }
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -38,7 +37,11 @@ class DeferredLightingPlugin : GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
     }
-    
+
+    func updateBuffers(_ syncBufferIndex: Int) {
+
+    }
+
     /// Draw all the directional lights with full-screen passes.
     /// We should compute the shadow maps before.
     /// Supposedly the shadow maps can be computed in parallel with the earlier pipeline.
@@ -51,6 +54,6 @@ class DeferredLightingPlugin : GraphicPlugin {
     /// Draw all spot lights using spot light geometry.
     /// For shadows, same as directional lights.
     fileprivate func drawSpotLights(_ encoder: MTLRenderCommandEncoder) {
-        
+
     }
 }

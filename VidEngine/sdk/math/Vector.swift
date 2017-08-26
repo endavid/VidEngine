@@ -23,25 +23,6 @@ public extension float3 {
     }
 }
 
-struct Vec4 {
-    let x : Float
-    let y : Float
-    let z : Float
-    let w : Float
-    init(_ x: Float, _ y: Float, _ z: Float, _ w: Float) {
-        self.x = x
-        self.y = y
-        self.z = z
-        self.w = w
-    }
-    init(_ v: float4) {
-        self.x = v.x
-        self.y = v.y
-        self.z = v.z
-        self.w = v.w
-    }
-}
-
 // sizeof(float3) = 16!! sizeof(Vec3) = 12
 struct Vec3 {
     let x : Float
@@ -57,6 +38,18 @@ struct Vec3 {
         self.y = v.y
         self.z = v.z
     }
+
+    static func * (v: Vec3, f: Float) -> Vec3 {
+        return Vec3(v.x * f, v.y * f, v.z * f)
+    }
+
+    static func * (f: Float, v: Vec3) -> Vec3 {
+        return v * f
+    }
+
+    static func + (v0: Vec3, v1: Vec3) -> Vec3 {
+        return Vec3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
+    }
 }
 
 struct Vec2 {
@@ -68,12 +61,4 @@ struct Vec2 {
     }
 }
 
-func * (v: Vec3, f: Float) -> Vec3 {
-    return Vec3(v.x * f, v.y * f, v.z * f)
-}
-func * (f: Float, v: Vec3) -> Vec3 {
-    return v * f
-}
-func + (v0: Vec3, v1: Vec3) -> Vec3 {
-    return Vec3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
-}
+

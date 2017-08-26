@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
 
 // At the moment, it just passes through
-class PostEffectPlugin : GraphicPlugin {
+final class PostEffectPlugin : GraphicPlugin {
     fileprivate var passThroughPipeline: MTLRenderPipelineState! = nil
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
         let passThroughDesc = MTLRenderPipelineDescriptor()
         passThroughDesc.vertexFunction = library.makeFunction(name: "passThrough2DVertex")
         passThroughDesc.fragmentFunction = library.makeFunction(name: "passThroughTexturedFragment")
@@ -29,15 +28,19 @@ class PostEffectPlugin : GraphicPlugin {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
     }
-    
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "PostEffects"
         passThrough(encoder: encoder, camera: camera)
         encoder.endEncoding()
     }
-    
+
+    func updateBuffers(_ syncBufferIndex: Int) {
+
+    }
+
     private func passThrough(encoder: MTLRenderCommandEncoder, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         encoder.pushDebugGroup("PassThrough")
@@ -46,5 +49,5 @@ class PostEffectPlugin : GraphicPlugin {
         RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
-    
+
 }

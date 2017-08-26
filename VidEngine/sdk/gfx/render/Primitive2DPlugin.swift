@@ -6,10 +6,9 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
-class Primitive2DPlugin : GraphicPlugin {
+final class Primitive2DPlugin : GraphicPlugin {
     let maxNumSprites = 2000
     fileprivate var sprites : [SpritePrimitive2D] = []
     fileprivate var bounds = CGRect()
@@ -35,25 +34,14 @@ class Primitive2DPlugin : GraphicPlugin {
             }
         }
     }
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
-        
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
         let fragmentProgram = library.makeFunction(name: "passThroughTexturedFragment")!
         let vertexProgram = library.makeFunction(name: "passSprite2DVertex")!
-        
+
         // check ColoredUnlitTexturedVertex
-        let vertexDesc = MTLVertexDescriptor()
-        vertexDesc.attributes[0].format = .float3
-        vertexDesc.attributes[0].offset = 0
-        vertexDesc.attributes[0].bufferIndex = 0
-        vertexDesc.attributes[1].format = .float2
-        vertexDesc.attributes[1].offset = MemoryLayout<Vec3>.size
-        vertexDesc.attributes[1].bufferIndex = 0
-        vertexDesc.attributes[2].format = .uchar4Normalized
-        vertexDesc.attributes[2].offset = MemoryLayout<Vec3>.size + MemoryLayout<Vec2>.size
-        vertexDesc.attributes[2].bufferIndex = 0
-        vertexDesc.layouts[0].stepFunction = .perVertex
-        vertexDesc.layouts[0].stride = MemoryLayout<ColoredUnlitTexturedVertex>.size
+        let vertexDesc = ColoredUnlitTexturedVertex.createVertexDescriptor()
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -74,7 +62,7 @@ class Primitive2DPlugin : GraphicPlugin {
         spriteIB = device.makeBuffer(length: maxNumSprites * MemoryLayout<UInt16>.size * 6, options: [])
         initSpriteIndexBuffer()
     }
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         bounds = camera.bounds
         if sprites.count > 0 {
             let whiteTexture = RenderManager.sharedInstance.whiteTexture
@@ -90,11 +78,11 @@ class Primitive2DPlugin : GraphicPlugin {
             encoder.endEncoding()
         }
     }
-    override func updateBuffers(_ syncBufferIndex: Int) {
+     func updateBuffers(_ syncBufferIndex: Int) {
         spriteVBoffset = MemoryLayout<ColoredUnlitTexturedVertex>.size * maxNumSprites * 4 * syncBufferIndex
         updateSpriteBuffer()
     }
-    
+
     private func initSpriteIndexBuffer() {
         let ib = spriteIB.contents().advanced(by: 0).assumingMemoryBound(to: UInt16.self)
         for i in 0..<maxNumSprites {
@@ -106,7 +94,7 @@ class Primitive2DPlugin : GraphicPlugin {
             ib[6*i+5] = UInt16(4*i+1)
         }
     }
-    
+
     private func updateSpriteBuffer() {
         let vb = spriteVB.contents().advanced(by: spriteVBoffset).assumingMemoryBound(to: ColoredUnlitTexturedVertex.self)
         let sx = 2 / Float(bounds.width)

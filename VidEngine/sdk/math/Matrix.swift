@@ -11,12 +11,9 @@ import simd
 
 // column-major
 public extension float4x4 {
-    static let identity = float4x4([
-        float4(1,0,0,0),
-        float4(0,1,0,0),
-        float4(0,0,1,0),
-        float4(0,0,0,1)
-    ])
+
+    static let identity = float4x4(matrix_identity_float4x4)
+
     static func createFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
     {
         let m = float4x4([
@@ -30,8 +27,8 @@ public extension float4x4 {
     static func perspective(fov: Float,near: Float, far: Float, aspectRatio: Float) -> float4x4 {
         let size = near * tanf(0.5*DegToRad(fov))
         return float4x4.createFrustum(left: -size, right: size,
-                                     bottom: -size / aspectRatio, top: size / aspectRatio,
-                                     near: near, far: far)
+                                      bottom: -size / aspectRatio, top: size / aspectRatio,
+                                      near: near, far: far)
     }
     // Inverses
     static func createFrustumInverse(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
@@ -49,7 +46,7 @@ public extension float4x4 {
     static func perspectiveInverse(fov: Float,near: Float, far: Float, aspectRatio: Float) -> float4x4 {
         let size = near * tanf(0.5*DegToRad(fov))
         return float4x4.createFrustumInverse(left: -size, right: size,
-                                            bottom: -size / aspectRatio, top: size / aspectRatio,
-                                            near: near, far: far)
+                                             bottom: -size / aspectRatio, top: size / aspectRatio,
+                                             near: near, far: far)
     }
 }

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 import simd
 
 class RotationAnim {
@@ -19,14 +18,14 @@ class RotationAnim {
         let up = float3(0, 1, 0)
         let targetDirection = Spherical.randomSample().toCartesian()
         startRotation = targetRotation
-        targetRotation = Quaternion.createRotation(start: up, end: targetDirection)
+        targetRotation = .createRotation(start: up, end: targetDirection)
         let startDirection = startRotation * up
         let cosa = dot(startDirection, targetDirection)
         let a = acos(cosa)
-        speed = 2 - a / PI
+        speed = 2 - a / .pi
     }
     func update(_ currentTime: CFTimeInterval) -> Quaternion {
-        alpha = alpha + speed * Float(currentTime)
+        alpha += speed * Float(currentTime)
         if alpha > 1 {
             setRandomRotationTarget()
             alpha = 0
@@ -65,7 +64,7 @@ class GridScene : Scene {
         camera?.setEyePosition(float3(0,2,20))
         camera?.setPerspectiveProjection(fov: 40, near: 0.1, far: 100)
     }
-    
+
     override func update(_ currentTime: CFTimeInterval) {
         for i in 0..<primitives[0].numInstances {
             primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)

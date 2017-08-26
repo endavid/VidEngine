@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UIKit
+import CoreGraphics
 import simd
 
 
@@ -39,7 +39,7 @@ class World {
     
     private func initTextDemo() {
         let fontName = "HoeflerText-Regular"
-        guard let font = UIFont(name: fontName, size: 72) else {
+        guard let font = UXFont(name: fontName, size: 72) else {
             NSLog("Font not found: \(fontName)")
             return
         }

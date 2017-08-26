@@ -13,7 +13,7 @@ struct TexturedVertex {
     var position : Vec3
     var normal : Vec3
     var uv : Vec2
-    
+
     static func createVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDesc = MTLVertexDescriptor()
         vertexDesc.attributes[0].format = .float3
@@ -35,7 +35,7 @@ struct ColoredUnlitTexturedVertex {
     var position : Vec3
     var uv : Vec2
     var color : UInt32
-    
+
     static func createVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDesc = MTLVertexDescriptor()
         vertexDesc.attributes[0].format = .float3
