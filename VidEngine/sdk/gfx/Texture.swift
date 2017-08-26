@@ -22,6 +22,13 @@ public struct Texture {
     public let id: String
 }
 
+extension CGSize {
+    @inline(__always)
+    static func *(lhs: CGSize, rhs: CGFloat) -> CGSize {
+        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+    }
+}
+
 // We need NSURLSessionDownloadTask or something similar.
 // Like most Cocoa APIs, MTKTextureLoader only operates on file URLs.
 // http://stackoverflow.com/a/42460943/1765629
@@ -33,7 +40,7 @@ extension MTKTextureLoader {
     
     // ref. https://developer.apple.com/library/content/samplecode/LargeImageDownsizing/
     private static func downsize(image: UIImage, scale: CGFloat) -> CGImage? {
-        let destResolution = CGSize(width: Int(image.size.width * scale), height: Int(image.size.height * scale))
+        let destResolution = image.size * scale
         let kSourceImageTileSizeMB : CGFloat = 40.0 // The tile size will be (x)MB of uncompressed image data
         let pixelsPerMB = 262144
         let tileTotalPixels = kSourceImageTileSizeMB * CGFloat(pixelsPerMB)

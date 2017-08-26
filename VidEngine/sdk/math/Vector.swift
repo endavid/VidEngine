@@ -57,6 +57,18 @@ struct Vec3 {
         self.y = v.y
         self.z = v.z
     }
+
+    static func * (v: Vec3, f: Float) -> Vec3 {
+        return Vec3(v.x * f, v.y * f, v.z * f)
+    }
+
+    static func * (f: Float, v: Vec3) -> Vec3 {
+        return v * f
+    }
+
+    static func + (v0: Vec3, v1: Vec3) -> Vec3 {
+        return Vec3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
+    }
 }
 
 struct Vec2 {
@@ -68,12 +80,4 @@ struct Vec2 {
     }
 }
 
-func * (v: Vec3, f: Float) -> Vec3 {
-    return Vec3(v.x * f, v.y * f, v.z * f)
-}
-func * (f: Float, v: Vec3) -> Vec3 {
-    return v * f
-}
-func + (v0: Vec3, v1: Vec3) -> Vec3 {
-    return Vec3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
-}
+

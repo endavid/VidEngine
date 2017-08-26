@@ -11,12 +11,9 @@ import simd
 
 // column-major
 public extension float4x4 {
-    static let identity = float4x4([
-        float4(1,0,0,0),
-        float4(0,1,0,0),
-        float4(0,0,1,0),
-        float4(0,0,0,1)
-    ])
+
+    static let identity = float4x4(matrix_identity_float4x4)
+
     static func createFrustum(left: Float,right: Float,bottom: Float,top: Float,near: Float,far: Float) -> float4x4
     {
         let m = float4x4([
