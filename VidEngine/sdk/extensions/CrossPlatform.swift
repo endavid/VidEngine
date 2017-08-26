@@ -32,6 +32,10 @@ import Foundation
     public typealias UXColor = UIColor
     public typealias UXFont = UIFont
 
+    let UXGraphicsBeginImageContext = UIGraphicsBeginImageContext
+    let UXGraphicsGetCurrentContext = UIGraphicsGetCurrentContext
+    let UXGraphicsEndImageContext = UIGraphicsEndImageContext
+
 #endif
 
 extension UXColor {

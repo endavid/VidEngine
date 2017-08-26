@@ -78,8 +78,8 @@ public class TextPrimitive : Primitive {
         var lineOriginArray = [CGPoint](repeating: CGPoint(), count: lines.count)
         CTFrameGetLineOrigins(frame, CFRange(), &lineOriginArray)
         var glyphIndexInFrame = 0
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        guard let context = UIGraphicsGetCurrentContext() else { fatalError("failed to get current context") }
+        UXGraphicsBeginImageContext(CGSize(width: 1, height: 1))
+        guard let context = UXGraphicsGetCurrentContext() else { fatalError("failed to get current context") }
 
         for (line, lineOrigin) in zip(lines, lineOriginArray) {
             for run in line.runs {
@@ -101,6 +101,6 @@ public class TextPrimitive : Primitive {
                 }
             }
         }
-        UIGraphicsEndImageContext()
+        UXGraphicsEndImageContext()
     }
 }

@@ -10,7 +10,6 @@ import simd
 
 // http://student.ulb.ac.be/~claugero/sphere/index.html
 
-
 /// Creates a platonic solid. Used for creating spheres with different tesselation levels.
 class PlatonicSolid {
     var vertices : [float3]
