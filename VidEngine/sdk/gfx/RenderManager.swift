@@ -188,7 +188,7 @@ class RenderManager {
 
     
     func createIndexBuffer(_ label: String, elements: [UInt16]) -> MTLBuffer {
-        let buffer = device.makeBuffer(bytes: elements, length: elements.count * MemoryLayout<UInt16>.size, options: MTLResourceOptions())
+        let buffer = device.makeBuffer(bytes: elements, length: elements.count * MemoryLayout<UInt16>.size, options: [])
         buffer.label = label
         return buffer
     }
