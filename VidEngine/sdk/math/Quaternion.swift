@@ -87,7 +87,7 @@ struct Quaternion : CustomStringConvertible, Equatable {
             return Quaternion()
         }
         if end.isClose(-start, epsilon: 0.01) { // opposite vectors
-            return Quaternion.createRotationAxis(PI, unitVector: up)
+            return Quaternion.createRotationAxis(.pi, unitVector: up)
         }
         let angle = acosf(dot(start, end))
         let axis = normalize(cross(start, end))

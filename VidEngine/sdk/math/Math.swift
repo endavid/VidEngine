@@ -8,16 +8,23 @@
 import Foundation
 import CoreGraphics
 
-let PI      : Float = 3.1415926535897932384626433832795
-let PI_2    = 0.5 * PI
-let PI2     = 2.0 * PI
-let PI_INV  = 1.0 / PI
+extension Float {
+    static let pi : Float = 3.1415926535897932384626433832795
+    static let tau : Float = .pi * 2
+    static let halfPi : Float = .pi / 2
+    static let piInv : Float = 1.0 / .pi
+}
+
 let NORM_SQR_ERROR_TOLERANCE : Float = 0.001
-let π       : Double = Double(PI)
+
+extension Double {
+    static let pi : Double = Double(Float.pi)
+}
+
 
 /// Converts angle in degrees to radians
 func DegToRad(_ angle: Float) -> Float {
-    return angle * (PI/180.0)
+    return angle * (Float.pi/180.0)
 }
 
 /// Ceil for ints
@@ -31,6 +38,13 @@ func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
 extension ClosedRange {
     public func clamp(_ value: Bound) -> Bound {
         return min(max(value, lowerBound), upperBound)
+    }
+}
+
+extension CGSize {
+    @inline(__always)
+    static func *(lhs: CGSize, rhs: CGFloat) -> CGSize {
+        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
     }
 }
 

@@ -23,7 +23,7 @@ class RotationAnim {
         let startDirection = startRotation * up
         let cosa = dot(startDirection, targetDirection)
         let a = acos(cosa)
-        speed = 2 - a / PI
+        speed = 2 - a / .pi
     }
     func update(_ currentTime: CFTimeInterval) -> Quaternion {
         alpha = alpha + speed * Float(currentTime)

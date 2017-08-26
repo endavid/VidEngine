@@ -27,7 +27,7 @@ public class Spherical {
         θ = acosf(v.y / r)
         // convert -pi..pi to 0..2pi
         φ = atan2f(v.x, v.z)
-        φ = φ < 0 ? PI2 + φ : φ
+        φ = φ < 0 ? Float.pi + φ : φ
     }
     
     init () {
@@ -41,7 +41,7 @@ public class Spherical {
         let x = Double(Randf())
         let y = Double(Randf())
         let θ = 2.0 * acos(sqrt(1.0 - x))
-        let φ = 2.0 * π * y
+        let φ = 2.0 * Double.pi * y
         let sph = Spherical(r: 1.0, θ: Float(θ), φ: Float(φ))
         return sph
     }

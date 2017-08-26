@@ -22,12 +22,6 @@ public struct Texture {
     public let id: String
 }
 
-extension CGSize {
-    @inline(__always)
-    static func *(lhs: CGSize, rhs: CGFloat) -> CGSize {
-        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
-    }
-}
 
 // We need NSURLSessionDownloadTask or something similar.
 // Like most Cocoa APIs, MTKTextureLoader only operates on file URLs.
