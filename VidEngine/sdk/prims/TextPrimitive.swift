@@ -6,8 +6,85 @@
 //  Swift port of http://metalbyexample.com/rendering-text-in-metal-with-signed-distance-fields/
 //
 
-import Metal
 import MetalKit
+
+struct CFArrayEx<Element> : Collection, RandomAccessCollection {
+    typealias Index = Int
+
+    private let ref : CFArray
+
+    init(ref: CFArray) {
+        self.ref = ref
+    }
+
+    var startIndex : Index {
+        return 0
+    }
+
+    var endIndex: Index {
+        return CFArrayGetCount(ref)
+    }
+
+    subscript(index: Index) -> Element {
+        return unsafeBitCast(CFArrayGetValueAtIndex(ref, index), to: Element.self)
+    }
+
+    func index(after i: Index) -> Index {
+        return i + 1
+    }
+
+    func index(before i: Index) -> Index {
+        return i - 1
+    }
+}
+
+extension CFArrayEx where Element == CTLine {
+    func glyphCount() -> Int {
+        return lazy.map { $0.glyphCount }.sum()
+    }
+
+    init(frame : CTFrame) {
+        self.init(ref : CTFrameGetLines(frame))
+    }
+}
+
+extension CTLine {
+    var glyphCount : Int {
+        return CTLineGetGlyphCount(self)
+    }
+
+    var runs : CFArrayEx<CTRun> {
+        return CFArrayEx(ref: CTLineGetGlyphRuns(self))
+    }
+}
+
+extension CTRun {
+    var glyphCount : Int {
+        return CTRunGetGlyphCount(self)
+    }
+
+    var glyphs: [CGGlyph] {
+        var ret = [CGGlyph](repeating: CGGlyph(), count: glyphCount)
+        CTRunGetGlyphs(self, CFRange(), &ret)
+        return ret
+    }
+
+    var positions : [CGPoint] {
+        var ret = [CGPoint](repeating: CGPoint(), count: glyphCount)
+        CTRunGetPositions(self, CFRange(), &ret)
+        return ret
+    }
+
+    func imageBounds(ctx: CGContext, idx: Int) -> CGRect {
+        return CTRunGetImageBounds(self, ctx, CFRange(location: idx, length: 1))
+    }
+}
+
+extension Sequence where Iterator.Element : IntegerArithmetic & ExpressibleByIntegerLiteral {
+    func sum() -> Iterator.Element {
+        return reduce(0, +)
+    }
+}
 
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
@@ -25,14 +102,10 @@ public class TextPrimitive : Primitive {
         let rectPath = CGPath(rect: rect, transform: nil)
         let frameSetter = CTFramesetterCreateWithAttributedString(attrString)
         let frame = CTFramesetterCreateFrame(frameSetter, stringRange, rectPath, nil)
-        var frameGlyphCount = 0
-        let lines = CTFrameGetLines(frame)
-        let numLines = CFArrayGetCount(lines)
-        for i in 0..<numLines {
-            let lineObject = CFArrayGetValueAtIndex(lines, i)
-            let line = unsafeBitCast(lineObject, to: CTLine.self)
-            frameGlyphCount += CTLineGetGlyphCount(line)
-        }
+
+        let lines = CFArrayEx(frame: frame)
+        let frameGlyphCount = lines.glyphCount()
+
         let vertexCount = frameGlyphCount * 4
         let indexCount = frameGlyphCount * 6
         var indices = [UInt16](repeating: 0, count: indexCount)
@@ -74,40 +147,32 @@ public class TextPrimitive : Primitive {
         let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("Text IB", elements: indices)
         submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture))
     }
-    
+
     private func enumerateGlyphsInFrame(frame: CTFrame, callback: (CGGlyph, Int, CGRect) -> ()) {
-        let entire = CFRangeMake(0, 0)
         let framePath = CTFrameGetPath(frame)
         let frameBoundingRect = framePath.boundingBox
-        let lines = CTFrameGetLines(frame)
-        let numLines = CFArrayGetCount(lines)
-        var lineOriginArray = [CGPoint](repeating: CGPoint(), count: numLines)
-        CTFrameGetLineOrigins(frame, entire, &lineOriginArray)
+        let lines = CFArrayEx(frame: frame)
+
+        var lineOriginArray = [CGPoint](repeating: CGPoint(), count: lines.count)
+        CTFrameGetLineOrigins(frame, CFRange(), &lineOriginArray)
         var glyphIndexInFrame = 0
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
         let context = UIGraphicsGetCurrentContext()
-        for i in 0..<numLines {
-            let lineObject = CFArrayGetValueAtIndex(lines, i)
-            let line = unsafeBitCast(lineObject, to: CTLine.self)
-            let lineOrigin = lineOriginArray[i]
-            let runs = CTLineGetGlyphRuns(line)
-            let numRuns = CFArrayGetCount(runs)
-            for j in 0..<numRuns {
-                let runObject = CFArrayGetValueAtIndex(runs, j)
-                let run = unsafeBitCast(runObject, to: CTRun.self)
-                let glyphCount = CTRunGetGlyphCount(run)
-                var glyphArray = [CGGlyph](repeating: CGGlyph(), count: glyphCount)
-                CTRunGetGlyphs(run, entire, &glyphArray)
-                var positionArray = [CGPoint](repeating: CGPoint(), count: glyphCount)
-                CTRunGetPositions(run, entire, &positionArray)
-                for glyphIndex in 0..<glyphCount {
+        for (line, lineOrigin) in zip(lines, lineOriginArray) {
+            for run in line.runs {
+                var glyphArray = run.glyphs
+                var positionArray = run.positions
+
+                for glyphIndex in 0..<run.glyphCount {
                     let glyph = glyphArray[glyphIndex]
                     let glyphOrigin = positionArray[glyphIndex]
-                    var glyphRect = CTRunGetImageBounds(run, context, CFRangeMake(glyphIndex, 1))
+
                     let boundsTransX = frameBoundingRect.origin.x + lineOrigin.x
                     let boundsTransY = frameBoundingRect.height + frameBoundingRect.origin.y - lineOrigin.y + glyphOrigin.y
                     let pathTransform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: boundsTransX, ty: boundsTransY)
-                    glyphRect = glyphRect.applying(pathTransform)
+
+                    let glyphRect = run.imageBounds(ctx: context!, idx: glyphIndex).applying(pathTransform)
+
                     callback(glyph, glyphIndexInFrame, glyphRect)
                     glyphIndexInFrame += 1
                 }
