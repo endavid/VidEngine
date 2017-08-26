@@ -12,7 +12,7 @@ import simd
 class MdlParser {
     let path : String
     let scene : Scene
-    let separators = CharacterSet.whitespaces
+    let separators : CharacterSet = .whitespaces
     fileprivate var lines : [String] = []
     fileprivate var fnMap : [String : (String) -> ()] = [:]
     fileprivate var vertices : [TexturedVertex] = []
@@ -40,8 +40,8 @@ class MdlParser {
     
     func parse() -> Scene {
         do {
-            let text = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
-            lines = text.components(separatedBy: CharacterSet.newlines)
+            let text = try String(contentsOfFile: path, encoding: .utf8)
+            lines = text.components(separatedBy: .newlines)
             while !lines.isEmpty {
                 let line = lines.remove(at: 0)
                 let components = getComponents(line)

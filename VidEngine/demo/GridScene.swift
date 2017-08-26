@@ -19,14 +19,14 @@ class RotationAnim {
         let up = float3(0, 1, 0)
         let targetDirection = Spherical.randomSample().toCartesian()
         startRotation = targetRotation
-        targetRotation = Quaternion.createRotation(start: up, end: targetDirection)
+        targetRotation = .createRotation(start: up, end: targetDirection)
         let startDirection = startRotation * up
         let cosa = dot(startDirection, targetDirection)
         let a = acos(cosa)
         speed = 2 - a / .pi
     }
     func update(_ currentTime: CFTimeInterval) -> Quaternion {
-        alpha = alpha + speed * Float(currentTime)
+        alpha += speed * Float(currentTime)
         if alpha > 1 {
             setRandomRotationTarget()
             alpha = 0
