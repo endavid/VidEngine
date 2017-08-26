@@ -66,7 +66,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
 
-        timer = CADisplayLink(target: self, selector: #selector(GameViewController.newFrame(_:)))
+        timer = CADisplayLink(target: self, selector: #selector(newFrame))
         timer.add(to: .main, forMode: .defaultRunLoopMode)
         
         setupMotionController()
@@ -78,7 +78,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         }
         camera.bounds = view.bounds
         
-        let tapGest = UITapGestureRecognizer(target: self, action: #selector(GameViewController.screenTap(_:)))
+        let tapGest = UITapGestureRecognizer(target: self, action: #selector(screenTap))
         tapGest.numberOfTouchesRequired = 1
         tapGest.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGest)
