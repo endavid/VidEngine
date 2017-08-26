@@ -68,7 +68,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         commandQueue.label = "main command queue"
 
         timer = CADisplayLink(target: self, selector: #selector(GameViewController.newFrame(_:)))
-        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+        timer.add(to: .main, forMode: .defaultRunLoopMode)
         
         setupMotionController()
         //setupBgm()
@@ -77,7 +77,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         if let cam = world?.scene.camera {
             camera = cam
         }
-        camera.setBounds(view.bounds)
+        camera.bounds = view.bounds
         
         let tapGest = UITapGestureRecognizer(target: self, action: #selector(GameViewController.screenTap(_:)))
         tapGest.numberOfTouchesRequired = 1
@@ -136,7 +136,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     func draw(in view: MTKView) {
         
         // use semaphore to encode 3 frames ahead
-        let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        let _ = inflightSemaphore.wait(timeout: .distantFuture)
         // could check here for .timedOut to count number of skipped frames
         
         self.dataUpdate()
@@ -160,7 +160,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        camera.setBounds(view.bounds)
+        camera.bounds = view.bounds
     }
         
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d

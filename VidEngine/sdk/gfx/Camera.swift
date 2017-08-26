@@ -12,7 +12,11 @@ class Camera {
     var transform = Transform()         ///< position of the camera
     var projectionMatrix = float4x4()
     var inverseProjectionMatrix = float4x4()
-    var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
+    var bounds = CGRect(x: 0, y: 0, width: 1, height: 1) {
+        didSet {
+            setPerspectiveProjection(fov: fov, near: near, far: far)
+        }
+    }
     var fov : Float = 45
     var near : Float = 0.1
     var far : Float = 100
@@ -31,15 +35,9 @@ class Camera {
             return transform.inverse()
         }
     }
-    var viewTransformMatrix : float4x4 {
-        get {
-            return self.viewTransform.toMatrix4()
-        }
-    }
 
-    func setBounds(_ bounds: CGRect) {
-        self.bounds = bounds
-        setPerspectiveProjection(fov: fov, near: near, far: far)
+    var viewTransformMatrix : float4x4 {
+        return viewTransform.toMatrix4()
     }
     
     func getUpVector() -> float3 {
