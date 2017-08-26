@@ -44,12 +44,7 @@ class RenderManager {
     }
     
     func getPlugin<T>() -> T? {
-        for p in plugins {
-            if p is T {
-                return p as? T
-            }
-        }
-        return nil
+        return plugins.first { $0 is T } as? T
     }
     
     var uniformBufferOffset : Int {
