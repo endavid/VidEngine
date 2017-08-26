@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreGraphics
-import UIKit
 import MetalKit
 import simd
 
@@ -45,7 +44,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
     
     static let atlasSize: Int = 4096
     var glyphs : [GlyphDescriptor] = []
-    let parentFont: UIFont
+    let parentFont: UXFont
     var fontPointSize: Float
     let textureSize: Int
     private var _fontTexture: MTLTexture!
@@ -57,7 +56,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
     }
     
     /// If the FontAtlas has been created before, it will attempt to load it from disk
-    public static func createFontAtlas(font: UIFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
+    public static func createFontAtlas(font: UXFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
         let candidates = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if let documentsPath = candidates.first {
             let dirUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
@@ -78,7 +77,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
     }
     
-    public init(font: UIFont, textureSize: Int) throws {
+    public init(font: UXFont, textureSize: Int) throws {
         self.parentFont = font
         self.textureSize = textureSize
         if textureSize > FontAtlas.atlasSize {
@@ -105,7 +104,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             NSLog("Invalid font size")
             return nil
         }
-        guard let font = UIFont(name: fontName, size: CGFloat(fontPointSize)) else {
+        guard let font = UXFont(name: fontName, size: CGFloat(fontPointSize)) else {
             NSLog("Invalid font: \(fontName):\(fontPointSize)")
             return nil
         }
@@ -188,7 +187,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         distanceField.deallocate(capacity: atlasSize2)
     }
     
-    private func createAtlasForFont(context: CGContext, font: UIFont, width: Int, height: Int) {
+    private func createAtlasForFont(context: CGContext, font: UXFont, width: Int, height: Int) {
         // Turn off antialiasing so we only get fully-on or fully-off pixels.
         // This implicitly disables subpixel antialiasing and hinting.
         context.setAllowsAntialiasing(false)
@@ -202,7 +201,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         
         fontPointSize = pointSizeThatFitsForFont(font, rect:CGRect(x: 0, y: 0, width: width, height: height))
         let ctFont = CTFontCreateWithName(font.fontName as CFString, CGFloat(fontPointSize), nil)
-        guard let parentFont = UIFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
+        guard let parentFont = UXFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
             // should throw an exception
             return
         }
@@ -252,7 +251,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
     }
     
-    private func pointSizeThatFitsForFont(_ font: UIFont, rect: CGRect) -> Float {
+    private func pointSizeThatFitsForFont(_ font: UXFont, rect: CGRect) -> Float {
         var fittedSize = Float(font.pointSize)
         while isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
             fittedSize += 1
@@ -263,9 +262,9 @@ public class FontAtlas: NSObject, NSSecureCoding {
         return fittedSize
     }
     
-    private func isLikelyToFit(font: UIFont, size: CGFloat, rect: CGRect) -> Bool {
+    private func isLikelyToFit(font: UXFont, size: CGFloat, rect: CGRect) -> Bool {
         let textureArea = rect.size.width * rect.size.height
-        guard let trialFont = UIFont(name: font.fontName, size: size) else {
+        guard let trialFont = UXFont(name: font.fontName, size: size) else {
             return false
         }
         let trialCTFont = CTFontCreateWithName(font.fontName as CFString, size, nil)
@@ -276,14 +275,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
         return (estimatedGlyphTotalArea < textureArea)
     }
     
-    private func estimatedLineWidthForFont(_ font: UIFont) -> CGFloat {
+    private func estimatedLineWidthForFont(_ font: UXFont) -> CGFloat {
         let myString = "!" as NSString
         let size: CGSize = myString.size(attributes: [NSFontAttributeName: font])
         let estimatedStrokeWidth = Float(size.width)
         return CGFloat(ceilf(estimatedStrokeWidth))
     }
     
-    private func estimatedGlyphSizeForFont(_ font: UIFont) -> CGSize {
+    private func estimatedGlyphSizeForFont(_ font: UXFont) -> CGSize {
         let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
         let exemplarStringSize = exemplarString.size(attributes: [NSFontAttributeName: font ])
         let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))
