@@ -11,7 +11,7 @@ import simd
 // linear RGB with alpha
 struct LinearRGBA {
     let rgba : float4
-    
+
     var r : Float {
         get {
             return rgba.x
@@ -32,7 +32,7 @@ struct LinearRGBA {
             return rgba.w
         }
     }
-    
+
     init(rgb: float3) {
         rgba = float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
@@ -55,7 +55,7 @@ struct CieXYZ {
             return xyz.z
         }
     }
-    
+
     func toRGBA() -> LinearRGBA {
         let m = float3x3(rows: [
             float3(3.2406, -1.5372, -0.4986),
@@ -70,13 +70,13 @@ struct CieXYZ {
 public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
-    
+
     init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
         sortedKeys = keys.sorted { $0 < $1 }
     }
-    
+
     // linearly interpolate between the closest wavelengths (in nm)
     func getIntensity(_ wavelength: Int) -> Float {
         // exact match
@@ -100,13 +100,13 @@ public class Spectrum {
         let m0 = data[w0]!
         return (1-alpha) * m0 + alpha * m1
     }
-    
+
     // http://www.fourmilab.ch/documents/specrend/
     func toXYZ() -> CieXYZ {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
-         
+
          cie_colour_match[(lambda - 380) / 5][0] = xBar
          cie_colour_match[(lambda - 380) / 5][1] = yBar
          cie_colour_match[(lambda - 380) / 5][2] = zBar
@@ -140,7 +140,7 @@ public class Spectrum {
             float3(0.0002,0.0001,0.0000), float3(0.0002,0.0001,0.0000), float3(0.0001,0.0000,0.0000),
             float3(0.0001,0.0000,0.0000), float3(0.0001,0.0000,0.0000), float3(0.0000,0.0000,0.0000)
         ]
-        
+
         var lambda : Int = 380
         var xyz = float3(0,0,0)
         for i in 0..<cieColourMatch.count {

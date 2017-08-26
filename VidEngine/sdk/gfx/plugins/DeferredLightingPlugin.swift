@@ -11,7 +11,7 @@ import MetalKit
 class DeferredLightingPlugin : GraphicPlugin {
     // @todo split in different queues, one per type
     fileprivate var lights : [LightSource] = []
-    
+
     func queue(_ light: LightSource) {
         let alreadyQueued = lights.contains { $0 === light }
         if !alreadyQueued {
@@ -37,7 +37,7 @@ class DeferredLightingPlugin : GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
     }
-    
+
     /// Draw all the directional lights with full-screen passes.
     /// We should compute the shadow maps before.
     /// Supposedly the shadow maps can be computed in parallel with the earlier pipeline.
@@ -50,6 +50,6 @@ class DeferredLightingPlugin : GraphicPlugin {
     /// Draw all spot lights using spot light geometry.
     /// For shadows, same as directional lights.
     fileprivate func drawSpotLights(_ encoder: MTLRenderCommandEncoder) {
-        
+
     }
 }

@@ -19,13 +19,13 @@ class PlatonicSolid {
     fileprivate var start : [Int] = []
     fileprivate var end : [Int] = []
     fileprivate var midpoint : [Int] = []
-    
+
     init(numVertices: Int, numFaces: Int, numEdges: Int) {
         vertices = [float3](repeating: float3(0,0,0), count: numVertices)
         faces = [int3](repeating: int3(0,0,0), count: numFaces)
         self.numEdges = numEdges
     }
-    
+
     static func createTetrahedron() -> PlatonicSolid {
         let ps = PlatonicSolid(numVertices: 4, numFaces: 4, numEdges: 6)
         let sqrt3 = 1 / sqrtf(3.0)
@@ -39,7 +39,7 @@ class PlatonicSolid {
         ps.faces[3] = int3(3, 2, 0)
         return ps
     }
-    
+
     static func createOctahedron() -> PlatonicSolid {
         let ps = PlatonicSolid(numVertices: 6, numFaces: 8, numEdges: 12)
         ps.vertices[0] = float3( 0,  0, -1)
@@ -58,7 +58,7 @@ class PlatonicSolid {
         ps.faces[7] = int3(5, 1, 4)
         return ps
     }
-    
+
     static func createIcosahedron() -> PlatonicSolid {
         let ps = PlatonicSolid(numVertices: 12, numFaces: 20, numEdges: 30)
         let t = (1+sqrtf(5))/2
@@ -98,7 +98,7 @@ class PlatonicSolid {
         ps.faces[19] = int3( 6, 10, 2 )
         return ps
     }
-    
+
     func subdivide() {
         // numVerticesNew = vertices.count + 2 * numEdges
         // numFacesNew = 4 * faces.count
@@ -119,7 +119,7 @@ class PlatonicSolid {
             faces.append(int3(ab, f.y, bc))
         }
     }
-    
+
     func computeTexCoordsFromSphericalProjection() -> [Vec2] {
         var uvs : [Vec2] = []
         for v in vertices {
@@ -129,7 +129,7 @@ class PlatonicSolid {
         }
         return uvs
     }
-    
+
     fileprivate func searchMidpoint(_ indexStart: Int, indexEnd: Int) -> Int {
         for i in 0..<edgeWalk {
             if (start[i] == indexStart && end[i] == indexEnd)

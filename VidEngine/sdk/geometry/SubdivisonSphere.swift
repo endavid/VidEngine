@@ -13,7 +13,7 @@ class SubdivisionSphere {
     var vertices: [float3] = []
     var uvs: [Vec2] = []
     var faces: [int3] = []
-    
+
     // size = 1 by default (radius = 0.5)
     init(widthSegments: Int, heightSegments: Int) {
         let w = max(widthSegments, 3)

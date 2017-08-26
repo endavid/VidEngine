@@ -88,13 +88,13 @@ extension Sequence where Iterator.Element : IntegerArithmetic & ExpressibleByInt
 
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
-    
+
     public init(numInstances: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
         super.init(numInstances: numInstances)
         self.lightingType = .UnlitTransparent
         buildMeshWithString(text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
     }
-    
+
     private func buildMeshWithString(text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
         let font = fontAtlas.parentFont.withSize(fontSize)
         let attrString = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])

@@ -11,19 +11,19 @@ import Foundation
 class Scene {
     var primitives : [Primitive] = []
     var camera : Camera? = nil
-    
+
     func queueAll() {
         for p in primitives {
             p.queue()
         }
     }
-    
+
     func dequeueAll() {
         for p in primitives {
             p.dequeue()
         }
     }
-    
+
     func update(_ currentTime: CFTimeInterval) {
     }
 }

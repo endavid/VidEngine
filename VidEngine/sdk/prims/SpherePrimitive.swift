@@ -34,7 +34,7 @@ public struct SphereDescriptor {
 public class SpherePrimitive : Primitive {
     // this could probably be a series of flags, hasInterior & hasExterior
     fileprivate let isInterior : Bool
-    
+
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
     public init(numInstances: Int, descriptor: SphereDescriptor) {
         self.isInterior = descriptor.isInterior
@@ -52,7 +52,7 @@ public class SpherePrimitive : Primitive {
             initBuffers(vertices: ps.vertices, faces: ps.faces, uvs: uvs)
         }
     }
-    
+
     fileprivate func initBuffers(vertices: [float3], faces: [int3], uvs: [Vec2]) {
         var triangleList = [UInt16](repeating: 0, count: faces.count * 3)
         for i in 0..<faces.count {

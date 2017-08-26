@@ -10,7 +10,7 @@ import MetalKit
 
 struct Primitive2DOptions : OptionSet {
     let rawValue: Int
-    
+
     static let alignCenter  = Primitive2DOptions(rawValue: 1 << 0)
     static let alignBottom = Primitive2DOptions(rawValue: 1 << 1)
     static let allowRotation = Primitive2DOptions(rawValue: 1 << 2)
@@ -21,17 +21,17 @@ class Primitive2D {
     var position = Vec3(0,0,0)
     var color = UIColor.white
     var options : Primitive2DOptions = []
-    
+
     func queue() {
         let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.queue(self)
     }
-    
+
     func dequeue() {
         let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.dequeue(self)
     }
-    
+
     init(priority: Int) {
         self.priority = priority
     }
@@ -43,7 +43,7 @@ class SpritePrimitive2D : Primitive2D {
     private var _angle : Float = 0
     private var _cosa : Float = 1
     private var _sina : Float = 0
-    
+
     var angle : Float {
         get {
             return _angle

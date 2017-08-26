@@ -31,7 +31,7 @@ extension MTKTextureLoader {
         case noCachesDirectory
         case downloadFailed(URLResponse?)
     }
-    
+
     // ref. https://developer.apple.com/library/content/samplecode/LargeImageDownsizing/
     private static func downsize(image: UIImage, scale: CGFloat) -> CGImage? {
         let destResolution = image.size * scale
@@ -39,7 +39,7 @@ extension MTKTextureLoader {
         let pixelsPerMB = 262144
         let tileTotalPixels = kSourceImageTileSizeMB * CGFloat(pixelsPerMB)
         let destSeemOverlap : CGFloat = 2.0 // the numbers of pixels to overlap the seems where tiles meet.
-        
+
         // create an offscreen bitmap context that will hold the output image
         // pixel data, as it becomes available by the downscaling routine.
         // use the RGB colorspace as this is the colorspace iOS GPU is optimized for.
@@ -132,7 +132,7 @@ extension MTKTextureLoader {
         // create a CGImage from the offscreen image context
         return destContext.makeImage()
     }
-    
+
     // http://stackoverflow.com/q/42567140/1765629
     // https://forums.developer.apple.com/thread/73478
     func newTexture(with uiImage: UIImage, options: [String : NSObject]? = nil, completionHandler: MTKTextureLoaderCallback) {
@@ -144,7 +144,7 @@ extension MTKTextureLoader {
             completionHandler(nil, TextureError.CouldNotGetCGImage)
         }
     }
-    
+
     // This may crash at the moment if the width of the texture is >8192 ...
     // > MTLTextureDescriptor has width (10000) greater than the maximum allowed size of 8192.
     func newTexture(withContentsOfRemote url: URL, options: [String : NSObject]? = nil, completionHandler: @escaping MTKTextureLoaderCallback) {
@@ -188,7 +188,7 @@ extension MTKTextureLoader {
 
 class TextureLibrary {
     private var lib: [String: MTLTexture] = [:]
-    
+
     func getTextureAsync(resource: String, bundle: Bundle, options: [String:NSObject]? = nil, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[resource] {
             completion(t, nil)
@@ -206,7 +206,7 @@ class TextureLibrary {
         }
         getTextureAsync(id: resource, fileUrl: url, options: options, addToCache: addToCache, completion: completion)
     }
-    
+
     func getTextureAsync(id: String, fileUrl: URL, options: [String:NSObject]?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -227,7 +227,7 @@ class TextureLibrary {
             }
         }
     }
-    
+
     func getTextureAsync(id: String, remoteUrl: URL, options: [String:NSObject]?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -248,11 +248,11 @@ class TextureLibrary {
             }
         }
     }
-    
+
     func remove(_ textureId: String) {
         lib.removeValue(forKey: textureId)
     }
-    
+
     func clear() {
         lib.removeAll()
     }

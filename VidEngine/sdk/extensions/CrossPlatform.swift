@@ -117,7 +117,7 @@ extension UXFont {
         }
         return fittedSize
     }
-
-
+    
+    
 }
 

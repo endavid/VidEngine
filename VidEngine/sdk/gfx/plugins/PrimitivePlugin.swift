@@ -9,28 +9,28 @@
 import MetalKit
 
 class PrimitivePlugin : GraphicPlugin {
-    
+
     fileprivate var primitives : [Primitive] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil
-    
+
     func queue(_ primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
         if !alreadyQueued {
             primitives.append(primitive)
         }
     }
-    
+
     func dequeue(_ primitive: Primitive) {
         let index = primitives.index { $0 === primitive }
         if let i = index {
             primitives.remove(at: i)
         }
     }
-    
+
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
-        
+
         let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createPipelineDescriptor(device: device, library: library)
         let depthDescriptor = RenderManager.sharedInstance.gBuffer.createDepthStencilDescriptor()
         do {
@@ -40,7 +40,7 @@ class PrimitivePlugin : GraphicPlugin {
             print("Failed to create pipeline state, error \(error)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -55,11 +55,11 @@ class PrimitivePlugin : GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
     }
-    
+
     private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
         let whiteTexture = RenderManager.sharedInstance.whiteTexture
         var currentAlbedoTexture : MTLTexture? = nil
-        
+
         for p in self.primitives {
             if !p.submeshes.isEmpty {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, at: 0)
@@ -80,7 +80,7 @@ class PrimitivePlugin : GraphicPlugin {
             }
         }
     }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)

@@ -19,19 +19,19 @@ public class PlanePrimitive : Primitive {
     fileprivate static let planeVB : MTLBuffer! = PlanePrimitive.createPlaneVertexBuffer()
     // CCW list of triangles
     fileprivate static let triangleList : [UInt16] = [0, 2, 1, 1, 2, 3]
-    
+
     public override init(numInstances: Int) {
         super.init(numInstances: numInstances)
         vertexBuffer = PlanePrimitive.planeVB
         let mesh = Mesh(numIndices: PlanePrimitive.triangleList.count, indexBuffer: PlanePrimitive.planeIB, albedoTexture: nil)
         submeshes.append(mesh)
     }
-    
+
     static func createPlaneIndexBuffer() -> MTLBuffer {
         let buffer = RenderManager.sharedInstance.createIndexBuffer("plane IB", elements: PlanePrimitive.triangleList)
         return buffer
     }
-    
+
     static func createPlaneVertexBuffer() -> MTLBuffer {
         let buffer = RenderManager.sharedInstance.createTexturedVertexBuffer("plane VB", numElements: 4)
         let vb = buffer.contents().assumingMemoryBound(to: TexturedVertex.self)

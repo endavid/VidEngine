@@ -70,7 +70,7 @@ struct Quaternion : CustomStringConvertible, Equatable {
         m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
         return m
     }
-    
+
     static func ==(lhs: Quaternion, rhs: Quaternion) -> Bool {
         return lhs.q == rhs.q
     }
@@ -127,11 +127,11 @@ func Lerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
 func Slerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
     var w1 : Float
     var w2 : Float
-    
+
     let cosTheta = start.dotQ(end)
     let theta    = acosf(cosTheta)
     let sinTheta = sinf(theta)
-    
+
     if( sinTheta > 0.001 ) {
         w1 = sinf((1.0-t)*theta) / sinTheta
         w2 = sinf(t*theta) / sinTheta

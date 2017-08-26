@@ -20,7 +20,7 @@ class Camera {
     var fov : Float = 45
     var near : Float = 0.1
     var far : Float = 100
-    
+
     var rotation : Quaternion {
         get {
             return transform.rotation
@@ -29,7 +29,7 @@ class Camera {
             transform.rotation = newValue
         }
     }
-    
+
     var viewTransform : Transform {
         get {
             return transform.inverse()
@@ -39,26 +39,26 @@ class Camera {
     var viewTransformMatrix : float4x4 {
         return viewTransform.toMatrix4()
     }
-    
+
     func getUpVector() -> float3 {
         // up vector at start is (0,1,0)
         return transform.rotation * float3(0,1,0)
     }
-    
+
     func setViewDirection(_ dir: float3, up: float3) {
         // at start, camera is looking at -Z
         transform.rotation = Quaternion.createRotation(start: float3(0,0,-1), end: dir, up: up)
     }
-    
+
     func setEyePosition(_ pos: float3) {
         transform.position = transform.rotation * pos
     }
-    
+
     func setPerspectiveProjection(fov: Float, near: Float, far: Float) {
         let aspect = Float(bounds.width / bounds.height)
         setPerspectiveProjection(fov: fov, near: near, far: far, aspectRatio: aspect)
     }
-    
+
     func setPerspectiveProjection(fov: Float, near: Float, far: Float, aspectRatio: Float)
     {
         self.fov = fov

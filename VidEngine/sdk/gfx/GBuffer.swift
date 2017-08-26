@@ -17,7 +17,7 @@ struct GBuffer {
     let lightTexture : MTLTexture // light accumulation buffer; cleared and reused for transparency
     let revealTexture: MTLTexture // for OIT
     let shadedTexture : MTLTexture // intermediate buffer
-    
+
     init(device: MTLDevice, size: CGSize) {
         width = Int(size.width)
         height = Int(size.height)
@@ -40,11 +40,11 @@ struct GBuffer {
         shadedTexture = device.makeTexture(descriptor: shadedDesc)
         shadedTexture.label = "Shading Output"
     }
-    
+
     func createPipelineDescriptor(device: MTLDevice, library: MTLLibrary, fragmentShader: String? = nil) -> MTLRenderPipelineDescriptor {
         let fragmentProgram = library.makeFunction(name: fragmentShader ?? "passLightFragment")!
         let vertexProgram = library.makeFunction(name: "passLightGeometry")!
-        
+
         let vertexDesc = TexturedVertex.createVertexDescriptor()
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -58,11 +58,11 @@ struct GBuffer {
         pipelineStateDescriptor.depthAttachmentPixelFormat = self.depthTexture.pixelFormat
         return pipelineStateDescriptor
     }
-    
+
     func createUnlitPipelineDescriptor(device: MTLDevice, library: MTLLibrary, isBlending: Bool, fragmentShader: String? = nil) -> MTLRenderPipelineDescriptor {
         let fragmentProgram = library.makeFunction(name: fragmentShader ?? "passThroughTexturedFragment")!
         let vertexProgram = library.makeFunction(name: "passGeometry")!
-        
+
         let vertexDesc = TexturedVertex.createVertexDescriptor()
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -77,17 +77,17 @@ struct GBuffer {
             pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
             pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
             pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
-            
+
         }
         pipelineStateDescriptor.sampleCount = self.shadedTexture.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = self.depthTexture.pixelFormat
         return pipelineStateDescriptor
     }
-    
+
     func createOITPipelineDescriptor(device: MTLDevice, library: MTLLibrary, fragmentShader: String? = nil) -> MTLRenderPipelineDescriptor {
         let fragmentProgram = library.makeFunction(name: fragmentShader ?? "passFragmentOIT")!
         let vertexProgram = library.makeFunction(name: "passGeometryOIT")!
-        
+
         let vertexDesc = TexturedVertex.createVertexDescriptor()
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -113,7 +113,7 @@ struct GBuffer {
         pipelineStateDescriptor.depthAttachmentPixelFormat = self.depthTexture.pixelFormat
         return pipelineStateDescriptor
     }
-    
+
     func createDepthStencilDescriptor() -> MTLDepthStencilDescriptor {
         let depthDescriptor = MTLDepthStencilDescriptor()
         depthDescriptor.isDepthWriteEnabled = true
