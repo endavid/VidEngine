@@ -121,7 +121,14 @@ extension UXFont {
         }
         return fittedSize
     }
-    
-    
+
+    func frame(for text: String, in rect: CGRect) -> CTFrame {
+        let attrString = NSAttributedString(string: text, attributes: [NSFontAttributeName: self])
+        let stringRange = CFRangeMake(0, attrString.length)
+        let rectPath = CGPath(rect: rect, transform: nil)
+        let frameSetter = CTFramesetterCreateWithAttributedString(attrString)
+        return CTFramesetterCreateFrame(frameSetter, stringRange, rectPath, nil)
+    }
 }
+
 

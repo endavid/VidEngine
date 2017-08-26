@@ -19,11 +19,8 @@ public class TextPrimitive : Primitive {
 
     private func buildMeshWithString(text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
         let font = fontAtlas.parentFont.withSize(fontSize)
-        let attrString = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
-        let stringRange = CFRangeMake(0, attrString.length)
-        let rectPath = CGPath(rect: rect, transform: nil)
-        let frameSetter = CTFramesetterCreateWithAttributedString(attrString)
-        let frame = CTFramesetterCreateFrame(frameSetter, stringRange, rectPath, nil)
+
+        let frame = font.frame(for: text, in: rect)
 
         let lines = CFArrayEx(frame: frame)
         let frameGlyphCount = lines.glyphCount()
