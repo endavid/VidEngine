@@ -31,17 +31,18 @@ struct Quaternion : CustomStringConvertible, Equatable {
     var description : String {
         return "q(w: \(q.w), v: (\(q.x), \(q.y), \(q.z)))"
     }
-    func toString() -> String {
-        return description
-    }
+
     init() {
+
     }
+
     init(w: Float, v: float3) {
         q = float4(v.x, v.y, v.z, w)
     }
     func conjugate() -> Quaternion {
         return Quaternion(w: self.w, v: -self.v)
     }
+
     func inverse() -> Quaternion {
         // assume it's a unit quaternion, so just Conjugate
         return conjugate()

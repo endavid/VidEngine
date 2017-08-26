@@ -9,12 +9,9 @@ import Metal
 
 func createNoiseTexture(device: MTLDevice, width: Int, height: Int) -> MTLTexture {
     // initialize buffer with random numbers (we'll use 2 channels)
-    var data = [UInt16](repeating: 0, count: width*height*2)
-    for i in 0..<data.count {
-        data[i] = UInt16(Rand(1 << 16))
-    }
+    let data = (0..<width*height*2).map { _ in UInt16(Rand(1 << 16)) }
     // unsigned normalized, so when we sample it in the shader, the values are between 0 and 1
-    let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rg16Unorm, width: width, height: height, mipmapped: false)
+    let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rg16Unorm, width: width, height: height, mipmapped: false)
     let texture = device.makeTexture(descriptor: texDescriptor)
     let region = MTLRegionMake2D(0, 0, width, height)
     texture.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: width * 2 * 2)
