@@ -54,7 +54,7 @@ class RainPlugin : GraphicPlugin {
         
         raindropDoubleBuffer = device.makeBuffer(length: 2 * maxNumberOfRaindrops * sizeOfLineParticle, options: [])
         raindropDoubleBuffer.label = "raindrop buffer"
-        noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
+        noiseTexture = device.makeNoiseTexture(width: 128, height: 128)
         
         initVertexBuffer(2000)
     }
