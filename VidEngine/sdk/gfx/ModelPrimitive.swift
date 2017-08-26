@@ -32,7 +32,7 @@ public class ModelPrimitive : Primitive {
             } else if let data = data,
                 let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                 if let json = json {
-                    model =  ModelPrimitive(json: json, bundle: bundle)
+                    model = ModelPrimitive(json: json, bundle: bundle)
                 }
             }
             completion(model, nil)
@@ -68,7 +68,7 @@ public class ModelPrimitive : Primitive {
         }
         let materials = json["materials"] as? [String: Any]
         let numVertices = vertexData.count / 8
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer(name + " VB", numElements: numVertices)
+        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("\(name) VB", numElements: numVertices)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<numVertices {
             let x = Vec3(vertexData[8*i], vertexData[8*i+1], vertexData[8*i+2])
@@ -83,7 +83,7 @@ public class ModelPrimitive : Primitive {
             guard let indices = meshData["indices"] as? [UInt16] else {
                 continue
             }
-            let indexBuffer = RenderManager.sharedInstance.createIndexBuffer(name + " IB", elements: indices)
+            let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("\(name) IB", elements: indices)
             let submesh = Mesh(numIndices: indices.count, indexBuffer: indexBuffer, albedoTexture: nil)
             let submeshIndex = submeshes.count
             submeshes.append(submesh)
