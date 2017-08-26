@@ -46,8 +46,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         }
     }
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
 
         let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library)
         let textPipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
@@ -63,7 +62,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         }
     }
 
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createOITRenderPass(clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Unlit Transparency Encoder"
@@ -106,7 +105,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         }
     }
 
-    override func updateBuffers(_ syncBufferIndex: Int) {
+     func updateBuffers(_ syncBufferIndex: Int) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

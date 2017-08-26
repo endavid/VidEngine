@@ -28,8 +28,7 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
 
         let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createPipelineDescriptor(device: device, library: library)
         let depthDescriptor = RenderManager.sharedInstance.gBuffer.createDepthStencilDescriptor()
@@ -41,7 +40,7 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
 
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder.label = "Primitives Encoder"
@@ -81,7 +80,7 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
 
-    override func updateBuffers(_ syncBufferIndex: Int) {
+    func updateBuffers(_ syncBufferIndex: Int) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

@@ -19,8 +19,7 @@ class RainPlugin : GraphicPlugin {
     fileprivate var particleCount = 0
     fileprivate var doubleBufferIndex = 0
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
 
         let fragmentProgram = library.makeFunction(name: "passThroughFragment")!
         let vertexRaindropProgram = library.makeFunction(name: "passVertexRaindrop")!
@@ -58,7 +57,11 @@ class RainPlugin : GraphicPlugin {
         initVertexBuffer(2000)
     }
 
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func updateBuffers(_ syncBufferIndex: Int) {
+
+    }
+
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes

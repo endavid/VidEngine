@@ -24,10 +24,10 @@ class DeferredLightingPlugin : GraphicPlugin {
             lights.remove(at: i)
         }
     }
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+
     }
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -36,6 +36,10 @@ class DeferredLightingPlugin : GraphicPlugin {
         drawDirectionalLights(encoder)
         encoder.popDebugGroup()
         encoder.endEncoding()
+    }
+
+    func updateBuffers(_ syncBufferIndex: Int) {
+
     }
 
     /// Draw all the directional lights with full-screen passes.

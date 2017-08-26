@@ -13,8 +13,7 @@ import MetalKit
 class ResolveWeightBlendedTransparency : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
 
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
 
         let fragmentProgram = library.makeFunction(name: "passResolveOIT")!
         let vertexProgram = library.makeFunction(name: "passThrough2DVertex")!
@@ -39,7 +38,8 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
             print("Failed to create pipeline state, error \(error)")
         }
     }
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -51,5 +51,9 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
         encoder.endEncoding()
+    }
+
+    func updateBuffers(_ syncBufferIndex: Int) {
+
     }
 }

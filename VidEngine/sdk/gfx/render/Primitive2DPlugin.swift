@@ -34,8 +34,7 @@ class Primitive2DPlugin : GraphicPlugin {
             }
         }
     }
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        super.init(device: device, library: library, view: view)
+    required init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
 
         let fragmentProgram = library.makeFunction(name: "passThroughTexturedFragment")!
         let vertexProgram = library.makeFunction(name: "passSprite2DVertex")!
@@ -73,7 +72,7 @@ class Primitive2DPlugin : GraphicPlugin {
         spriteIB = device.makeBuffer(length: maxNumSprites * MemoryLayout<UInt16>.size * 6, options: [])
         initSpriteIndexBuffer()
     }
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         bounds = camera.bounds
         if sprites.count > 0 {
             let whiteTexture = RenderManager.sharedInstance.whiteTexture
@@ -89,7 +88,7 @@ class Primitive2DPlugin : GraphicPlugin {
             encoder.endEncoding()
         }
     }
-    override func updateBuffers(_ syncBufferIndex: Int) {
+     func updateBuffers(_ syncBufferIndex: Int) {
         spriteVBoffset = MemoryLayout<ColoredUnlitTexturedVertex>.size * maxNumSprites * 4 * syncBufferIndex
         updateSpriteBuffer()
     }
