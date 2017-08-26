@@ -20,6 +20,20 @@ struct GraphicsData {
     var viewMatrix = float4x4()
 }
 
+extension MTKView {
+    fileprivate func plugins() -> [GraphicPlugin] {
+        guard let device = device, let library = device.newDefaultLibrary() else { fatalError("failed to make shader library") }
+
+        return [PrimitivePlugin(device: device, library: library, view: self),
+                DeferredShadingPlugin(device: device, library: library, view: self),
+                UnlitTransparencyPlugin(device: device, library: library, view: self),
+                ResolveWeightBlendedTransparency(device: device, library: library, view: self),
+                PostEffectPlugin(device: device, library: library, view: self),
+                //RainPlugin(device: device, library: library, view: view),
+                Primitive2DPlugin(device: device, library: library, view: self)]
+    }
+}
+
 // (View in M-V-C)
 class RenderManager {
     static let sharedInstance = RenderManager()
@@ -32,7 +46,8 @@ class RenderManager {
     fileprivate var _whiteTexture : MTLTexture! = nil
     fileprivate var _fullScreenQuad : FullScreenQuad! = nil
     var graphicsData : GraphicsData = GraphicsData()
-    var device : MTLDevice! = nil
+    private(set) var device : MTLDevice = MTLCreateSystemDefaultDevice()!
+
     var camera : Camera = Camera()
     let textureLibrary = TextureLibrary()
 
@@ -76,23 +91,7 @@ class RenderManager {
         self.device = device
         _whiteTexture = createWhiteTexture()
         _fullScreenQuad = FullScreenQuad(device: device)
-        self.initGraphicPlugins(view)
-    }
-
-    fileprivate func initGraphicPlugins(_ view: MTKView) {
-        // @todo library should come from a different bundle when making the engine a Framework
-        if let library = device.newDefaultLibrary() {
-            // order is important!
-            plugins.append(PrimitivePlugin(device: device, library: library, view: view))
-            plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
-            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view))
-            plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view))
-            plugins.append(PostEffectPlugin(device: device, library: library, view: view))
-            //plugins.append(RainPlugin(device: device, library: library, view: view))
-            plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
-        } else {
-            NSLog("initGraphicPlugins: failed to make shader library")
-        }
+        plugins = view.plugins()
     }
 
     func updateBuffers() {
