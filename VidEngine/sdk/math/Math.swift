@@ -28,16 +28,12 @@ func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
     return ( fabsf( a - b ) < epsilon )
 }
 
-/// Clamp
-func Clamp(_ value: CGFloat, lowest: CGFloat, highest: CGFloat) -> CGFloat {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+extension ClosedRange {
+    public func clamp(_ value: Bound) -> Bound {
+        return min(max(value, lowerBound), upperBound)
+    }
 }
-func Clamp(_ value: Float, lowest: Float, highest: Float) -> Float {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
-}
-func Clamp(_ value: Int, lowest: Int, highest: Int) -> Int {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
-}
+
 /// Random Int. Preferred to rand() % upperBound
 func Rand(_ upperBound: UInt32) -> UInt32 {
     return arc4random_uniform(upperBound)
