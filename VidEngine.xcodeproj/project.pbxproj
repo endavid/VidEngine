@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		37AE03301F520721003A2660 /* CrossPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE032F1F520721003A2660 /* CrossPlatform.swift */; };
+		37AE03321F520F38003A2660 /* CoreText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE03311F520F38003A2660 /* CoreText.swift */; };
 		6302B96A1EDC2142008DC90D /* FontAtlas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9691EDC2142008DC90D /* FontAtlas.swift */; };
 		6302B96C1EDC22C9008DC90D /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B96B1EDC22C9008DC90D /* Texture.swift */; };
 		6302B96F1EDC2631008DC90D /* UnlitTransparencyPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B96E1EDC2631008DC90D /* UnlitTransparencyPlugin.swift */; };
@@ -88,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		37AE032F1F520721003A2660 /* CrossPlatform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CrossPlatform.swift; path = extensions/CrossPlatform.swift; sourceTree = "<group>"; };
+		37AE03311F520F38003A2660 /* CoreText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreText.swift; path = extensions/CoreText.swift; sourceTree = "<group>"; };
 		6302B9691EDC2142008DC90D /* FontAtlas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontAtlas.swift; sourceTree = "<group>"; };
 		6302B96B1EDC22C9008DC90D /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		6302B96E1EDC2631008DC90D /* UnlitTransparencyPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnlitTransparencyPlugin.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				37AE032F1F520721003A2660 /* CrossPlatform.swift */,
+				37AE03311F520F38003A2660 /* CoreText.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				632745D81EDC3F8F00435681 /* PostEffectPlugin.swift in Sources */,
 				6365986B1D78173C009C5215 /* ModelPrimitive.swift in Sources */,
 				6302B97C1EDC3A60008DC90D /* Transparency.metal in Sources */,
+				37AE03321F520F38003A2660 /* CoreText.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
