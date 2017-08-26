@@ -157,11 +157,12 @@ public class TextPrimitive : Primitive {
         CTFrameGetLineOrigins(frame, CFRange(), &lineOriginArray)
         var glyphIndexInFrame = 0
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        let context = UIGraphicsGetCurrentContext()
+        guard let context = UIGraphicsGetCurrentContext() else { fatalError("failed to get current context") }
+
         for (line, lineOrigin) in zip(lines, lineOriginArray) {
             for run in line.runs {
-                var glyphArray = run.glyphs
-                var positionArray = run.positions
+                let glyphArray = run.glyphs
+                let positionArray = run.positions
 
                 for glyphIndex in 0..<run.glyphCount {
                     let glyph = glyphArray[glyphIndex]
@@ -171,7 +172,7 @@ public class TextPrimitive : Primitive {
                     let boundsTransY = frameBoundingRect.height + frameBoundingRect.origin.y - lineOrigin.y + glyphOrigin.y
                     let pathTransform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: boundsTransX, ty: boundsTransY)
 
-                    let glyphRect = run.imageBounds(ctx: context!, idx: glyphIndex).applying(pathTransform)
+                    let glyphRect = run.imageBounds(ctx: context, idx: glyphIndex).applying(pathTransform)
 
                     callback(glyph, glyphIndexInFrame, glyphRect)
                     glyphIndexInFrame += 1

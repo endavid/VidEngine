@@ -6,7 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 import simd
-import UIKit
+import CoreGraphics
 
 class Camera {
     var transform = Transform()         ///< position of the camera
