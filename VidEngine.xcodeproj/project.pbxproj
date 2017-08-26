@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37AE03301F520721003A2660 /* CrossPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE032F1F520721003A2660 /* CrossPlatform.swift */; };
 		6302B96A1EDC2142008DC90D /* FontAtlas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B9691EDC2142008DC90D /* FontAtlas.swift */; };
 		6302B96C1EDC22C9008DC90D /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B96B1EDC22C9008DC90D /* Texture.swift */; };
 		6302B96F1EDC2631008DC90D /* UnlitTransparencyPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6302B96E1EDC2631008DC90D /* UnlitTransparencyPlugin.swift */; };
@@ -86,6 +87,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		37AE032F1F520721003A2660 /* CrossPlatform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CrossPlatform.swift; path = extensions/CrossPlatform.swift; sourceTree = "<group>"; };
 		6302B9691EDC2142008DC90D /* FontAtlas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontAtlas.swift; sourceTree = "<group>"; };
 		6302B96B1EDC22C9008DC90D /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		6302B96E1EDC2631008DC90D /* UnlitTransparencyPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnlitTransparencyPlugin.swift; sourceTree = "<group>"; };
@@ -182,6 +184,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37AE032E1F5206F5003A2660 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				37AE032F1F520721003A2660 /* CrossPlatform.swift */,
+			);
+			name = extensions;
+			sourceTree = "<group>";
+		};
 		6302B96D1EDC25FB008DC90D /* plugins */ = {
 			isa = PBXGroup;
 			children = (
@@ -217,6 +227,7 @@
 		635320CE1DA30C1400A6EF94 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
+				37AE032E1F5206F5003A2660 /* extensions */,
 				63E622A51D7C373B00CAEF58 /* data */,
 				631A4A731D72EB81000978F6 /* geometry */,
 				63EA89001D1C528D00B97B99 /* gfx */,
@@ -476,7 +487,7 @@
 				TargetAttributes = {
 					63DEAA3C1CAC97AA00B6FA98 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = 7JBVTX94L2;
+						DevelopmentTeam = JL8K7LH7KS;
 						LastSwiftMigration = 0800;
 					};
 					63DEAA521CAC97AA00B6FA98 = {
@@ -565,6 +576,7 @@
 				63E622AF1D846C7300CAEF58 /* GBuffer.swift in Sources */,
 				63D0E6D31D5F746B004DF37E /* Vector.swift in Sources */,
 				63D0E6DD1D5FD96F004DF37E /* Quaternion.swift in Sources */,
+				37AE03301F520721003A2660 /* CrossPlatform.swift in Sources */,
 				637358761DAA9C6100C3FE3B /* Primitive2DPlugin.swift in Sources */,
 				63D0E6E01D5FD986004DF37E /* Transform.swift in Sources */,
 				63D0E6CD1D5F186D004DF37E /* CubePrimitive.swift in Sources */,

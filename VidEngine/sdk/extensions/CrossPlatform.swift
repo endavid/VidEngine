@@ -24,10 +24,13 @@ import Foundation
     }
 
     typealias UXColor = NSColor
+    typealias UXFont = NSFont
+
 #else
 
     import UIKit
     typealias UXColor = UIColor
+    typealias UXFont = UIFont
 
 #endif
 

@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import UIKit
-import simd
 
 class Scene {
     var primitives : [Primitive] = []

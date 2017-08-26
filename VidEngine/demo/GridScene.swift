@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 import simd
 
 class RotationAnim {
