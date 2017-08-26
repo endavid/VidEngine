@@ -61,7 +61,7 @@ public class Primitive {
     
     init(numInstances: Int) {
         assert(numInstances > 0, "The number of instances should be >0")
-        self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: Material.white), count: numInstances)
+        self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: .white), count: numInstances)
         self.uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
     }
     

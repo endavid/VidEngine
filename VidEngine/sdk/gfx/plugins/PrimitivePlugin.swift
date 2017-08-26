@@ -62,7 +62,7 @@ class PrimitivePlugin : GraphicPlugin {
         var currentAlbedoTexture : MTLTexture? = nil
         
         for p in self.primitives {
-            if p.submeshes.count > 0 {
+            if !p.submeshes.isEmpty {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, at: 0)
                 encoder.setVertexBuffer(p.uniformBuffer, offset: 0, at: 2)
             }
