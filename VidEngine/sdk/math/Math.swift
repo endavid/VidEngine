@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+import CoreGraphics
 
 let PI      : Float = 3.1415926535897932384626433832795
 let PI_2    = 0.5 * PI
@@ -19,30 +19,7 @@ let π       : Double = Double(PI)
 func DegToRad(_ angle: Float) -> Float {
     return angle * (PI/180.0)
 }
-/// Gets the sign of a number
-func Sign(_ n: Float) -> Float {
-    return (n>=0) ?1:-1
-}
-/// Max
-func Max(_ a: CGFloat, b: CGFloat) -> CGFloat {
-    return (a>=b) ?a:b
-}
-func Max(_ a: Float, b: Float) -> Float {
-    return (a>=b) ?a:b
-}
-func Max(_ a: Int, b: Int) -> Int {
-    return (a>=b) ?a:b
-}
-/// Min
-func Min(_ a: CGFloat, b: CGFloat) -> CGFloat {
-    return (a<=b) ?a:b
-}
-func Min(_ a: Float, b: Float) -> Float {
-    return (a<=b) ?a:b
-}
-func Min(_ a: Int, b: Int) -> Int {
-    return (a<=b) ?a:b
-}
+
 /// Ceil for ints
 func CeilDiv(_ a: Int, b: Int) -> Int {
     return (a + b - 1) / b

@@ -86,7 +86,7 @@ class RainPlugin : GraphicPlugin {
     fileprivate func initVertexBuffer(_ numParticles: Int) {
         // vData is pointer to the MTLBuffer's Float data contents
         let pData = raindropDoubleBuffer.contents()
-        particleCount = Min(maxNumberOfRaindrops, b: numParticles)
+        particleCount = min(maxNumberOfRaindrops, numParticles)
         vertexCount = 2 * particleCount
         let vertexSize = 4
         let dropLength : Float = 0.1
