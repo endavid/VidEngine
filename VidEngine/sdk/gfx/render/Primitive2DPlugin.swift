@@ -40,18 +40,8 @@ final class Primitive2DPlugin : GraphicPlugin {
         let vertexProgram = library.makeFunction(name: "passSprite2DVertex")!
 
         // check ColoredUnlitTexturedVertex
-        let vertexDesc = MTLVertexDescriptor()
-        vertexDesc.attributes[0].format = .float3
-        vertexDesc.attributes[0].offset = 0
-        vertexDesc.attributes[0].bufferIndex = 0
-        vertexDesc.attributes[1].format = .float2
-        vertexDesc.attributes[1].offset = MemoryLayout<Vec3>.size
-        vertexDesc.attributes[1].bufferIndex = 0
-        vertexDesc.attributes[2].format = .uchar4Normalized
-        vertexDesc.attributes[2].offset = MemoryLayout<Vec3>.size + MemoryLayout<Vec2>.size
-        vertexDesc.attributes[2].bufferIndex = 0
-        vertexDesc.layouts[0].stepFunction = .perVertex
-        vertexDesc.layouts[0].stride = MemoryLayout<ColoredUnlitTexturedVertex>.size
+        let vertexDesc = ColoredUnlitTexturedVertex.createVertexDescriptor()
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
