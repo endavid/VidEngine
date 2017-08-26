@@ -175,7 +175,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         // Downsample the signed-distance field to the expected texture resolution
         let scaleFactor = FontAtlas.atlasSize / self.textureSize
         if let scaledField = try? createResampledData(distanceField, width: FontAtlas.atlasSize, height: FontAtlas.atlasSize, scaleFactor: scaleFactor) {
-            let spread = Float(estimatedLineWidthForFont(parentFont) * 0.5)
+            let spread = Float(parentFont.estimatedLineWidthForFont() * 0.5)
             // Quantize the downsampled distance field into an 8-bit grayscale array suitable for use as a texture
             let texData = createQuantizedDistanceField(scaledField.0, width: textureSize, height: textureSize, normalizationFactor: spread)
             _textureData = NSData(bytesNoCopy: texData, length: textureSize*textureSize, freeWhenDone: true)
@@ -199,14 +199,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let fullRect = CGRect(x: 0, y: 0, width: width, height: height)
         context.fill(fullRect)
         
-        fontPointSize = pointSizeThatFitsForFont(font, rect:CGRect(x: 0, y: 0, width: width, height: height))
+        fontPointSize = font.pointSizeThatFitsForFont(rect:CGRect(x: 0, y: 0, width: width, height: height))
         let ctFont = CTFontCreateWithName(font.fontName as CFString, CGFloat(fontPointSize), nil)
         guard let parentFont = UXFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
             // should throw an exception
             return
         }
         let fontGlyphCount = CTFontGetGlyphCount(ctFont)
-        let glyphMargin = estimatedLineWidthForFont(parentFont)
+        let glyphMargin = parentFont.estimatedLineWidthForFont()
         // Set fill color so that glyphs are solid white
         context.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
         glyphs.removeAll()
@@ -217,7 +217,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         for i in 0..<fontGlyphCount {
             var glyph = CGGlyph(i)
             var boundingRect = CGRect()
-            CTFontGetBoundingRectsForGlyphs(ctFont, CTFontOrientation.horizontal, &glyph, &boundingRect, 1)
+            CTFontGetBoundingRectsForGlyphs(ctFont, .horizontal, &glyph, &boundingRect, 1)
             if origin.x + boundingRect.maxX + glyphMargin > CGFloat(width) {
                 origin.x = 0
                 origin.y = maxYCoordForLine + glyphMargin + fontDescent
@@ -235,8 +235,8 @@ public class FontAtlas: NSObject, NSSecureCoding {
             var glyphPathBoundingRect = path.boundingBox
             // The null rect (i.e., the bounding rect of an empty path) is problematic
             // because it has its origin at (+inf, +inf); we fix that up here
-            if glyphPathBoundingRect.equalTo(CGRect.null) {
-                glyphPathBoundingRect = CGRect.zero
+            if glyphPathBoundingRect.equalTo(.null) {
+                glyphPathBoundingRect = .zero
             }
             let texCoordLeft = glyphPathBoundingRect.origin.x / CGFloat(width)
             let texCoordRight = (glyphPathBoundingRect.origin.x + glyphPathBoundingRect.size.width) / CGFloat(width)
@@ -250,45 +250,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             origin.x += boundingRect.width + glyphMargin
         }
     }
-    
-    private func pointSizeThatFitsForFont(_ font: UXFont, rect: CGRect) -> Float {
-        var fittedSize = Float(font.pointSize)
-        while isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
-            fittedSize += 1
-        }
-        while !isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
-            fittedSize -= 1
-        }
-        return fittedSize
-    }
-    
-    private func isLikelyToFit(font: UXFont, size: CGFloat, rect: CGRect) -> Bool {
-        let textureArea = rect.size.width * rect.size.height
-        guard let trialFont = UXFont(name: font.fontName, size: size) else {
-            return false
-        }
-        let trialCTFont = CTFontCreateWithName(font.fontName as CFString, size, nil)
-        let fontGlyphCount = CTFontGetGlyphCount(trialCTFont)
-        let glyphMargin = self.estimatedLineWidthForFont(trialFont)
-        let averageGlyphSize = self.estimatedGlyphSizeForFont(trialFont)
-        let estimatedGlyphTotalArea = (averageGlyphSize.width + glyphMargin) * (averageGlyphSize.height + glyphMargin) * CGFloat(fontGlyphCount)
-        return (estimatedGlyphTotalArea < textureArea)
-    }
-    
-    private func estimatedLineWidthForFont(_ font: UXFont) -> CGFloat {
-        let myString = "!" as NSString
-        let size: CGSize = myString.size(attributes: [NSFontAttributeName: font])
-        let estimatedStrokeWidth = Float(size.width)
-        return CGFloat(ceilf(estimatedStrokeWidth))
-    }
-    
-    private func estimatedGlyphSizeForFont(_ font: UXFont) -> CGSize {
-        let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
-        let exemplarStringSize = exemplarString.size(attributes: [NSFontAttributeName: font ])
-        let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))
-        let maxGlyphHeight = ceilf(Float(exemplarStringSize.height))
-        return CGSize(width: CGFloat(averageGlyphWidth), height: CGFloat(maxGlyphHeight))
-    }
+
     
     /// Compute signed-distance field for an 8-bpp grayscale image (values greater than 127 are considered "on")
     /// For details of this algorithm, see "The 'dead reckoning' signed distance transform" [Grevera 2004]

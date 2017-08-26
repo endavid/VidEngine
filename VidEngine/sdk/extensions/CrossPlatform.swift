@@ -72,3 +72,52 @@ extension UXColor {
         }
     }
 }
+
+extension CGRect {
+    var area : CGFloat {
+        return width * height
+    }
+}
+
+extension UXFont {
+    internal func estimatedLineWidthForFont() -> CGFloat {
+        let myString = "!" as NSString
+        let size: CGSize = myString.size(attributes: [NSFontAttributeName: self])
+        let estimatedStrokeWidth = Float(size.width)
+        return CGFloat(ceilf(estimatedStrokeWidth))
+    }
+
+    internal func estimatedGlyphSizeForFont() -> CGSize {
+        let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
+        let exemplarStringSize = exemplarString.size(attributes: [NSFontAttributeName: self ])
+        let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))
+        let maxGlyphHeight = ceilf(Float(exemplarStringSize.height))
+        return CGSize(width: CGFloat(averageGlyphWidth), height: CGFloat(maxGlyphHeight))
+    }
+
+    internal func isLikelyToFit(size: CGFloat, rect: CGRect) -> Bool {
+        guard let trialFont = UXFont(name: fontName, size: size) else {
+            return false
+        }
+        let trialCTFont = CTFontCreateWithName(fontName as CFString, size, nil)
+        let fontGlyphCount = CTFontGetGlyphCount(trialCTFont)
+        let glyphMargin = trialFont.estimatedLineWidthForFont()
+        let averageGlyphSize = trialFont.estimatedGlyphSizeForFont()
+        let estimatedGlyphTotalArea = (averageGlyphSize.width + glyphMargin) * (averageGlyphSize.height + glyphMargin) * CGFloat(fontGlyphCount)
+        return estimatedGlyphTotalArea < rect.area
+    }
+
+    internal func pointSizeThatFitsForFont(rect: CGRect) -> Float {
+        var fittedSize = Float(pointSize)
+        while isLikelyToFit(size: CGFloat(fittedSize), rect: rect) {
+            fittedSize += 1
+        }
+        while !isLikelyToFit(size: CGFloat(fittedSize), rect: rect) {
+            fittedSize -= 1
+        }
+        return fittedSize
+    }
+
+
+}
+
