@@ -6,7 +6,6 @@
 //  Copyright © 2017 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 class FullScreenQuad {

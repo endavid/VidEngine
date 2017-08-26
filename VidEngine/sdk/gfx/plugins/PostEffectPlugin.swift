@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
 
 // At the moment, it just passes through
