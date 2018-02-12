@@ -24,11 +24,17 @@ struct GBuffer {
         width = Int(size.width)
         height = Int(size.height)
         let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
+        depthDesc.usage = .renderTarget
         let albedoDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
+        albedoDesc.usage = [.renderTarget, .shaderRead]
         let normalDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
+        normalDesc.usage = [.renderTarget, .shaderRead]
         let lightDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Float, width: width, height: height, mipmapped: false)
+        lightDesc.usage = [.renderTarget, .shaderRead]
         let revealDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r16Float, width: width, height: height, mipmapped: false)
+        revealDesc.usage = [.renderTarget, .shaderRead]
         let shadedDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
+        shadedDesc.usage = [.renderTarget, .shaderRead]
         depthTexture = device.makeTexture(descriptor: depthDesc)!
         depthTexture.label = "GBuffer:Depth"
         albedoTexture = device.makeTexture(descriptor: albedoDesc)!
