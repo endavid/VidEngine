@@ -44,13 +44,13 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder.label = "Resolve OIT Encoder"
-        encoder.pushDebugGroup("resolveOIT")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setFragmentTexture(gBuffer.lightTexture, at: 0)
-        encoder.setFragmentTexture(gBuffer.revealTexture, at: 1)
-        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
-        encoder.popDebugGroup()
-        encoder.endEncoding()
+        encoder?.label = "Resolve OIT Encoder"
+        encoder?.pushDebugGroup("resolveOIT")
+        encoder?.setRenderPipelineState(pipelineState)
+        encoder?.setFragmentTexture(gBuffer.lightTexture, index: 0)
+        encoder?.setFragmentTexture(gBuffer.revealTexture, index: 1)
+        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder!)
+        encoder?.popDebugGroup()
+        encoder?.endEncoding()
     }
 }

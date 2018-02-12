@@ -67,18 +67,18 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createOITRenderPass(clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder.label = "Unlit Transparency Encoder"
-        encoder.pushDebugGroup("Unlit OIT")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setDepthStencilState(depthState)
-        encoder.setFrontFacing(.counterClockwise)
-        encoder.setCullMode(.back)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 1)
-        drawPrimitives(primitives, encoder: encoder)
-        encoder.setRenderPipelineState(textPipelineState)
-        drawPrimitives(textPrimitives, encoder: encoder)
-        encoder.popDebugGroup()
-        encoder.endEncoding()
+        encoder?.label = "Unlit Transparency Encoder"
+        encoder?.pushDebugGroup("Unlit OIT")
+        encoder?.setRenderPipelineState(pipelineState)
+        encoder?.setDepthStencilState(depthState)
+        encoder?.setFrontFacing(.counterClockwise)
+        encoder?.setCullMode(.back)
+        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 1)
+        drawPrimitives(primitives, encoder: encoder!)
+        encoder?.setRenderPipelineState(textPipelineState)
+        drawPrimitives(textPrimitives, encoder: encoder!)
+        encoder?.popDebugGroup()
+        encoder?.endEncoding()
     }
         
     private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {
@@ -87,19 +87,19 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         
         for p in prims {
             if p.submeshes.count > 0 {
-                encoder.setVertexBuffer(p.vertexBuffer, offset: 0, at: 0)
-                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, at: 2)
+                encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
+                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
             }
             for mesh in p.submeshes {
                 
                 if currentAlbedoTexture !== mesh.albedoTexture {
                     if let tex = mesh.albedoTexture {
-                        encoder.setFragmentTexture(tex, at: 0)
+                        encoder.setFragmentTexture(tex, index: 0)
                     }
                     currentAlbedoTexture = mesh.albedoTexture
                 }
                 if currentAlbedoTexture == nil {
-                    encoder.setFragmentTexture(whiteTexture, at: 0)
+                    encoder.setFragmentTexture(whiteTexture, index: 0)
                     currentAlbedoTexture = whiteTexture
                 }
                 p.drawMesh(encoder: encoder, mesh: mesh)

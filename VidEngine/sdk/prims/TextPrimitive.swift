@@ -20,7 +20,7 @@ public class TextPrimitive : Primitive {
     
     private func buildMeshWithString(text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
         let font = fontAtlas.parentFont.withSize(fontSize)
-        let attrString = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
+        let attrString = NSAttributedString(string: text, attributes: [NSAttributedStringKey.font: font])
         let stringRange = CFRangeMake(0, attrString.length)
         let rectPath = CGPath(rect: rect, transform: nil)
         let frameSetter = CTFramesetterCreateWithAttributedString(attrString)

@@ -95,7 +95,7 @@ public class Primitive {
         memcpy(uniformData, &perInstanceUniforms, MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count)
     }
     
-    public func setAlbedoTexture(resource: String, bundle: Bundle, options: [String:NSObject]?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
+    public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
             RenderManager.sharedInstance.textureLibrary.getTextureAsync(resource: resource, bundle: bundle, options: options, addToCache: addToCache) { [weak self] (texture, error) in
                 self?.submeshes[i].albedoTexture = texture
@@ -103,7 +103,7 @@ public class Primitive {
         }
     }
     
-    public func setAlbedoTexture(id: String, remoteUrl: URL, options: [String:NSObject]?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
+    public func setAlbedoTexture(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
             RenderManager.sharedInstance.textureLibrary.getTextureAsync(id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache) { [weak self] (texture, error) in
                 self?.submeshes[i].albedoTexture = texture

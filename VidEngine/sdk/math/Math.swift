@@ -88,7 +88,7 @@ extension Array {
             let j = Int(UInt32(arc4random()) % upperBound) + i
             //let j = Int(arc4random_uniform(upperBound)) + i
             guard i != j else { continue }
-            swap(&list[i], &list[j])
+            list.swapAt(i, j)
         }
         return list
     }

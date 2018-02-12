@@ -21,6 +21,11 @@ struct GraphicsData {
     var viewMatrix = float4x4()
 }
 
+public enum RendererError: Error {
+    case
+    MissingDevice
+}
+
 // (View in M-V-C)
 class RenderManager {
     static let sharedInstance = RenderManager()
@@ -71,7 +76,7 @@ class RenderManager {
     }
     
     func setGraphicsDataBuffer(_ encoder: MTLRenderCommandEncoder, atIndex: Int) {
-        encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, at: atIndex)
+        encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
     
     func initManager(_ device: MTLDevice, view: MTKView) {
@@ -87,7 +92,7 @@ class RenderManager {
 
     fileprivate func initGraphicPlugins(_ view: MTKView) {
         // @todo library should come from a different bundle when making the engine a Framework
-        if let library = device.newDefaultLibrary() {
+        if let library = device.makeDefaultLibrary() {
             // order is important!
             plugins.append(PrimitivePlugin(device: device, library: library, view: view))
             plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
@@ -194,26 +199,26 @@ class RenderManager {
     
     func createIndexBuffer(_ label: String, elements: [UInt16]) -> MTLBuffer {
         let buffer = device.makeBuffer(bytes: elements, length: elements.count * MemoryLayout<UInt16>.size, options: MTLResourceOptions())
-        buffer.label = label
-        return buffer
+        buffer?.label = label
+        return buffer!
     }
     
     func createTexturedVertexBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<TexturedVertex>.size, options: [])
-        buffer.label = label
-        return buffer
+        buffer?.label = label
+        return buffer!
     }
     
     func createPerInstanceUniformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<PerInstanceUniforms>.size, options: [])
-        buffer.label = label
-        return buffer
+        buffer?.label = label
+        return buffer!
     }
     
     func createTransformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.size, options: [])
-        buffer.label = label
-        return buffer
+        buffer?.label = label
+        return buffer!
     }
     
     private func createWhiteTexture() -> MTLTexture {
@@ -221,7 +226,7 @@ class RenderManager {
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
         let texture = device.makeTexture(descriptor: texDescriptor)
         let region = MTLRegionMake2D(0, 0, 1, 1)
-        texture.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
-        return texture
+        texture?.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
+        return texture!
     }
 }

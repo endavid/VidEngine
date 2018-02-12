@@ -45,16 +45,16 @@ class PrimitivePlugin : GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder.label = "Primitives Encoder"
-        encoder.pushDebugGroup("primitives")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setDepthStencilState(depthState)
-        encoder.setFrontFacing(.counterClockwise)
-        encoder.setCullMode(.back)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 1)
-        drawPrimitives(encoder: encoder)
-        encoder.popDebugGroup()
-        encoder.endEncoding()
+        encoder?.label = "Primitives Encoder"
+        encoder?.pushDebugGroup("primitives")
+        encoder?.setRenderPipelineState(pipelineState)
+        encoder?.setDepthStencilState(depthState)
+        encoder?.setFrontFacing(.counterClockwise)
+        encoder?.setCullMode(.back)
+        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 1)
+        drawPrimitives(encoder: encoder!)
+        encoder?.popDebugGroup()
+        encoder?.endEncoding()
     }
     
     private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
@@ -63,18 +63,18 @@ class PrimitivePlugin : GraphicPlugin {
         
         for p in self.primitives {
             if p.submeshes.count > 0 {
-                encoder.setVertexBuffer(p.vertexBuffer, offset: 0, at: 0)
-                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, at: 2)
+                encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
+                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
             }
             for mesh in p.submeshes {
                 if currentAlbedoTexture !== mesh.albedoTexture {
                     if let tex = mesh.albedoTexture {
-                        encoder.setFragmentTexture(tex, at: 0)
+                        encoder.setFragmentTexture(tex, index: 0)
                     }
                     currentAlbedoTexture = mesh.albedoTexture
                 }
                 if currentAlbedoTexture == nil {
-                    encoder.setFragmentTexture(whiteTexture, at: 0)
+                    encoder.setFragmentTexture(whiteTexture, index: 0)
                     currentAlbedoTexture = whiteTexture
                 }
                 p.drawMesh(encoder: encoder, mesh: mesh)

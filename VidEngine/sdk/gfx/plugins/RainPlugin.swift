@@ -65,22 +65,22 @@ class RainPlugin : GraphicPlugin {
         // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
         // Check alignment in setVertexBuffer doc
         let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
-        encoder.pushDebugGroup("draw rain")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, at: 0)
-        encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        encoder.popDebugGroup()
-        encoder.pushDebugGroup("update raindrops")
-        encoder.setRenderPipelineState(updateState)
-        encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, at: 0)
-        encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), at: 1)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 2)
-        encoder.setVertexTexture(noiseTexture, at: 0)
-        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
-        encoder.popDebugGroup()
+        encoder?.pushDebugGroup("draw rain")
+        encoder?.setRenderPipelineState(pipelineState)
+        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
+        encoder?.drawPrimitives(type: .line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+        encoder?.popDebugGroup()
+        encoder?.pushDebugGroup("update raindrops")
+        encoder?.setRenderPipelineState(updateState)
+        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
+        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), index: 1)
+        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 2)
+        encoder?.setVertexTexture(noiseTexture, index: 0)
+        encoder?.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
+        encoder?.popDebugGroup()
         // swap buffers
         doubleBufferIndex = (doubleBufferIndex + 1) % 2
-        encoder.endEncoding()
+        encoder?.endEncoding()
     }
     
     fileprivate func initVertexBuffer(_ numParticles: Int) {

@@ -42,16 +42,16 @@ struct FragmentOIT {
 
 struct TexturedVertex
 {
-    packed_float3 position [[attribute(0)]];
-    packed_float3 normal [[attribute(1)]];
-    packed_float2 texCoords [[attribute(2)]];
+    packed_float3 position;
+    packed_float3 normal;
+    packed_float2 texCoords;
 };
 
 struct ColoredUnlitTexturedVertex
 {
-    packed_float3 position [[attribute(0)]];
-    packed_float2 texCoords [[attribute(1)]];
-    packed_uchar4 color [[attribute(2)]];
+    packed_float3 position;
+    packed_float2 texCoords;
+    packed_uchar4 color;
 };
 
 struct Uniforms {

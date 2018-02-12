@@ -32,11 +32,11 @@ class DeferredLightingPlugin : GraphicPlugin {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder.label = "Deferred Lighting Encoder"
-        encoder.pushDebugGroup("deferredLighting")
-        drawDirectionalLights(encoder)
-        encoder.popDebugGroup()
-        encoder.endEncoding()
+        encoder?.label = "Deferred Lighting Encoder"
+        encoder?.pushDebugGroup("deferredLighting")
+        drawDirectionalLights(encoder!)
+        encoder?.popDebugGroup()
+        encoder?.endEncoding()
     }
     
     /// Draw all the directional lights with full-screen passes.

@@ -152,8 +152,8 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: textureSize, height: textureSize, mipmapped: false)
         let texture = device.makeTexture(descriptor: texDescriptor)
         let region = MTLRegionMake2D(0, 0, textureSize, textureSize)
-        texture.replace(region: region, mipmapLevel: 0, withBytes: texData.bytes, bytesPerRow: textureSize)
-        return texture
+        texture?.replace(region: region, mipmapLevel: 0, withBytes: texData.bytes, bytesPerRow: textureSize)
+        return texture!
     }
     
     private func createTextureData() {
@@ -278,14 +278,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
     
     private func estimatedLineWidthForFont(_ font: UIFont) -> CGFloat {
         let myString = "!" as NSString
-        let size: CGSize = myString.size(attributes: [NSFontAttributeName: font])
+        let size: CGSize = myString.size(withAttributes: [NSAttributedStringKey.font: font])
         let estimatedStrokeWidth = Float(size.width)
         return CGFloat(ceilf(estimatedStrokeWidth))
     }
     
     private func estimatedGlyphSizeForFont(_ font: UIFont) -> CGSize {
         let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
-        let exemplarStringSize = exemplarString.size(attributes: [NSFontAttributeName: font ])
+        let exemplarStringSize = exemplarString.size(withAttributes: [NSAttributedStringKey.font: font ])
         let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))
         let maxGlyphHeight = ceilf(Float(exemplarStringSize.height))
         return CGSize(width: CGFloat(averageGlyphWidth), height: CGFloat(maxGlyphHeight))

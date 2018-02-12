@@ -37,13 +37,13 @@ class DeferredShadingPlugin : GraphicPlugin {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder.label = "Deferred Shading Encoder"
-        encoder.pushDebugGroup("deferredShading")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setFragmentTexture(gBuffer.albedoTexture, at: 0)
-        encoder.setFragmentTexture(gBuffer.normalTexture, at: 1)
-        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
-        encoder.popDebugGroup()
-        encoder.endEncoding()
+        encoder?.label = "Deferred Shading Encoder"
+        encoder?.pushDebugGroup("deferredShading")
+        encoder?.setRenderPipelineState(pipelineState)
+        encoder?.setFragmentTexture(gBuffer.albedoTexture, index: 0)
+        encoder?.setFragmentTexture(gBuffer.normalTexture, index: 1)
+        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder!)
+        encoder?.popDebugGroup()
+        encoder?.endEncoding()
     }    
 }

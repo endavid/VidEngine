@@ -17,7 +17,7 @@ func createNoiseTexture(device: MTLDevice, width: Int, height: Int) -> MTLTextur
     let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rg16Unorm, width: width, height: height, mipmapped: false)
     let texture = device.makeTexture(descriptor: texDescriptor)
     let region = MTLRegionMake2D(0, 0, width, height)
-    texture.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: width * 2 * 2)
-    return texture
+    texture?.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: width * 2 * 2)
+    return texture!
 }
 

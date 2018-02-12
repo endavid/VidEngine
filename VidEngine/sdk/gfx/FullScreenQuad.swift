@@ -26,7 +26,7 @@ class FullScreenQuad {
     }
     
     func draw(encoder: MTLRenderCommandEncoder) {
-        encoder.setVertexBuffer(vertexBuffer, offset: 0, at: 0)
+        encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         encoder.drawIndexedPrimitives(type: .triangleStrip, indexCount: 4, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
     }
 }

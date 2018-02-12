@@ -205,7 +205,7 @@ class MdlParser {
     }
     
     fileprivate func readMaterial(_ header: String) {
-        let split = header.characters.split(separator: "\"")
+        let split = header.split(separator: "\"")
         let name = String(split[1])
         let c = getComponents(header)
         var head = c.last ?? ""
@@ -256,7 +256,7 @@ class MdlParser {
     }
     
     fileprivate func readMaterialName(_ header: String) {
-        let split = header.characters.split(separator: "\"")
+        let split = header.split(separator: "\"")
         self.materialName = String(split[1])
         let c = getComponents(header)
         var head = c.last ?? ""

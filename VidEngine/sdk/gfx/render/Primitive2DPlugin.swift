@@ -80,14 +80,14 @@ class Primitive2DPlugin : GraphicPlugin {
             let whiteTexture = RenderManager.sharedInstance.whiteTexture
             let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
             let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-            encoder.label = "Primitive2D Encoder"
-            encoder.pushDebugGroup("primitive2d")
-            encoder.setRenderPipelineState(pipelineState)
-            encoder.setFragmentTexture(whiteTexture, at: 0)
-            encoder.setVertexBuffer(spriteVB, offset: spriteVBoffset, at: 0)
-            encoder.drawIndexedPrimitives(type: .triangle, indexCount: sprites.count * 6, indexType: .uint16, indexBuffer: spriteIB, indexBufferOffset: 0)
-            encoder.popDebugGroup()
-            encoder.endEncoding()
+            encoder?.label = "Primitive2D Encoder"
+            encoder?.pushDebugGroup("primitive2d")
+            encoder?.setRenderPipelineState(pipelineState)
+            encoder?.setFragmentTexture(whiteTexture, index: 0)
+            encoder?.setVertexBuffer(spriteVB, offset: spriteVBoffset, index: 0)
+            encoder?.drawIndexedPrimitives(type: .triangle, indexCount: sprites.count * 6, indexType: .uint16, indexBuffer: spriteIB, indexBufferOffset: 0)
+            encoder?.popDebugGroup()
+            encoder?.endEncoding()
         }
     }
     override func updateBuffers(_ syncBufferIndex: Int) {

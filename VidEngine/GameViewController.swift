@@ -143,17 +143,17 @@ class GameViewController:UIViewController, MTKViewDelegate {
         RenderManager.sharedInstance.updateBuffers()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
-        commandBuffer.label = "Frame command buffer"
+        commandBuffer?.label = "Frame command buffer"
         
         // use completion handler to signal the semaphore when this frame is completed allowing the encoding of the next frame to proceed
         // use capture list to avoid any retain cycles if the command buffer gets retained anywhere besides this stack frame
-        commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
+        commandBuffer?.addCompletedHandler{ [weak self] commandBuffer in
             if let strongSelf = self {
                 strongSelf.inflightSemaphore.signal()
             }
             return
         }        
-        RenderManager.sharedInstance.draw(view, commandBuffer: commandBuffer)
+        RenderManager.sharedInstance.draw(view, commandBuffer: commandBuffer!)
     }
     
     
@@ -164,7 +164,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
     }
         
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
-    func newFrame(_ displayLink: CADisplayLink){
+    @objc func newFrame(_ displayLink: CADisplayLink){
         if lastFrameTimestamp == 0.0 {
             lastFrameTimestamp = displayLink.timestamp
         }
@@ -206,7 +206,7 @@ class GameViewController:UIViewController, MTKViewDelegate {
         currentTouch.y = -2
     }
     
-    func screenTap(_ sender: UITapGestureRecognizer) {
+    @objc func screenTap(_ sender: UITapGestureRecognizer) {
         let p = sender.location(in: self.view)
         let x = Float(2.0 * p.x / self.view.frame.width - 1.0)
         let y = Float(-2.0 * p.y / self.view.frame.height + 1.0)
