@@ -7,19 +7,70 @@
 //
 
 import UIKit
+import Metal
+import MetalKit
+import CoreMotion
+import AVFoundation
+import simd
+import VidFramework
 
-class ViewController: UIViewController {
-
+class ViewController: VidController {
+    
+    var world : World?
+    private var cameraAngleX: Float = 0
+    private var cameraAngleY: Float = 0
+    private var debugCube: CubePrimitive!
+    
+    // musica maestro!
+    fileprivate var player : AVAudioPlayer?
+    
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        //setupBgm()
+        
+        world = World()
+        if let cam = world?.scene.camera {
+            camera = cam
+        }
+        camera.setBounds(view.bounds)
+        
+        let tapGest = UITapGestureRecognizer(target: self, action: #selector(ViewController.screenTap(_:)))
+        tapGest.numberOfTouchesRequired = 1
+        tapGest.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tapGest)
+        
+        debugCube = CubePrimitive(numInstances: 1)
+        debugCube.transform.scale = float3(0.1,0.1,0.1)
+        debugCube.queue()
+    }
+    
+    fileprivate func setupBgm() {
+        do {
+            // Removed deprecated use of AVAudioSessionDelegate protocol
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+            try AVAudioSession.sharedInstance().setActive(true)
+            let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
+            player = try AVAudioPlayer(contentsOf: music)
+            player?.numberOfLoops = -1
+            player?.play()
+        }
+        catch let error {
+            NSLog("setupBgm: \(error.localizedDescription)")
+        }
+    }
+    
+    override func update(_ elapsed: TimeInterval) {
+        world?.update(elapsed)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @objc func screenTap(_ sender: UITapGestureRecognizer) {
+        let p = sender.location(in: self.view)
+        let x = Float(2.0 * p.x / self.view.frame.width - 1.0)
+        let y = Float(-2.0 * p.y / self.view.frame.height + 1.0)
+        let w = camera.worldFromScreenCoordinates(x: x, y: y)
+        print("screenTap: \(x),\(y) \(w)")
+        debugCube.transform.position = w
     }
-
-
 }
-

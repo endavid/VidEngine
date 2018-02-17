@@ -23,7 +23,7 @@ public extension float3 {
     }
 }
 
-struct Vec4 {
+public struct Vec4 {
     let x : Float
     let y : Float
     let z : Float
@@ -43,23 +43,23 @@ struct Vec4 {
 }
 
 // sizeof(float3) = 16!! sizeof(Vec3) = 12
-struct Vec3 {
+public struct Vec3 {
     let x : Float
     let y : Float
     let z : Float
-    init(_ x: Float, _ y: Float, _ z: Float) {
+    public init(_ x: Float, _ y: Float, _ z: Float) {
         self.x = x
         self.y = y
         self.z = z
     }
-    init(_ v: float3) {
+    public init(_ v: float3) {
         self.x = v.x
         self.y = v.y
         self.z = v.z
     }
 }
 
-struct Vec2 {
+public struct Vec2 {
     let x : Float
     let y : Float
     init(_ x: Float, _ y: Float) {

@@ -9,20 +9,20 @@
 import simd
 
 public class Spherical {
-    var r       : Float = 1     ///< Radial distance
-    var θ       : Float = 0     ///< Inclination (theta) {0,π}
-    var φ       : Float = 0     ///< Azimuth (phi) {0,2π}
+    public var r       : Float = 1     ///< Radial distance
+    public var θ       : Float = 0     ///< Inclination (theta) {0,π}
+    public var φ       : Float = 0     ///< Azimuth (phi) {0,2π}
     
     // Maybe I'll hate myself later for using symbols 😂
     // (they aren't difficult to type with Japanese input, type シータ and ファイ)
-    init (r: Float, θ: Float, φ: Float) {
+    public init (r: Float, θ: Float, φ: Float) {
         self.r = r
         self.θ = θ
         self.φ = φ
     }
     
     /// Converts from Cartesian to Spherical coordinates
-    init (v: float3) {
+    public init (v: float3) {
         r = length(v)
         θ = acosf(v.y / r)
         // convert -pi..pi to 0..2pi
@@ -30,14 +30,14 @@ public class Spherical {
         φ = φ < 0 ? PI2 + φ : φ
     }
     
-    init () {
+    public init () {
     }
     
-    func toCartesian() -> float3 {
+    public func toCartesian() -> float3 {
         return float3(r * sinf(θ) * sinf(φ), r * cosf(θ), r * sinf(θ) * cos(φ))
     }
     
-    static func randomSample() -> Spherical {
+    public static func randomSample() -> Spherical {
         let x = Double(Randf())
         let y = Double(Randf())
         let θ = 2.0 * acos(sqrt(1.0 - x))

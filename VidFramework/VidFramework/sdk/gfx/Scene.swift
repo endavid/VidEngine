@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 import simd
 
-class Scene {
-    var primitives : [Primitive] = []
-    var camera : Camera? = nil
+open class Scene {
+    public var primitives : [Primitive] = []
+    public var camera : Camera? = nil
     
     func queueAll() {
         for p in primitives {
@@ -26,6 +26,9 @@ class Scene {
         }
     }
     
-    func update(_ currentTime: CFTimeInterval) {
+    open func update(_ currentTime: CFTimeInterval) {
+    }
+    
+    public init() {
     }
 }

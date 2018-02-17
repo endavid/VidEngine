@@ -9,7 +9,7 @@
 import Metal
 import MetalKit
 
-class CubePrimitive : Primitive {
+public class CubePrimitive : Primitive {
     // static properties are evaluated lazily :) device should be ready!
     fileprivate static let cubeIB : MTLBuffer! = CubePrimitive.createCubeIndexBuffer()
     fileprivate static let cubeVB : MTLBuffer! = CubePrimitive.createCubeVertexBuffer()
@@ -22,7 +22,7 @@ class CubePrimitive : Primitive {
         16, 18, 17, 18, 19, 17, // front
         23, 20, 21, 23, 21, 22] // back
     
-    override init(numInstances: Int) {
+    public override init(numInstances: Int) {
         super.init(numInstances: numInstances)
         vertexBuffer = CubePrimitive.cubeVB
         let mesh = Mesh(numIndices: CubePrimitive.triangleList.count, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil)

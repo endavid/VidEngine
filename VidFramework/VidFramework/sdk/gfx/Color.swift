@@ -49,31 +49,31 @@ extension UIColor {
 }
 
 // linear RGB with alpha
-struct LinearRGBA {
-    let rgba : float4
+public struct LinearRGBA {
+    public let rgba : float4
     
-    var r : Float {
+    public var r : Float {
         get {
             return rgba.x
         }
     }
-    var g : Float {
+    public var g : Float {
         get {
             return rgba.y
         }
     }
-    var b : Float {
+    public var b : Float {
         get {
             return rgba.z
         }
     }
-    var a : Float {
+    public var a : Float {
         get {
             return rgba.w
         }
     }
     
-    init(rgb: float3) {
+    public init(rgb: float3) {
         rgba = float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
 }

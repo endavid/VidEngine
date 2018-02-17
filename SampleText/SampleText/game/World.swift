@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import simd
-
+import VidFramework
 
 class World {
     var scene : Scene!

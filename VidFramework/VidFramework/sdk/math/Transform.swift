@@ -9,11 +9,11 @@
 import simd
 
 public struct Transform {
-    var position = float3(0, 0, 0)
-    var scale = float3(1, 1, 1)
-    var rotation = Quaternion()
+    public var position = float3(0, 0, 0)
+    public var scale = float3(1, 1, 1)
+    public var rotation = Quaternion()
     
-    func toMatrix4() -> float4x4 {
+    public func toMatrix4() -> float4x4 {
         let rm = rotation.toMatrix4()
         let xx = scale.x * rm[0]
         let yy = scale.y * rm[1]
@@ -28,6 +28,13 @@ public struct Transform {
             position: r * (s * -self.position),
             scale: s,
             rotation: r)
+    }
+    public init(position: float3, scale: float3, rotation: Quaternion) {
+        self.position = position
+        self.scale = scale
+        self.rotation = rotation
+    }
+    public init() {
     }
 }
 

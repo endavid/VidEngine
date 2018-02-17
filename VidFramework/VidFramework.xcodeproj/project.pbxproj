@@ -47,6 +47,7 @@
 		632D2830203896C7000562F0 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2809203896C7000562F0 /* Camera.swift */; };
 		632D2831203896C7000562F0 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D280A203896C7000562F0 /* Texture.swift */; };
 		632D2832203896C7000562F0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D280B203896C7000562F0 /* Color.swift */; };
+		632D285E2038A223000562F0 /* VidController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D285D2038A223000562F0 /* VidController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +93,7 @@
 		632D2809203896C7000562F0 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		632D280A203896C7000562F0 /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		632D280B203896C7000562F0 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		632D285D2038A223000562F0 /* VidController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VidController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 		632D27DD203896C7000562F0 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
+				632D285C2038A20D000562F0 /* ui */,
 				632D27DE203896C7000562F0 /* parsers */,
 				632D27E0203896C7000562F0 /* prims */,
 				632D27E7203896C7000562F0 /* math */,
@@ -231,6 +234,14 @@
 				632D2800203896C7000562F0 /* DeferredShadingPlugin.swift */,
 			);
 			path = plugins;
+			sourceTree = "<group>";
+		};
+		632D285C2038A20D000562F0 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				632D285D2038A223000562F0 /* VidController.swift */,
+			);
+			path = ui;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -333,6 +344,7 @@
 				632D2826203896C7000562F0 /* UnlitTransparencyPlugin.swift in Sources */,
 				632D2820203896C7000562F0 /* ResolveWeightBlendedTransparency.swift in Sources */,
 				632D282E203896C7000562F0 /* ModelPrimitive.swift in Sources */,
+				632D285E2038A223000562F0 /* VidController.swift in Sources */,
 				632D281E203896C7000562F0 /* GBuffer.swift in Sources */,
 				632D2825203896C7000562F0 /* Primitive2DPlugin.swift in Sources */,
 				632D2827203896C7000562F0 /* DeferredShadingPlugin.swift in Sources */,

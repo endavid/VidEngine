@@ -27,8 +27,8 @@ public enum RendererError: Error {
 }
 
 // (View in M-V-C)
-class RenderManager {
-    static let sharedInstance = RenderManager()
+public class RenderManager {
+    public static let sharedInstance = RenderManager()
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let NumSyncBuffers = 3
     fileprivate var graphicsDataBuffer: MTLBuffer! = nil

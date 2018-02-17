@@ -10,8 +10,8 @@ import Foundation
 import simd
 
 public struct Material {
-    static let white = Material(diffuse: LinearRGBA(rgb: float3(1,1,1)))
-    var diffuse : LinearRGBA
+    public static let white = Material(diffuse: LinearRGBA(rgb: float3(1,1,1)))
+    public var diffuse : LinearRGBA
 }
 
 /// Used to select the rendering phase.

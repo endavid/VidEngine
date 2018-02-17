@@ -9,38 +9,41 @@
 import Metal
 import MetalKit
 
-struct Primitive2DOptions : OptionSet {
-    let rawValue: Int
+public struct Primitive2DOptions : OptionSet {
+    public let rawValue: Int
     
-    static let alignCenter  = Primitive2DOptions(rawValue: 1 << 0)
-    static let alignBottom = Primitive2DOptions(rawValue: 1 << 1)
-    static let allowRotation = Primitive2DOptions(rawValue: 1 << 2)
+    public static let alignCenter  = Primitive2DOptions(rawValue: 1 << 0)
+    public static let alignBottom = Primitive2DOptions(rawValue: 1 << 1)
+    public static let allowRotation = Primitive2DOptions(rawValue: 1 << 2)
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
 }
 
-class Primitive2D {
+public class Primitive2D {
     let priority : Int
-    var position = Vec3(0,0,0)
-    var color = UIColor.white
-    var options : Primitive2DOptions = []
+    public var position = Vec3(0,0,0)
+    public var color = UIColor.white
+    public var options : Primitive2DOptions = []
     
-    func queue() {
+    public func queue() {
         let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.queue(self)
     }
     
-    func dequeue() {
+    public func dequeue() {
         let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.dequeue(self)
     }
     
-    init(priority: Int) {
+    public init(priority: Int) {
         self.priority = priority
     }
 }
 
-class SpritePrimitive2D : Primitive2D {
-    var width : Float = 1
-    var height : Float = 1
+public class SpritePrimitive2D : Primitive2D {
+    public var width : Float = 1
+    public var height : Float = 1
     private var _angle : Float = 0
     private var _cosa : Float = 1
     private var _sina : Float = 0

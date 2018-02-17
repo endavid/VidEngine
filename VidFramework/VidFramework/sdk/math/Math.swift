@@ -16,7 +16,7 @@ let NORM_SQR_ERROR_TOLERANCE : Float = 0.001
 let π       : Double = Double(PI)
 
 /// Converts angle in degrees to radians
-func DegToRad(_ angle: Float) -> Float {
+public func DegToRad(_ angle: Float) -> Float {
     return angle * (PI/180.0)
 }
 /// Gets the sign of a number

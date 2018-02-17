@@ -54,6 +54,6 @@ struct ColoredUnlitTexturedVertex {
 }
 
 public struct PerInstanceUniforms {
-    var transform : Transform
-    var material : Material
+    public var transform : Transform
+    public var material : Material
 }
