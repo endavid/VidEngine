@@ -1,0 +1,193 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		632D27BF20389456000562F0 /* Lighting.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B820389456000562F0 /* Lighting.metal */; };
+		632D27C020389456000562F0 /* Sprites.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B920389456000562F0 /* Sprites.metal */; };
+		632D27C120389456000562F0 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BA20389456000562F0 /* Shaders.metal */; };
+		632D27C220389456000562F0 /* TextRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BB20389456000562F0 /* TextRendering.metal */; };
+		632D27C320389456000562F0 /* Transparency.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BC20389456000562F0 /* Transparency.metal */; };
+		632D27C420389456000562F0 /* Fx.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BD20389456000562F0 /* Fx.metal */; };
+		632D27C520389456000562F0 /* ShaderMath.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BE20389456000562F0 /* ShaderMath.metal */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		632D27AE20389353000562F0 /* VidMetalLib.metallib */ = {isa = PBXFileReference; explicitFileType = "archive.metal-library"; includeInIndex = 0; path = VidMetalLib.metallib; sourceTree = BUILT_PRODUCTS_DIR; };
+		632D27B820389456000562F0 /* Lighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Lighting.metal; sourceTree = "<group>"; };
+		632D27B920389456000562F0 /* Sprites.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sprites.metal; sourceTree = "<group>"; };
+		632D27BA20389456000562F0 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		632D27BB20389456000562F0 /* TextRendering.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = TextRendering.metal; sourceTree = "<group>"; };
+		632D27BC20389456000562F0 /* Transparency.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Transparency.metal; sourceTree = "<group>"; };
+		632D27BD20389456000562F0 /* Fx.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fx.metal; sourceTree = "<group>"; };
+		632D27BE20389456000562F0 /* ShaderMath.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShaderMath.metal; sourceTree = "<group>"; };
+		632D27C62038946F000562F0 /* ShaderCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderCommon.h; sourceTree = "<group>"; };
+		632D27C72038946F000562F0 /* ShaderMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderMath.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		632D27A720389353000562F0 = {
+			isa = PBXGroup;
+			children = (
+				632D27B020389353000562F0 /* VidMetalLib */,
+				632D27AF20389353000562F0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		632D27AF20389353000562F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				632D27AE20389353000562F0 /* VidMetalLib.metallib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		632D27B020389353000562F0 /* VidMetalLib */ = {
+			isa = PBXGroup;
+			children = (
+				632D27C62038946F000562F0 /* ShaderCommon.h */,
+				632D27C72038946F000562F0 /* ShaderMath.h */,
+				632D27BD20389456000562F0 /* Fx.metal */,
+				632D27B820389456000562F0 /* Lighting.metal */,
+				632D27BE20389456000562F0 /* ShaderMath.metal */,
+				632D27BA20389456000562F0 /* Shaders.metal */,
+				632D27B920389456000562F0 /* Sprites.metal */,
+				632D27BB20389456000562F0 /* TextRendering.metal */,
+				632D27BC20389456000562F0 /* Transparency.metal */,
+			);
+			path = VidMetalLib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		632D27AD20389353000562F0 /* VidMetalLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 632D27B520389353000562F0 /* Build configuration list for PBXNativeTarget "VidMetalLib" */;
+			buildPhases = (
+				632D27AC20389353000562F0 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VidMetalLib;
+			productName = VidMetalLib;
+			productReference = 632D27AE20389353000562F0 /* VidMetalLib.metallib */;
+			productType = "com.apple.product-type.metal-library";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		632D27A820389353000562F0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "David Gavilan";
+				TargetAttributes = {
+					632D27AD20389353000562F0 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 632D27AB20389353000562F0 /* Build configuration list for PBXProject "VidMetalLib" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 632D27A720389353000562F0;
+			productRefGroup = 632D27AF20389353000562F0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				632D27AD20389353000562F0 /* VidMetalLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		632D27AC20389353000562F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				632D27C120389456000562F0 /* Shaders.metal in Sources */,
+				632D27C520389456000562F0 /* ShaderMath.metal in Sources */,
+				632D27C020389456000562F0 /* Sprites.metal in Sources */,
+				632D27BF20389456000562F0 /* Lighting.metal in Sources */,
+				632D27C420389456000562F0 /* Fx.metal in Sources */,
+				632D27C320389456000562F0 /* Transparency.metal in Sources */,
+				632D27C220389456000562F0 /* TextRendering.metal in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		632D27B320389353000562F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		632D27B420389353000562F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		632D27B620389353000562F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7JBVTX94L2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		632D27B720389353000562F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7JBVTX94L2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		632D27AB20389353000562F0 /* Build configuration list for PBXProject "VidMetalLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				632D27B320389353000562F0 /* Debug */,
+				632D27B420389353000562F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		632D27B520389353000562F0 /* Build configuration list for PBXNativeTarget "VidMetalLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				632D27B620389353000562F0 /* Debug */,
+				632D27B720389353000562F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 632D27A820389353000562F0 /* Project object */;
+}
