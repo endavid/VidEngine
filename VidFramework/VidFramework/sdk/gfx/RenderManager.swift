@@ -91,8 +91,14 @@ public class RenderManager {
     }
 
     fileprivate func initGraphicPlugins(_ view: MTKView) {
-        // @todo library should come from a different bundle when making the engine a Framework
-        if let library = device.makeDefaultLibrary() {
+        let metallib = "VidMetalLib"
+        do {
+            let bundle = try FrameworkBundle.mainBundle()
+            guard let libfile = bundle.path(forResource: metallib, ofType: "metallib") else {
+                NSLog("Missing shader files: \(metallib).metallib")
+                return
+            }
+            let library = try device.makeLibrary(filepath: libfile)
             // order is important!
             plugins.append(PrimitivePlugin(device: device, library: library, view: view))
             plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
@@ -101,8 +107,10 @@ public class RenderManager {
             plugins.append(PostEffectPlugin(device: device, library: library, view: view))
             //plugins.append(RainPlugin(device: device, library: library, view: view))
             plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
-        } else {
-            NSLog("initGraphicPlugins: failed to make shader library")
+        } catch FrameworkError.missing(let what) {
+            NSLog("No such bundle: \(what)")
+        } catch {
+            NSLog("makeLibrary failed for \(metallib).metallib")
         }
     }
     
