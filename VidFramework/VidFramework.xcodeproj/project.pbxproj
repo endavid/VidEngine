@@ -50,6 +50,7 @@
 		632D285E2038A223000562F0 /* VidController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D285D2038A223000562F0 /* VidController.swift */; };
 		632D286520398387000562F0 /* VidMetalLib.metallib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 632D286420398387000562F0 /* VidMetalLib.metallib */; };
 		632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2866203984E3000562F0 /* FrameworkBundle.swift */; };
+		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -111,6 +112,7 @@
 		632D285D2038A223000562F0 /* VidController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VidController.swift; sourceTree = "<group>"; };
 		632D286420398387000562F0 /* VidMetalLib.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = VidMetalLib.metallib; path = "../../../Library/Developer/Xcode/DerivedData/VidWorkspace-gnnwdwbnewfpadckswkplspvrkda/Build/Products/Debug-iphoneos/VidMetalLib.metallib"; sourceTree = "<group>"; };
 		632D2866203984E3000562F0 /* FrameworkBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameworkBundle.swift; sourceTree = "<group>"; };
+		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				632D27E4203896C7000562F0 /* PlanePrimitive.swift */,
 				632D27E5203896C7000562F0 /* TextPrimitive.swift */,
 				632D27E6203896C7000562F0 /* Primitive2D.swift */,
+				632D288E20398CD9000562F0 /* Rain.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -358,6 +361,7 @@
 				632D280C203896C7000562F0 /* MdlParser.swift in Sources */,
 				632D281D203896C7000562F0 /* Scene.swift in Sources */,
 				632D2821203896C7000562F0 /* DeferredLightingPlugin.swift in Sources */,
+				632D288F20398CD9000562F0 /* Rain.swift in Sources */,
 				632D2830203896C7000562F0 /* Camera.swift in Sources */,
 				632D2817203896C7000562F0 /* Matrix.swift in Sources */,
 				632D2832203896C7000562F0 /* Color.swift in Sources */,

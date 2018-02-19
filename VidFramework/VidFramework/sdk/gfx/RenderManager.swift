@@ -105,7 +105,7 @@ public class RenderManager {
             plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view))
             plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view))
             plugins.append(PostEffectPlugin(device: device, library: library, view: view))
-            //plugins.append(RainPlugin(device: device, library: library, view: view))
+            plugins.append(RainPlugin(device: device, library: library, view: view))
             plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
         } catch FrameworkError.missing(let what) {
             NSLog("No such bundle: \(what)")

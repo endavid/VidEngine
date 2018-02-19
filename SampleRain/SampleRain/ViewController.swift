@@ -31,6 +31,8 @@ class ViewController: VidController {
         tapGest.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGest)
         
+        let rain = Rain(numParticles: 2000)
+        rain?.queue()
         debugCube = CubePrimitive(numInstances: 1)
         debugCube.transform.scale = float3(0.1,0.1,0.1)
         debugCube.queue()

@@ -12,13 +12,20 @@ import MetalKit
 class RainPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil
-    fileprivate var raindropDoubleBuffer: MTLBuffer! = nil
-    fileprivate var noiseTexture: MTLTexture! = nil
-    fileprivate let maxNumberOfRaindrops = 2048
-    fileprivate let sizeOfLineParticle = MemoryLayout<Float>.size * 4 * 2
-    fileprivate var vertexCount = 0
-    fileprivate var particleCount = 0
-    fileprivate var doubleBufferIndex = 0
+    fileprivate var rains: [Rain] = []
+    
+    func queue(_ rain: Rain) {
+        let alreadyQueued = rains.contains { $0 === rain }
+        if !alreadyQueued {
+            rains.append(rain)
+        }
+    }
+    func dequeue(_ rain: Rain) {
+        let index = rains.index { $0 === rain }
+        if let i = index {
+            rains.remove(at: i)
+        }
+    }
 
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
@@ -49,62 +56,31 @@ class RainPlugin : GraphicPlugin {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             try updateState = device.makeRenderPipelineState(descriptor: updateStateDescriptor)
         } catch let error {
-            print("Failed to create pipeline state, error \(error)")
+            NSLog("Failed to create pipeline state, error \(error)")
         }
-        
-        raindropDoubleBuffer = device.makeBuffer(length: 2 * maxNumberOfRaindrops * sizeOfLineParticle, options: [])
-        raindropDoubleBuffer.label = "raindrop buffer"
-        noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
-        
-        initVertexBuffer(2000)
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+        if rains.isEmpty {
+            return
+        }
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        // setVertexBuffer offset: How far the data is from the start of the buffer, in bytes
-        // Check alignment in setVertexBuffer doc
-        let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
-        encoder?.pushDebugGroup("draw rain")
-        encoder?.setRenderPipelineState(pipelineState)
-        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
-        encoder?.drawPrimitives(type: .line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        encoder?.popDebugGroup()
-        encoder?.pushDebugGroup("update raindrops")
-        encoder?.setRenderPipelineState(updateState)
-        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
-        encoder?.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), index: 1)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 2)
-        encoder?.setVertexTexture(noiseTexture, index: 0)
-        encoder?.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
-        encoder?.popDebugGroup()
-        // swap buffers
-        doubleBufferIndex = (doubleBufferIndex + 1) % 2
-        encoder?.endEncoding()
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        for rain in rains {
+            encoder.pushDebugGroup("draw rain")
+            encoder.setRenderPipelineState(pipelineState)
+            rain.draw(encoder: encoder)
+            encoder.popDebugGroup()
+            encoder.pushDebugGroup("update raindrops")
+            encoder.setRenderPipelineState(updateState)
+            rain.update(encoder: encoder)
+            encoder.popDebugGroup()
+            rain.swapBuffers()
+        }
+        encoder.endEncoding()
     }
     
-    fileprivate func initVertexBuffer(_ numParticles: Int) {
-        // vData is pointer to the MTLBuffer's Float data contents
-        let pData = raindropDoubleBuffer.contents()
-        particleCount = Min(maxNumberOfRaindrops, b: numParticles)
-        vertexCount = 2 * particleCount
-        let vertexSize = 4
-        let dropLength : Float = 0.1
-        for p in 0..<particleCount {
-            let x = 2 * Randf() - 1
-            let y = 1 + 2.4 * Randf()
-            let dropSpeed = -2 * (0.9 + 0.2 * Randf())
-            for i in 0..<2 { // Double buffer
-                let vDatai = pData.advanced(by: maxNumberOfRaindrops * sizeOfLineParticle * i).assumingMemoryBound(to: Float.self)
-                vDatai[2*vertexSize*p] = x
-                vDatai[2*vertexSize*p+1] = y
-                vDatai[2*vertexSize*p+2] = 0
-                vDatai[2*vertexSize*p+3] = dropSpeed
-                vDatai[2*vertexSize*p+4] = x
-                vDatai[2*vertexSize*p+5] = y - dropLength
-                vDatai[2*vertexSize*p+6] = 0
-                vDatai[2*vertexSize*p+7] = dropSpeed
-            }
-        }
-    }
+
 }
