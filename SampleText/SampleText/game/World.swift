@@ -16,14 +16,7 @@ class World {
     
     // should be initialized after all the graphics are initialized
     init() {
-        /*if let path = Bundle.main.path(forResource: "CornellBox", ofType: "mdla") {
-            print(path)
-            let parser = MdlParser(path: path)
-            scene = parser.parse()
-            scene.queueAll()
-        } else {*/
-            scene = GridScene(numRows: 12, numColumns: 20)
-        //}
+        scene = GridScene(numRows: 12, numColumns: 20)
         initSprites()
         initTextDemo()
     }

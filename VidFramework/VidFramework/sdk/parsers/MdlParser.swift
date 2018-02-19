@@ -9,7 +9,7 @@
 import Foundation
 import simd
 
-class MdlParser {
+public class MdlParser {
     let path : String
     let scene : Scene
     let separators = CharacterSet.whitespaces
@@ -21,7 +21,7 @@ class MdlParser {
     fileprivate var materials : [String : Material] = [:]
     fileprivate var materialName : String = ""
     
-    init(path: String) {
+    public init(path: String) {
         self.path = path
         self.scene = Scene()
         fnMap = [
@@ -38,7 +38,7 @@ class MdlParser {
         ]
     }
     
-    func parse() -> Scene {
+    public func parse() -> Scene {
         do {
             let text = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
             lines = text.components(separatedBy: CharacterSet.newlines)

@@ -10,7 +10,6 @@ import UIKit
 import Metal
 import MetalKit
 import CoreMotion
-import AVFoundation
 import simd
 import VidFramework
 
@@ -21,14 +20,9 @@ class ViewController: VidController {
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
     
-    // musica maestro!
-    fileprivate var player : AVAudioPlayer?
-    
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        //setupBgm()
         
         world = World()
         if let cam = world?.scene.camera {
@@ -44,21 +38,6 @@ class ViewController: VidController {
         debugCube = CubePrimitive(numInstances: 1)
         debugCube.transform.scale = float3(0.1,0.1,0.1)
         debugCube.queue()
-    }
-    
-    fileprivate func setupBgm() {
-        do {
-            // Removed deprecated use of AVAudioSessionDelegate protocol
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
-            try AVAudioSession.sharedInstance().setActive(true)
-            let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
-            player = try AVAudioPlayer(contentsOf: music)
-            player?.numberOfLoops = -1
-            player?.play()
-        }
-        catch let error {
-            NSLog("setupBgm: \(error.localizedDescription)")
-        }
     }
     
     override func update(_ elapsed: TimeInterval) {

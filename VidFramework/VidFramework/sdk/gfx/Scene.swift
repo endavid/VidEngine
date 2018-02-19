@@ -14,13 +14,13 @@ open class Scene {
     public var primitives : [Primitive] = []
     public var camera : Camera? = nil
     
-    func queueAll() {
+    public func queueAll() {
         for p in primitives {
             p.queue()
         }
     }
     
-    func dequeueAll() {
+    public func dequeueAll() {
         for p in primitives {
             p.dequeue()
         }
