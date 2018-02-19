@@ -10,8 +10,8 @@ import UIKit
 
 public class Camera {
     public var transform = Transform()         ///< position of the camera
-    var projectionMatrix = float4x4()
-    var inverseProjectionMatrix = float4x4()
+    public var projectionMatrix = float4x4()
+    public var inverseProjectionMatrix = float4x4()
     var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
     var fov : Float = 45
     var near : Float = 0.1

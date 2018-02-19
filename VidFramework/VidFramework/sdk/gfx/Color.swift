@@ -78,25 +78,27 @@ public struct LinearRGBA {
     }
 }
 
-struct CieXYZ {
-    let xyz : float3
-    var x : Float {
+public struct CieXYZ {
+    public let xyz : float3
+    public var x : Float {
         get {
             return xyz.x
         }
     }
-    var y : Float {
+    public var y : Float {
         get {
             return xyz.y
         }
     }
-    var z : Float {
+    public var z : Float {
         get {
             return xyz.z
         }
     }
-    
-    func toRGBA() -> LinearRGBA {
+    public init(xyz: float3) {
+        self.xyz = xyz
+    }
+    public func toRGBA() -> LinearRGBA {
         let m = float3x3(rows: [
             float3(3.2406, -1.5372, -0.4986),
             float3(-0.9689, 1.8758, 0.0415),
@@ -111,14 +113,14 @@ public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
     
-    init(data: [Int : Float]) {
+    public init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
         sortedKeys = keys.sorted { $0 < $1 }
     }
     
     // linearly interpolate between the closest wavelengths (in nm)
-    func getIntensity(_ wavelength: Int) -> Float {
+    public func getIntensity(_ wavelength: Int) -> Float {
         // exact match
         if let me = data[wavelength] {
             return me
@@ -142,7 +144,7 @@ public class Spectrum {
     }
     
     // http://www.fourmilab.ch/documents/specrend/
-    func toXYZ() -> CieXYZ {
+    public func toXYZ() -> CieXYZ {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
