@@ -31,8 +31,13 @@ class ViewController: VidController {
         }
         NSLog(path)
         let parser = MdlParser(path: path)
-        scene = parser.parse()
-        scene?.queueAll()
+        let scene = parser.parse()
+        if let camera = scene.camera {
+            self.camera = camera
+        }
+        camera.setBounds(view.bounds)
+        scene.queueAll()
+        self.scene = scene
     }
 
 }
