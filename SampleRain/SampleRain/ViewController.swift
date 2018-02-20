@@ -11,33 +11,33 @@ import VidFramework
 
 
 class ViewController: VidController {
-    
+
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
-    
+
     // musica maestro!
     fileprivate var player : AVAudioPlayer?
-    
-    
+
+
     override func viewDidLoad() {
-        
+
         super.viewDidLoad()
         setupBgm()
         camera.setBounds(view.bounds)
-        
+
         let tapGest = UITapGestureRecognizer(target: self, action: #selector(ViewController.screenTap(_:)))
         tapGest.numberOfTouchesRequired = 1
         tapGest.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGest)
-        
+
         let rain = Rain(numParticles: 2000)
         rain?.queue()
         debugCube = CubePrimitive(numInstances: 1)
         debugCube.transform.scale = float3(0.1,0.1,0.1)
         debugCube.queue()
     }
-    
+
     fileprivate func setupBgm() {
         do {
             // Removed deprecated use of AVAudioSessionDelegate protocol
@@ -52,8 +52,8 @@ class ViewController: VidController {
             NSLog("setupBgm: \(error.localizedDescription)")
         }
     }
-    
-    
+
+
     @objc func screenTap(_ sender: UITapGestureRecognizer) {
         let p = sender.location(in: self.view)
         let x = Float(2.0 * p.x / self.view.frame.width - 1.0)

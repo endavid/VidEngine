@@ -13,14 +13,14 @@ import VidFramework
 
 class World {
     var scene : Scene!
-    
+
     // should be initialized after all the graphics are initialized
     init() {
         scene = GridScene(numRows: 12, numColumns: 20)
         initSprites()
         initTextDemo()
     }
-    
+
     private func initSprites() {
         let sprite = SpritePrimitive2D(priority: 0)
         sprite.options = [.alignCenter]
@@ -29,7 +29,7 @@ class World {
         sprite.height = 20
         sprite.queue()
     }
-    
+
     private func initTextDemo() {
         let fontName = "HoeflerText-Regular"
         guard let font = UIFont(name: fontName, size: 72) else {
@@ -52,12 +52,12 @@ class World {
             debugPanel.albedoTexture = fontAtlas.fontTexture
             debugPanel.queue()
             self.scene?.primitives.append(debugPanel)
-            
+
         } else {
             NSLog("Error initializing FontAtlas")
         }
     }
-    
+
     func update(_ currentTime: CFTimeInterval) {
         scene.update(currentTime)
     }

@@ -17,7 +17,7 @@ extension UIColor {
         let blue = CGFloat(0x000000FF & argb) / 255.0
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
-    
+
     var argb : UInt32 {
         get {
             var fRed : CGFloat = 0
@@ -51,7 +51,7 @@ extension UIColor {
 // linear RGB with alpha
 public struct LinearRGBA {
     public let rgba : float4
-    
+
     public var r : Float {
         get {
             return rgba.x
@@ -72,7 +72,7 @@ public struct LinearRGBA {
             return rgba.w
         }
     }
-    
+
     public init(rgb: float3) {
         rgba = float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
@@ -112,13 +112,13 @@ public struct CieXYZ {
 public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
-    
+
     public init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
         sortedKeys = keys.sorted { $0 < $1 }
     }
-    
+
     // linearly interpolate between the closest wavelengths (in nm)
     public func getIntensity(_ wavelength: Int) -> Float {
         // exact match
@@ -142,13 +142,13 @@ public class Spectrum {
         let m0 = data[w0]!
         return (1-alpha) * m0 + alpha * m1
     }
-    
+
     // http://www.fourmilab.ch/documents/specrend/
     public func toXYZ() -> CieXYZ {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
-         
+
          cie_colour_match[(lambda - 380) / 5][0] = xBar
          cie_colour_match[(lambda - 380) / 5][1] = yBar
          cie_colour_match[(lambda - 380) / 5][2] = zBar
@@ -182,7 +182,7 @@ public class Spectrum {
             float3(0.0002,0.0001,0.0000), float3(0.0002,0.0001,0.0000), float3(0.0001,0.0000,0.0000),
             float3(0.0001,0.0000,0.0000), float3(0.0001,0.0000,0.0000), float3(0.0000,0.0000,0.0000)
         ]
-        
+
         var lambda : Int = 380
         var xyz = float3(0,0,0)
         for i in 0..<cieColourMatch.count {

@@ -38,7 +38,7 @@ fragment FragmentOIT passFragmentOIT(VertexOIT inFrag [[stage_in]],
     FragmentOIT out;
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
     float4 color = texColor * inFrag.color;
-    
+
     // scaled view depth
     //float zScene = texture(texDepth, vfScreenCoord.xy).z;
     //float zFx = gl_FragCoord.z / gl_FragCoord.w;
@@ -48,7 +48,7 @@ fragment FragmentOIT passFragmentOIT(VertexOIT inFrag [[stage_in]],
     //color.a *= fade;
     // if texture has no premultiplied alpha, apply this,
     color.rgb *= color.a;
-    
+
     // Blend Func: GL_ONE, GL_ONE
     out.accumulation = float4(color.rgb * inFrag.weight, color.a);
     // Blend Func: GL_ZERO, GL_ONE_MINUS_SRC_ALPHA

@@ -18,12 +18,12 @@ class VidTestsTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+
     func testVector2() {
         var v = float2(0, 3)
         XCTAssertEqual(0, v.x)
@@ -35,14 +35,14 @@ class VidTestsTests: XCTestCase {
         XCTAssertEqual(3, unsafe[1])
         unsafe.deallocate(capacity: 2)
     }
-    
+
     func testSpherical() {
         let sph = Spherical(v: float3(0,1,0))
         XCTAssertEqual(sph.r, 1)
         XCTAssertEqual(sph.θ, 0)
         XCTAssertEqual(sph.φ, 0)
     }
-    
+
     func testSpectrum() {
         let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
         let m1 = spectrum.getIntensity(404)
@@ -50,7 +50,7 @@ class VidTestsTests: XCTestCase {
         XCTAssertEqual(0.445, m1)
         XCTAssertEqual(0.471500009, m2)
     }
-    
+
     func testXYZtoRGB() {
         // http://www.brucelindbloom.com
         // Model: sRGB, Gamma: 1.0
@@ -61,7 +61,7 @@ class VidTestsTests: XCTestCase {
         XCTAssertLessThanOrEqual(fabs(rgba.g - 0.8), epsilon)
         XCTAssertLessThanOrEqual(fabs(rgba.b - 0.3), epsilon)
     }
-    
+
     func testTransform() {
         let p0 = float3(7, 12, -3)
         let t = Transform(position: float3(-1, 2, 0.5), scale: float3(1, 1, 1), rotation: Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0)))
@@ -75,7 +75,7 @@ class VidTestsTests: XCTestCase {
         print(p2w)
         XCTAssertLessThanOrEqual(distance(p2w, float4(p0.x, p0.y, p0.z, 1.0)), epsilon)
     }
-    
+
     func testCameraProjection() {
         let camera = Camera()
         camera.setPerspectiveProjection(fov: 90, near: 0.1, far: 100, aspectRatio: 1)
@@ -116,7 +116,7 @@ class VidTestsTests: XCTestCase {
         print(viewPoint4)
         XCTAssertLessThanOrEqual(distance(viewPoint4, float4(18.1019, -0.8, -17.2534, 1.0)), epsilon)
     }
-    
+
     // average: 0.027 secs
     func testBaselinePerformance() {
         self.measure {
@@ -137,7 +137,7 @@ class VidTestsTests: XCTestCase {
             }
         }
     }
-    
+
     // average: 0.079 seconds
     func testNativeArrayPerformance() {
         self.measure {
@@ -150,5 +150,5 @@ class VidTestsTests: XCTestCase {
         }
     }
 
-    
+
 }

@@ -37,10 +37,10 @@ class Primitive2DPlugin : GraphicPlugin {
     }
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
-        
+
         let fragmentProgram = library.makeFunction(name: "passThroughTexturedFragment")!
         let vertexProgram = library.makeFunction(name: "passSprite2DVertex")!
-        
+
         // check ColoredUnlitTexturedVertex
         let vertexDesc = MTLVertexDescriptor()
         vertexDesc.attributes[0].format = .float3
@@ -94,7 +94,7 @@ class Primitive2DPlugin : GraphicPlugin {
         spriteVBoffset = MemoryLayout<ColoredUnlitTexturedVertex>.size * maxNumSprites * 4 * syncBufferIndex
         updateSpriteBuffer()
     }
-    
+
     private func initSpriteIndexBuffer() {
         let ib = spriteIB.contents().advanced(by: 0).assumingMemoryBound(to: UInt16.self)
         for i in 0..<maxNumSprites {
@@ -106,7 +106,7 @@ class Primitive2DPlugin : GraphicPlugin {
             ib[6*i+5] = UInt16(4*i+1)
         }
     }
-    
+
     private func updateSpriteBuffer() {
         let vb = spriteVB.contents().advanced(by: spriteVBoffset).assumingMemoryBound(to: ColoredUnlitTexturedVertex.self)
         let sx = 2 / Float(bounds.width)

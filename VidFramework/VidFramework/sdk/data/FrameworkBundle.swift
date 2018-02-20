@@ -14,7 +14,7 @@ public enum FrameworkError: Error {
 
 public class FrameworkBundle {
     static let mainBundleId = "com.endavid.VidFramework"
-    
+
     public static func mainBundle() throws -> Bundle {
         if let bundle = Bundle.init(identifier: mainBundleId) {
             return bundle

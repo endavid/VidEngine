@@ -29,7 +29,7 @@ class PostEffectPlugin : GraphicPlugin {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -37,7 +37,7 @@ class PostEffectPlugin : GraphicPlugin {
         passThrough(encoder: encoder!, camera: camera)
         encoder?.endEncoding()
     }
-    
+
     private func passThrough(encoder: MTLRenderCommandEncoder, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         encoder.pushDebugGroup("PassThrough")
@@ -46,5 +46,5 @@ class PostEffectPlugin : GraphicPlugin {
         RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
-    
+
 }
