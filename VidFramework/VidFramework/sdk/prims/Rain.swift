@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 public class Rain {
@@ -26,7 +25,7 @@ public class Rain {
         let plugin : RainPlugin? = RenderManager.sharedInstance.getPlugin()
         plugin?.dequeue(self)
     }
-    
+
     public init?(numParticles: Int) {
         guard let device = RenderManager.sharedInstance.device else {
             return nil
@@ -36,7 +35,7 @@ public class Rain {
         noiseTexture = createNoiseTexture(device: device, width: 128, height: 128)
         initVertexBuffer(numParticles)
     }
-    
+
     fileprivate func initVertexBuffer(_ numParticles: Int) {
         // vData is pointer to the MTLBuffer's Float data contents
         let pData = raindropDoubleBuffer.contents()
@@ -68,18 +67,18 @@ public class Rain {
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
         encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
     }
-    
+
     func update(encoder: MTLRenderCommandEncoder) {
         let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), index: 1)
         RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 2)
         encoder.setVertexTexture(noiseTexture, index: 0)
-        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)        
+        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
     }
-    
+
     func swapBuffers() {
         doubleBufferIndex = (doubleBufferIndex + 1) % 2
     }
-    
+
 }

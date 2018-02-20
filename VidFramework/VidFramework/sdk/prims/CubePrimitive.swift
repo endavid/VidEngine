@@ -6,7 +6,6 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 public class CubePrimitive : Primitive {
@@ -21,19 +20,19 @@ public class CubePrimitive : Primitive {
         13, 12, 15, 12, 14, 15, // down
         16, 18, 17, 18, 19, 17, // front
         23, 20, 21, 23, 21, 22] // back
-    
+
     public override init(numInstances: Int) {
         super.init(numInstances: numInstances)
         vertexBuffer = CubePrimitive.cubeVB
         let mesh = Mesh(numIndices: CubePrimitive.triangleList.count, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil)
         submeshes.append(mesh)
     }
-    
+
     static func createCubeIndexBuffer() -> MTLBuffer {
         let buffer = RenderManager.sharedInstance.createIndexBuffer("cube IB", elements: CubePrimitive.triangleList)
         return buffer
     }
-    
+
     static func createCubeVertexBuffer() -> MTLBuffer {
         let uv0 = Vec2(0, 0)
         let buffer = RenderManager.sharedInstance.createTexturedVertexBuffer("cube VB", numElements: 6 * 4)

@@ -13,22 +13,22 @@ import simd
 open class Scene {
     public var primitives : [Primitive] = []
     public var camera : Camera? = nil
-    
+
     public func queueAll() {
         for p in primitives {
             p.queue()
         }
     }
-    
+
     public func dequeueAll() {
         for p in primitives {
             p.dequeue()
         }
     }
-    
+
     open func update(_ currentTime: CFTimeInterval) {
     }
-    
+
     public init() {
     }
 }

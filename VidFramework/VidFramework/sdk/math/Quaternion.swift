@@ -58,8 +58,8 @@ public struct Quaternion : CustomStringConvertible {
         m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
         return m
     }
-    
-    
+
+
     public static func createRotationAxis(_ angle: Float, unitVector: float3) -> Quaternion {
         return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
     }
@@ -108,11 +108,11 @@ public func Lerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
 public func Slerp(_ start: Quaternion, end: Quaternion, t: Float) -> Quaternion {
     var w1 : Float
     var w2 : Float
-    
+
     let cosTheta = start.dotQ(end)
     let theta    = acosf(cosTheta)
     let sinTheta = sinf(theta)
-    
+
     if( sinTheta > 0.001 ) {
         w1 = sinf((1.0-t)*theta) / sinTheta
         w2 = sinf(t*theta) / sinTheta

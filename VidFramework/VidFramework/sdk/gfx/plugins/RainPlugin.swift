@@ -6,14 +6,12 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 class RainPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil
     fileprivate var rains: [Rain] = []
-    
+
     func queue(_ rain: Rain) {
         let alreadyQueued = rains.contains { $0 === rain }
         if !alreadyQueued {
@@ -29,11 +27,11 @@ class RainPlugin : GraphicPlugin {
 
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
-        
+
         let fragmentProgram = library.makeFunction(name: "passThroughFragment")!
         let vertexRaindropProgram = library.makeFunction(name: "passVertexRaindrop")!
         let updateRaindropProgram = library.makeFunction(name: "updateRaindrops")!
-        
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexRaindropProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -46,12 +44,12 @@ class RainPlugin : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .destinationAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         pipelineStateDescriptor.sampleCount = view.sampleCount
-        
+
         let updateStateDescriptor = MTLRenderPipelineDescriptor()
         updateStateDescriptor.vertexFunction = updateRaindropProgram
         updateStateDescriptor.isRasterizationEnabled = false // vertex output is void
         updateStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat // pixel format needs to be set
-        
+
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             try updateState = device.makeRenderPipelineState(descriptor: updateStateDescriptor)
@@ -59,7 +57,7 @@ class RainPlugin : GraphicPlugin {
             NSLog("Failed to create pipeline state, error \(error)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if rains.isEmpty {
             return
@@ -81,6 +79,6 @@ class RainPlugin : GraphicPlugin {
         }
         encoder.endEncoding()
     }
-    
+
 
 }

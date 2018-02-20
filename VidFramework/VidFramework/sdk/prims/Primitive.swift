@@ -6,7 +6,6 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 /// A `Primitive` is an object that requires 3D rendering to be displayed.
@@ -19,7 +18,7 @@ public class Primitive {
     let uniformBuffer : MTLBuffer!
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
-    
+
     public var numInstances: Int {
         get {
             return perInstanceUniforms.count
@@ -47,7 +46,7 @@ public class Primitive {
             }
         }
     }
-    
+
     /// Set the texture of all the submeshes. If you need to set up a different texture per submesh, please use the submeshes field.
     public var albedoTexture: MTLTexture? {
         get {
@@ -57,18 +56,18 @@ public class Primitive {
             submeshes[0].albedoTexture = newValue
         }
     }
-    
-    
+
+
     init(numInstances: Int) {
         assert(numInstances > 0, "The number of instances should be >0")
         self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: Material.white), count: numInstances)
         self.uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
     }
-    
+
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
         encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
     }
-    
+
     public func queue() {
         if lightingType == .LitOpaque {
             let plugin : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
@@ -79,7 +78,7 @@ public class Primitive {
             plugin?.queue(self)
         }
     }
-    
+
     public func dequeue() {
         let p1 : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
         let p2 : UnlitTransparencyPlugin? = RenderManager.sharedInstance.getPlugin()
@@ -87,14 +86,14 @@ public class Primitive {
         p1?.dequeue(self)
         p2?.dequeue(self)
     }
-    
+
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
         let uniformData = uniformB.advanced(by: MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count * syncBufferIndex).assumingMemoryBound(to: Float.self)
         memcpy(uniformData, &perInstanceUniforms, MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count)
     }
-    
+
     public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
             RenderManager.sharedInstance.textureLibrary.getTextureAsync(resource: resource, bundle: bundle, options: options, addToCache: addToCache) { [weak self] (texture, error) in
@@ -102,7 +101,7 @@ public class Primitive {
             }
         }
     }
-    
+
     public func setAlbedoTexture(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
             RenderManager.sharedInstance.textureLibrary.getTextureAsync(id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache) { [weak self] (texture, error) in
@@ -111,14 +110,14 @@ public class Primitive {
             }
         }
     }
-    
+
     // sets albedo to nil, basically defaulting to a white texture
     public func clearAlbedo() {
         for i in 0..<submeshes.count {
             self.submeshes[i].albedoTexture = nil
         }
     }
-    
+
     struct Mesh {
         let numIndices: Int
         let indexBuffer: MTLBuffer

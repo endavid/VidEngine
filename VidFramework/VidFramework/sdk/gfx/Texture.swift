@@ -57,7 +57,7 @@ extension MTKTextureLoader {
         case noCachesDirectory
         case downloadFailed(URLResponse?)
     }
-    
+
     // ref. https://developer.apple.com/library/content/samplecode/LargeImageDownsizing/
     private static func downsize(image: UIImage, scale: CGFloat) -> CGImage? {
         let destResolution = CGSize(width: Int(image.size.width * scale), height: Int(image.size.height * scale))
@@ -65,7 +65,7 @@ extension MTKTextureLoader {
         let pixelsPerMB = 262144
         let tileTotalPixels = kSourceImageTileSizeMB * CGFloat(pixelsPerMB)
         let destSeemOverlap : CGFloat = 2.0 // the numbers of pixels to overlap the seems where tiles meet.
-        
+
         // create an offscreen bitmap context that will hold the output image
         // pixel data, as it becomes available by the downscaling routine.
         // use the RGB colorspace as this is the colorspace iOS GPU is optimized for.
@@ -158,7 +158,7 @@ extension MTKTextureLoader {
         // create a CGImage from the offscreen image context
         return destContext.makeImage()
     }
-    
+
     // http://stackoverflow.com/q/42567140/1765629
     // https://forums.developer.apple.com/thread/73478
     func newTexture(with uiImage: UIImage, options: TextureLoadOptions?, completionHandler: MTKTextureLoader.Callback) {
@@ -175,7 +175,7 @@ extension MTKTextureLoader {
             completionHandler(nil, TextureError.CouldNotGetCGImage)
         }
     }
-    
+
     func newCubemapTexture(posX: UIImage, negX: UIImage, posY: UIImage, negY: UIImage, posZ: UIImage, negZ: UIImage, completionHandler: MTKTextureLoader.Callback) {
         if let cgPosX = posX.cgImage,
             let cgNegX = negX.cgImage,
@@ -190,7 +190,7 @@ extension MTKTextureLoader {
             completionHandler(nil, TextureError.CouldNotGetCGImage)
         }
     }
-    
+
     /// Guess the layout from the aspect ratio, and return the size as well
     private static func getTextureCubeLayout(cgImage: CGImage) -> (TextureCubeLayout, Int) {
         let w = cgImage.width
@@ -206,9 +206,9 @@ extension MTKTextureLoader {
         }
         return (.crossVertical, h/4)
     }
-    
+
     private static func getTransformsForLayout(_ layout: TextureCubeLayout, size: CGFloat) -> [CGRect] {
-        
+
         switch layout {
         case .crossHorizontal:
             return [CGRect(x: 0, y: -size, width: size, height: size), // +X
@@ -240,8 +240,8 @@ extension MTKTextureLoader {
                 CGRect(x: -size, y: -5 * size, width: size, height: size)] // -Z
         }
     }
-    
-    
+
+
     private static func dataFromCgImage(_ cgImage: CGImage, region: CGRect) -> Array<UInt8> {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         var rawData = Array<UInt8>(repeating: 0, count: Int(region.width * region.height * 4))
@@ -262,7 +262,7 @@ extension MTKTextureLoader {
         }
         return rawData
     }
-    
+
     func newCubemapTexture(with cgImage: CGImage) -> MTLTexture? {
         let layout = MTKTextureLoader.getTextureCubeLayout(cgImage: cgImage)
         let size = layout.1
@@ -284,7 +284,7 @@ extension MTKTextureLoader {
         }
         return texture
     }
-    
+
     func newCubemapTexture(posX: CGImage, negX: CGImage, posY: CGImage, negY: CGImage, posZ: CGImage, negZ: CGImage) -> MTLTexture? {
         let size = posX.width
         let textureDescriptor = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: .rgba8Unorm_srgb, size: size, mipmapped: false)
@@ -306,8 +306,8 @@ extension MTKTextureLoader {
         }
         return texture
     }
-    
-    
+
+
     /// Loads remote image, caching the URL, and downsampling the image
     /// if any ot its dimensions is greated than 8192 pixels
     func newTexture(withContentsOfRemote url: URL, options: TextureLoadOptions?, completionHandler: @escaping MTKTextureLoader.Callback) {
@@ -353,7 +353,7 @@ extension MTKTextureLoader {
         }
         downloadTask.resume()
     }
-    
+
     func newTexture(withContentsOf fileUrl: URL, options: TextureLoadOptions?, completionHandler: @escaping MTKTextureLoader.Callback) {
         if options?.type == .cubemap {
             if let data = try? Data(contentsOf: fileUrl),
@@ -366,7 +366,7 @@ extension MTKTextureLoader {
             self.newTexture(URL: fileUrl, options: options?.options, completionHandler: completionHandler)
         }
     }
-    
+
     func newTexture(posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, completionHandler: @escaping MTKTextureLoader.Callback) {
         if let dataPosX = try? Data(contentsOf: posX),
             let dataNegX = try? Data(contentsOf: negX),
@@ -390,7 +390,7 @@ extension MTKTextureLoader {
 
 class TextureLibrary {
     private var lib: [String: MTLTexture] = [:]
-    
+
     private func getUrl(forResource resource: String, bundle: Bundle) -> URL? {
         guard let index = resource.range(of: ".", options: .backwards)?.lowerBound else {
             return nil
@@ -399,7 +399,7 @@ class TextureLibrary {
         let ext = resource.suffix(from: resource.index(after: index))
         return bundle.url(forResource: String(name), withExtension: String(ext))
     }
-    
+
     func getTextureAsync(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[resource] {
             completion(t, nil)
@@ -411,7 +411,7 @@ class TextureLibrary {
         }
         getTextureAsync(id: resource, fileUrl: url, options: options, addToCache: addToCache, completion: completion)
     }
-    
+
     func getTextureAsync(id: String, posX: String, negX: String, posY: String, negY: String, posZ: String, negZ: String, bundle: Bundle, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -429,7 +429,7 @@ class TextureLibrary {
         }
         getTextureAsync(id: id, posX: urlPosX, negX: urlNegX, posY: urlPosY, negY: urlNegY, posZ: urlPosZ, negZ: urlNegZ, addToCache: addToCache, completion: completion)
     }
-    
+
     private func processNewTexture(id: String, addToCache: Bool, texture: MTLTexture?, error: Error?, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = texture {
             if addToCache {
@@ -443,7 +443,7 @@ class TextureLibrary {
             completion(nil, TextureError.CouldNotBeCreated)
         }
     }
-    
+
     func getTextureAsync(id: String, fileUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -458,7 +458,7 @@ class TextureLibrary {
             self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
         }
     }
-    
+
     func getTextureAsync(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -473,7 +473,7 @@ class TextureLibrary {
             self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
         }
     }
-    
+
     func getTextureAsync(id: String, posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
@@ -488,11 +488,11 @@ class TextureLibrary {
             self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
         }
     }
-    
+
     func remove(_ textureId: String) {
         lib.removeValue(forKey: textureId)
     }
-    
+
     func clear() {
         lib.removeAll()
     }

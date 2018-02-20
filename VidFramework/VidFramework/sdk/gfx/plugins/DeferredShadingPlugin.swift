@@ -6,7 +6,6 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 class DeferredShadingPlugin : GraphicPlugin {
@@ -14,10 +13,10 @@ class DeferredShadingPlugin : GraphicPlugin {
 
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
-        
+
         let fragmentProgram = library.makeFunction(name: "passLightShading")!
         let vertexProgram = library.makeFunction(name: "passThrough2DVertex")!
-        
+
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -32,7 +31,7 @@ class DeferredShadingPlugin : GraphicPlugin {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         let gBuffer = RenderManager.sharedInstance.gBuffer
         let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: true)
@@ -45,5 +44,5 @@ class DeferredShadingPlugin : GraphicPlugin {
         RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder!)
         encoder?.popDebugGroup()
         encoder?.endEncoding()
-    }    
+    }
 }

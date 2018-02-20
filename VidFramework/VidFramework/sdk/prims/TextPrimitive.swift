@@ -6,18 +6,16 @@
 //  Swift port of http://metalbyexample.com/rendering-text-in-metal-with-signed-distance-fields/
 //
 
-import Metal
 import MetalKit
-
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
-    
+
     public init(numInstances: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
         super.init(numInstances: numInstances)
         self.lightingType = .UnlitTransparent
         buildMeshWithString(text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
     }
-    
+
     private func buildMeshWithString(text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
         let font = fontAtlas.parentFont.withSize(fontSize)
         let attrString = NSAttributedString(string: text, attributes: [NSAttributedStringKey.font: font])
@@ -74,7 +72,7 @@ public class TextPrimitive : Primitive {
         let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("Text IB", elements: indices)
         submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture))
     }
-    
+
     private func enumerateGlyphsInFrame(frame: CTFrame, callback: (CGGlyph, Int, CGRect) -> ()) {
         let entire = CFRangeMake(0, 0)
         let framePath = CTFrameGetPath(frame)

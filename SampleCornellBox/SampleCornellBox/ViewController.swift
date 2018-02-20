@@ -12,7 +12,7 @@ import VidFramework
 class ViewController: VidController {
     private let mainScenePath = "CornellBox"
     private var scene: Scene?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScene()
