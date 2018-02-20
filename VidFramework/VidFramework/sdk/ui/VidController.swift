@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 import UIKit
-import Metal
 import MetalKit
 import CoreMotion
 import AVFoundation
@@ -61,8 +60,8 @@ open class VidController: UIViewController, MTKViewDelegate {
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
 
-        timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
-        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+        timer = CADisplayLink(target: self, selector: #selector(newFrame))
+        timer.add(to: RunLoop.main, forMode: .defaultRunLoopMode)
 
         setupMotionController()
     }

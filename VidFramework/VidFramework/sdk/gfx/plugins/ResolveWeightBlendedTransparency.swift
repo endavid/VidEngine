@@ -7,9 +7,7 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
-
 // Weight-blended OIT
 class ResolveWeightBlendedTransparency : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil

@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 class GraphicPlugin {
 
     init(device: MTLDevice, library: MTLLibrary, view: MTKView) {

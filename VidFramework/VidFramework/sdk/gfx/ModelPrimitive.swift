@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 /// A 3D model from a file.
 public class ModelPrimitive : Primitive {
 

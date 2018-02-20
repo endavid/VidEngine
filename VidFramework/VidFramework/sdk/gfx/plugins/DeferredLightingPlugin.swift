@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 class DeferredLightingPlugin : GraphicPlugin {
     // @todo split in different queues, one per type
     fileprivate var lights : [LightSource] = []

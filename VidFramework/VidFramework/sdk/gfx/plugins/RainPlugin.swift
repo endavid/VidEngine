@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 class RainPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil

@@ -6,7 +6,6 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 public class CubePrimitive : Primitive {

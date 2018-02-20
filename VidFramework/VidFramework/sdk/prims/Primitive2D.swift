@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 public struct Primitive2DOptions : OptionSet {
     public let rawValue: Int
 

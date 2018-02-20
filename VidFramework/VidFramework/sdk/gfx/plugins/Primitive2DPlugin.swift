@@ -6,9 +6,7 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
-
 class Primitive2DPlugin : GraphicPlugin {
     let maxNumSprites = 2000
     fileprivate var sprites : [SpritePrimitive2D] = []

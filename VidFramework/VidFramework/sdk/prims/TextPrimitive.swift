@@ -6,9 +6,7 @@
 //  Swift port of http://metalbyexample.com/rendering-text-in-metal-with-signed-distance-fields/
 //
 
-import Metal
 import MetalKit
-
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
 

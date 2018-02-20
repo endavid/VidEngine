@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Metal
 import MetalKit
 import CoreMotion
 import simd
@@ -30,7 +29,7 @@ class ViewController: VidController {
         }
         camera.setBounds(view.bounds)
 
-        let tapGest = UITapGestureRecognizer(target: self, action: #selector(ViewController.screenTap(_:)))
+        let tapGest = UITapGestureRecognizer(target: self, action: #selector(screenTap))
         tapGest.numberOfTouchesRequired = 1
         tapGest.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGest)
