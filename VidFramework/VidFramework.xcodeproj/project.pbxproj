@@ -53,6 +53,7 @@
 		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
+		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -117,6 +118,7 @@
 		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
+		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 				632D27E6203896C7000562F0 /* Primitive2D.swift */,
 				632D288E20398CD9000562F0 /* Rain.swift */,
 				639D0707203B7A6B00F9905D /* ComputePrimitive.swift */,
+				639D0709203B7EF600F9905D /* VolumetricCompute.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -379,6 +382,7 @@
 				639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */,
 				632D2825203896C7000562F0 /* Primitive2DPlugin.swift in Sources */,
 				632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */,
+				639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */,
 				639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */,
 				632D2827203896C7000562F0 /* DeferredShadingPlugin.swift in Sources */,
 				632D282C203896C7000562F0 /* FullScreenQuad.swift in Sources */,
