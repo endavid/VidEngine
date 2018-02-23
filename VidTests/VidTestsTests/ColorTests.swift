@@ -46,8 +46,23 @@ class ColorTests: XCTestCase {
         // XYZ to linear sRGB
         let m = RGBColorSpace.sRGB.toXYZ.inverse
         // matrix ref from http://www.brucelindbloom.com
-        XCTAssertTrue(float3(3.2406, -0.9689, 0.0557).isClose(m[0]))
-        XCTAssertTrue(float3(-1.5372, 1.8758, -0.2040).isClose(m[1]))
-        XCTAssertTrue(float3(-0.4986, 0.0415, 1.0570).isClose(m[2]))
+        let ref = float3x3([
+            float3(3.2406, -0.9689, 0.0557),
+            float3(-1.5372, 1.8758, -0.2040),
+            float3(-0.4986, 0.0415, 1.0570)
+            ])
+        XCTAssertTrue(ref[0].isClose(m[0]))
+        XCTAssertTrue(ref[1].isClose(m[1]))
+        XCTAssertTrue(ref[2].isClose(m[2]))
+        // check again with constant Y = 1
+        let sRGB = RGBColorSpace(
+            red: CiexyY(x: 0.6400, y: 0.3300),
+            green: CiexyY(x: 0.3000, y: 0.6000),
+            blue: CiexyY(x: 0.1500, y: 0.0600),
+            white: .D65)
+        let m1 = sRGB.toXYZ.inverse
+        XCTAssertTrue(ref[0].isClose(m1[0]))
+        XCTAssertTrue(ref[1].isClose(m1[1]))
+        XCTAssertTrue(ref[2].isClose(m1[2]))
     }
 }
