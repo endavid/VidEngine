@@ -79,6 +79,7 @@ public struct LinearRGBA {
 }
 
 public struct CieXYZ {
+    public static let zero = CieXYZ(x: 0, y: 0, z: 0)
     public let xyz : float3
     public var x : Float {
         get {
@@ -95,6 +96,9 @@ public struct CieXYZ {
             return xyz.z
         }
     }
+    public init(x: Float, y: Float, z: Float) {
+        xyz = float3(x, y, z)
+    }
     public init(xyz: float3) {
         self.xyz = xyz
     }
@@ -106,6 +110,63 @@ public struct CieXYZ {
             ])
         let rgb = m * xyz
         return LinearRGBA(rgb: rgb)
+    }
+}
+
+public struct CiexyY {
+    public let xyY: float3
+    public var x: Float {
+        get {
+            return xyY.x
+        }
+    }
+    public var y: Float {
+        get {
+            return xyY.y
+        }
+    }
+    public var Y: Float {
+        get {
+            return xyY.z
+        }
+    }
+    public var xyz: CieXYZ {
+        get {
+            if IsClose(x, 0) {
+                return .zero
+            }
+            return CieXYZ(x: x*Y/y, y: Y, z: (1-x-y)*Y/y)
+        }
+    }
+    public init(x: Float, y: Float, Y: Float = 1) {
+        xyY = float3(x, y, Y)
+    }
+}
+
+public typealias ReferenceWhite = CiexyY
+extension ReferenceWhite {
+    public static let D65 = ReferenceWhite(x: 0.3127, y: 0.329, Y: 1)
+}
+
+public struct RGBColorSpace {
+    public static let dciP3 = RGBColorSpace(
+        red: CiexyY(x: 0.680, y: 0.320),
+        green: CiexyY(x: 0.265, y: 0.690),
+        blue: CiexyY(x: 0.150, y: 0.060),
+        white: .D65)
+    // http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
+    public static let sRGB = RGBColorSpace(
+        red: CiexyY(x: 0.6400, y: 0.3300, Y: 0.212656),
+        green: CiexyY(x: 0.3000, y: 0.6000, Y: 0.715158),
+        blue: CiexyY(x: 0.1500, y: 0.0600, Y: 0.072186),
+        white: .D65)
+    public let toXYZ: float3x3
+    public init(red: CiexyY, green: CiexyY, blue: CiexyY, white: ReferenceWhite) {
+        // init with columns
+        let m = float3x3([red.xyz.xyz, green.xyz.xyz, blue.xyz.xyz])
+        let im = m.inverse
+        let s = im * white.xyz.xyz
+        toXYZ = float3x3([red.xyz.xyz * s.x, green.xyz.xyz * s.y, blue.xyz.xyz * s.z])
     }
 }
 

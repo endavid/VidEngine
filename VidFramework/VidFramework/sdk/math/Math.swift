@@ -47,7 +47,7 @@ func Min(_ a: Int, b: Int) -> Int {
 func CeilDiv(_ a: Int, b: Int) -> Int {
     return (a + b - 1) / b
 }
-func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
+public func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
     return ( fabsf( a - b ) < epsilon )
 }
 

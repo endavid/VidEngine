@@ -11,13 +11,13 @@ public extension float3 {
     internal init(_ v: Vec3) {
         self.init(v.x, v.y, v.z)
     }
-    func inverse() -> float3 {
+    public func inverse() -> float3 {
         return float3( x: fabsf(self.x)>0 ? 1/self.x : 0,
                        y: fabsf(self.y)>0 ? 1/self.y : 0,
                        z: fabsf(self.z)>0 ? 1/self.z : 0)
     }
     /// similar vectors
-    func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
+    public func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
         let diff = self - v
         return IsClose(length_squared(diff), 0)
     }
