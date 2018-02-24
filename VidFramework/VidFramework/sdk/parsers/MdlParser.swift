@@ -219,7 +219,7 @@ public class MdlParser {
         }
         let spectrum = Spectrum(data: self.spectral)
         let xyz = spectrum.toXYZ()
-        let rgba = xyz.toRGBA()
+        let rgba = xyz.toRGBA(colorSpace: .sRGB)
         let material = Material(diffuse: rgba)
         self.materials[name] = material
     }

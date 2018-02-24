@@ -102,12 +102,8 @@ public struct CieXYZ {
     public init(xyz: float3) {
         self.xyz = xyz
     }
-    public func toRGBA() -> LinearRGBA {
-        let m = float3x3(rows: [
-            float3(3.2406, -1.5372, -0.4986),
-            float3(-0.9689, 1.8758, 0.0415),
-            float3(0.0557, -0.2040, 1.0570)
-            ])
+    public func toRGBA(colorSpace: RGBColorSpace) -> LinearRGBA {
+        let m = colorSpace.toRGB
         let rgb = m * xyz
         return LinearRGBA(rgb: rgb)
     }
@@ -161,12 +157,14 @@ public struct RGBColorSpace {
         blue: CiexyY(x: 0.1500, y: 0.0600, Y: 0.072186),
         white: .D65)
     public let toXYZ: float3x3
+    public let toRGB: float3x3
     public init(red: CiexyY, green: CiexyY, blue: CiexyY, white: ReferenceWhite) {
         // init with columns
         let m = float3x3([red.xyz.xyz, green.xyz.xyz, blue.xyz.xyz])
         let im = m.inverse
         let s = im * white.xyz.xyz
         toXYZ = float3x3([red.xyz.xyz * s.x, green.xyz.xyz * s.y, blue.xyz.xyz * s.z])
+        toRGB = toXYZ.inverse
     }
 }
 

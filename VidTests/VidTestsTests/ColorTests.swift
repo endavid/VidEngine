@@ -26,7 +26,7 @@ class ColorTests: XCTestCase {
         // http://www.brucelindbloom.com
         // Model: sRGB, Gamma: 1.0
         let xyz = CieXYZ(xyz: float3(0.422683, 0.636309, 0.384312))
-        let rgba = xyz.toRGBA()
+        let rgba = xyz.toRGBA(colorSpace: .sRGB)
         XCTAssertEqual(1, rgba.a)
         XCTAssertLessThanOrEqual(fabs(rgba.r - 0.2), epsilon)
         XCTAssertLessThanOrEqual(fabs(rgba.g - 0.8), epsilon)
