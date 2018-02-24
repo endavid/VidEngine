@@ -87,7 +87,7 @@ arrayCopy[0] // unaffected because int3 is not a ref value
 
 let str : String = "mtrl \"la mare\" hello"
 let i0 = str.characters.index(of: "\"")
-let split = str.characters.split(separator: "\"")
+let split = str.split(separator: "\"")
 let name : String = String(split[1])
 
 

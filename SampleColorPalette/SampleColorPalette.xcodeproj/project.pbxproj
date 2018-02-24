@@ -14,6 +14,7 @@
 		63711CAD2041BE6C00D046CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63711CAB2041BE6C00D046CF /* LaunchScreen.storyboard */; };
 		63711CB72041BEF200D046CF /* VidFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63711CB62041BED800D046CF /* VidFramework.framework */; };
 		63711CB82041BEF200D046CF /* VidFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63711CB62041BED800D046CF /* VidFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		63711CBD2041C27B00D046CF /* ColorSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBC2041C27B00D046CF /* ColorSampler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,7 @@
 		63711CAC2041BE6C00D046CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63711CAE2041BE6D00D046CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63711CB62041BED800D046CF /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63711CBC2041C27B00D046CF /* ColorSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSampler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				63711CA92041BE6C00D046CF /* Assets.xcassets */,
 				63711CAB2041BE6C00D046CF /* LaunchScreen.storyboard */,
 				63711CAE2041BE6D00D046CF /* Info.plist */,
+				63711CBC2041C27B00D046CF /* ColorSampler.swift */,
 			);
 			path = SampleColorPalette;
 			sourceTree = "<group>";
@@ -165,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63711CA52041BE6C00D046CF /* ViewController.swift in Sources */,
+				63711CBD2041C27B00D046CF /* ColorSampler.swift in Sources */,
 				63711CA32041BE6C00D046CF /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

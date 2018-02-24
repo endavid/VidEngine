@@ -47,35 +47,116 @@ extension UIColor {
         }
     }
 }
+/// A 3-channel color with an alpha channel
+public protocol ColorWithAlpha {
+    var raw: float4 { get }
+}
 
 // linear RGB with alpha
-public struct LinearRGBA {
-    public let rgba : float4
+public struct LinearRGBA: ColorWithAlpha {
+    public let raw: float4
     
     public var r : Float {
         get {
-            return rgba.x
+            return raw.x
         }
     }
     public var g : Float {
         get {
-            return rgba.y
+            return raw.y
         }
     }
     public var b : Float {
         get {
-            return rgba.z
+            return raw.z
         }
     }
     public var a : Float {
         get {
-            return rgba.w
+            return raw.w
+        }
+    }
+    public var rgb: float3 {
+        get {
+            return float3(r, g, b)
         }
     }
     
-    public init(rgb: float3) {
-        rgba = float4(rgb.x, rgb.y, rgb.z, 1.0)
+    public init(r: Float, g: Float, b: Float, a: Float) {
+        raw = float4(r, g, b, a)
     }
+    
+    public init(rgb: float3, alpha: Float = 1.0) {
+        raw = float4(rgb.x, rgb.y, rgb.z, alpha)
+    }
+    
+    public init(srgba: NormalizedSRGBA) {
+        let f = {(c: Float) -> Float in
+            if c <= 0.04045 {
+                return c / 12.92
+            }
+            return powf((c + 0.055) / 1.055, 2.4)
+        }
+        raw = float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
+    }
+    
+    /// When using a UIColor, the inverse gamma will be applied and
+    /// the color converted to linear RGB.
+    public init(_ color: UIColor) {
+        let sRGB = NormalizedSRGBA(color)
+        self.init(srgba: sRGB)
+    }
+}
+
+/// sRGB color with alpha, where every channel is normalized between 0 and 1
+/// Transforms use the 2.4 exponent. See https://en.wikipedia.org/wiki/SRGB
+public struct NormalizedSRGBA: ColorWithAlpha {
+    public let raw : float4
+    
+    public var r : Float {
+        get {
+            return raw.x
+        }
+    }
+    public var g : Float {
+        get {
+            return raw.y
+        }
+    }
+    public var b : Float {
+        get {
+            return raw.z
+        }
+    }
+    public var a : Float {
+        get {
+            return raw.w
+        }
+    }
+    
+    public init(r: Float, g: Float, b: Float, a: Float) {
+        raw = float4(r, g, b, a)
+    }
+    
+    public init(rgba: LinearRGBA) {
+        let f = {(c: Float) -> Float in
+            if c <= 0.0031308 {
+                return c * 12.92
+            }
+            return powf(c * 1.055, 1/2.4) - 0.055
+        }
+        self.raw = float4(f(rgba.r), f(rgba.g), f(rgba.b), rgba.a)
+    }
+    
+    public init(_ color: UIColor) {
+        var fRed : CGFloat = 0
+        var fGreen : CGFloat = 0
+        var fBlue : CGFloat = 0
+        var fAlpha : CGFloat = 0
+        color.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
+        self.init(r: Float(fRed), g: Float(fGreen), b: Float(fBlue), a: Float(fAlpha))
+    }
+    
 }
 
 public struct CieXYZ {

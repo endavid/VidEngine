@@ -8,12 +8,13 @@
 
 import UIKit
 import VidFramework
+import simd
 
 class ViewController: VidController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        initSamples()
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,6 +22,15 @@ class ViewController: VidController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    private func initSamples() {
+        let sampler = P3MinusSrgbSampler(bitsPerChannel: 3)
+        var samples: [LinearRGBA] = []
+        while let s = sampler.getNextSample() {
+            samples.append(s)
+            let rgb = sampler.p3ToSrgb * s.rgb
+            print("\(s.rgb) \(rgb)")
+        }
+        print(samples.count)
+    }
 }
 
