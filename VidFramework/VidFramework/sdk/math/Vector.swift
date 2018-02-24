@@ -21,6 +21,17 @@ public extension float3 {
         let diff = self - v
         return IsClose(length_squared(diff), 0)
     }
+    /// Rounds to decimal places value
+    public func rounded(toPlaces places:Int) -> float3 {
+        return float3(
+            self.x.rounded(toPlaces: places),
+            self.y.rounded(toPlaces: places),
+            self.z.rounded(toPlaces: places))
+    }
+    /// Check if is within the 0..1 bounds
+    public func inUnitCube() -> Bool {
+        return self.x >= 0 && self.x <= 1 && self.y >= 0 && self.y <= 1 && self.z >= 0 && self.z <= 1
+    }
 }
 
 public struct Vec4 {

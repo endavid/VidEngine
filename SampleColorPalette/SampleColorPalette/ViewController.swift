@@ -23,14 +23,15 @@ class ViewController: VidController {
     }
 
     private func initSamples() {
-        let sampler = P3MinusSrgbSampler(bitsPerChannel: 3)
+        let sampler = P3MinusSrgbSampler(bitsPerChannel: 4)
         var samples: [LinearRGBA] = []
-        while let s = sampler.getNextSample() {
-            samples.append(s)
-            let rgb = sampler.p3ToSrgb * s.rgb
-            print("\(s.rgb) \(rgb)")
+        while let p3 = sampler.getNextSample() {
+            samples.append(p3)
+            let srgb = sampler.p3ToSrgb * p3.rgb
+            print("\(p3.rgb) \(srgb)")
         }
-        print(samples.count)
+        let ratio = (100 * Float(samples.count) / Float(sampler.volume)).rounded(toPlaces: 4)
+        print("#samples: \(samples.count); \(ratio)% of the P3 space not covered by sRGB")
     }
 }
 

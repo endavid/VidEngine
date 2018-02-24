@@ -79,8 +79,8 @@ func RandEvent(_ probality: Float) -> Bool {
     let r = Float(Rand(10000))
     return r < 10000.0 * probality
 }
-extension Array {
-    func shuffled() -> [Element] {
+public extension Array {
+    public func shuffled() -> [Element] {
         var list = self
         for i in 0..<(list.count - 1) {
             // I need a seeded rand() to make it deterministic
@@ -91,5 +91,13 @@ extension Array {
             list.swapAt(i, j)
         }
         return list
+    }
+}
+
+public extension Float {
+    /// Rounds to decimal places value
+    public func rounded(toPlaces places:Int) -> Float {
+        let divisor = powf(10.0, Float(places))
+        return (self * divisor).rounded() / divisor
     }
 }
