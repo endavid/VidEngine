@@ -12,7 +12,6 @@ import VidFramework
 @testable import VidTests
 
 class ColorTests: XCTestCase {
-    let epsilon : Float = 0.0001
 
     func testSpectrum() {
         let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
@@ -28,9 +27,9 @@ class ColorTests: XCTestCase {
         let xyz = CieXYZ(xyz: float3(0.422683, 0.636309, 0.384312))
         let rgba = xyz.toRGBA(colorSpace: .sRGB)
         XCTAssertEqual(1, rgba.a)
-        XCTAssertLessThanOrEqual(fabs(rgba.r - 0.2), epsilon)
-        XCTAssertLessThanOrEqual(fabs(rgba.g - 0.8), epsilon)
-        XCTAssertLessThanOrEqual(fabs(rgba.b - 0.3), epsilon)
+        XCTAssertTrue(IsClose(0.2, rgba.r))
+        XCTAssertTrue(IsClose(0.8, rgba.g))
+        XCTAssertTrue(IsClose(0.3, rgba.b))
     }
     
     // https://en.wikipedia.org/wiki/Illuminant_D65
