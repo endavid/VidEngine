@@ -68,6 +68,6 @@ class P3MinusSrgbSampler: ColorSampler {
     init(bitsPerChannel: UInt8) {
         size = 1 << bitsPerChannel
         toNormal = 1 / Float(size-1)
-        p3ToSrgb = RGBColorSpace.dciP3.toRGB * RGBColorSpace.sRGB.toXYZ
+        p3ToSrgb = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
     }
 }

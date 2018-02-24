@@ -64,4 +64,17 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ref[1].isClose(m1[1]))
         XCTAssertTrue(ref[2].isClose(m1[2]))
     }
+    
+    func testP3ToSrgb() {
+        let m = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
+        print(m)
+        let ref = float3x3([
+            float3(1.22494, -0.0420569, -0.0196376),
+            float3(-0.22494, 1.04206, -0.078636),
+            float3(4.61524e-08, 1.34893e-08, 1.09827)
+        ])
+        XCTAssertTrue(ref[0].isClose(m[0]))
+        XCTAssertTrue(ref[1].isClose(m[1]))
+        XCTAssertTrue(ref[2].isClose(m[2]))
+    }
 }
