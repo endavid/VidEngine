@@ -26,6 +26,29 @@ public class Primitive2D {
     public var color = UIColor.white
     public var options : Primitive2DOptions = []
     
+    public static var texture: MTLTexture? {
+        get {
+            guard let renderer = Renderer.shared else {
+                return nil
+            }
+            let plugin: Primitive2DPlugin? = renderer.getPlugin()
+            guard let p = plugin else {
+                return nil
+            }
+            return p.texture
+        }
+        set {
+            guard let renderer = Renderer.shared else {
+                return
+            }
+            let plugin: Primitive2DPlugin? = renderer.getPlugin()
+            guard let p = plugin else {
+                return
+            }
+            p.texture = newValue
+        }
+    }
+    
     public func queue() {
         let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)

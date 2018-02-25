@@ -18,6 +18,8 @@ class ViewController: VidController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initSprites()
+        camera.setBounds(view.bounds)
         // bits = 7 -> 1039 * 602 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
         updateFn = self.updateSamples
@@ -54,6 +56,20 @@ class ViewController: VidController {
         let ratio = (100 * Float(samples.count) / Float(sampler?.volume ?? 0)).rounded(toPlaces: 4)
         print("#samples: \(samples.count); \(ratio)% of the P3 space not covered by sRGB")
         print("-- Computed in \(framesTilInit) frames")
+        let width = 1039
+        let height = samples.count / width
+        let rgba16data = samples.map { return $0.rgba16U }
+        let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
+        Primitive2D.texture = texture.mtlTexture
+    }
+    
+    private func initSprites() {
+        let sprite = SpritePrimitive2D(priority: 0)
+        sprite.options = [.alignCenter]
+        sprite.position = Vec3(0, 0, 0)
+        sprite.width = 320
+        sprite.height = 320
+        sprite.queue()
     }
 }
 

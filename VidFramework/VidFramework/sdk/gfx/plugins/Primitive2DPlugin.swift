@@ -17,6 +17,8 @@ class Primitive2DPlugin : GraphicPlugin {
     fileprivate var spriteVB : MTLBuffer! = nil
     fileprivate var spriteIB : MTLBuffer! = nil
     fileprivate var spriteVBoffset = 0
+    // atm, one texture for all sprites...
+    var texture: MTLTexture?
 
     func queue(_ primitive: Primitive2D) {
         if let sprite = primitive as? SpritePrimitive2D {
@@ -77,13 +79,13 @@ class Primitive2DPlugin : GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         bounds = camera.bounds
         if sprites.count > 0 {
-            let whiteTexture = Renderer.shared.whiteTexture
+            let tex = texture ?? Renderer.shared.whiteTexture
             let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
             let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
             encoder?.label = "Primitive2D Encoder"
             encoder?.pushDebugGroup("primitive2d")
             encoder?.setRenderPipelineState(pipelineState)
-            encoder?.setFragmentTexture(whiteTexture, index: 0)
+            encoder?.setFragmentTexture(tex, index: 0)
             encoder?.setVertexBuffer(spriteVB, offset: spriteVBoffset, index: 0)
             encoder?.drawIndexedPrimitives(type: .triangle, indexCount: sprites.count * 6, indexType: .uint16, indexBuffer: spriteIB, indexBufferOffset: 0)
             encoder?.popDebugGroup()
