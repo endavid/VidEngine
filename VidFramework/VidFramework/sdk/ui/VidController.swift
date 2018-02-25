@@ -56,8 +56,7 @@ open class VidController: UIViewController, MTKViewDelegate {
         view.delegate = self
         // our shaders will be in linear RGB, so automatically apply γ
         view.colorPixelFormat = .bgra8Unorm_srgb
-        
-        Renderer.shared.initManager(device, view: self.view as! MTKView)
+        Renderer.shared = Renderer(device, view: view)
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
         
@@ -65,6 +64,15 @@ open class VidController: UIViewController, MTKViewDelegate {
         timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
 
         setupMotionController()
+    }
+    
+    override open func viewWillDisappear(_ animated: Bool) {
+        if let _ = Renderer.shared {
+            NotificationCenter.default.removeObserver(self)
+            timer.remove(from: .main, forMode: .defaultRunLoopMode)
+            Renderer.shared = nil
+            inflightSemaphore.signal()
+        }
     }
     
     fileprivate func setupMotionController() {

@@ -47,13 +47,13 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         }
     }
     
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+    init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         
-        let pipelineStateDescriptor = Renderer.shared.gBuffer.createOITPipelineDescriptor(device: device, library: library)
-        let textPipelineStateDescriptor = Renderer.shared.gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
+        let pipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library)
+        let textPipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
         
-        let depthDescriptor = Renderer.shared.gBuffer.createDepthStencilDescriptor()
+        let depthDescriptor = gBuffer.createDepthStencilDescriptor()
         depthDescriptor.isDepthWriteEnabled = false
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)

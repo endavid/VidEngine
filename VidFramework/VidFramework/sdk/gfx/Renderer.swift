@@ -28,7 +28,7 @@ public enum RendererError: Error {
 
 // (View in M-V-C)
 public class Renderer {
-    static let shared = Renderer()
+    static var shared: Renderer! = nil
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let NumSyncBuffers = 3
     fileprivate var graphicsDataBuffer: MTLBuffer! = nil
@@ -36,7 +36,9 @@ public class Renderer {
     fileprivate var syncBufferIndex = 0
     fileprivate var _gBuffer : GBuffer! = nil
     fileprivate var _whiteTexture : MTLTexture! = nil
-    fileprivate var _fullScreenQuad : FullScreenQuad! = nil
+    fileprivate lazy var _fullScreenQuad : FullScreenQuad = {
+        return FullScreenQuad(device: self.device)
+    }()
     var graphicsData : GraphicsData = GraphicsData()
     var device : MTLDevice! = nil
     var camera : Camera = Camera()
@@ -79,14 +81,13 @@ public class Renderer {
         encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
     
-    func initManager(_ device: MTLDevice, view: MTKView) {
+    init(_ device: MTLDevice, view: MTKView) {
         graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.NumSyncBuffers, options: [])
         graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
         _whiteTexture = createWhiteTexture()
-        _fullScreenQuad = FullScreenQuad(device: device)
         self.initGraphicPlugins(view)
     }
 
@@ -100,10 +101,10 @@ public class Renderer {
             }
             let library = try device.makeLibrary(filepath: libfile)
             // order is important!
-            plugins.append(PrimitivePlugin(device: device, library: library, view: view))
-            plugins.append(DeferredShadingPlugin(device: device, library: library, view: view))
-            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view))
-            plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view))
+            plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+            plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+            plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
             plugins.append(PostEffectPlugin(device: device, library: library, view: view))
             plugins.append(RainPlugin(device: device, library: library, view: view))
             plugins.append(Primitive2DPlugin(device: device, library: library, view: view))

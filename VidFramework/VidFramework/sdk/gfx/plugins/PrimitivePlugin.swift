@@ -29,11 +29,11 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
     
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+    init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         
-        let pipelineStateDescriptor = Renderer.shared.gBuffer.createPipelineDescriptor(device: device, library: library)
-        let depthDescriptor = Renderer.shared.gBuffer.createDepthStencilDescriptor()
+        let pipelineStateDescriptor = gBuffer.createPipelineDescriptor(device: device, library: library)
+        let depthDescriptor = gBuffer.createDepthStencilDescriptor()
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             depthState = device.makeDepthStencilState(descriptor: depthDescriptor)
