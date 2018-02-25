@@ -20,7 +20,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: TimeInterval = 0.0
     var elapsedTimeGPU: TimeInterval = 0.0
-    let inflightSemaphore = DispatchSemaphore(value: RenderManager.NumSyncBuffers)
+    let inflightSemaphore = DispatchSemaphore(value: Renderer.NumSyncBuffers)
     
     // for motion control
     let motionManager = CMMotionManager()
@@ -32,10 +32,10 @@ open class VidController: UIViewController, MTKViewDelegate {
     
     public var camera : Camera {
         get {
-            return RenderManager.sharedInstance.camera
+            return Renderer.shared.camera
         }
         set {
-            RenderManager.sharedInstance.camera = newValue
+            Renderer.shared.camera = newValue
         }
     }
         
@@ -57,7 +57,7 @@ open class VidController: UIViewController, MTKViewDelegate {
         // our shaders will be in linear RGB, so automatically apply γ
         view.colorPixelFormat = .bgra8Unorm_srgb
         
-        RenderManager.sharedInstance.initManager(device, view: self.view as! MTKView)
+        Renderer.shared.initManager(device, view: self.view as! MTKView)
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
         
@@ -91,9 +91,9 @@ open class VidController: UIViewController, MTKViewDelegate {
     }
     
     fileprivate func dataUpdate() {
-        RenderManager.sharedInstance.graphicsData.elapsedTime = Float(elapsedTimeGPU)
-        RenderManager.sharedInstance.graphicsData.currentPitch = Float(-sin(currentPitch))
-        RenderManager.sharedInstance.graphicsData.currentTouch = currentTouch
+        Renderer.shared.graphicsData.elapsedTime = Float(elapsedTimeGPU)
+        Renderer.shared.graphicsData.currentPitch = Float(-sin(currentPitch))
+        Renderer.shared.graphicsData.currentTouch = currentTouch
     }
     
     public func draw(in view: MTKView) {
@@ -103,7 +103,7 @@ open class VidController: UIViewController, MTKViewDelegate {
         // could check here for .timedOut to count number of skipped frames
         
         self.dataUpdate()
-        RenderManager.sharedInstance.updateBuffers()
+        Renderer.shared.updateBuffers()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer?.label = "Frame command buffer"
@@ -116,7 +116,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
             return
         }
-        RenderManager.sharedInstance.draw(view, commandBuffer: commandBuffer!)
+        Renderer.shared.draw(view, commandBuffer: commandBuffer!)
     }
     
     

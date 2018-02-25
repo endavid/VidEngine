@@ -30,13 +30,13 @@ public class CubePrimitive : Primitive {
     }
     
     static func createCubeIndexBuffer() -> MTLBuffer {
-        let buffer = RenderManager.sharedInstance.createIndexBuffer("cube IB", elements: CubePrimitive.triangleList)
+        let buffer = Renderer.shared.createIndexBuffer("cube IB", elements: CubePrimitive.triangleList)
         return buffer
     }
     
     static func createCubeVertexBuffer() -> MTLBuffer {
         let uv0 = Vec2(0, 0)
-        let buffer = RenderManager.sharedInstance.createTexturedVertexBuffer("cube VB", numElements: 6 * 4)
+        let buffer = Renderer.shared.createTexturedVertexBuffer("cube VB", numElements: 6 * 4)
         let vb = buffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         let a = 0.5 * Vec3(-1, +1, +1)
         let b = 0.5 * Vec3(-1, +1, -1)

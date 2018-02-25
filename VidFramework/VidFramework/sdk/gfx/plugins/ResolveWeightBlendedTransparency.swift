@@ -20,7 +20,7 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         let fragmentProgram = library.makeFunction(name: "passResolveOIT")!
         let vertexProgram = library.makeFunction(name: "passThrough2DVertex")!
         
-        let gBuffer = RenderManager.sharedInstance.gBuffer
+        let gBuffer = Renderer.shared.gBuffer
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -41,15 +41,15 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         }
     }
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let gBuffer = RenderManager.sharedInstance.gBuffer
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: false)
+        let gBuffer = Renderer.shared.gBuffer
+        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: false)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder?.label = "Resolve OIT Encoder"
         encoder?.pushDebugGroup("resolveOIT")
         encoder?.setRenderPipelineState(pipelineState)
         encoder?.setFragmentTexture(gBuffer.lightTexture, index: 0)
         encoder?.setFragmentTexture(gBuffer.revealTexture, index: 1)
-        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder!)
+        Renderer.shared.fullScreenQuad.draw(encoder: encoder!)
         encoder?.popDebugGroup()
         encoder?.endEncoding()
     }

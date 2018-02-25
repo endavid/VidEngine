@@ -27,8 +27,8 @@ public enum RendererError: Error {
 }
 
 // (View in M-V-C)
-public class RenderManager {
-    public static let sharedInstance = RenderManager()
+public class Renderer {
+    static let shared = Renderer()
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let NumSyncBuffers = 3
     fileprivate var graphicsDataBuffer: MTLBuffer! = nil
@@ -80,7 +80,7 @@ public class RenderManager {
     }
     
     func initManager(_ device: MTLDevice, view: MTKView) {
-        graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * RenderManager.NumSyncBuffers, options: [])
+        graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.NumSyncBuffers, options: [])
         graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
@@ -142,7 +142,7 @@ public class RenderManager {
         }
         commandBuffer.present(currentDrawable)
         // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
-        syncBufferIndex = (syncBufferIndex + 1) % RenderManager.NumSyncBuffers
+        syncBufferIndex = (syncBufferIndex + 1) % Renderer.NumSyncBuffers
         commandBuffer.commit()
     }
     

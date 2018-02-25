@@ -27,12 +27,12 @@ public class Primitive2D {
     public var options : Primitive2DOptions = []
     
     public func queue() {
-        let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
     
     public func dequeue() {
-        let plugin : Primitive2DPlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.dequeue(self)
     }
     

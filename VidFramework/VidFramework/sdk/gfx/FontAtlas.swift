@@ -91,7 +91,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         super.init()
         createTextureData()
         do {
-            _fontTexture = try createTexture(device: RenderManager.sharedInstance.device)
+            _fontTexture = try createTexture(device: Renderer.shared.device)
         }
     }
     
@@ -127,7 +127,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         _textureData = td
         super.init()
         do {
-            guard let texture = try? createTexture(device: RenderManager.sharedInstance.device) else {
+            guard let texture = try? createTexture(device: Renderer.shared.device) else {
                 NSLog("Failed to create texture")
                 return nil
             }

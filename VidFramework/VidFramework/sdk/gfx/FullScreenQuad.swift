@@ -14,7 +14,7 @@ class FullScreenQuad {
     fileprivate let vertexBuffer : MTLBuffer!
     
     init(device: MTLDevice) {
-        indexBuffer = RenderManager.sharedInstance.createIndexBuffer("fullscreen IB", elements: [0, 2, 1, 3])
+        indexBuffer = Renderer.shared.createIndexBuffer("fullscreen IB", elements: [0, 2, 1, 3])
         vertexBuffer = device.makeBuffer(length: 4 * MemoryLayout<Vec4>.size, options: [])
         vertexBuffer.label = "fullscreen VB"
         let vb = vertexBuffer.contents().assumingMemoryBound(to: Vec4.self)

@@ -68,7 +68,7 @@ public class ModelPrimitive : Primitive {
         }
         let materials = json["materials"] as? [String: Any]
         let numVertices = vertexData.count / 8
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer(name + " VB", numElements: numVertices)
+        vertexBuffer = Renderer.shared.createTexturedVertexBuffer(name + " VB", numElements: numVertices)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<numVertices {
             let x = Vec3(vertexData[8*i], vertexData[8*i+1], vertexData[8*i+2])
@@ -83,7 +83,7 @@ public class ModelPrimitive : Primitive {
             guard let indices = meshData["indices"] as? [UInt16] else {
                 continue
             }
-            let indexBuffer = RenderManager.sharedInstance.createIndexBuffer(name + " IB", elements: indices)
+            let indexBuffer = Renderer.shared.createIndexBuffer(name + " IB", elements: indices)
             let submesh = Mesh(numIndices: indices.count, indexBuffer: indexBuffer, albedoTexture: nil)
             let submeshIndex = submeshes.count
             submeshes.append(submesh)
@@ -92,7 +92,7 @@ public class ModelPrimitive : Primitive {
                 let mat = materials[matName] as? [String: Any],
                 let albedoMap = mat["albedoMap"] as? String {
                 if let b = bundle {
-                    RenderManager.sharedInstance.textureLibrary.getTextureAsync(resource: albedoMap, bundle: b, options: nil, addToCache: true) { [weak self] (texture, error) in
+                    Renderer.shared.textureLibrary.getTextureAsync(resource: albedoMap, bundle: b, options: nil, addToCache: true) { [weak self] (texture, error) in
                         self?.submeshes[submeshIndex].albedoTexture = texture
                     }
                 } else {
@@ -108,12 +108,12 @@ public class ModelPrimitive : Primitive {
     }
     
     fileprivate func initBuffers(_ vertices: [TexturedVertex], triangles: [UInt16]) {
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("model VB", numElements: vertices.count)
+        vertexBuffer = Renderer.shared.createTexturedVertexBuffer("model VB", numElements: vertices.count)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<vertices.count {
             vb[i] = vertices[i]
         }
-        let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("model IB", elements: triangles)
+        let indexBuffer = Renderer.shared.createIndexBuffer("model IB", elements: triangles)
         let submesh = Mesh(numIndices: triangles.count, indexBuffer: indexBuffer, albedoTexture: nil)
         submeshes.append(submesh)
     }

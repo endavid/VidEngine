@@ -449,7 +449,7 @@ class TextureLibrary {
             completion(t, nil)
             return
         }
-        guard let device = RenderManager.sharedInstance.device else {
+        guard let device = Renderer.shared.device else {
             completion(nil, RendererError.MissingDevice)
             return
         }
@@ -464,7 +464,7 @@ class TextureLibrary {
             completion(t, nil)
             return
         }
-        guard let device = RenderManager.sharedInstance.device else {
+        guard let device = Renderer.shared.device else {
             completion(nil, RendererError.MissingDevice)
             return
         }
@@ -479,7 +479,7 @@ class TextureLibrary {
             completion(t, nil)
             return
         }
-        guard let device = RenderManager.sharedInstance.device else {
+        guard let device = Renderer.shared.device else {
             completion(nil, RendererError.MissingDevice)
             return
         }

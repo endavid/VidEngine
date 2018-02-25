@@ -29,8 +29,8 @@ class DeferredLightingPlugin : GraphicPlugin {
         super.init(device: device, library: library, view: view)
     }
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let gBuffer = RenderManager.sharedInstance.gBuffer
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
+        let gBuffer = Renderer.shared.gBuffer
+        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder?.label = "Deferred Lighting Encoder"
         encoder?.pushDebugGroup("deferredLighting")

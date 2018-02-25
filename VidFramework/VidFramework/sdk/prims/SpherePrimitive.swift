@@ -66,8 +66,8 @@ public class SpherePrimitive : Primitive {
             triangleList[c] = UInt16(faces[i].z)
         }
         let numIndices = faces.count * 3
-        let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("sphere IB", elements: triangleList)
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("sphere VB", numElements: vertices.count)
+        let indexBuffer = Renderer.shared.createIndexBuffer("sphere IB", elements: triangleList)
+        vertexBuffer = Renderer.shared.createTexturedVertexBuffer("sphere VB", numElements: vertices.count)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<vertices.count {
             let x = Vec3(vertices[i])

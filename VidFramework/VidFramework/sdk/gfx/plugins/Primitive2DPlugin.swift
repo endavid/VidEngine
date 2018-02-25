@@ -68,7 +68,7 @@ class Primitive2DPlugin : GraphicPlugin {
         }
         // generate a large enough buffer to allow streaming vertices for 3 semaphore controlled frames
         // 4 vertices per sprite * max * triple buffer
-        spriteVB = device.makeBuffer(length: RenderManager.NumSyncBuffers * maxNumSprites * MemoryLayout<ColoredUnlitTexturedVertex>.size * 4, options: [])
+        spriteVB = device.makeBuffer(length: Renderer.NumSyncBuffers * maxNumSprites * MemoryLayout<ColoredUnlitTexturedVertex>.size * 4, options: [])
         // we don't need to triple buffer this because it's going to be static
         // 6 indices per sprite
         spriteIB = device.makeBuffer(length: maxNumSprites * MemoryLayout<UInt16>.size * 6, options: [])
@@ -77,8 +77,8 @@ class Primitive2DPlugin : GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         bounds = camera.bounds
         if sprites.count > 0 {
-            let whiteTexture = RenderManager.sharedInstance.whiteTexture
-            let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
+            let whiteTexture = Renderer.shared.whiteTexture
+            let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
             let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
             encoder?.label = "Primitive2D Encoder"
             encoder?.pushDebugGroup("primitive2d")

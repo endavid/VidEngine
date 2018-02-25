@@ -19,16 +19,16 @@ public class Rain {
     fileprivate var doubleBufferIndex = 0
 
     public func queue() {
-        let plugin : RainPlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin : RainPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
     public func dequeue() {
-        let plugin : RainPlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin : RainPlugin? = Renderer.shared.getPlugin()
         plugin?.dequeue(self)
     }
     
     public init?(numParticles: Int) {
-        guard let device = RenderManager.sharedInstance.device else {
+        guard let device = Renderer.shared.device else {
             return nil
         }
         raindropDoubleBuffer = device.makeBuffer(length: 2 * maxNumberOfRaindrops * sizeOfLineParticle, options: [])
@@ -73,7 +73,7 @@ public class Rain {
         let bufferOffset = maxNumberOfRaindrops * sizeOfLineParticle
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*doubleBufferIndex, index: 0)
         encoder.setVertexBuffer(raindropDoubleBuffer, offset: bufferOffset*((doubleBufferIndex+1)%2), index: 1)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder, atIndex: 2)
+        Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 2)
         encoder.setVertexTexture(noiseTexture, index: 0)
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)        
     }

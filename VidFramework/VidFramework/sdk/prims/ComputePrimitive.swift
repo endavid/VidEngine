@@ -19,15 +19,15 @@ public class ComputePrimitive {
     }
     
     public func queue() {
-        let plugin: ComputePlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin: ComputePlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
     public func dequeue() {
-        let plugin: ComputePlugin? = RenderManager.sharedInstance.getPlugin()
+        let plugin: ComputePlugin? = Renderer.shared.getPlugin()
         plugin?.dequeue(self)
     }
     init?(function: MTLFunction) {
-        guard let device = RenderManager.sharedInstance.device else {
+        guard let device = Renderer.shared.device else {
             return
         }
         let updateStateDescriptor = MTLRenderPipelineDescriptor()

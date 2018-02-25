@@ -32,8 +32,8 @@ class PrimitivePlugin : GraphicPlugin {
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
         
-        let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createPipelineDescriptor(device: device, library: library)
-        let depthDescriptor = RenderManager.sharedInstance.gBuffer.createDepthStencilDescriptor()
+        let pipelineStateDescriptor = Renderer.shared.gBuffer.createPipelineDescriptor(device: device, library: library)
+        let depthDescriptor = Renderer.shared.gBuffer.createDepthStencilDescriptor()
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             depthState = device.makeDepthStencilState(descriptor: depthDescriptor)
@@ -43,7 +43,7 @@ class PrimitivePlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithGBuffer(true)
+        let renderPassDescriptor = Renderer.shared.createRenderPassWithGBuffer(true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder?.label = "Primitives Encoder"
         encoder?.pushDebugGroup("primitives")
@@ -51,14 +51,14 @@ class PrimitivePlugin : GraphicPlugin {
         encoder?.setDepthStencilState(depthState)
         encoder?.setFrontFacing(.counterClockwise)
         encoder?.setCullMode(.back)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 1)
+        Renderer.shared.setGraphicsDataBuffer(encoder!, atIndex: 1)
         drawPrimitives(encoder: encoder!)
         encoder?.popDebugGroup()
         encoder?.endEncoding()
     }
     
     private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
-        let whiteTexture = RenderManager.sharedInstance.whiteTexture
+        let whiteTexture = Renderer.shared.whiteTexture
         var currentAlbedoTexture : MTLTexture? = nil
         
         for p in self.primitives {

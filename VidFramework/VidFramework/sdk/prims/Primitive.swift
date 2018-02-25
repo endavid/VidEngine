@@ -62,7 +62,7 @@ public class Primitive {
     init(numInstances: Int) {
         assert(numInstances > 0, "The number of instances should be >0")
         self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: Material.white), count: numInstances)
-        self.uniformBuffer = RenderManager.sharedInstance.createPerInstanceUniformsBuffer("primUniforms", numElements: RenderManager.NumSyncBuffers * numInstances)
+        self.uniformBuffer = Renderer.shared.createPerInstanceUniformsBuffer("primUniforms", numElements: Renderer.NumSyncBuffers * numInstances)
     }
     
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
@@ -71,18 +71,18 @@ public class Primitive {
     
     public func queue() {
         if lightingType == .LitOpaque {
-            let plugin : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
+            let plugin : PrimitivePlugin? = Renderer.shared.getPlugin()
             plugin?.queue(self)
         }
         else if lightingType == .UnlitTransparent {
-            let plugin : UnlitTransparencyPlugin? = RenderManager.sharedInstance.getPlugin()
+            let plugin : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
             plugin?.queue(self)
         }
     }
     
     public func dequeue() {
-        let p1 : PrimitivePlugin? = RenderManager.sharedInstance.getPlugin()
-        let p2 : UnlitTransparencyPlugin? = RenderManager.sharedInstance.getPlugin()
+        let p1 : PrimitivePlugin? = Renderer.shared.getPlugin()
+        let p2 : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
         // just in case, dequeue from all
         p1?.dequeue(self)
         p2?.dequeue(self)
@@ -97,7 +97,7 @@ public class Primitive {
     
     public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
-            RenderManager.sharedInstance.textureLibrary.getTextureAsync(resource: resource, bundle: bundle, options: options, addToCache: addToCache) { [weak self] (texture, error) in
+            Renderer.shared.textureLibrary.getTextureAsync(resource: resource, bundle: bundle, options: options, addToCache: addToCache) { [weak self] (texture, error) in
                 self?.submeshes[i].albedoTexture = texture
             }
         }
@@ -105,7 +105,7 @@ public class Primitive {
     
     public func setAlbedoTexture(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
         for i in 0..<submeshes.count {
-            RenderManager.sharedInstance.textureLibrary.getTextureAsync(id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache) { [weak self] (texture, error) in
+            Renderer.shared.textureLibrary.getTextureAsync(id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache) { [weak self] (texture, error) in
                 self?.submeshes[i].albedoTexture = texture
                 completion(error)
             }

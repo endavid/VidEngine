@@ -31,7 +31,7 @@ class PostEffectPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let renderPassDescriptor = RenderManager.sharedInstance.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
+        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder?.label = "PostEffects"
         passThrough(encoder: encoder!, camera: camera)
@@ -39,11 +39,11 @@ class PostEffectPlugin : GraphicPlugin {
     }
     
     private func passThrough(encoder: MTLRenderCommandEncoder, camera: Camera) {
-        let gBuffer = RenderManager.sharedInstance.gBuffer
+        let gBuffer = Renderer.shared.gBuffer
         encoder.pushDebugGroup("PassThrough")
         encoder.setRenderPipelineState(passThroughPipeline)
         encoder.setFragmentTexture(gBuffer.shadedTexture, index: 0)
-        RenderManager.sharedInstance.fullScreenQuad.draw(encoder: encoder)
+        Renderer.shared.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
     

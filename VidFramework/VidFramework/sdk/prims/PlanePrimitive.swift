@@ -29,12 +29,12 @@ public class PlanePrimitive : Primitive {
     }
     
     static func createPlaneIndexBuffer() -> MTLBuffer {
-        let buffer = RenderManager.sharedInstance.createIndexBuffer("plane IB", elements: PlanePrimitive.triangleList)
+        let buffer = Renderer.shared.createIndexBuffer("plane IB", elements: PlanePrimitive.triangleList)
         return buffer
     }
     
     static func createPlaneVertexBuffer() -> MTLBuffer {
-        let buffer = RenderManager.sharedInstance.createTexturedVertexBuffer("plane VB", numElements: 4)
+        let buffer = Renderer.shared.createTexturedVertexBuffer("plane VB", numElements: 4)
         let vb = buffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         let a = 0.5 * Vec3(-1, 0, +1)
         let b = 0.5 * Vec3(-1, 0, -1)

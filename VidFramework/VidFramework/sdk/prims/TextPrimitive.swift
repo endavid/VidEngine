@@ -36,7 +36,7 @@ public class TextPrimitive : Primitive {
         let vertexCount = frameGlyphCount * 4
         let indexCount = frameGlyphCount * 6
         var indices = [UInt16](repeating: 0, count: indexCount)
-        vertexBuffer = RenderManager.sharedInstance.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
+        vertexBuffer = Renderer.shared.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         var index = 0
         var vertex = 0
@@ -71,7 +71,7 @@ public class TextPrimitive : Primitive {
             indices[index+5] = gi4
             index += 6
         }
-        let indexBuffer = RenderManager.sharedInstance.createIndexBuffer("Text IB", elements: indices)
+        let indexBuffer = Renderer.shared.createIndexBuffer("Text IB", elements: indices)
         submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture))
     }
     

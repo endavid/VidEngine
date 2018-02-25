@@ -50,10 +50,10 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
         
-        let pipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library)
-        let textPipelineStateDescriptor = RenderManager.sharedInstance.gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
+        let pipelineStateDescriptor = Renderer.shared.gBuffer.createOITPipelineDescriptor(device: device, library: library)
+        let textPipelineStateDescriptor = Renderer.shared.gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
         
-        let depthDescriptor = RenderManager.sharedInstance.gBuffer.createDepthStencilDescriptor()
+        let depthDescriptor = Renderer.shared.gBuffer.createDepthStencilDescriptor()
         depthDescriptor.isDepthWriteEnabled = false
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
@@ -65,7 +65,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let renderPassDescriptor = RenderManager.sharedInstance.createOITRenderPass(clear: true)
+        let renderPassDescriptor = Renderer.shared.createOITRenderPass(clear: true)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         encoder?.label = "Unlit Transparency Encoder"
         encoder?.pushDebugGroup("Unlit OIT")
@@ -73,7 +73,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder?.setDepthStencilState(depthState)
         encoder?.setFrontFacing(.counterClockwise)
         encoder?.setCullMode(.back)
-        RenderManager.sharedInstance.setGraphicsDataBuffer(encoder!, atIndex: 1)
+        Renderer.shared.setGraphicsDataBuffer(encoder!, atIndex: 1)
         drawPrimitives(primitives, encoder: encoder!)
         encoder?.setRenderPipelineState(textPipelineState)
         drawPrimitives(textPrimitives, encoder: encoder!)
@@ -82,7 +82,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     }
         
     private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {
-        let whiteTexture = RenderManager.sharedInstance.whiteTexture
+        let whiteTexture = Renderer.shared.whiteTexture
         var currentAlbedoTexture : MTLTexture? = nil
         
         for p in prims {
