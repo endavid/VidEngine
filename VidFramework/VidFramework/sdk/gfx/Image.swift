@@ -22,22 +22,22 @@ func createNoiseTexture(device: MTLDevice, width: Int, height: Int) -> MTLTextur
 }
 
 extension UIImage {
-    convenience init?(texture: MTLTexture) {
-        let bitsPerComponent = 8
-        let bitsPerPixel = 32
-        let bytesPerRow = Int(texture.width * 4)
-        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo:CGBitmapInfo = [.byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)]
+    public convenience init?(texture: MTLTexture) {
+        guard let rgbColorSpace = texture.defaultColorSpace else {
+            return nil
+        }
+        let isFloat = texture.bitsPerComponent == 16
+        let bitmapInfo:CGBitmapInfo = [isFloat ? .floatComponents : .byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
         
-        guard let provider = Texture.dataProviderRef(from: texture) else {
+        guard let provider = texture.dataProviderRef() else {
             return nil
         }
         guard let cgim = CGImage(
             width: texture.width,
             height: texture.height,
-            bitsPerComponent: bitsPerComponent,
-            bitsPerPixel: bitsPerPixel,
-            bytesPerRow: bytesPerRow,
+            bitsPerComponent: texture.bitsPerComponent,
+            bitsPerPixel: texture.bitsPerPixel,
+            bytesPerRow: texture.bytesPerRow,
             space: rgbColorSpace,
             bitmapInfo: bitmapInfo,
             provider: provider,

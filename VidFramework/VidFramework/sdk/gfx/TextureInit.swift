@@ -21,9 +21,51 @@ public extension Texture {
             mtlTexture = nil
         }
     }
-    
-    static func dataProviderRef(from texture: MTLTexture) -> CGDataProvider? {
-        let pixelCount: Int = texture.width * texture.height
+}
+
+public extension MTLTexture {
+    var bitsPerComponent: Int {
+        get {
+            switch pixelFormat {
+            case .rgba16Unorm:
+                return 16
+            default:
+                return 8
+            }
+        }
+    }
+    var bitsPerPixel: Int {
+        get {
+            switch pixelFormat {
+            case .rgba16Unorm:
+                return 64
+            default:
+                return 32
+            }
+        }
+    }
+    var bytesPerPixel: Int {
+        get {
+            return bitsPerPixel / 8
+        }
+    }
+    var bytesPerRow: Int {
+        get {
+            return width * bytesPerPixel
+        }
+    }
+    var defaultColorSpace: CGColorSpace? {
+        get {
+            switch pixelFormat {
+            case .rgba16Unorm:
+                return CGColorSpace(name: CGColorSpace.displayP3)
+            default:
+                return CGColorSpaceCreateDeviceRGB()
+            }
+        }
+    }
+    func dataProviderRef() -> CGDataProvider? {
+        let pixelCount = width * height
         var imageBytes = [UInt8](repeating: 0, count: pixelCount * 4)
         return CGDataProvider(data: NSData(bytes: &imageBytes, length: pixelCount * 4 * MemoryLayout<UInt8>.size))
     }

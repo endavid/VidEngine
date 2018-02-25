@@ -15,6 +15,7 @@ class ViewController: VidController {
     var samples: [LinearRGBA] = []
     var updateFn: ((TimeInterval) -> ())?
     var framesTilInit = 0
+    weak var imageView: UIImageView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +62,10 @@ class ViewController: VidController {
         let height = samples.count / width
         let rgba16data = samples.map { return $0.rgba16U }
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
-        Primitive2D.texture = texture.mtlTexture
+        if let mtlTexture = texture.mtlTexture {
+            Primitive2D.texture = mtlTexture
+            //imageView?.image = UIImage(texture: mtlTexture)
+        }
     }
     
     private func initSprites() {
@@ -74,11 +78,16 @@ class ViewController: VidController {
     }
     
     private func initImageView() {
+        let imageView = UIImageView(frame: CGRect())
+        imageView.backgroundColor = .green
+        view.addSubview(imageView)
+        self.imageView = imageView
+    }
+    
+    override func viewDidLayoutSubviews() {
         let s: CGFloat = 120
         let rect = CGRect(x: 0.5 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
-        let imgView = UIView(frame: rect)
-        imgView.backgroundColor = .green
-        view.addSubview(imgView)
+        imageView?.frame = rect
     }
 }
 
