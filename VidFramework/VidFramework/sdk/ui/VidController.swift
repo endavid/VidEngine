@@ -18,8 +18,8 @@ open class VidController: UIViewController, MTKViewDelegate {
     
     var commandQueue: MTLCommandQueue! = nil
     var timer: CADisplayLink! = nil
-    var lastFrameTimestamp: CFTimeInterval = 0.0
-    var elapsedTimeGPU: CFTimeInterval = 0.0
+    var lastFrameTimestamp: TimeInterval = 0.0
+    var elapsedTimeGPU: TimeInterval = 0.0
     let inflightSemaphore = DispatchSemaphore(value: RenderManager.NumSyncBuffers)
     
     // for motion control
