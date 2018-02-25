@@ -51,6 +51,7 @@
 		632D286520398387000562F0 /* VidMetalLib.metallib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 632D286420398387000562F0 /* VidMetalLib.metallib */; };
 		632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2866203984E3000562F0 /* FrameworkBundle.swift */; };
 		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
+		63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBE2042EEF600D046CF /* TextureInit.swift */; };
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
@@ -117,6 +118,7 @@
 		632D2866203984E3000562F0 /* FrameworkBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameworkBundle.swift; sourceTree = "<group>"; };
 		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
 		63711CBA2041BF8800D046CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		63711CBE2042EEF600D046CF /* TextureInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureInit.swift; sourceTree = "<group>"; };
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
@@ -234,20 +236,21 @@
 		632D27F4203896C7000562F0 /* gfx */ = {
 			isa = PBXGroup;
 			children = (
-				632D27F5203896C7000562F0 /* Scene.swift */,
-				632D27F6203896C7000562F0 /* GBuffer.swift */,
-				632D27F7203896C7000562F0 /* plugins */,
+				632D2809203896C7000562F0 /* Camera.swift */,
+				632D280B203896C7000562F0 /* Color.swift */,
 				632D2801203896C7000562F0 /* FontAtlas.swift */,
-				632D2802203896C7000562F0 /* Renderer.swift */,
+				632D2805203896C7000562F0 /* FullScreenQuad.swift */,
+				632D27F6203896C7000562F0 /* GBuffer.swift */,
+				632D2806203896C7000562F0 /* GfxData.swift */,
 				632D2803203896C7000562F0 /* Image.swift */,
 				632D2804203896C7000562F0 /* LightSource.swift */,
-				632D2805203896C7000562F0 /* FullScreenQuad.swift */,
-				632D2806203896C7000562F0 /* GfxData.swift */,
-				632D2807203896C7000562F0 /* ModelPrimitive.swift */,
 				632D2808203896C7000562F0 /* Material.swift */,
-				632D2809203896C7000562F0 /* Camera.swift */,
+				632D2807203896C7000562F0 /* ModelPrimitive.swift */,
+				632D2802203896C7000562F0 /* Renderer.swift */,
+				632D27F5203896C7000562F0 /* Scene.swift */,
 				632D280A203896C7000562F0 /* Texture.swift */,
-				632D280B203896C7000562F0 /* Color.swift */,
+				63711CBE2042EEF600D046CF /* TextureInit.swift */,
+				632D27F7203896C7000562F0 /* plugins */,
 			);
 			path = gfx;
 			sourceTree = "<group>";
@@ -255,16 +258,16 @@
 		632D27F7203896C7000562F0 /* plugins */ = {
 			isa = PBXGroup;
 			children = (
-				632D27F8203896C7000562F0 /* GraphicPlugin.swift */,
-				632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */,
+				639D0705203B774F00F9905D /* ComputePlugin.swift */,
 				632D27FA203896C7000562F0 /* DeferredLightingPlugin.swift */,
-				632D27FB203896C7000562F0 /* PrimitivePlugin.swift */,
-				632D27FC203896C7000562F0 /* RainPlugin.swift */,
+				632D2800203896C7000562F0 /* DeferredShadingPlugin.swift */,
+				632D27F8203896C7000562F0 /* GraphicPlugin.swift */,
 				632D27FD203896C7000562F0 /* PostEffectPlugin.swift */,
 				632D27FE203896C7000562F0 /* Primitive2DPlugin.swift */,
+				632D27FB203896C7000562F0 /* PrimitivePlugin.swift */,
+				632D27FC203896C7000562F0 /* RainPlugin.swift */,
+				632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */,
 				632D27FF203896C7000562F0 /* UnlitTransparencyPlugin.swift */,
-				632D2800203896C7000562F0 /* DeferredShadingPlugin.swift */,
-				639D0705203B774F00F9905D /* ComputePlugin.swift */,
 			);
 			path = plugins;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */,
 				639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */,
 				639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */,
+				63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */,
 				632D2827203896C7000562F0 /* DeferredShadingPlugin.swift in Sources */,
 				632D282C203896C7000562F0 /* FullScreenQuad.swift in Sources */,
 				632D2814203896C7000562F0 /* Spherical.swift in Sources */,

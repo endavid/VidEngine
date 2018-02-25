@@ -37,6 +37,10 @@ public struct Texture {
     public static let maxSize : Int = 8192
     public let mtlTexture: MTLTexture?
     public let id: String
+    public init(id: String, mtlTexture: MTLTexture) {
+        self.id = id
+        self.mtlTexture = mtlTexture
+    }
 }
 
 public struct TextureLoadOptions {

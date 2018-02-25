@@ -50,11 +50,20 @@ extension UIColor {
 /// A 3-channel color with an alpha channel
 public protocol ColorWithAlpha {
     var raw: float4 { get }
+    var rgba16U: UInt64 { get }
 }
 
 // linear RGB with alpha
 public struct LinearRGBA: ColorWithAlpha {
     public let raw: float4
+    
+    static func toUInt64U(_ rgba: float4) -> UInt64 {
+        let r = UInt64((Float(0xFFFF) * rgba.x).rounded())
+        let g = UInt64((Float(0xFFFF) * rgba.y).rounded())
+        let b = UInt64((Float(0xFFFF) * rgba.z).rounded())
+        let a = UInt64((Float(0xFFFF) * rgba.w).rounded())
+        return (r << 48 | g << 32 | b << 16 | a)
+    }
     
     public var r : Float {
         get {
@@ -79,6 +88,11 @@ public struct LinearRGBA: ColorWithAlpha {
     public var rgb: float3 {
         get {
             return float3(r, g, b)
+        }
+    }
+    public var rgba16U: UInt64 {
+        get {
+            return LinearRGBA.toUInt64U(raw)
         }
     }
     
@@ -133,7 +147,11 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return raw.w
         }
     }
-    
+    public var rgba16U: UInt64 {
+        get {
+            return LinearRGBA.toUInt64U(raw)
+        }
+    }
     public init(r: Float, g: Float, b: Float, a: Float) {
         raw = float4(r, g, b, a)
     }

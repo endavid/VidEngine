@@ -14,7 +14,7 @@ import simd
 
 open class VidController: UIViewController, MTKViewDelegate {
     
-    var device: MTLDevice! = nil
+    public var device: MTLDevice! = nil
     
     var commandQueue: MTLCommandQueue! = nil
     var timer: CADisplayLink! = nil
