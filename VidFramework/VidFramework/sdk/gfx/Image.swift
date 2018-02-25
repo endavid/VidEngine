@@ -21,3 +21,33 @@ func createNoiseTexture(device: MTLDevice, width: Int, height: Int) -> MTLTextur
     return texture!
 }
 
+extension UIImage {
+    convenience init?(texture: MTLTexture) {
+        let bitsPerComponent = 8
+        let bitsPerPixel = 32
+        let bytesPerRow = Int(texture.width * 4)
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo:CGBitmapInfo = [.byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)]
+        
+        guard let provider = Texture.dataProviderRef(from: texture) else {
+            return nil
+        }
+        guard let cgim = CGImage(
+            width: texture.width,
+            height: texture.height,
+            bitsPerComponent: bitsPerComponent,
+            bitsPerPixel: bitsPerPixel,
+            bytesPerRow: bytesPerRow,
+            space: rgbColorSpace,
+            bitmapInfo: bitmapInfo,
+            provider: provider,
+            decode: nil,
+            shouldInterpolate: false,
+            intent: .defaultIntent
+            )
+        else {
+            return nil
+        }
+        self.init(cgImage: cgim)
+    }
+}

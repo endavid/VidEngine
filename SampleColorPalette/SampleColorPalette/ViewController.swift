@@ -23,6 +23,7 @@ class ViewController: VidController {
         // bits = 7 -> 1039 * 602 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
         updateFn = self.updateSamples
+        initImageView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,6 +71,14 @@ class ViewController: VidController {
         sprite.width = 320
         sprite.height = 320
         sprite.queue()
+    }
+    
+    private func initImageView() {
+        let s: CGFloat = 120
+        let rect = CGRect(x: 0.5 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
+        let imgView = UIView(frame: rect)
+        imgView.backgroundColor = .green
+        view.addSubview(imgView)
     }
 }
 

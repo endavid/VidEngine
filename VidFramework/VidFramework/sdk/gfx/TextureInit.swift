@@ -21,4 +21,10 @@ public extension Texture {
             mtlTexture = nil
         }
     }
+    
+    static func dataProviderRef(from texture: MTLTexture) -> CGDataProvider? {
+        let pixelCount: Int = texture.width * texture.height
+        var imageBytes = [UInt8](repeating: 0, count: pixelCount * 4)
+        return CGDataProvider(data: NSData(bytes: &imageBytes, length: pixelCount * 4 * MemoryLayout<UInt8>.size))
+    }
 }
