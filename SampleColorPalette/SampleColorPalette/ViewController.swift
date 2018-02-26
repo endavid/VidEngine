@@ -64,7 +64,7 @@ class ViewController: VidController {
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
         if let mtlTexture = texture.mtlTexture {
             Primitive2D.texture = mtlTexture
-            //imageView?.image = UIImage(texture: mtlTexture)
+            imageView?.image = UIImage(texture: mtlTexture)
         }
     }
     
