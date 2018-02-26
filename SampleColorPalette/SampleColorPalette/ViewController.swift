@@ -85,7 +85,7 @@ class ViewController: VidController {
     }
     
     override func viewDidLayoutSubviews() {
-        let s: CGFloat = 120
+        let s: CGFloat = 240
         let rect = CGRect(x: 0.5 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
         imageView?.frame = rect
     }

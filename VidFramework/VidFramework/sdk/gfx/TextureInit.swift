@@ -66,7 +66,9 @@ public extension MTLTexture {
     }
     func dataProviderRef() -> CGDataProvider? {
         let pixelCount = width * height
-        var imageBytes = [UInt8](repeating: 0, count: pixelCount * 4)
-        return CGDataProvider(data: NSData(bytes: &imageBytes, length: pixelCount * 4 * MemoryLayout<UInt8>.size))
+        var imageBytes = [UInt8](repeating: 0, count: pixelCount * bytesPerPixel)
+        let region = MTLRegionMake2D(0, 0, width, height)
+        getBytes(&imageBytes, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
+        return CGDataProvider(data: NSData(bytes: &imageBytes, length: pixelCount * bytesPerPixel * MemoryLayout<UInt8>.size))
     }
 }
