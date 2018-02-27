@@ -62,7 +62,8 @@ public struct LinearRGBA: ColorWithAlpha {
         let g = UInt64((Float(0xFFFF) * rgba.y).rounded())
         let b = UInt64((Float(0xFFFF) * rgba.z).rounded())
         let a = UInt64((Float(0xFFFF) * rgba.w).rounded())
-        return (r << 48 | g << 32 | b << 16 | a)
+        // the order for a rgba16u texture is ABGR
+        return (a << 48 | b << 32 | g << 16 | r)
     }
     
     public var r : Float {

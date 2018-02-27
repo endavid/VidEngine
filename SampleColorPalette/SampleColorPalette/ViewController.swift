@@ -61,6 +61,9 @@ class ViewController: VidController {
         let width = 1039
         let height = samples.count / width
         let rgba16data = samples.map { return $0.rgba16U }
+        // red = 0xFFFF00000000FFFF, magenta = 0xFFFFFFFF0000FFFF
+        // transparent magenta = 0x0000FFFF0000FFFF -> ABGR
+        //let rgba16data = [UInt64](repeating: 0xFFFF00000000FFFF, count: samples.count)
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
         if let mtlTexture = texture.mtlTexture {
             Primitive2D.texture = mtlTexture
@@ -79,7 +82,7 @@ class ViewController: VidController {
     
     private func initImageView() {
         let imageView = UIImageView(frame: CGRect())
-        imageView.backgroundColor = .green
+        imageView.backgroundColor = .clear
         view.addSubview(imageView)
         self.imageView = imageView
     }

@@ -26,7 +26,8 @@ extension UIImage {
         guard let rgbColorSpace = texture.defaultColorSpace else {
             return nil
         }
-        let bitmapInfo:CGBitmapInfo = [CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
+        let isFloat = texture.bitsPerComponent == 16
+        let bitmapInfo:CGBitmapInfo = [isFloat ? .byteOrder16Little : .byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
         
         guard let provider = texture.dataProviderRef() else {
             return nil
