@@ -11,6 +11,9 @@ import MetalKit
 
 class GraphicPlugin {
     
+    init() {
+    }
+    
     init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
     }
     

@@ -10,12 +10,19 @@
 import MetalKit
 
 public extension Texture {
-    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64]) {
+    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64], usage: MTLTextureUsage = [.shaderRead]) {
+        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba16Unorm, data: data, bytesPerPixel: 8, usage: usage)
+    }
+    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt32], usage: MTLTextureUsage = [.shaderRead]) {
+        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba8Unorm, data: data, bytesPerPixel: 4, usage: usage)
+    }
+    init(device: MTLDevice, id: String, width: Int, height: Int, pixelFormat: MTLPixelFormat, data: UnsafeRawPointer, bytesPerPixel: Int, usage: MTLTextureUsage) {
         self.id = id
-        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Unorm, width: width, height: height, mipmapped: false)
+        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
+        texDescriptor.usage = usage
         if let texture = device.makeTexture(descriptor: texDescriptor) {
             let region = MTLRegionMake2D(0, 0, width, height)
-            texture.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 8 * width)
+            texture.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: bytesPerPixel * width)
             mtlTexture = texture
         } else {
             mtlTexture = nil

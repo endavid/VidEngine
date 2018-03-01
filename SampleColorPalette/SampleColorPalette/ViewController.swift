@@ -15,8 +15,10 @@ class ViewController: VidController {
     var samples: [LinearRGBA] = []
     var updateFn: ((TimeInterval) -> ())?
     var framesTilInit = 0
-    weak var imageView: UIImageView?
-    
+    weak var imageViewS3: UIImageView?
+    weak var imageViewSRGB: UIImageView?
+    var filterChain: FilterChain?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         initSprites()
@@ -24,7 +26,7 @@ class ViewController: VidController {
         // bits = 7 -> 1039 * 602 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
         updateFn = self.updateSamples
-        initImageView()
+        initImageViews()
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,6 +36,12 @@ class ViewController: VidController {
     
     override func update(_ elapsed: TimeInterval) {
         updateFn?(elapsed)
+        if filterChain?.isCompleted == true {
+            if let mtlTexture = filterChain?.chain.last?.output {
+                imageViewSRGB?.image = UIImage(texture: mtlTexture)
+            }
+            filterChain = nil
+        }
     }
     
     private func updateSamples(_ elapsed: TimeInterval) {
@@ -67,7 +75,8 @@ class ViewController: VidController {
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
         if let mtlTexture = texture.mtlTexture {
             Primitive2D.texture = mtlTexture
-            imageView?.image = UIImage(texture: mtlTexture)
+            imageViewS3?.image = UIImage(texture: mtlTexture)
+            initTextureFilter(input: mtlTexture)
         }
     }
     
@@ -79,18 +88,37 @@ class ViewController: VidController {
         sprite.height = 320
         sprite.queue()
     }
-    
-    private func initImageView() {
+
+    private func createImageView() -> UIImageView {
         let imageView = UIImageView(frame: CGRect())
         imageView.backgroundColor = .clear
         view.addSubview(imageView)
-        self.imageView = imageView
+        return imageView
+    }
+    
+    private func initImageViews() {
+        self.imageViewS3 = createImageView()
+        self.imageViewSRGB = createImageView()
     }
     
     override func viewDidLayoutSubviews() {
-        let s: CGFloat = 240
-        let rect = CGRect(x: 0.5 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
-        imageView?.frame = rect
+        let s: CGFloat = 180
+        imageViewS3?.frame = CGRect(x: 0.25 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
+        imageViewSRGB?.frame = CGRect(x: 0.75 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
+    }
+    
+    private func initTextureFilter(input: MTLTexture) {
+        let output = Texture(device: device, id: "sRGB", width: input.width, height: input.height, data: [UInt32].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
+        guard let mtlTexture = output.mtlTexture else {
+            return
+        }
+        guard let filter = TextureFilter(id: "toSrgb", input: input, output: mtlTexture, fragmentFunction: "passThroughTexturedFragment") else {
+            return
+        }
+        let chain = FilterChain()
+        chain.chain.append(filter)
+        chain.queue()
+        filterChain = chain
     }
 }
 

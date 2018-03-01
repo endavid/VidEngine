@@ -91,28 +91,38 @@ public class Renderer {
         self.initGraphicPlugins(view)
     }
 
-    fileprivate func initGraphicPlugins(_ view: MTKView) {
+    func makeVidLibrary() -> MTLLibrary? {
         let metallib = "VidMetalLib"
         do {
             let bundle = try FrameworkBundle.mainBundle()
             guard let libfile = bundle.path(forResource: metallib, ofType: "metallib") else {
                 NSLog("Missing shader files: \(metallib).metallib")
-                return
+                return nil
             }
             let library = try device.makeLibrary(filepath: libfile)
-            // order is important!
-            plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-            plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-            plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
-            plugins.append(PostEffectPlugin(device: device, library: library, view: view))
-            plugins.append(RainPlugin(device: device, library: library, view: view))
-            plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
+            return library
         } catch FrameworkError.missing(let what) {
             NSLog("No such bundle: \(what)")
+            return nil
         } catch {
             NSLog("makeLibrary failed for \(metallib).metallib")
+            return nil
         }
+    }
+    
+    fileprivate func initGraphicPlugins(_ view: MTKView) {
+        guard let library = makeVidLibrary() else {
+            return
+        }
+        // order is important!
+        plugins.append(FilterPlugin())
+        plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(PostEffectPlugin(device: device, library: library, view: view))
+        plugins.append(RainPlugin(device: device, library: library, view: view))
+        plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
     }
     
     func updateBuffers() {
