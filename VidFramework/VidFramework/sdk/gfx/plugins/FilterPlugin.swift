@@ -36,6 +36,7 @@ class FilterPlugin: GraphicPlugin {
                 encoder.label = filter.id
                 encoder.pushDebugGroup(filter.id)
                 encoder.setRenderPipelineState(filter.renderPipelineState)
+                encoder.setFragmentTexture(filter.input, index: 0)
                 Renderer.shared.fullScreenQuad.draw(encoder: encoder)
                 encoder.popDebugGroup()
                 encoder.endEncoding()
