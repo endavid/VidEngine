@@ -29,6 +29,9 @@ class FilterPlugin: GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         for filterChain in filterChains {
             for filter in filterChain.chain {
+                if filter.input == nil || filter.output == nil {
+                    continue
+                }
                 let descriptor = filter.createRenderPassDescriptor()
                 guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else {
                     continue

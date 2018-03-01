@@ -108,13 +108,33 @@ class ViewController: VidController {
     }
     
     private func initTextureFilter(input: MTLTexture) {
+        guard let library = device.makeDefaultLibrary() else {
+            NSLog("Failed to create default Metal library")
+            return
+        }
+        guard let vfn = library.makeFunction(name: "passThrough2DVertex") else {
+            NSLog("Failed to create vertex function")
+            return
+        }
+        guard let ffn = library.makeFunction(name: "passThroughTexturedFragment") else {
+            NSLog("Failed to create fragment function")
+            return
+        }
         let output = Texture(device: device, id: "sRGB", width: input.width, height: input.height, data: [UInt32].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
         guard let mtlTexture = output.mtlTexture else {
             return
         }
-        guard let filter = TextureFilter(id: "toSrgb", input: input, output: mtlTexture, fragmentFunction: "passThroughTexturedFragment") else {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.vertexFunction = vfn
+        descriptor.fragmentFunction = ffn
+        descriptor.colorAttachments[0].pixelFormat = mtlTexture.pixelFormat
+        descriptor.sampleCount = mtlTexture.sampleCount
+        guard let filter = TextureFilter(id: "toSrgb", device: device, descriptor: descriptor) else {
+            NSLog("Failed to create TextureFilter")
             return
         }
+        filter.input = input
+        filter.output = mtlTexture
         let chain = FilterChain()
         chain.chain.append(filter)
         chain.queue()
