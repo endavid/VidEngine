@@ -40,6 +40,9 @@ class FilterPlugin: GraphicPlugin {
                 encoder.pushDebugGroup(filter.id)
                 encoder.setRenderPipelineState(filter.renderPipelineState)
                 encoder.setFragmentTexture(filter.input, index: 0)
+                if let buffer = filter.buffer {
+                    encoder.setFragmentBuffer(buffer, offset: 0, index: 0)
+                }
                 Renderer.shared.fullScreenQuad.draw(encoder: encoder)
                 encoder.popDebugGroup()
                 encoder.endEncoding()

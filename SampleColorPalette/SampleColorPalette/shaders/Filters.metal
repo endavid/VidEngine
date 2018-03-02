@@ -16,8 +16,13 @@ struct VertexInOut {
     float2  uv;
 };
 
-vertex VertexInOut passThrough2DVertex(uint vid [[ vertex_id ]],
-                                       constant packed_float4* vdata [[ buffer(0) ]])
+struct Uniforms {
+    float4x4 colorTransform;
+};
+
+vertex VertexInOut passThrough2DVertex(
+    uint vid [[ vertex_id ]],
+   constant packed_float4* vdata [[ buffer(0) ]])
 {
     VertexInOut outVertex;
     float4 xyuv = vdata[vid];
@@ -27,10 +32,12 @@ vertex VertexInOut passThrough2DVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-fragment half4 passThroughTexturedFragment(VertexInOut inFrag [[stage_in]],
-                                           texture2d<float> tex [[ texture(0) ]])
+fragment half4 passColorTransformFragment(
+    VertexInOut inFrag [[stage_in]],
+    texture2d<float> tex [[ texture(0) ]],
+    constant Uniforms& uniforms [[ buffer(0) ]])
 {
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
-    float4 out = texColor * inFrag.color;
+    float4 out = uniforms.colorTransform * texColor * inFrag.color;
     return half4(out);
 }

@@ -116,8 +116,12 @@ class ViewController: VidController {
             NSLog("Failed to create vertex function")
             return
         }
-        guard let ffn = library.makeFunction(name: "passThroughTexturedFragment") else {
+        guard let ffn = library.makeFunction(name: "passColorTransformFragment") else {
             NSLog("Failed to create fragment function")
+            return
+        }
+        guard let buffer = device.makeBuffer(length: MemoryLayout<float4x4>.size, options: []) else {
+            NSLog("Failed to create MTLBuffer")
             return
         }
         let output = Texture(device: device, id: "sRGB", width: input.width, height: input.height, data: [UInt32].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
@@ -133,8 +137,21 @@ class ViewController: VidController {
             NSLog("Failed to create TextureFilter")
             return
         }
+        guard let m = sampler?.p3ToSrgb else {
+            NSLog("Missing sampler")
+            return
+        }
+        let colorTransform = float4x4([
+            float4(m[0].x, m[0].y, m[0].z, 0),
+            float4(m[1].x, m[1].y, m[1].z, 0),
+            float4(m[2].x, m[2].y, m[2].z, 0),
+            float4(0, 0, 0, 1),
+        ])
+        let vb = buffer.contents().assumingMemoryBound(to: float4x4.self)
+        vb[0] = colorTransform
         filter.input = input
         filter.output = mtlTexture
+        filter.buffer = buffer
         let chain = FilterChain()
         chain.chain.append(filter)
         chain.queue()

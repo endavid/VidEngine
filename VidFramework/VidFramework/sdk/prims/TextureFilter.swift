@@ -13,6 +13,7 @@ public class TextureFilter {
     public var id: String
     public var input: MTLTexture?
     public var output: MTLTexture?
+    public var buffer: MTLBuffer?
     let renderPipelineState: MTLRenderPipelineState
     
     
