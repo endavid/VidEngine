@@ -20,6 +20,8 @@ struct Uniforms {
     float4x4 colorTransform;
 };
 
+float4 linearRgbToNormalizedSrgb(float4 color);
+
 vertex VertexInOut passThrough2DVertex(
     uint vid [[ vertex_id ]],
    constant packed_float4* vdata [[ buffer(0) ]])
@@ -39,5 +41,13 @@ fragment half4 passColorTransformFragment(
 {
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
     float4 out = uniforms.colorTransform * texColor * inFrag.color;
+    out = linearRgbToNormalizedSrgb(out);
     return half4(out);
+}
+
+
+float4 linearRgbToNormalizedSrgb(float4 color) {
+    float4 mask = step(0.0031308, color);
+    float4 srgb = mask * pow(color * 1.055, 1/2.4) - 0.055 + (1-mask) * color * 12.92;
+    return srgb;
 }

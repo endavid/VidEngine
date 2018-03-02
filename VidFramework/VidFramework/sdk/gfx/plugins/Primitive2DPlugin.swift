@@ -160,8 +160,8 @@ class Primitive2DPlugin : GraphicPlugin {
             // @todo set UV from texture atlas
             let u0 : Float = 0
             let u1 : Float = 1
-            let v0 : Float = 0
-            let v1 : Float = 1
+            let v0 : Float = 1
+            let v1 : Float = 0
             vb[4*i+0].position = sprite.position + vertices[0]
             vb[4*i+1].position = sprite.position + vertices[1]
             vb[4*i+2].position = sprite.position + vertices[2]

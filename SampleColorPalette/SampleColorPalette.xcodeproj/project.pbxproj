@@ -16,6 +16,7 @@
 		63711CB82041BEF200D046CF /* VidFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63711CB62041BED800D046CF /* VidFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63711CBD2041C27B00D046CF /* ColorSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBC2041C27B00D046CF /* ColorSampler.swift */; };
 		63711CC4204626AE00D046CF /* Filters.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63711CC3204626AE00D046CF /* Filters.metal */; };
+		63FF6456204A025400E047EC /* iconAbout.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FF6455204A025300E047EC /* iconAbout.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,7 @@
 		63711CB62041BED800D046CF /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63711CBC2041C27B00D046CF /* ColorSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSampler.swift; sourceTree = "<group>"; };
 		63711CC3204626AE00D046CF /* Filters.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Filters.metal; sourceTree = "<group>"; };
+		63FF6455204A025300E047EC /* iconAbout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconAbout.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		63711CA12041BE6C00D046CF /* SampleColorPalette */ = {
 			isa = PBXGroup;
 			children = (
+				63FF6454204A025300E047EC /* Resources */,
 				63711CC22046265300D046CF /* shaders */,
 				63711CA22041BE6C00D046CF /* AppDelegate.swift */,
 				63711CA42041BE6C00D046CF /* ViewController.swift */,
@@ -103,6 +106,14 @@
 				63711CC3204626AE00D046CF /* Filters.metal */,
 			);
 			path = shaders;
+			sourceTree = "<group>";
+		};
+		63FF6454204A025300E047EC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				63FF6455204A025300E047EC /* iconAbout.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,6 +176,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63FF6456204A025400E047EC /* iconAbout.png in Resources */,
 				63711CAD2041BE6C00D046CF /* LaunchScreen.storyboard in Resources */,
 				63711CAA2041BE6C00D046CF /* Assets.xcassets in Resources */,
 				63711CA82041BE6C00D046CF /* Main.storyboard in Resources */,

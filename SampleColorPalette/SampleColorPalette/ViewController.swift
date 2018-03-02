@@ -9,6 +9,7 @@
 import UIKit
 import VidFramework
 import simd
+import MetalKit
 
 class ViewController: VidController {
     var sampler: P3MinusSrgbSampler?
@@ -22,6 +23,7 @@ class ViewController: VidController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initSprites()
+        initTexture()
         camera.setBounds(view.bounds)
         // bits = 7 -> 1039 * 602 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
@@ -89,6 +91,16 @@ class ViewController: VidController {
         sprite.queue()
     }
 
+    private func initTexture() {
+        guard let url = Bundle.main.url(forResource: "iconAbout", withExtension: "png") else {
+            return
+        }
+        let textureLoader = MTKTextureLoader(device: device)
+        textureLoader.newTexture(URL: url, options: nil) { (texture, error) in
+            Primitive2D.texture = texture
+        }
+    }
+    
     private func createImageView() -> UIImageView {
         let imageView = UIImageView(frame: CGRect())
         imageView.backgroundColor = .clear
