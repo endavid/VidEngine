@@ -17,9 +17,9 @@ class ViewController: VidController {
     var samples: [LinearRGBA] = []
     var updateFn: ((TimeInterval) -> ())?
     var framesTilInit = 0
-    weak var imageViewS3: UIImageView?
+    weak var imageViewP3: UIImageView?
     weak var imageViewSRGB: UIImageView?
-    var filterChain: FilterChain?
+    var myFilters: MyFilters?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,11 +39,17 @@ class ViewController: VidController {
     
     override func update(_ elapsed: TimeInterval) {
         updateFn?(elapsed)
-        if filterChain?.isCompleted == true {
-            if let mtlTexture = filterChain?.chain.last?.output {
+        if myFilters?.isCompleted == true {
+            if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output {
                 imageViewSRGB?.image = UIImage(texture: mtlTexture)
             }
-            filterChain = nil
+            if let mtlTexture = myFilters?.p3ToGammaP3.chain.last?.output {
+                if let image = UIImage(texture: mtlTexture) {
+                    imageViewP3?.image = UIImage(texture: mtlTexture)
+                    saveImage(image: image)
+                }
+            }
+            myFilters = nil
         }
     }
     
@@ -78,10 +84,9 @@ class ViewController: VidController {
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
         if let mtlTexture = texture.mtlTexture {
             Primitive2D.texture = mtlTexture
-            initTextureFilter(input: mtlTexture)
+            initMyFilters(input: mtlTexture)
             if let image = UIImage(texture: mtlTexture) {
-                imageViewS3?.image = image
-                saveImage(image: image)
+                imageViewP3?.image = image
             }
         }
     }
@@ -113,46 +118,17 @@ class ViewController: VidController {
     }
     
     private func initImageViews() {
-        self.imageViewS3 = createImageView()
+        self.imageViewP3 = createImageView()
         self.imageViewSRGB = createImageView()
     }
     
     override func viewDidLayoutSubviews() {
         let s: CGFloat = 180
-        imageViewS3?.frame = CGRect(x: 0.25 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
+        imageViewP3?.frame = CGRect(x: 0.25 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
         imageViewSRGB?.frame = CGRect(x: 0.75 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
     }
     
-    private func initTextureFilter(input: MTLTexture) {
-        guard let library = device.makeDefaultLibrary() else {
-            NSLog("Failed to create default Metal library")
-            return
-        }
-        guard let vfn = library.makeFunction(name: "passThrough2DVertex") else {
-            NSLog("Failed to create vertex function")
-            return
-        }
-        guard let ffn = library.makeFunction(name: "passColorTransformFragment") else {
-            NSLog("Failed to create fragment function")
-            return
-        }
-        guard let buffer = device.makeBuffer(length: MemoryLayout<float4x4>.size, options: []) else {
-            NSLog("Failed to create MTLBuffer")
-            return
-        }
-        let output = Texture(device: device, id: "sRGB", width: input.width, height: input.height, data: [UInt32].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
-        guard let mtlTexture = output.mtlTexture else {
-            return
-        }
-        let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.vertexFunction = vfn
-        descriptor.fragmentFunction = ffn
-        descriptor.colorAttachments[0].pixelFormat = mtlTexture.pixelFormat
-        descriptor.sampleCount = mtlTexture.sampleCount
-        guard let filter = TextureFilter(id: "toSrgb", device: device, descriptor: descriptor) else {
-            NSLog("Failed to create TextureFilter")
-            return
-        }
+    private func initMyFilters(input: MTLTexture) {
         guard let m = sampler?.p3ToSrgb else {
             NSLog("Missing sampler")
             return
@@ -162,16 +138,8 @@ class ViewController: VidController {
             float4(m[1].x, m[1].y, m[1].z, 0),
             float4(m[2].x, m[2].y, m[2].z, 0),
             float4(0, 0, 0, 1),
-        ])
-        let vb = buffer.contents().assumingMemoryBound(to: float4x4.self)
-        vb[0] = colorTransform
-        filter.input = input
-        filter.output = mtlTexture
-        filter.buffer = buffer
-        let chain = FilterChain()
-        chain.chain.append(filter)
-        chain.queue()
-        filterChain = chain
+            ])
+        myFilters = MyFilters(device: device, input: input, colorTransform: colorTransform)
     }
     
     func saveImage(image: UIImage) {
