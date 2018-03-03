@@ -9,13 +9,13 @@
 import Metal
 import MetalKit
 
-public class TextureFilter {
+open class TextureFilter {
     public var id: String
-    public var input: MTLTexture?
+    public var inputs: [MTLTexture] = []
     public var output: MTLTexture?
     public var buffer: MTLBuffer?
     let renderPipelineState: MTLRenderPipelineState
-    
+    public var bufferOffset: Int = 0
     
     public convenience init?(id: String, input: MTLTexture, output: MTLTexture, fragmentFunction: String) {
         guard let renderer = Renderer.shared else {
@@ -30,7 +30,7 @@ public class TextureFilter {
         descriptor.colorAttachments[0].pixelFormat = output.pixelFormat
         descriptor.sampleCount = output.sampleCount
         self.init(id: id, device: renderer.device, descriptor: descriptor)
-        self.input = input
+        self.inputs = [input]
         self.output = output
     }
     
@@ -50,5 +50,14 @@ public class TextureFilter {
         renderPass.colorAttachments[0].loadAction = .load
         renderPass.colorAttachments[0].storeAction = .store
         return renderPass
+    }
+    
+    open func postRender() {
+        
+    }
+    
+    open func updateBuffers(_ syncBufferIndex: Int) {
+        let n = buffer?.length ?? 0
+        bufferOffset = (n * syncBufferIndex) / Renderer.NumSyncBuffers
     }
 }

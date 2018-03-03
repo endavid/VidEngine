@@ -65,6 +65,9 @@ func Clamp(_ value: Int, lowest: Int, highest: Int) -> Int {
 func Rand(_ upperBound: UInt32) -> UInt32 {
     return arc4random_uniform(upperBound)
 }
+func Rand(_ upperBound: Int) -> Int {
+    return Int(Rand(UInt32(upperBound)))
+}
 /// Random Float between 0 and 1
 func Randf() -> Float {
     return Float(Rand(10000)) * 0.0001
@@ -91,6 +94,16 @@ public extension Array {
             list.swapAt(i, j)
         }
         return list
+    }
+    public func randomElement() -> Element {
+        let i = Rand(self.count)
+        return self[i]
+    }
+    // https://stackoverflow.com/a/38156873/1765629
+    public func chunked(by chunkSize: Int) -> [[Element]] {
+        return stride(from: 0, to: self.count, by: chunkSize).map {
+            Array(self[$0..<Swift.min($0 + chunkSize, self.count)])
+        }
     }
 }
 

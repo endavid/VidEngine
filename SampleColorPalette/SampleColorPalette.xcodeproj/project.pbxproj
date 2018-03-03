@@ -19,6 +19,8 @@
 		63FF6456204A025400E047EC /* iconAbout.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FF6455204A025300E047EC /* iconAbout.png */; };
 		63FF6458204A250D00E047EC /* MyFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF6457204A250D00E047EC /* MyFilters.swift */; };
 		63FF645A204AB93500E047EC /* FindMinimumFilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */; };
+		63FF645C204AE17500E047EC /* SelfOrganizingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */; };
+		63FF645E204AFE2400E047EC /* DistanceFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF645D204AFE2400E047EC /* DistanceFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +51,8 @@
 		63FF6455204A025300E047EC /* iconAbout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconAbout.png; sourceTree = "<group>"; };
 		63FF6457204A250D00E047EC /* MyFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFilters.swift; sourceTree = "<group>"; };
 		63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindMinimumFilterChain.swift; sourceTree = "<group>"; };
+		63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfOrganizingMap.swift; sourceTree = "<group>"; };
+		63FF645D204AFE2400E047EC /* DistanceFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceFilter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +98,8 @@
 				63711CBC2041C27B00D046CF /* ColorSampler.swift */,
 				63FF6457204A250D00E047EC /* MyFilters.swift */,
 				63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */,
+				63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */,
+				63FF645D204AFE2400E047EC /* DistanceFilter.swift */,
 			);
 			path = SampleColorPalette;
 			sourceTree = "<group>";
@@ -196,7 +202,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63FF645E204AFE2400E047EC /* DistanceFilter.swift in Sources */,
 				63711CA52041BE6C00D046CF /* ViewController.swift in Sources */,
+				63FF645C204AE17500E047EC /* SelfOrganizingMap.swift in Sources */,
 				63FF645A204AB93500E047EC /* FindMinimumFilterChain.swift in Sources */,
 				63711CBD2041C27B00D046CF /* ColorSampler.swift in Sources */,
 				63711CA32041BE6C00D046CF /* AppDelegate.swift in Sources */,

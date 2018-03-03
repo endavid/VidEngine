@@ -249,13 +249,15 @@ public class Renderer {
         return texture!
     }
     
-    public static func createBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
-        guard let buffer = device.makeBuffer(length: MemoryLayout<T>.size, options: []) else {
+    public static func createSyncBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
+        guard let buffer = device.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<T>.size, options: []) else {
             NSLog("Failed to create MTLBuffer")
             return nil
         }
         let vb = buffer.contents().assumingMemoryBound(to: T.self)
-        vb[0] = data
+        for i in 0..<NumSyncBuffers {
+            vb[i] = data
+        }
         return buffer
     }
 }

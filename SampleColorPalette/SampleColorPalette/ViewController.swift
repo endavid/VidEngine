@@ -20,6 +20,7 @@ class ViewController: VidController {
     weak var imageViewP3: UIImageView?
     weak var imageViewSRGB: UIImageView?
     var myFilters: MyFilters?
+    var som: SelfOrganizingMap?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,14 @@ class ViewController: VidController {
     
     override func update(_ elapsed: TimeInterval) {
         updateFn?(elapsed)
+        if som?.isCompleted == true {
+            if let output = som?.output {
+                initMyFilters(input: output)
+                if let image = UIImage(texture: output) {
+                    imageViewP3?.image = image
+                }
+            }
+        }
         if myFilters?.isCompleted == true {
             if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output {
                 imageViewSRGB?.image = UIImage(texture: mtlTexture)
@@ -49,7 +58,6 @@ class ViewController: VidController {
                     //saveImage(image: image)
                 }
             }
-            Primitive2D.texture = myFilters?.findMinimum.output
             myFilters = nil
         }
     }
@@ -76,20 +84,13 @@ class ViewController: VidController {
         let ratio = (100 * Float(samples.count) / Float(sampler?.volume ?? 0)).rounded(toPlaces: 4)
         print("#samples: \(samples.count); \(ratio)% of the P3 space not covered by sRGB")
         print("-- Computed in \(framesTilInit) frames")
-        let width = 1039
-        let height = samples.count / width
-        let rgba16data = samples.map { return $0.rgba16U }
-        // red = 0xFFFF00000000FFFF, magenta = 0xFFFFFFFF0000FFFF
-        // transparent magenta = 0x0000FFFF0000FFFF -> ABGR
-        //let rgba16data = [UInt64](repeating: 0xFFFF00000000FFFF, count: samples.count)
-        let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
-        if let mtlTexture = texture.mtlTexture {
-            Primitive2D.texture = mtlTexture
-            initMyFilters(input: mtlTexture)
-            if let image = UIImage(texture: mtlTexture) {
-                imageViewP3?.image = image
-            }
+        guard let library = device.makeDefaultLibrary() else {
+            NSLog("Failed to create default Metal library")
+            return
         }
+        som = SelfOrganizingMap(device: device, library: library, width: 1024, height: 1024, numIterations: 500, trainingData: samples)
+        Primitive2D.texture = som?.output
+        som?.queue()
     }
     
     private func initSprites() {

@@ -28,7 +28,7 @@ struct FilterData {
 struct SomData {
     float learningRate;
     float neighborhoodRadius;
-    float2 bmu;
+    float2 dummy;
     float4 target;
 };
 
@@ -96,9 +96,11 @@ fragment half4 passFindMinimum(
 fragment half4 passSelfOrganizingMap(
      VertexInOut inFrag [[stage_in]],
      texture2d<float> tex [[ texture(0) ]],
+     texture2d<float> minTex [[ texture(1) ]],
      constant SomData& somData [[ buffer(0) ]])
 {
-    float4 out = somUpdateNeuron(tex, inFrag.uv, somData.learningRate, somData.neighborhoodRadius, somData.bmu, somData.target);
+    float2 bmu = tex.sample(pointSampler, float2(0.5, 0.5)).yz;
+    float4 out = somUpdateNeuron(tex, inFrag.uv, somData.learningRate, somData.neighborhoodRadius, bmu, somData.target);
     return half4(out);
 }
 

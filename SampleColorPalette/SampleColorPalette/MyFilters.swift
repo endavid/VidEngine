@@ -13,10 +13,9 @@ import simd
 class MyFilters {
     var p3TosRgb: FilterChain
     var p3ToGammaP3: FilterChain
-    var findMinimum: FindMinimumFilterChain
     var isCompleted: Bool {
         get {
-            return p3ToGammaP3.isCompleted && p3TosRgb.isCompleted && findMinimum.isCompleted
+            return p3ToGammaP3.isCompleted && p3TosRgb.isCompleted
         }
     }
     
@@ -25,10 +24,6 @@ class MyFilters {
             NSLog("Failed to create default Metal library")
             return nil
         }
-        guard let findMin = FindMinimumFilterChain(device: device, library: library, input: input) else {
-            return nil
-        }
-        findMinimum = findMin
         guard let vfn = library.makeFunction(name: "passThrough2DVertex") else {
             NSLog("Failed to create vertex function")
             return nil
@@ -63,17 +58,16 @@ class MyFilters {
             NSLog("Failed to create TextureFilter")
             return nil
         }
-        filterSrgb.input = input
+        filterSrgb.inputs = [input]
         filterSrgb.output = mtlSrgb
-        filterSrgb.buffer = Renderer.createBuffer(from: colorTransform, device: device)
-        filterP3.input = input
+        filterSrgb.buffer = Renderer.createSyncBuffer(from: colorTransform, device: device)
+        filterP3.inputs = [input]
         filterP3.output = mtlP3
-        filterP3.buffer = Renderer.createBuffer(from: float4x4.identity, device: device)
+        filterP3.buffer = Renderer.createSyncBuffer(from: float4x4.identity, device: device)
         p3TosRgb = FilterChain()
         p3TosRgb.chain.append(filterSrgb)
         p3ToGammaP3 = FilterChain()
         p3ToGammaP3.chain.append(filterP3)
-        findMinimum.queue()
         p3TosRgb.queue()
         p3ToGammaP3.queue()
     }

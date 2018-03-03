@@ -11,7 +11,6 @@ import MetalKit
 
 class FilterPlugin: GraphicPlugin {
     fileprivate var filterChains: [FilterChain] = []
-    fileprivate var completionList: [FilterChain] = []
     
     func queue(_ filterChain: FilterChain) {
         let alreadyQueued = filterChains.contains { $0 === filterChain }
@@ -29,7 +28,7 @@ class FilterPlugin: GraphicPlugin {
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         for filterChain in filterChains {
             for filter in filterChain.chain {
-                if filter.input == nil || filter.output == nil {
+                if filter.output == nil {
                     continue
                 }
                 let descriptor = filter.createRenderPassDescriptor()
@@ -39,24 +38,29 @@ class FilterPlugin: GraphicPlugin {
                 encoder.label = filter.id
                 encoder.pushDebugGroup(filter.id)
                 encoder.setRenderPipelineState(filter.renderPipelineState)
-                encoder.setFragmentTexture(filter.input, index: 0)
+                for i in 0..<filter.inputs.count {
+                    encoder.setFragmentTexture(filter.inputs[i], index: i)
+                }
                 if let buffer = filter.buffer {
-                    encoder.setFragmentBuffer(buffer, offset: 0, index: 0)
+                    encoder.setFragmentBuffer(buffer, offset: filter.bufferOffset, index: 0)
                 }
                 Renderer.shared.fullScreenQuad.draw(encoder: encoder)
                 encoder.popDebugGroup()
                 encoder.endEncoding()
+                filter.postRender()
             }
-            completionList.append(filterChain)
         }
-        // assuming LoopMode.once for all
-        filterChains.removeAll()
     }
     
     override func updateBuffers(_ syncBufferIndex: Int) {
-        for filterChain in completionList {
-            filterChain.completed = true
+        var i = filterChains.count - 1
+        while i >= 0 {
+            let filterChain = filterChains[i]
+            filterChain.updateBuffers(syncBufferIndex)
+            if filterChain.isCompleted {
+                filterChains.remove(at: i)
+            }
+            i -= 1
         }
-        completionList.removeAll()
     }
 }

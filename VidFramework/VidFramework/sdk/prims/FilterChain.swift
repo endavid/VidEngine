@@ -14,6 +14,8 @@ open class FilterChain {
         case
         /// Apply only once
         once,
+        ///
+        times(Int),
         /// Repeat on every frame
         forever
     }
@@ -28,15 +30,27 @@ open class FilterChain {
     // Only immediateSequential implemented atm
     private var executionMode: ExecutionMode = .immediateSequential
     public var chain: [TextureFilter] = []
-    var completed = false
-    public var isCompleted: Bool {
+    private var _step = 0
+    public var step: Int {
         get {
-            return completed
+            return _step
         }
     }
-    public var input: MTLTexture? {
+    public var isCompleted: Bool {
         get {
-            return chain.first?.input
+            switch loopMode {
+            case .once:
+                return _step >= 1
+            case .times(let n):
+                return _step >= n
+            default:
+                return false
+            }
+        }
+    }
+    public var inputs: [MTLTexture] {
+        get {
+            return chain.first?.inputs ?? []
         }
     }
     public var output: MTLTexture? {
@@ -56,4 +70,17 @@ open class FilterChain {
         let p: FilterPlugin? = Renderer.shared.getPlugin()
         p?.dequeue(self)
     }
+    
+    public func append(_ filterChain: FilterChain) {
+        chain.append(contentsOf: filterChain.chain)
+    }
+    
+    // this gets called when we need to update the buffers used by the GPU
+    open func updateBuffers(_ syncBufferIndex: Int) {
+        _step += 1
+        for f in chain {
+            f.updateBuffers(syncBufferIndex)
+        }
+    }
+
 }
