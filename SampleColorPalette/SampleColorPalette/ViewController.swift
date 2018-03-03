@@ -10,6 +10,7 @@ import UIKit
 import VidFramework
 import simd
 import MetalKit
+import Photos
 
 class ViewController: VidController {
     var sampler: P3MinusSrgbSampler?
@@ -77,8 +78,11 @@ class ViewController: VidController {
         let texture = Texture(device: device, id: "P3-sRGB", width: width, height: height, data: rgba16data)
         if let mtlTexture = texture.mtlTexture {
             Primitive2D.texture = mtlTexture
-            imageViewS3?.image = UIImage(texture: mtlTexture)
             initTextureFilter(input: mtlTexture)
+            if let image = UIImage(texture: mtlTexture) {
+                imageViewS3?.image = image
+                saveImage(image: image)
+            }
         }
     }
     
@@ -168,6 +172,17 @@ class ViewController: VidController {
         chain.chain.append(filter)
         chain.queue()
         filterChain = chain
+    }
+    
+    func saveImage(image: UIImage) {
+        // Perform changes to the library
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.creationRequestForAsset(from: image)
+        }, completionHandler: { success, error in
+            if let error = error {
+                NSLog(error.localizedDescription)
+            }
+        })
     }
 }
 
