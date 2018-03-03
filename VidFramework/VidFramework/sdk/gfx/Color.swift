@@ -148,6 +148,11 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return raw.w
         }
     }
+    public var rgb: float3 {
+        get {
+            return float3(r, g, b)
+        }
+    }
     public var rgba16U: UInt64 {
         get {
             return LinearRGBA.toUInt64U(raw)
@@ -155,6 +160,9 @@ public struct NormalizedSRGBA: ColorWithAlpha {
     }
     public init(r: Float, g: Float, b: Float, a: Float) {
         raw = float4(r, g, b, a)
+    }
+    public init(rgb: float3, a: Float = 1.0) {
+        raw = float4(rgb.x, rgb.y, rgb.z, a)
     }
     
     public init(rgba: LinearRGBA) {

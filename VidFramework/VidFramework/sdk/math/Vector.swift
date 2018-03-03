@@ -19,7 +19,7 @@ public extension float3 {
     /// similar vectors
     public func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
         let diff = self - v
-        return IsClose(length_squared(diff), 0)
+        return IsClose(length_squared(diff), 0, epsilon: epsilon * epsilon)
     }
     /// Rounds to decimal places value
     public func rounded(toPlaces places:Int) -> float3 {

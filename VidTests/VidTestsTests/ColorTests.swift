@@ -12,6 +12,17 @@ import VidFramework
 @testable import VidTests
 
 class ColorTests: XCTestCase {
+    
+    func testInverseGamma() {
+        let srgb = NormalizedSRGBA(r: 0.2, g: 0.3, b: 0.4, a: 1.0)
+        let rgb = LinearRGBA(srgba: srgb)
+        let uiColor = UIColor(red: 0.2, green: 0.3, blue: 0.4, alpha: 1.0)
+        let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB)!
+        let c = uiColor.cgColor.converted(to: linearSpace, intent: .defaultIntent, options: nil)!
+        let v = float3(Float(c.components![0]), Float(c.components![1]), Float(c.components![2]))
+        print("\(v) \(rgb.rgb))")
+        XCTAssert(rgb.rgb.isClose(v))
+    }
 
     func testSpectrum() {
         let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
@@ -67,7 +78,6 @@ class ColorTests: XCTestCase {
     
     func testP3ToSrgb() {
         let m = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
-        print(m)
         let ref = float3x3([
             float3(1.22494, -0.0420569, -0.0196376),
             float3(-0.22494, 1.04206, -0.078636),
@@ -76,5 +86,36 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ref[0].isClose(m[0]))
         XCTAssertTrue(ref[1].isClose(m[1]))
         XCTAssertTrue(ref[2].isClose(m[2]))
+    }
+    
+    func testSrgbToP3Gamma() {
+        // ref. values extracted from Color Sync Utility Calculator
+        let m = RGBColorSpace.dciP3.toRGB * RGBColorSpace.sRGB.toXYZ
+        let red = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(1,0,0)))
+        let green = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(0,1,0)))
+        let blue = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(0,0,1)))
+        print(red.rgb)
+        print(green.rgb)
+        print(blue.rgb)
+        let e: Float = 0.04 // error is kinda big... :(
+        XCTAssertTrue(float3(0.9175, 0.2002, 0.1386).isClose(red.rgb, epsilon: e))
+        XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(green.rgb, epsilon: e))
+        XCTAssertTrue(float3(0, 0, 0.9597).isClose(blue.rgb, epsilon: e))
+    }
+    
+    func testSrgbToP3UsingCGColor() {
+        let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+        let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
+        let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
+        let p3 = CGColorSpace(name: CGColorSpace.displayP3)!
+        let r = red.cgColor.converted(to: p3, intent: .defaultIntent, options: nil)!
+        let g = green.cgColor.converted(to: p3, intent: .defaultIntent, options: nil)!
+        let b = blue.cgColor.converted(to: p3, intent: .defaultIntent, options: nil)!
+        let rP3 = float3(Float(r.components![0]), Float(r.components![1]), Float(r.components![2]))
+        let gP3 = float3(Float(g.components![0]), Float(g.components![1]), Float(g.components![2]))
+        let bP3 = float3(Float(b.components![0]), Float(b.components![1]), Float(b.components![2]))
+        XCTAssertTrue(float3(0.9175, 0.2002, 0.1386).isClose(rP3))
+        XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(gP3))
+        XCTAssertTrue(float3(0, 0, 0.9597).isClose(bP3))
     }
 }
