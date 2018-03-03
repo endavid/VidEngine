@@ -248,4 +248,14 @@ public class Renderer {
         texture?.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
         return texture!
     }
+    
+    public static func createBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
+        guard let buffer = device.makeBuffer(length: MemoryLayout<T>.size, options: []) else {
+            NSLog("Failed to create MTLBuffer")
+            return nil
+        }
+        let vb = buffer.contents().assumingMemoryBound(to: T.self)
+        vb[0] = data
+        return buffer
+    }
 }

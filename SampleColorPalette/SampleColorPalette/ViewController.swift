@@ -45,10 +45,11 @@ class ViewController: VidController {
             }
             if let mtlTexture = myFilters?.p3ToGammaP3.chain.last?.output {
                 if let image = UIImage(texture: mtlTexture) {
-                    imageViewP3?.image = UIImage(texture: mtlTexture)
-                    saveImage(image: image)
+                    imageViewP3?.image = image
+                    //saveImage(image: image)
                 }
             }
+            Primitive2D.texture = myFilters?.findMinimum.output
             myFilters = nil
         }
     }

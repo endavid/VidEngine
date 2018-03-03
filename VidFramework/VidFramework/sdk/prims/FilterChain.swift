@@ -9,7 +9,7 @@
 import Metal
 import MetalKit
 
-public class FilterChain {
+open class FilterChain {
     public enum LoopMode {
         case
         /// Apply only once
@@ -32,6 +32,16 @@ public class FilterChain {
     public var isCompleted: Bool {
         get {
             return completed
+        }
+    }
+    public var input: MTLTexture? {
+        get {
+            return chain.first?.input
+        }
+    }
+    public var output: MTLTexture? {
+        get {
+            return chain.last?.output
         }
     }
     
