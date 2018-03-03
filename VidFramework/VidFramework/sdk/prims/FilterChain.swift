@@ -40,9 +40,9 @@ open class FilterChain {
         get {
             switch loopMode {
             case .once:
-                return _step >= 1
+                return _step > 1
             case .times(let n):
-                return _step >= n
+                return _step > n
             default:
                 return false
             }

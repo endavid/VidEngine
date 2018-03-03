@@ -122,5 +122,5 @@ float4 somUpdateNeuron(texture2d<float> tex, float2 uv, float learningRate, floa
         float influence = exp(-dd / (2.0*rr));
         return somWeightUpdate(tex, uv, learningRate * influence, target);
     }
-    return target;
+    return tex.sample(pointSampler, uv);
 }

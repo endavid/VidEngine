@@ -31,6 +31,7 @@ class DistanceFilter: TextureFilter {
         let distTexDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: input.width, height: input.height, mipmapped: false)
         distTexDescriptor.usage = [.shaderRead, .renderTarget]
         output = device.makeTexture(descriptor: distTexDescriptor)
+        inputs = [input]
         buffer = Renderer.createSyncBuffer(from: target, device: device)
     }
     

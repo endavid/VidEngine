@@ -47,6 +47,7 @@ class ViewController: VidController {
                     imageViewP3?.image = image
                 }
             }
+            som = nil
         }
         if myFilters?.isCompleted == true {
             if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output {
