@@ -76,6 +76,39 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ref[2].isClose(m1[2]))
     }
     
+    func testXYZUsingCGColor() {
+        let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+        let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
+        let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
+        let xyz = CGColorSpace(name: CGColorSpace.genericXYZ)!
+        let r = red.cgColor.converted(to: xyz, intent: .defaultIntent, options: nil)!
+        let g = green.cgColor.converted(to: xyz, intent: .defaultIntent, options: nil)!
+        let b = blue.cgColor.converted(to: xyz, intent: .defaultIntent, options: nil)!
+        let m0 = float3(Float(r.components![0]), Float(r.components![1]), Float(r.components![2]))
+        let m1 = float3(Float(g.components![0]), Float(g.components![1]), Float(g.components![2]))
+        let m2 = float3(Float(b.components![0]), Float(b.components![1]), Float(b.components![2]))
+        // linear sRGB to XYZ
+        // sRGB D65 to XYZ is http://www.brucelindbloom.com
+        // 0.4124564  0.3575761  0.1804375
+        // 0.2126729  0.7151522  0.0721750
+        // 0.0193339  0.1191920  0.9503041
+        // sRGB D50 to XYZ is,
+        //  0.4360747  0.3850649  0.1430804
+        //  0.2225045  0.7168786  0.0606169
+        //  0.0139322  0.0971045  0.7141733
+        // from sRGB Profile.icc
+        let rXYZ = float3(0.436, 0.222, 0.014)
+        let gXYZ = float3(0.385, 0.717, 0.097)
+        let bXYZ = float3(0.143, 0.061, 0.714)
+        XCTAssertTrue(rXYZ.isClose(m0))
+        XCTAssertTrue(gXYZ.isClose(m1))
+        XCTAssertTrue(bXYZ.isClose(m2))
+        let m = RGBColorSpace.sRGB.toXYZ
+        XCTAssertTrue(rXYZ.isClose(m[0]))
+        XCTAssertTrue(gXYZ.isClose(m[1]))
+        XCTAssertTrue(bXYZ.isClose(m[2]))
+    }
+    
     func testP3ToSrgb() {
         let m = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
         let ref = float3x3([
