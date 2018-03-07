@@ -89,7 +89,7 @@ class ViewController: VidController {
             NSLog("Failed to create default Metal library")
             return
         }
-        som = SelfOrganizingMap(device: device, library: library, width: 1024, height: 1024, numIterations: 500, trainingData: samples)
+        som = SelfOrganizingMap(device: device, library: library, width: 64, height: 64, numIterations: 1, trainingData: samples)
         Primitive2D.texture = som?.output
         som?.queue()
     }

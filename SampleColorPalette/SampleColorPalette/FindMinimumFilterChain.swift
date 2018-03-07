@@ -40,12 +40,13 @@ class FindMinimumFilterChain: FilterChain {
                 NSLog("Failed to create filters")
                 return nil
             }
-            // pixelSize of the input texture
-            let pixelWidth = 1 / Float(2 * w)
-            let pixelHeight = 1 / Float(2 * h)
+            // pixelSize of the input texture = 1/(2*w)
+            // because the texel is in the middle of the pixel, we move half the pixel size to one side and the other
+            let texelU = 1 / Float(2 * w)
+            let texelV = 1 / Float(2 * h)
             filter.inputs = [inputTexture]
             filter.output = output
-            filter.buffer = Renderer.createSyncBuffer(from: float4(-pixelWidth, -pixelHeight, pixelWidth, pixelHeight), device: device)
+            filter.buffer = Renderer.createSyncBuffer(from: float4(-texelU, -texelV, texelU, texelV), device: device)
             chain.append(filter)
             inputTexture = output
         }

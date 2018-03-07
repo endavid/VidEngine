@@ -21,6 +21,7 @@
 		63FF645A204AB93500E047EC /* FindMinimumFilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */; };
 		63FF645C204AE17500E047EC /* SelfOrganizingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */; };
 		63FF645E204AFE2400E047EC /* DistanceFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF645D204AFE2400E047EC /* DistanceFilter.swift */; };
+		63FF6460204B32C600E047EC /* CopyTextureFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF645F204B32C600E047EC /* CopyTextureFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,7 @@
 		63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindMinimumFilterChain.swift; sourceTree = "<group>"; };
 		63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfOrganizingMap.swift; sourceTree = "<group>"; };
 		63FF645D204AFE2400E047EC /* DistanceFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceFilter.swift; sourceTree = "<group>"; };
+		63FF645F204B32C600E047EC /* CopyTextureFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyTextureFilter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				63FF6459204AB93500E047EC /* FindMinimumFilterChain.swift */,
 				63FF645B204AE17500E047EC /* SelfOrganizingMap.swift */,
 				63FF645D204AFE2400E047EC /* DistanceFilter.swift */,
+				63FF645F204B32C600E047EC /* CopyTextureFilter.swift */,
 			);
 			path = SampleColorPalette;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				63711CBD2041C27B00D046CF /* ColorSampler.swift in Sources */,
 				63711CA32041BE6C00D046CF /* AppDelegate.swift in Sources */,
 				63711CC4204626AE00D046CF /* Filters.metal in Sources */,
+				63FF6460204B32C600E047EC /* CopyTextureFilter.swift in Sources */,
 				63FF6458204A250D00E047EC /* MyFilters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

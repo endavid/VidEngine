@@ -10,7 +10,6 @@ import VidFramework
 import simd
 
 class DistanceFilter: TextureFilter {
-    var swapTexture: MTLTexture?
     var target: float4
     
     init?(device: MTLDevice, library: MTLLibrary, input: MTLTexture, target: float4) {
@@ -34,15 +33,7 @@ class DistanceFilter: TextureFilter {
         inputs = [input]
         buffer = Renderer.createSyncBuffer(from: target, device: device)
     }
-    
-    override func postRender() {
-        // swap inputs
-        if let tmp = swapTexture {
-            swapTexture = inputs.first
-            inputs = [tmp]
-        }
-    }
-    
+        
     // this gets called when we need to update the buffers used by the GPU
     override func updateBuffers(_ syncBufferIndex: Int) {
         super.updateBuffers(syncBufferIndex)

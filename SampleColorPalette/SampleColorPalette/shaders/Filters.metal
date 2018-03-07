@@ -48,6 +48,14 @@ vertex VertexInOut passThrough2DVertex(
     return outVertex;
 }
 
+fragment half4 passThroughFragment(
+  VertexInOut inFrag [[stage_in]],
+  texture2d<float> tex [[ texture(0) ]])
+{
+    float4 out = tex.sample(linearSampler, inFrag.uv);
+    return half4(out);
+}
+
 fragment half4 passColorTransformFragment(
     VertexInOut inFrag [[stage_in]],
     texture2d<float> tex [[ texture(0) ]],
@@ -65,7 +73,7 @@ fragment half4 passComputeDistance(
     constant FilterData& color [[ buffer(0) ]])
 {
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
-    float d = distance(texColor, color.v0);
+    float d = distance(texColor.rgb, color.v0.rgb);
     float4 out = float4(d, inFrag.uv, 1.0);
     return half4(out);
 }
@@ -118,9 +126,7 @@ float4 somWeightUpdate(texture2d<float> tex, float2 uv, float delta, float4 targ
 float4 somUpdateNeuron(texture2d<float> tex, float2 uv, float learningRate, float neighborhoodRadius, float2 bmu, float4 target) {
     float dd = distance_squared(bmu, uv);
     float rr = neighborhoodRadius * neighborhoodRadius;
-    if (dd < rr) {
-        float influence = exp(-dd / (2.0*rr));
-        return somWeightUpdate(tex, uv, learningRate * influence, target);
-    }
-    return tex.sample(pointSampler, uv);
+    float influence = (dd < rr) ? exp(-dd / (2.0*rr)) : 0;
+    //return (dd < rr) ? target : tex.sample(pointSampler, uv);
+    return somWeightUpdate(tex, uv, learningRate * influence, target);
 }
