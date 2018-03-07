@@ -42,16 +42,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(0.8, rgba.g))
         XCTAssertTrue(IsClose(0.3, rgba.b))
     }
-    
-    // https://en.wikipedia.org/wiki/Illuminant_D65
-    func testD65() {
-        let white = ReferenceWhite.D65
-        let xyz = white.xyz
-        XCTAssertTrue(IsClose(0.950456, xyz.x))
-        XCTAssertTrue(IsClose(1, xyz.y))
-        XCTAssertTrue(IsClose(1.08906, xyz.z))
-    }
-    
+        
     func testsRGBToXYZ() {
         // XYZ to linear sRGB
         let m = RGBColorSpace.sRGB.toXYZ.inverse
@@ -100,13 +91,26 @@ class ColorTests: XCTestCase {
         let rXYZ = float3(0.436, 0.222, 0.014)
         let gXYZ = float3(0.385, 0.717, 0.097)
         let bXYZ = float3(0.143, 0.061, 0.714)
-        XCTAssertTrue(rXYZ.isClose(m0))
-        XCTAssertTrue(gXYZ.isClose(m1))
-        XCTAssertTrue(bXYZ.isClose(m2))
+        let e: Float = 0.001
+        XCTAssertTrue(rXYZ.isClose(m0, epsilon: e))
+        XCTAssertTrue(gXYZ.isClose(m1, epsilon: e))
+        XCTAssertTrue(bXYZ.isClose(m2, epsilon: e))
         let m = RGBColorSpace.sRGB.toXYZ
-        XCTAssertTrue(rXYZ.isClose(m[0]))
-        XCTAssertTrue(gXYZ.isClose(m[1]))
-        XCTAssertTrue(bXYZ.isClose(m[2]))
+        print(m)
+        XCTAssertTrue(rXYZ.isClose(m[0], epsilon: e))
+        XCTAssertTrue(gXYZ.isClose(m[1], epsilon: e))
+        XCTAssertTrue(bXYZ.isClose(m[2], epsilon: e))
+    }
+    
+    func testWhites() {
+        let e: Float = 0.001
+        print(ReferenceWhite.D65.xyz.xyz)
+        print(ReferenceWhite.D50.xyz.xyz)
+        // https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
+        // https://en.wikipedia.org/wiki/Illuminant_D65
+        XCTAssertTrue(float3(0.950, 1, 1.089).isClose(ReferenceWhite.D65.xyz.xyz, epsilon: e))
+        // from the http://www.brucelindbloom.com/index.html?ColorCalculator.html
+        XCTAssertTrue(float3(0.964220, 1, 0.825210).isClose(ReferenceWhite.D50.xyz.xyz, epsilon: e))
     }
     
     func testP3ToSrgb() {

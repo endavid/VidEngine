@@ -247,9 +247,11 @@ public struct CiexyY {
     }
 }
 
+/// https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
 public typealias ReferenceWhite = CiexyY
 extension ReferenceWhite {
-    public static let D65 = ReferenceWhite(x: 0.3127, y: 0.329, Y: 1)
+    public static let D50 = ReferenceWhite(x: 0.34567, y: 0.35850, Y: 1)
+    public static let D65 = ReferenceWhite(x: 0.31271, y: 0.32902, Y: 1)
 }
 
 public struct RGBColorSpace {
@@ -260,10 +262,11 @@ public struct RGBColorSpace {
         white: .D65)
     // http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
     public static let sRGB = RGBColorSpace(
-        red: CiexyY(x: 0.6400, y: 0.3300, Y: 0.212656),
-        green: CiexyY(x: 0.3000, y: 0.6000, Y: 0.715158),
-        blue: CiexyY(x: 0.1500, y: 0.0600, Y: 0.072186),
-        white: .D65)
+        // primaries adapted to D50
+        red: CiexyY(x: 0.648431, y: 0.330856, Y: 0.222491),
+        green: CiexyY(x: 0.321152, y: 0.597871, Y: 0.716888),
+        blue: CiexyY(x: 0.155886, y: 0.066044, Y: 0.060621),
+        white: .D50)
     public let toXYZ: float3x3
     public let toRGB: float3x3
     public init(red: CiexyY, green: CiexyY, blue: CiexyY, white: ReferenceWhite) {
