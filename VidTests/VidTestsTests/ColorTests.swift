@@ -34,8 +34,8 @@ class ColorTests: XCTestCase {
     
     func testXYZtoRGB() {
         // http://www.brucelindbloom.com
-        // Model: sRGB, Gamma: 1.0
-        let xyz = CieXYZ(xyz: float3(0.422683, 0.636309, 0.384312))
+        // Model: sRGB D50, Gamma: 1.0
+        let xyz = CieXYZ(xyz: float3(0.438191, 0.636189, 0.294722))
         let rgba = xyz.toRGBA(colorSpace: .sRGB)
         XCTAssertEqual(1, rgba.a)
         XCTAssertTrue(IsClose(0.2, rgba.r))
@@ -44,27 +44,19 @@ class ColorTests: XCTestCase {
     }
         
     func testsRGBToXYZ() {
-        // XYZ to linear sRGB
+        // XYZ to linear sRGB D50
         let m = RGBColorSpace.sRGB.toXYZ.inverse
         // matrix ref from http://www.brucelindbloom.com
         let ref = float3x3([
-            float3(3.2406, -0.9689, 0.0557),
-            float3(-1.5372, 1.8758, -0.2040),
-            float3(-0.4986, 0.0415, 1.0570)
+            float3(3.1338561, -0.9787684, 0.0719453),
+            float3(-1.6168667, 1.9161415, -0.2289914),
+            float3(-0.4906146, 0.0334540, 1.4052427)
             ])
-        XCTAssertTrue(ref[0].isClose(m[0]))
-        XCTAssertTrue(ref[1].isClose(m[1]))
-        XCTAssertTrue(ref[2].isClose(m[2]))
-        // check again with constant Y = 1
-        let sRGB = RGBColorSpace(
-            red: CiexyY(x: 0.6400, y: 0.3300),
-            green: CiexyY(x: 0.3000, y: 0.6000),
-            blue: CiexyY(x: 0.1500, y: 0.0600),
-            white: .D65)
-        let m1 = sRGB.toXYZ.inverse
-        XCTAssertTrue(ref[0].isClose(m1[0]))
-        XCTAssertTrue(ref[1].isClose(m1[1]))
-        XCTAssertTrue(ref[2].isClose(m1[2]))
+        print(m)
+        let e: Float = 0.001
+        XCTAssertTrue(ref[0].isClose(m[0], epsilon: e))
+        XCTAssertTrue(ref[1].isClose(m[1], epsilon: e))
+        XCTAssertTrue(ref[2].isClose(m[2], epsilon: e))
     }
     
     func testXYZUsingCGColor() {
