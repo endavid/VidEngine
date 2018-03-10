@@ -35,14 +35,14 @@ class SelfOrganizingMap: FilterChain {
         } while remaining > 0
         loopMode = .times(numIterations)
         // ABGR, red: minDistance, green: u, blue: v
-        data = [UInt64](repeating: 0xFFFF00000000FFFF, count: width * height)
+        //data = [UInt64](repeating: 0xFFFF00000000FFFF, count: width * height)
         //data[0] = 0xFFFFFFFF00000000 // top left -> red
         //data[width*height-1] = 0xFFFFFFFF00000000 // bottom right -> white
         //data[width-1] = 0xFFFFFFFF00000000 // top right -> yellow
-        data[(height-1) * width] = 0xFFFFFFFF00000000 // bottom left -> magenta
-        let target = LinearRGBA(r: 0, g: 0, b: 1, a: 1)
+        //data[(height-1) * width] = 0xFFFFFFFF00000000 // bottom left -> magenta
+        //let target = LinearRGBA(r: 0, g: 0, b: 1, a: 1)
         let texture = Texture(device: device, id: "SelfOrganizingMap0", width: width, height: height, data: data, usage: [.shaderRead, .renderTarget])
-        //let target = trainingData.randomElement()
+        let target = trainingData.randomElement()
         if let mtlTexture = texture.mtlTexture,
            let distanceFilter = DistanceFilter(device: device, library: library, input: mtlTexture, target: target.raw) {
             chain.append(distanceFilter)
@@ -58,10 +58,10 @@ class SelfOrganizingMap: FilterChain {
         if let mtlTexture = texture.mtlTexture,
            let minTexture = minimum,
             let somFilter = SelfOrganizingMapFilter(device: device, library: library, input: mtlTexture, minimum: minTexture, data: somData) {
-            //chain.append(somFilter)
+            chain.append(somFilter)
             if let somOut = somFilter.output,
                let copyFilter = CopyTextureFilter(device: device, library: library, input: somOut, output: mtlTexture) {
-                //chain.append(copyFilter)
+                chain.append(copyFilter)
             }
             self.somFilter = somFilter
         }
@@ -69,7 +69,6 @@ class SelfOrganizingMap: FilterChain {
     
     override func updateBuffers(_ syncBufferIndex: Int) {
         let target = trainingData.randomElement().raw
-        print(target)
         distanceFilter?.target = target
         somFilter?.shaderData.target = target
         let s = -Float(step)

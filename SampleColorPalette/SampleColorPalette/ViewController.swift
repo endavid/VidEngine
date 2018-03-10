@@ -17,8 +17,8 @@ class ViewController: VidController {
     var samples: [LinearRGBA] = []
     var updateFn: ((TimeInterval) -> ())?
     var framesTilInit = 0
-    weak var imageViewP3: UIImageView?
-    weak var imageViewSRGB: UIImageView?
+    weak var imageViewP3: UIButton?
+    weak var imageViewSRGB: UIButton?
     var myFilters: MyFilters?
     var som: SelfOrganizingMap?
 
@@ -43,21 +43,16 @@ class ViewController: VidController {
         if som?.isCompleted == true {
             if let output = som?.output {
                 initMyFilters(input: output)
-                if let image = UIImage(texture: output) {
-                    imageViewP3?.image = image
-                }
+                imageViewP3?.setBackgroundImage(UIImage(texture: output), for: .normal)
             }
             som = nil
         }
         if myFilters?.isCompleted == true {
             if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output {
-                imageViewSRGB?.image = UIImage(texture: mtlTexture)
+                imageViewSRGB?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
             if let mtlTexture = myFilters?.p3ToGammaP3.chain.last?.output {
-                if let image = UIImage(texture: mtlTexture) {
-                    imageViewP3?.image = image
-                    //saveImage(image: image)
-                }
+                imageViewP3?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
             myFilters = nil
         }
@@ -89,7 +84,7 @@ class ViewController: VidController {
             NSLog("Failed to create default Metal library")
             return
         }
-        som = SelfOrganizingMap(device: device, library: library, width: 64, height: 64, numIterations: 1, trainingData: samples)
+        som = SelfOrganizingMap(device: device, library: library, width: 128, height: 128, numIterations: 10000, trainingData: samples)
         Primitive2D.texture = som?.output
         som?.queue()
     }
@@ -113,16 +108,23 @@ class ViewController: VidController {
         }
     }
     
-    private func createImageView() -> UIImageView {
-        let imageView = UIImageView(frame: CGRect())
-        imageView.backgroundColor = .clear
-        view.addSubview(imageView)
-        return imageView
+    private func createButton() -> UIButton {
+        let button = UIButton(frame: CGRect())
+        button.backgroundColor = .clear
+        button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControlEvents.touchUpInside)
+        view.addSubview(button)
+        return button
+    }
+    
+    @objc func buttonAction(_ sender:UIButton!) {
+        if let image = sender.backgroundImage(for: .normal) {
+            saveImage(image: image)
+        }
     }
     
     private func initImageViews() {
-        self.imageViewP3 = createImageView()
-        self.imageViewSRGB = createImageView()
+        self.imageViewP3 = createButton()
+        self.imageViewSRGB = createButton()
     }
     
     override func viewDidLayoutSubviews() {
@@ -146,9 +148,13 @@ class ViewController: VidController {
     }
     
     func saveImage(image: UIImage) {
+        guard let data = UIImagePNGRepresentation(image) else {
+            NSLog("Failed to create PNG representation")
+            return
+        }
         // Perform changes to the library
         PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.creationRequestForAsset(from: image)
+            PHAssetCreationRequest.forAsset().addResource(with: .photo, data: data, options: nil)
         }, completionHandler: { success, error in
             if let error = error {
                 NSLog(error.localizedDescription)

@@ -72,9 +72,12 @@ fragment half4 passComputeDistance(
     texture2d<float> tex [[ texture(0) ]],
     constant FilterData& color [[ buffer(0) ]])
 {
-    float4 texColor = tex.sample(linearSampler, inFrag.uv);
+    float4 texColor = tex.sample(pointSampler, inFrag.uv);
     float d = distance(texColor.rgb, color.v0.rgb);
-    float4 out = float4(d, inFrag.uv, 1.0);
+    // store the UVs and the distance.
+    // notice that the UVs are texel coordinates, so for the top-left pixel,
+    // uv(0) = (0.5/pixelWidth, 0.5/pixelHeight)
+    float4 out = float4(inFrag.uv, d, 1.0);
     return half4(out);
 }
 
@@ -89,16 +92,16 @@ fragment half4 passFindMinimum(
     half4 b = half4(tex.sample(pointSampler, inFrag.uv + delta.zy));
     half4 c = half4(tex.sample(pointSampler, inFrag.uv + delta.xw));
     half4 d = half4(tex.sample(pointSampler, inFrag.uv + delta.zw));
-    if (a.x < b.x) {
-        if (a.x < c.x) {
-            return (a.x < d.x) ? a : d;
+    if (a.z < b.z) {
+        if (a.z < c.z) {
+            return (a.z < d.z) ? a : d;
         }
-        return (c.x < d.x) ? c : d;
+        return (c.z < d.z) ? c : d;
     }
-    if (b.x < c.x) {
-        return (b.x < d.x) ? b : d;
+    if (b.z < c.z) {
+        return (b.z < d.z) ? b : d;
     }
-    return (c.x < d.x) ? c : d;
+    return (c.z < d.z) ? c : d;
 }
 
 fragment half4 passSelfOrganizingMap(
@@ -107,14 +110,14 @@ fragment half4 passSelfOrganizingMap(
      texture2d<float> minTex [[ texture(1) ]],
      constant SomData& somData [[ buffer(0) ]])
 {
-    float2 bmu = tex.sample(pointSampler, float2(0.5, 0.5)).yz;
+    float2 bmu = minTex.sample(pointSampler, float2(0.5, 0.5)).xy;
     float4 out = somUpdateNeuron(tex, inFrag.uv, somData.learningRate, somData.neighborhoodRadius, bmu, somData.target);
     return half4(out);
 }
 
 float4 linearRgbToNormalizedSrgb(float4 color) {
     float4 mask = step(0.0031308, color);
-    float4 srgb = mask * pow(color * 1.055, 1/2.4) - 0.055 + (1-mask) * color * 12.92;
+    float4 srgb = mask * pow(color, 1/2.4) * 1.055 - 0.055 + (1-mask) * color * 12.92;
     return srgb;
 }
 
