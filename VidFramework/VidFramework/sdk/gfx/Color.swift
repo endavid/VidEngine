@@ -170,7 +170,7 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             if c <= 0.0031308 {
                 return c * 12.92
             }
-            return powf(c * 1.055, 1/2.4) - 0.055
+            return powf(c, 1/2.4) * 1.055 - 0.055
         }
         self.raw = float4(f(rgba.r), f(rgba.g), f(rgba.b), rgba.a)
     }
@@ -256,10 +256,9 @@ extension ReferenceWhite {
 
 public struct RGBColorSpace {
     public static let dciP3 = RGBColorSpace(
-        red: CiexyY(x: 0.680, y: 0.320),
-        green: CiexyY(x: 0.265, y: 0.690),
-        blue: CiexyY(x: 0.150, y: 0.060),
-        white: .D65)
+        red: CieXYZ(x: 0.5151, y: 0.2412, z: -0.0011),
+        green: CieXYZ(x: 0.2920, y: 0.6922, z: 0.0419),
+        blue: CieXYZ(x: 0.1571, y: 0.0666, z: 0.7841))
     // http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html
     public static let sRGB = RGBColorSpace(
         // primaries adapted to D50
@@ -275,6 +274,10 @@ public struct RGBColorSpace {
         let im = m.inverse
         let s = im * white.xyz.xyz
         toXYZ = float3x3([red.xyz.xyz * s.x, green.xyz.xyz * s.y, blue.xyz.xyz * s.z])
+        toRGB = toXYZ.inverse
+    }
+    public init(red: CieXYZ, green: CieXYZ, blue: CieXYZ) {
+        toXYZ = float3x3([red.xyz, green.xyz, blue.xyz])
         toRGB = toXYZ.inverse
     }
 }

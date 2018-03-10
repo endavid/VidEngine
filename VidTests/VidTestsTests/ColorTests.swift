@@ -20,10 +20,21 @@ class ColorTests: XCTestCase {
         let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB)!
         let c = uiColor.cgColor.converted(to: linearSpace, intent: .defaultIntent, options: nil)!
         let v = float3(Float(c.components![0]), Float(c.components![1]), Float(c.components![2]))
-        print("\(v) \(rgb.rgb))")
         XCTAssert(rgb.rgb.isClose(v))
     }
-
+    
+    func testGamma() {
+        let rgb = LinearRGBA(rgb: float3(0.2, 0.3, 0.4))
+        let srgb = NormalizedSRGBA(rgba: rgb)
+        let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB)!
+        let gammaSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+        let components: [CGFloat] = [0.2, 0.3, 0.4]
+        let c = CGColor(colorSpace: linearSpace, components: components)!
+        let cγ = c.converted(to: gammaSpace, intent: .defaultIntent, options: nil)!
+        let v = float3(Float(cγ.components![0]), Float(cγ.components![1]), Float(cγ.components![2]))
+        XCTAssert(srgb.rgb.isClose(v))
+    }
+    
     func testSpectrum() {
         let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
         let m1 = spectrum.getIntensity(404)
@@ -43,16 +54,15 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(0.3, rgba.b))
     }
         
-    func testsRGBToXYZ() {
+    func testsXYZtoRGBMatrix() {
         // XYZ to linear sRGB D50
-        let m = RGBColorSpace.sRGB.toXYZ.inverse
+        let m = RGBColorSpace.sRGB.toRGB
         // matrix ref from http://www.brucelindbloom.com
         let ref = float3x3([
             float3(3.1338561, -0.9787684, 0.0719453),
             float3(-1.6168667, 1.9161415, -0.2289914),
             float3(-0.4906146, 0.0334540, 1.4052427)
             ])
-        print(m)
         let e: Float = 0.001
         XCTAssertTrue(ref[0].isClose(m[0], epsilon: e))
         XCTAssertTrue(ref[1].isClose(m[1], epsilon: e))
@@ -88,7 +98,6 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(gXYZ.isClose(m1, epsilon: e))
         XCTAssertTrue(bXYZ.isClose(m2, epsilon: e))
         let m = RGBColorSpace.sRGB.toXYZ
-        print(m)
         XCTAssertTrue(rXYZ.isClose(m[0], epsilon: e))
         XCTAssertTrue(gXYZ.isClose(m[1], epsilon: e))
         XCTAssertTrue(bXYZ.isClose(m[2], epsilon: e))
@@ -105,19 +114,46 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.964220, 1, 0.825210).isClose(ReferenceWhite.D50.xyz.xyz, epsilon: e))
     }
     
-    func testP3ToSrgb() {
-        let m = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
-        let ref = float3x3([
-            float3(1.22494, -0.0420569, -0.0196376),
-            float3(-0.22494, 1.04206, -0.078636),
-            float3(4.61524e-08, 1.34893e-08, 1.09827)
-        ])
-        XCTAssertTrue(ref[0].isClose(m[0]))
-        XCTAssertTrue(ref[1].isClose(m[1]))
-        XCTAssertTrue(ref[2].isClose(m[2]))
+    func testP3ToXYZ() {
+        let m = RGBColorSpace.dciP3.toXYZ
+        let r = m * float3(1, 0, 0)
+        let g = m * float3(0, 1, 0)
+        let b = m * float3(0, 0, 1)
+        // ref. values from ColorSync Utility calculator
+        XCTAssertTrue(float3(0.5151, 0.2412, -0.0011).isClose(r))
+        XCTAssertTrue(float3(0.2920, 0.6922, 0.0419).isClose(g))
+        XCTAssertTrue(float3(0.1571, 0.0666, 0.7841).isClose(b))
     }
     
-    func testSrgbToP3Gamma() {
+    func testSRGBToXYZ() {
+        let m = RGBColorSpace.sRGB.toXYZ
+        let r = m * float3(1, 0, 0)
+        let g = m * float3(0, 1, 0)
+        let b = m * float3(0, 0, 1)
+        // ref. values from ColorSync Utility calculator
+        XCTAssertTrue(float3(0.4361, 0.2225, 0.0139).isClose(r))
+        XCTAssertTrue(float3(0.3851, 0.7169, 0.0971).isClose(g))
+        XCTAssertTrue(float3(0.1431, 0.0606, 0.7141).isClose(b))
+    }
+    
+    func testSRGBToP3() {
+        // values from ColorSync Utility
+        let rγ = NormalizedSRGBA(rgb: float3(0.9175, 0.2002, 0.1386))
+        let gγ = NormalizedSRGBA(rgb: float3(0.4585, 0.9852, 0.2983))
+        let bγ = NormalizedSRGBA(rgb: float3(0, 0, 0.9597))
+        // undo gamma
+        let r = LinearRGBA(srgba: rγ)
+        let g = LinearRGBA(srgba: gγ)
+        let b = LinearRGBA(srgba: bγ)
+        let ref = float3x3([r.rgb, g.rgb, b.rgb])
+        let m = RGBColorSpace.dciP3.toRGB * RGBColorSpace.sRGB.toXYZ
+        let e: Float = 0.001
+        XCTAssertTrue(ref[0].isClose(m[0], epsilon: e))
+        XCTAssertTrue(ref[1].isClose(m[1], epsilon: e))
+        XCTAssertTrue(ref[2].isClose(m[2], epsilon: e))
+    }
+    
+    func testSRGBToP3Gamma() {
         // ref. values extracted from Color Sync Utility Calculator
         let m = RGBColorSpace.dciP3.toRGB * RGBColorSpace.sRGB.toXYZ
         let red = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(1,0,0)))
@@ -126,13 +162,13 @@ class ColorTests: XCTestCase {
         print(red.rgb)
         print(green.rgb)
         print(blue.rgb)
-        let e: Float = 0.04 // error is kinda big... :(
+        let e: Float = 0.001
         XCTAssertTrue(float3(0.9175, 0.2002, 0.1386).isClose(red.rgb, epsilon: e))
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(green.rgb, epsilon: e))
         XCTAssertTrue(float3(0, 0, 0.9597).isClose(blue.rgb, epsilon: e))
     }
     
-    func testSrgbToP3UsingCGColor() {
+    func testSRGBToP3UsingCGColor() {
         let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
         let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
         let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
@@ -143,6 +179,7 @@ class ColorTests: XCTestCase {
         let rP3 = float3(Float(r.components![0]), Float(r.components![1]), Float(r.components![2]))
         let gP3 = float3(Float(g.components![0]), Float(g.components![1]), Float(g.components![2]))
         let bP3 = float3(Float(b.components![0]), Float(b.components![1]), Float(b.components![2]))
+        // values from ColorSync utility (gamma already applied)
         XCTAssertTrue(float3(0.9175, 0.2002, 0.1386).isClose(rP3))
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(gP3))
         XCTAssertTrue(float3(0, 0, 0.9597).isClose(bP3))
