@@ -15,7 +15,7 @@ Simply add this repository as a submodule in your repository. Then,
 
 Demos
 =====
-Check tags to find different demos.
+There are several samples if you open the VidWorkspace. Also, check tags to find different demos in the commit history.
 
 # GPU Quaternions performance tests
 Tags: instanced-spheres-quaternions, instanced-sphere-matrices, instanced-cubes-quaternions, instanced-cubes-matrices, cubes-demo-quaternions, cubes-demo-matrices
