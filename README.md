@@ -1,6 +1,7 @@
 Vid Engine
 =========
 Graphics engine written in Metal & Swift.
+It's an endless work-in-progress that I use in my spare to test things. It should be usable to do basic stuff, but note that there are no plans for OpenGL ES support, and thus, both older devices and the simulators are not supported. You will need a Metal-compatible iOS device to build and run it.
 
 Installation
 =========
@@ -19,6 +20,8 @@ Check tags to find different demos.
 # GPU Quaternions performance tests
 Tags: instanced-spheres-quaternions, instanced-sphere-matrices, instanced-cubes-quaternions, instanced-cubes-matrices, cubes-demo-quaternions, cubes-demo-matrices
 
+Just examples of instancing and GPU quaternions. Read about it in detail in this blog post: http://tech.metail.com/performance-quaternions-gpu/
+
 [![Instanced cubes](http://img.youtube.com/vi/Q7GQbFIXMJg/0.jpg)](https://www.youtube.com/watch?v=Q7GQbFIXMJg "Instanced cubes")
 
 [![Instanced spheres](http://img.youtube.com/vi/P9fTjDLkOtI/0.jpg)](https://www.youtube.com/watch?v=P9fTjDLkOtI "Instanced cubes")
@@ -27,7 +30,7 @@ Tags: instanced-spheres-quaternions, instanced-sphere-matrices, instanced-cubes-
 # Procedural 2D rain
 Tag: rain-demo
 
-Small example of using Metal in Swift.
+Small example of using Metal in Swift. You can read about it in this blog post: http://tech.metail.com/metal-swift-introduction/
 All the data updates happen in the GPU.
 
 [![Procedural 2D rain](http://img.youtube.com/vi/7qWMA4ow2jc/0.jpg)](https://www.youtube.com/watch?v=7qWMA4ow2jc "Procedural 2D rain")
