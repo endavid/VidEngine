@@ -69,6 +69,7 @@ class SelfOrganizingMap: FilterChain {
     
     override func updateBuffers(_ syncBufferIndex: Int) {
         let target = trainingData.randomElement().raw
+        //let target = LinearRGBA(r: 0, g: 0, b: 1, a: 1).raw
         distanceFilter?.target = target
         somFilter?.shaderData.target = target
         let s = -Float(step)

@@ -21,16 +21,18 @@ class ViewController: VidController {
     weak var imageViewSRGB: UIButton?
     var myFilters: MyFilters?
     var som: SelfOrganizingMap?
+    var cc: UniversalColorCategorization?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         initSprites()
         initTexture()
         camera.setBounds(view.bounds)
-        // bits = 7 -> 1039 * 602 samples
+        // bits = 7 -> 1162 * 538 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
         updateFn = self.updateSamples
         initImageViews()
+        cc = UniversalColorCategorization()
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,7 +65,13 @@ class ViewController: VidController {
         let choppyFramerate = 2 * elapsed
         var outOfTime = false
         while let p3 = sampler?.getNextSample(), !outOfTime {
-            samples.append(p3)
+            //let rgb = clamp(sampler!.p3ToSrgb * p3.rgb, min: float3(0,0,0), max: float3(1,1,1))
+            //let srgb = NormalizedSRGBA(rgba: LinearRGBA(rgb: rgb))
+            //if let cat = cc?.getCategory(srgb) {
+                //if cat == .red {
+                    samples.append(p3)
+                //}
+            //}
             let nanoTime = DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
             outOfTime = timeInterval > choppyFramerate
@@ -84,7 +92,7 @@ class ViewController: VidController {
             NSLog("Failed to create default Metal library")
             return
         }
-        som = SelfOrganizingMap(device: device, library: library, width: 128, height: 128, numIterations: 10000, trainingData: samples)
+        som = SelfOrganizingMap(device: device, library: library, width: 128, height: 128, numIterations: 5000, trainingData: samples)
         Primitive2D.texture = som?.output
         som?.queue()
     }
@@ -112,6 +120,9 @@ class ViewController: VidController {
         let button = UIButton(frame: CGRect())
         button.backgroundColor = .clear
         button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControlEvents.touchUpInside)
+        button.setTitleColor(UIColor(displayP3Red: 1, green: 0, blue: 0, alpha: 1), for: .normal)
+        button.setTitle("*", for: .normal)
+        button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Bold", size: 24)
         view.addSubview(button)
         return button
     }
@@ -124,7 +135,9 @@ class ViewController: VidController {
     
     private func initImageViews() {
         self.imageViewP3 = createButton()
+        self.imageViewP3?.setTitle("P3", for: .normal)
         self.imageViewSRGB = createButton()
+        self.imageViewSRGB?.setTitle("sRGB", for: .normal)
     }
     
     override func viewDidLayoutSubviews() {
