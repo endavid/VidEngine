@@ -1,0 +1,144 @@
+<h1>Exploring the display-P3 color space</h3>
+
+<h3>About display-P3</h3>
+
+I recently found out that the iPhoneX supports a color space called <b>display-P3</b>, or <a href="https://en.wikipedia.org/wiki/DCI-P3">DCI-P3</a>. I read about it in Apple's <a href="https://developer.apple.com/ios/human-interface-guidelines/visual-design/color/#color-management">Human Interface Guidelines</a>, and I immediately started thinking of ways of generating examples to illustrate the difference between sRGB and P3, on a display that supports it. My Mac screen doesn't, but both my iPad and the iPhoneX do. I found a few interesting examples here: <a href="https://webkit.org/blog-files/color-gamut/">Wide Color Gamut examples</a>.
+
+<p/>
+
+<h3>Visualizing P3-sRGB</h3>
+
+What I thought I could do is to generate samples that are in the P3 gamut, but out the sRGB gamut, i.e. the difference between P3 and sRGB, and perhaps generate a palette of P3-only colors, just to see how it looks. You can visualize the volume difference of the 2 color spaces easily with the ColorSync Utility on Mac. I've captured a couple of anim gifs, with both the XYZ and the L*a*b* axis. See below, where the bigger white volume is the P3 color space,
+
+<p/>
+
+<center>
+<img src="http://endavid.com/pix/anim/p3-sRGB-Lab.gif"> <img src="http://endavid.com/pix/anim/p3-sRGB-xyz.gif">
+</center>
+
+<p/>
+
+A simple approach to generate samples out of the sRGB gamut is by brute force: quantize the whole P3 color space in a few bins, and convert to sRGB without clamping. Colors with any channel with a value smaller than zero or greater than one will be out of gamut. If we start with a rough subdivision, e.g. 7 bits per color channel, or 128 bins per channel (128 * 128 * 128 ~= 2M voxels), we can then subdivide further each voxel (imagine an octree). Or we could compute the intersection planes and just look for points below, or above the plane (I tried that approach, but the code turned out to be too complicated; I decided to go for simplicity --but you can go back to that attempt if you explore the <a href="https://github.com/endavid/VidEngine/commits/master">commits</a>). 
+
+<p/>
+
+<h3>Computing the difference P3-sRGB</h3>
+
+I've created a series of <a href="https://github.com/endavid/VidEngine/blob/master/VidTests/VidTestsTests/ColorTests.swift">unit tests to test color conversions</a>, so you can jump straight to the point. But I'll explain a bit about it here.
+
+<p/>
+The first thing to read is about <a href="https://developer.apple.com/library/content/technotes/tn2313/_index.html">Color Management is OS X and iOS</a>. In short, you can use use <a href="https://developer.apple.com/documentation/uikit/uicolor">UIColor</a> to easily create color instances in both sRGB and displayP3. But notice that those colors will have the gamma already applied to them. If you need linear values, or other color spaces like XYZ, you will need to use Core Graphics directly, the <a href="https://developer.apple.com/documentation/coregraphics/cgcolor">CGColor</a> class.
+
+<p/>
+The problem of those conversions, apart from how cumbersome is to do any simple operation with all those classes because of all the wrapping and unwrapping, is that the values are automatically clamped. I need unclamped values because I need to know if a value is outside the gamut. There might be a way to do that programmatically with those classes, but I couldn't find one. Anyway, I wanted to understand the color conversion in detail, so I implemented my own set of conversions, and I used the unit tests to compare with Apple's classes and the ColorSync Utility. All my conversions are in <a href="https://github.com/endavid/VidEngine/blob/master/VidFramework/VidFramework/sdk/gfx/Color.swift"> this file</a>.
+
+<p/>
+In <a href="http://www.brucelindbloom.com/">BruceLindbloom.com</a> you can find the formulas to convert from an RGB color space to XYZ, and viceversa. You will need a series of primaries, that you can also find in that page for sRGB. The sRGB color primaries adapted to a D50 white point are these,
+
+<p/>
+<pre class="prettyprint">
+public static let sRGB = RGBColorSpace(
+        // primaries adapted to D50
+        red: CiexyY(x: 0.648431, y: 0.330856, Y: 0.222491),
+        green: CiexyY(x: 0.321152, y: 0.597871, Y: 0.716888),
+        blue: CiexyY(x: 0.155886, y: 0.066044, Y: 0.060621),
+        white: .D50)
+</pre>
+
+<p/>
+Note that the white point is D50, not D65 as I wrongly assumed at the beginning... It took my a while to realize that I was wrong, until I started creating unit tests... Although I couldn't find any mention to D50 in the CGColor documentation, you can verify the white point of the sRGB color profile with the ColorSync Utility.
+
+<p/>
+
+The problem was finding the primaries for displayP3. The <a href="https://en.wikipedia.org/wiki/DCI-P3">DCI-P3</a> page in Wikipedia, and in <a href="http://www.tftcentral.co.uk/articles/pointers_gamut.htm#_Toc379132061"> this article</a>, say these are the values (assuming Y=1),
+
+<pre class="prettyprint">
+public static let dciP3 = RGBColorSpace(
+        red: CiexyY(x: 0.680, y: 0.320),
+        green: CiexyY(x: 0.265, y: 0.690),
+        blue: CiexyY(x: 0.150, y: 0.060),
+        white: .D65)
+</pre>
+
+<p/>
+If I use those, the RGB to XYZ conversion matrix (column-major) results in,
+
+<pre>
+    0.486569  0.265673   0.198187
+    0.228973  0.691752   0.0792749
+    0.0       0.0451143  1.04379
+</pre>
+
+<p/>
+But checking the primaries in the "Display P3.icc" profile results in,
+
+<pre>
+    0.5151  0.292   0.1571
+    0.2412  0.6922  0.0666
+   -0.0011  0.0419  0.7841
+</pre>
+
+<p/>
+So I went for those, representing the primaries directly in XYZ color space, instead of xyY.
+
+<p/>
+Finally, if you multiply the matrices to convert from P3 to XYZ, and then from XYZ to sRGB, you obtain this matrix for <b>direct conversion between linear displayP3 and linear sRGB</b>,
+
+<pre>
+    0.8225  0.1774  0
+    0.0332  0.9669  0
+    0.0171  0.0724  0.9108
+</pre>
+
+<p/>
+In my code, that matrix can simply be obtained with,
+
+<p/>
+<pre class="prettyprint">
+let m = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ
+</pre>
+<p/>
+
+<h3>displayP3 size compared to sRGB</h3>
+
+I created a sample app, <a href="https://github.com/endavid/VidEngine/tree/master/SampleColorPalette">SampleColorPalette</a> to compute the P3 minus sRGB difference. As explained in the introduction, I use only 7 bits per channel, since that gives me already lots of samples. The count of samples out of the sRGB gamut is 625154, out of the 2 million values of the 7-bit color space. So approximately 29%. The Wikipedia says that P3 has a 25% larger color gamut than the sRGB, but by these accounts it looks as if it's 42% larger (2M/(2M-600K)).
+<p/>
+According to <a href="http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html">BruceLindbloom.com</a>, the Lab gamut efficiency of sRGB is only 35%, while Wide Gamut RGB is 77.6%. I guess displayP3 should be somewhere in-between. But I can't seem to reconcile the difference of my account and Wikipedia's.
+
+<p/>
+<h3>displayP3 in Metal textures</h3>
+
+I used 16-bit RGBA textures to do all the processing. I applied the gamma manually in the shader, extracted the bytes <a href="https://stackoverflow.com/a/49101728/1765629">in the right order</a>, and stored the image with the appropriate color space in a UIImage, that I later saved as a PNG. The interesting bits are in <a href="https://github.com/endavid/VidEngine/blob/master/VidFramework/VidFramework/sdk/gfx/TextureInit.swift">TextureInit.swift</a> and <a href="https://github.com/endavid/VidEngine/blob/master/VidFramework/VidFramework/sdk/gfx/Image.swift">Image.swift</a>.
+
+</p>
+I was slightly confused by the Digital Color Meter in Mac, because I saved the image below and if I select "display P3", the values are not (255, 0, 0), but (237, 49, 19). I think this is because the image is in displayP3 (the embedded profile in the PNG file says so), but my monitor can't display that. So it must convert it to the profile of my screen, and the P3 value is the value of going back from the display profile to P3. If I select instead "Display native values", then I see (255, 0, 0), which must be the underlying value of the image before applying any color conversion. Perhaps someone out there reading this can clarify... 😅
+<p/>
+<center>
+<img src="http://endavid.com/pix/color/red-button-with-label.png" width="400">
+</center>
+<p/>
+The image above, by the way, has a label that says "sRGB" on the image to the right. You should be able to read it without problems if your display covers the displayP3 gamut.
+
+<p/>
+<h3>Self-Organizing Maps</h3>
+
+My first attempt to visualize the difference between P3 and sRGB has been to reimplement in Metal the <a href="http://endavid.com/dataAnalysis/js/color.html">Self-Organizing Maps for color palettes</a> that I implemented some time ago in Javascript. You can find all the code in the same example in github. I posted a video in <a href="https://www.instagram.com/p/BgLamMJHVI_/?taken-by=endavidg">Instagram</a> on how the SOM gets generated. Note that the gamma is wrong, and I'm not even sure how to display a displayP3 texture properly with Metal... So until it becomes a UIImage I can't tell for sure I'm seeing the right thing (any Metal experts out there? 😅).
+
+<p/>
+Below you can see the final PNG images, exported from the UIImages that I obtained. The left one is in displayP3, and the right one is in sRGB, so supposedly many values should have been clamped and I expected it to have more banding in displayP3 displays than the one on the left (both images should look the same in a sRGB display),
+
+<p/>
+<center>
+<img src="http://endavid.com/pix/color/p3diff-displayP3.png" width="256">
+<img src="http://endavid.com/pix/color/p3diff-sRGB.png" width="256">
+</center>
+
+<p/>
+Assuming you have a displayP3 display, can you tell the difference? I can't 😅
+<p/>
+
+There are some subtle differences, but I think the main issue with using a SOM is that pixels between two extreme colors get interpolated, entering again the gamut that sRGB can represent. I think a better way to do this would be to first split the samples in color categories, so even if values get interpolated, hopefully they won't cross the XY triangle. 
+<p/>
+Another option I'm considering is to simply sort colors in some other way, probably also starting with color categories, so no interpolated color appears in the final image.
+<p/>
+Stay tuned for another post, because the real fun starts now that I have the tools 😊
