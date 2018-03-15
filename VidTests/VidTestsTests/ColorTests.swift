@@ -184,4 +184,15 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(gP3))
         XCTAssertTrue(float3(0, 0, 0.9597).isClose(bP3))
     }
+    
+    func testLabToXYZ() {
+        let white = CieLab(L: 100, a: 0, b: 0).toCieXYZ().xyz
+        let red = CieLab(L: 50, a: 100, b: 0).toCieXYZ().xyz
+        let green = CieLab(L: 50, a: -50, b: 50).toCieXYZ().xyz
+        let e: Float = 0.001
+        // values from ColorSync utility
+        XCTAssertTrue(float3(0.9642, 1, 0.8249).isClose(white, epsilon: e))
+        XCTAssertTrue(float3(0.4384, 0.1842, 0.1519).isClose(red, epsilon: e))
+        XCTAssertTrue(float3(0.0994, 0.1842, 0.0268).isClose(green, epsilon: e))
+    }
 }

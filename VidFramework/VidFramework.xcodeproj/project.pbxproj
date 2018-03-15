@@ -55,6 +55,7 @@
 		63711CC120461C5700D046CF /* TextureFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CC020461C5700D046CF /* TextureFilter.swift */; };
 		6393E76A2054B0980098F96F /* cc14.raw in Resources */ = {isa = PBXBuildFile; fileRef = 6393E7692054B0980098F96F /* cc14.raw */; };
 		6393E76C2054B0C80098F96F /* ColorCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E76B2054B0C80098F96F /* ColorCategory.swift */; };
+		6393E7B02059ED370098F96F /* CieLab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7AF2059ED370098F96F /* CieLab.swift */; };
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
@@ -127,6 +128,7 @@
 		63711CC020461C5700D046CF /* TextureFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureFilter.swift; sourceTree = "<group>"; };
 		6393E7692054B0980098F96F /* cc14.raw */ = {isa = PBXFileReference; lastKnownFileType = file; path = cc14.raw; sourceTree = "<group>"; };
 		6393E76B2054B0C80098F96F /* ColorCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCategory.swift; sourceTree = "<group>"; };
+		6393E7AF2059ED370098F96F /* CieLab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CieLab.swift; sourceTree = "<group>"; };
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
@@ -249,8 +251,8 @@
 		632D27F4203896C7000562F0 /* gfx */ = {
 			isa = PBXGroup;
 			children = (
+				6393E7AE2059ED0B0098F96F /* color */,
 				632D2809203896C7000562F0 /* Camera.swift */,
-				632D280B203896C7000562F0 /* Color.swift */,
 				6393E76B2054B0C80098F96F /* ColorCategory.swift */,
 				632D2801203896C7000562F0 /* FontAtlas.swift */,
 				632D2805203896C7000562F0 /* FullScreenQuad.swift */,
@@ -301,6 +303,15 @@
 				6393E7692054B0980098F96F /* cc14.raw */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		6393E7AE2059ED0B0098F96F /* color */ = {
+			isa = PBXGroup;
+			children = (
+				632D280B203896C7000562F0 /* Color.swift */,
+				6393E7AF2059ED370098F96F /* CieLab.swift */,
+			);
+			path = color;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -392,6 +403,7 @@
 				63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */,
 				63711CC120461C5700D046CF /* TextureFilter.swift in Sources */,
 				632D2811203896C7000562F0 /* TextPrimitive.swift in Sources */,
+				6393E7B02059ED370098F96F /* CieLab.swift in Sources */,
 				632D2822203896C7000562F0 /* PrimitivePlugin.swift in Sources */,
 				632D2815203896C7000562F0 /* Transform.swift in Sources */,
 				632D280D203896C7000562F0 /* SpherePrimitive.swift in Sources */,
