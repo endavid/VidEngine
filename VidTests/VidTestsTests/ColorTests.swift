@@ -47,7 +47,7 @@ class ColorTests: XCTestCase {
         // http://www.brucelindbloom.com
         // Model: sRGB D50, Gamma: 1.0
         let xyz = CieXYZ(xyz: float3(0.438191, 0.636189, 0.294722))
-        let rgba = xyz.toRGBA(colorSpace: .sRGB)
+        let rgba = LinearRGBA(xyz: xyz, colorSpace: .sRGB)
         XCTAssertEqual(1, rgba.a)
         XCTAssertTrue(IsClose(0.2, rgba.r))
         XCTAssertTrue(IsClose(0.8, rgba.g))
@@ -105,8 +105,6 @@ class ColorTests: XCTestCase {
     
     func testWhites() {
         let e: Float = 0.001
-        print(ReferenceWhite.D65.xyz.xyz)
-        print(ReferenceWhite.D50.xyz.xyz)
         // https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
         // https://en.wikipedia.org/wiki/Illuminant_D65
         XCTAssertTrue(float3(0.950, 1, 1.089).isClose(ReferenceWhite.D65.xyz.xyz, epsilon: e))
@@ -159,9 +157,6 @@ class ColorTests: XCTestCase {
         let red = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(1,0,0)))
         let green = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(0,1,0)))
         let blue = NormalizedSRGBA(rgba: LinearRGBA(rgb: m * float3(0,0,1)))
-        print(red.rgb)
-        print(green.rgb)
-        print(blue.rgb)
         let e: Float = 0.001
         XCTAssertTrue(float3(0.9175, 0.2002, 0.1386).isClose(red.rgb, epsilon: e))
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(green.rgb, epsilon: e))
@@ -186,13 +181,25 @@ class ColorTests: XCTestCase {
     }
     
     func testLabToXYZ() {
-        let white = CieLab(L: 100, a: 0, b: 0).toCieXYZ().xyz
-        let red = CieLab(L: 50, a: 100, b: 0).toCieXYZ().xyz
-        let green = CieLab(L: 50, a: -50, b: 50).toCieXYZ().xyz
+        let white = CieXYZ(Lab: CieLab(L: 100, a: 0, b: 0)).xyz
+        let red = CieXYZ(Lab: CieLab(L: 50, a: 100, b: 0)).xyz
+        let green = CieXYZ(Lab: CieLab(L: 50, a: -50, b: 50)).xyz
         let e: Float = 0.001
         // values from ColorSync utility
         XCTAssertTrue(float3(0.9642, 1, 0.8249).isClose(white, epsilon: e))
         XCTAssertTrue(float3(0.4384, 0.1842, 0.1519).isClose(red, epsilon: e))
         XCTAssertTrue(float3(0.0994, 0.1842, 0.0268).isClose(green, epsilon: e))
     }
+    
+    func testXYZToLab() {
+        let white = CieLab(xyz: CieXYZ(x: 1, y: 1, z: 1)).Lab
+        let red = CieLab(xyz: CieXYZ(x: 1, y: 0, z: 0)).Lab
+        let gray = CieLab(xyz: CieXYZ(x: 0.5, y: 0.5, z: 0.5)).Lab
+        let e: Float = 0.05
+        // values from ColorSync utility
+        XCTAssertTrue(float3(100.0000, 6.1126, -13.2522).isClose(white, epsilon: e))
+        XCTAssertTrue(float3(0, 437.1465, 0).isClose(red, epsilon: e))
+        XCTAssertTrue(float3(76.0714, 4.8516, -10.5185).isClose(gray, epsilon: e))
+    }
+    
 }

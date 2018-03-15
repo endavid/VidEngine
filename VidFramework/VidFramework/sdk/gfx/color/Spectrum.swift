@@ -41,9 +41,12 @@ public class Spectrum {
         let m0 = data[w0]!
         return (1-alpha) * m0 + alpha * m1
     }
+}
+
+public extension CieXYZ {
     
     // http://www.fourmilab.ch/documents/specrend/
-    public func toXYZ() -> CieXYZ {
+    public init(spectrum: Spectrum) {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
@@ -81,16 +84,14 @@ public class Spectrum {
             float3(0.0002,0.0001,0.0000), float3(0.0002,0.0001,0.0000), float3(0.0001,0.0000,0.0000),
             float3(0.0001,0.0000,0.0000), float3(0.0001,0.0000,0.0000), float3(0.0000,0.0000,0.0000)
         ]
-        
         var lambda : Int = 380
         var xyz = float3(0,0,0)
         for i in 0..<cieColourMatch.count {
-            let me = getIntensity(lambda)
+            let me = spectrum.getIntensity(lambda)
             xyz = xyz + me * cieColourMatch[i]
             lambda += 5
         }
         let sum = xyz.x + xyz.y + xyz.z
-        xyz = (1 / sum) * xyz
-        return CieXYZ(xyz: xyz)
+        self.xyz = (1 / sum) * xyz
     }
 }

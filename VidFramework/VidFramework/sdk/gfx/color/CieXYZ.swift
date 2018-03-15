@@ -32,9 +32,12 @@ public struct CieXYZ {
     public init(xyz: float3) {
         self.xyz = xyz
     }
-    public func toRGBA(colorSpace: RGBColorSpace) -> LinearRGBA {
+}
+
+public extension LinearRGBA {
+    public init(xyz: CieXYZ, colorSpace: RGBColorSpace) {
         let m = colorSpace.toRGB
-        let rgb = m * xyz
-        return LinearRGBA(rgb: rgb)
+        let rgb = m * xyz.xyz
+        raw = float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
 }
