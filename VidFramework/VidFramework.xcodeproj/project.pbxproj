@@ -48,9 +48,9 @@
 		632D2831203896C7000562F0 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D280A203896C7000562F0 /* Texture.swift */; };
 		632D2832203896C7000562F0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D280B203896C7000562F0 /* Color.swift */; };
 		632D285E2038A223000562F0 /* VidController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D285D2038A223000562F0 /* VidController.swift */; };
-		632D286520398387000562F0 /* VidMetalLib.metallib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 632D286420398387000562F0 /* VidMetalLib.metallib */; };
 		632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2866203984E3000562F0 /* FrameworkBundle.swift */; };
 		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
+		6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */ = {isa = PBXBuildFile; fileRef = 6334C979205EEB6A00405E90 /* VidMetalLib.metallib */; };
 		63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBE2042EEF600D046CF /* TextureInit.swift */; };
 		63711CC120461C5700D046CF /* TextureFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CC020461C5700D046CF /* TextureFilter.swift */; };
 		6393E76A2054B0980098F96F /* cc14.raw in Resources */ = {isa = PBXBuildFile; fileRef = 6393E7692054B0980098F96F /* cc14.raw */; };
@@ -68,19 +68,6 @@
 		63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139820476D00000AC2F1 /* FilterChain.swift */; };
 		63E5139B20476F75000AC2F1 /* FilterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139A20476F75000AC2F1 /* FilterPlugin.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		632D286320398378000562F0 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-				632D286520398387000562F0 /* VidMetalLib.metallib in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		632D27D220389549000562F0 /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,9 +113,9 @@
 		632D280A203896C7000562F0 /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		632D280B203896C7000562F0 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		632D285D2038A223000562F0 /* VidController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VidController.swift; sourceTree = "<group>"; };
-		632D286420398387000562F0 /* VidMetalLib.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = VidMetalLib.metallib; path = "../../../Library/Developer/Xcode/DerivedData/VidWorkspace-gnnwdwbnewfpadckswkplspvrkda/Build/Products/Debug-iphoneos/VidMetalLib.metallib"; sourceTree = "<group>"; };
 		632D2866203984E3000562F0 /* FrameworkBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameworkBundle.swift; sourceTree = "<group>"; };
 		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
+		6334C979205EEB6A00405E90 /* VidMetalLib.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = VidMetalLib.metallib; path = "../../../VidMetalLib/build/Release-iphoneos/VidMetalLib.metallib"; sourceTree = "<group>"; };
 		63711CBA2041BF8800D046CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		63711CBE2042EEF600D046CF /* TextureInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureInit.swift; sourceTree = "<group>"; };
 		63711CC020461C5700D046CF /* TextureFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureFilter.swift; sourceTree = "<group>"; };
@@ -163,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				63711CBA2041BF8800D046CF /* README.md */,
-				632D286420398387000562F0 /* VidMetalLib.metallib */,
 				632D27D420389549000562F0 /* VidFramework */,
 				632D27D320389549000562F0 /* Products */,
 			);
@@ -311,6 +297,7 @@
 		6393E7682054B0980098F96F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6334C979205EEB6A00405E90 /* VidMetalLib.metallib */,
 				6393E7692054B0980098F96F /* cc14.raw */,
 			);
 			path = Resources;
@@ -354,7 +341,6 @@
 				632D27CE20389549000562F0 /* Frameworks */,
 				632D27CF20389549000562F0 /* Headers */,
 				632D27D020389549000562F0 /* Resources */,
-				632D286320398378000562F0 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -403,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6393E76A2054B0980098F96F /* cc14.raw in Resources */,
+				6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
