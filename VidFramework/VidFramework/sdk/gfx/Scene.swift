@@ -11,17 +11,24 @@ import UIKit
 import simd
 
 open class Scene {
-    public var primitives : [Primitive] = []
-    public var camera : Camera? = nil
+    public var primitives: [Primitive] = []
+    public var primitives2D: [Primitive2D] = []
+    public var camera: Camera? = nil
     
     public func queueAll() {
         for p in primitives {
+            p.queue()
+        }
+        for p in primitives2D {
             p.queue()
         }
     }
     
     public func dequeueAll() {
         for p in primitives {
+            p.dequeue()
+        }
+        for p in primitives2D {
             p.dequeue()
         }
     }

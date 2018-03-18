@@ -27,7 +27,6 @@ class ViewController: VidController {
         super.viewDidLoad()
         initSprites()
         initTexture()
-        camera.setBounds(view.bounds)
         // bits = 7 -> 1162 * 538 samples
         sampler = P3MinusSrgbSampler(bitsPerChannel: 7)
         updateFn = self.updateSamples

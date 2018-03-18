@@ -56,14 +56,26 @@ open class VidController: UIViewController, MTKViewDelegate {
         view.delegate = self
         // our shaders will be in linear RGB, so automatically apply γ
         view.colorPixelFormat = .bgra8Unorm_srgb
-        Renderer.shared = Renderer(device, view: view)
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
-        
+        Renderer.shared = Renderer(device, view: view)
+
         timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
         timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
-
+        
         setupMotionController()
+    }
+    
+    override open func viewWillAppear(_ animated: Bool) {
+        if device == nil {
+            return
+        }
+        if Renderer.shared == nil {
+            // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
+            let view = self.view as! MTKView
+            Renderer.shared = Renderer(device, view: view)
+            timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+        }
     }
     
     override open func viewWillDisappear(_ animated: Bool) {
@@ -98,20 +110,22 @@ open class VidController: UIViewController, MTKViewDelegate {
         }
     }
     
-    fileprivate func dataUpdate() {
-        Renderer.shared.graphicsData.elapsedTime = Float(elapsedTimeGPU)
-        Renderer.shared.graphicsData.currentPitch = Float(-sin(currentPitch))
-        Renderer.shared.graphicsData.currentTouch = currentTouch
+    fileprivate func dataUpdate(_ renderer: Renderer) {
+        renderer.graphicsData.elapsedTime = Float(elapsedTimeGPU)
+        renderer.graphicsData.currentPitch = Float(-sin(currentPitch))
+        renderer.graphicsData.currentTouch = currentTouch
     }
     
     public func draw(in view: MTKView) {
-        
+        guard let renderer = Renderer.shared else {
+            return
+        }
         // use semaphore to encode 3 frames ahead
         let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
         // could check here for .timedOut to count number of skipped frames
         
-        self.dataUpdate()
-        Renderer.shared.updateBuffers()
+        dataUpdate(renderer)
+        renderer.updateBuffers()
         
         let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer?.label = "Frame command buffer"
@@ -124,7 +138,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
             return
         }
-        Renderer.shared.draw(view, commandBuffer: commandBuffer!)
+        renderer.draw(view, commandBuffer: commandBuffer!)
     }
     
     
