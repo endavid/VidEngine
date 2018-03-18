@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:SampleColorPalette/SampleColorPalette.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:VidTests/VidTests.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:SampleCornellBox/SampleCornellBox.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:SampleRain/SampleRain.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:SampleText/SampleText.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:VidFramework/VidFramework.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:VidMetalLib/VidMetalLib.xcodeproj">
+   </FileRef>
+</Workspace>
