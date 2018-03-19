@@ -24,7 +24,7 @@ public struct CieLab {
     }
     public var rgba16U: UInt64 {
         get {
-            return LinearRGBA.toUInt64U(float4(L, a, b, 1.0))
+            return LinearRGBA.toUInt64U(float4(L/100, 0.5 + 0.5*a/128, 0.5 + 0.5*b/128, 1.0))
         }
     }
     
