@@ -32,6 +32,9 @@ public struct CieXYZ {
     public init(xyz: float3) {
         self.xyz = xyz
     }
+    public init(rgb: LinearRGBA, colorSpace: RGBColorSpace) {
+        xyz = colorSpace.toXYZ * rgb.rgb
+    }
 }
 
 public extension LinearRGBA {

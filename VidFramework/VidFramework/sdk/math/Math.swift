@@ -62,23 +62,23 @@ func Clamp(_ value: Int, lowest: Int, highest: Int) -> Int {
     return (value<lowest) ?lowest:(value>highest) ?highest:value
 }
 /// Random Int. Preferred to rand() % upperBound
-func Rand(_ upperBound: UInt32) -> UInt32 {
+public func Rand(_ upperBound: UInt32) -> UInt32 {
     return arc4random_uniform(upperBound)
 }
-func Rand(_ upperBound: Int) -> Int {
+public func Rand(_ upperBound: Int) -> Int {
     return Int(Rand(UInt32(upperBound)))
 }
 /// Random Float between 0 and 1
-func Randf() -> Float {
+public func Randf() -> Float {
     return Float(Rand(10000)) * 0.0001
     // or use drand48? needs a seed srand48
 }
 /// Random sign
-func RandSign() -> Float {
+public func RandSign() -> Float {
     return (Rand(2) == 0 ? -1.0 : 1.0)
 }
 /// Random event with given probabily
-func RandEvent(_ probality: Float) -> Bool {
+public func RandEvent(_ probality: Float) -> Bool {
     let r = Float(Rand(10000))
     return r < 10000.0 * probality
 }
