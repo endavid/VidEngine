@@ -166,9 +166,15 @@ open class VidController: UIViewController, MTKViewDelegate {
     }
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if Renderer.shared == nil {
+            return
+        }
         touchesMoved(touches, with: event)
     }
     override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if Renderer.shared == nil {
+            return
+        }
         let overTheFinger : CGFloat = -30
         for t in touches {
             let loc = t.location(in: view)
@@ -190,6 +196,9 @@ open class VidController: UIViewController, MTKViewDelegate {
         }
     }
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if Renderer.shared == nil {
+            return
+        }
         currentTouch.x = 0
         currentTouch.y = -2
     }
