@@ -41,7 +41,7 @@ class ComputePlugin: GraphicPlugin {
         encoder.endEncoding()
     }
     
-    override func updateBuffers(_ syncBufferIndex: Int) {
+    override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for prim in computePrimitives {
             prim.processResult(syncBufferIndex)
             if prim.isDone {

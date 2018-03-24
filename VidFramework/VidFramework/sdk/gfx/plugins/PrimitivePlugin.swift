@@ -82,7 +82,7 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
     
-    override func updateBuffers(_ syncBufferIndex: Int) {
+    override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

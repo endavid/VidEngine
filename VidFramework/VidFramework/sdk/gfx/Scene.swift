@@ -12,14 +12,14 @@ import simd
 
 open class Scene {
     public var primitives: [Primitive] = []
-    public var primitives2D: [Primitive2D] = []
+    public var groups2D: [Group2D] = []
     public var camera: Camera? = nil
     
     public func queueAll() {
         for p in primitives {
             p.queue()
         }
-        for p in primitives2D {
+        for p in groups2D {
             p.queue()
         }
     }
@@ -28,7 +28,7 @@ open class Scene {
         for p in primitives {
             p.dequeue()
         }
-        for p in primitives2D {
+        for p in groups2D {
             p.dequeue()
         }
     }

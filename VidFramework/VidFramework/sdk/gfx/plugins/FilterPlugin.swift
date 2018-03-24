@@ -52,7 +52,7 @@ class FilterPlugin: GraphicPlugin {
         }
     }
     
-    override func updateBuffers(_ syncBufferIndex: Int) {
+    override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         var i = filterChains.count - 1
         while i >= 0 {
             let filterChain = filterChains[i]

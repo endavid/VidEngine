@@ -132,7 +132,7 @@ public class Renderer {
         graphicsData.viewMatrix = camera.viewTransformMatrix
         memcpy(uniformData, &graphicsData, MemoryLayout<GraphicsData>.size)
         for p in plugins {
-            p.updateBuffers(syncBufferIndex)
+            p.updateBuffers(syncBufferIndex, camera: camera)
         }
     }
     

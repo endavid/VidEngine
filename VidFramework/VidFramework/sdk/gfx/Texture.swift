@@ -36,11 +36,40 @@ public struct Texture {
     // maximum size in pixels in a given dimension (bigger textures will crash)
     public static let maxSize : Int = 8192
     public let mtlTexture: MTLTexture?
+    /// The rendering pipeline expects linear color everywhere
+    /// If you are using a non bgra8Unorm_srgb texture, the texture
+    /// is assumed to be in linear RGB. Before displaying,
+    /// the gamma will be applied.
+    public let isLinear: Bool
     public let id: String
     public init(id: String, mtlTexture: MTLTexture) {
         self.id = id
         self.mtlTexture = mtlTexture
+        self.isLinear = Texture.guessLinear(mtlTexture.pixelFormat)
     }
+    /// If you are using a non bgra8Unorm_srgb texture, but its contents
+    /// are in sRGB, set isLinear to false, so it's converted to
+    /// linear color space in the appropriate places, before displaying
+    /// because the backbuffer expects things in linear RGB
+    /// (the backbuffer is set to bgra8Unorm_srgb so it applies the
+    /// gamma before displaying)
+    public init(id: String, mtlTexture: MTLTexture, isLinear: Bool) {
+        self.id = id
+        self.mtlTexture = mtlTexture
+        self.isLinear = isLinear
+    }
+    
+    static func guessLinear(_ pixelFormat: MTLPixelFormat) -> Bool {
+        switch pixelFormat {
+        case .bgra8Unorm_srgb:
+            return false
+        case .rgba8Unorm_srgb:
+            return false
+        default:
+            return true
+        }
+    }
+
 }
 
 public struct TextureLoadOptions {

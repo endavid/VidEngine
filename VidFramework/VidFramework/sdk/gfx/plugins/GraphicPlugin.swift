@@ -23,7 +23,7 @@ class GraphicPlugin {
         
     // this gets called when we need to update the buffers used by the GPU
     // @param syncBufferIndex the index into a triple-buffer
-    func updateBuffers(_ syncBufferIndex: Int) {
+    func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
         
     }
 }

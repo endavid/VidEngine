@@ -10,13 +10,13 @@
 import MetalKit
 
 public extension Texture {
-    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64], usage: MTLTextureUsage = [.shaderRead]) {
-        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba16Unorm, data: data, bytesPerPixel: 8, usage: usage)
+    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
+        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba16Unorm, data: data, bytesPerPixel: 8, usage: usage, isLinear: isLinear)
     }
-    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt32], usage: MTLTextureUsage = [.shaderRead]) {
-        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba8Unorm, data: data, bytesPerPixel: 4, usage: usage)
+    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt32], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
+        self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba8Unorm, data: data, bytesPerPixel: 4, usage: usage, isLinear: isLinear)
     }
-    init(device: MTLDevice, id: String, width: Int, height: Int, pixelFormat: MTLPixelFormat, data: UnsafeRawPointer, bytesPerPixel: Int, usage: MTLTextureUsage) {
+    init(device: MTLDevice, id: String, width: Int, height: Int, pixelFormat: MTLPixelFormat, data: UnsafeRawPointer, bytesPerPixel: Int, usage: MTLTextureUsage, isLinear: Bool?) {
         self.id = id
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
         texDescriptor.usage = usage
@@ -27,6 +27,7 @@ public extension Texture {
         } else {
             mtlTexture = nil
         }
+        self.isLinear = isLinear ?? Texture.guessLinear(pixelFormat)
     }
 }
 

@@ -21,47 +21,9 @@ public struct Primitive2DOptions : OptionSet {
 }
 
 public class Primitive2D {
-    let priority : Int
     public var position = Vec3(0,0,0)
     public var color = UIColor.white
     public var options : Primitive2DOptions = []
-    
-    public static var texture: MTLTexture? {
-        get {
-            guard let renderer = Renderer.shared else {
-                return nil
-            }
-            let plugin: Primitive2DPlugin? = renderer.getPlugin()
-            guard let p = plugin else {
-                return nil
-            }
-            return p.texture
-        }
-        set {
-            guard let renderer = Renderer.shared else {
-                return
-            }
-            let plugin: Primitive2DPlugin? = renderer.getPlugin()
-            guard let p = plugin else {
-                return
-            }
-            p.texture = newValue
-        }
-    }
-    
-    public func queue() {
-        let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
-        plugin?.queue(self)
-    }
-    
-    public func dequeue() {
-        let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
-        plugin?.dequeue(self)
-    }
-    
-    public init(priority: Int) {
-        self.priority = priority
-    }
 }
 
 public class SpritePrimitive2D : Primitive2D {

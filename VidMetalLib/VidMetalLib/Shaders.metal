@@ -50,3 +50,25 @@ fragment half4 passThroughTexturedFragment(VertexInOut inFrag [[stage_in]],
     float4 out = texColor * inFrag.color;
     return half4(out);
 }
+
+// Converts the texture to linear RGB manually
+fragment half4 passThroughSrgbTexturedFragment(VertexInOut inFrag [[stage_in]],
+                                           texture2d<float> tex [[ texture(0) ]])
+{
+    float4 texColor = tex.sample(linearSampler, inFrag.uv);
+    texColor = normalizedSrgbToLinearRgb(texColor);
+    float4 out = texColor * inFrag.color;
+    return half4(out);
+}
+
+float4 linearRgbToNormalizedSrgb(float4 color) {
+    float3 mask = step(0.0031308, color.rgb);
+    float3 srgb = mask * pow(color.rgb, 1/2.4) * 1.055 - 0.055 + (1-mask) * color.rgb * 12.92;
+    return float4(srgb.rgb, color.a);
+}
+
+float4 normalizedSrgbToLinearRgb(float4 color) {
+    float3 mask = step(0.04045, color.rgb);
+    float3 rgb = mask * powr((color.rgb + 0.055) / 1.055, 2.4) + (1-mask) * color.rgb / 12.92;
+    return float4(rgb.rgb, color.a);
+}
