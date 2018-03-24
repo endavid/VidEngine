@@ -12,7 +12,14 @@ import simd
 public struct LinearRGBA: ColorWithAlpha {
     public let raw: float4
     
-    static func toUInt64U(_ rgba: float4) -> UInt64 {
+    static func toUInt32(_ rgba: float4) -> UInt32 {
+        let r = UInt32((Float(0xFF) * rgba.x).rounded())
+        let g = UInt32((Float(0xFF) * rgba.y).rounded())
+        let b = UInt32((Float(0xFF) * rgba.z).rounded())
+        let a = UInt32((Float(0xFF) * rgba.w).rounded())
+        return (a << 24 | b << 16 | g << 8 | r)
+    }
+    static func toUInt64(_ rgba: float4) -> UInt64 {
         let r = UInt64((Float(0xFFFF) * rgba.x).rounded())
         let g = UInt64((Float(0xFFFF) * rgba.y).rounded())
         let b = UInt64((Float(0xFFFF) * rgba.z).rounded())
@@ -46,9 +53,14 @@ public struct LinearRGBA: ColorWithAlpha {
             return float3(r, g, b)
         }
     }
+    public var rgba8U: UInt32 {
+        get {
+            return LinearRGBA.toUInt32(raw)
+        }
+    }
     public var rgba16U: UInt64 {
         get {
-            return LinearRGBA.toUInt64U(raw)
+            return LinearRGBA.toUInt64(raw)
         }
     }
     

@@ -38,9 +38,14 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return float3(r, g, b)
         }
     }
+    public var rgba8U: UInt32 {
+        get {
+            return LinearRGBA.toUInt32(raw)
+        }
+    }
     public var rgba16U: UInt64 {
         get {
-            return LinearRGBA.toUInt64U(raw)
+            return LinearRGBA.toUInt64(raw)
         }
     }
     public init(r: Float, g: Float, b: Float, a: Float) {

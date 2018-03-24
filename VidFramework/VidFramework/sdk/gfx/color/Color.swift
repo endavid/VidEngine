@@ -51,6 +51,7 @@ extension UIColor {
 public protocol ColorWithAlpha {
     var raw: float4 { get }
     var rgba16U: UInt64 { get }
+    var rgba8U: UInt32 { get }
 }
 
 
