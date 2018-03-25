@@ -39,7 +39,7 @@ class FilterPlugin: GraphicPlugin {
                 encoder.pushDebugGroup(filter.id)
                 encoder.setRenderPipelineState(filter.renderPipelineState)
                 for i in 0..<filter.inputs.count {
-                    encoder.setFragmentTexture(filter.inputs[i], index: i)
+                    encoder.setFragmentTexture(filter.inputs[i].mtlTexture, index: i)
                 }
                 if let buffer = filter.buffer {
                     encoder.setFragmentBuffer(buffer, offset: filter.bufferOffset, index: 0)

@@ -19,7 +19,7 @@ class MyFilters {
         }
     }
     
-    init?(device: MTLDevice, input: MTLTexture, colorTransform: float4x4) {
+    init?(device: MTLDevice, input: Texture, colorTransform: float4x4) {
         guard let library = device.makeDefaultLibrary() else {
             NSLog("Failed to create default Metal library")
             return nil
@@ -32,11 +32,14 @@ class MyFilters {
             NSLog("Failed to create fragment function")
             return nil
         }
-        let outputSRgb = Texture(device: device, id: "sRGB", width: input.width, height: input.height, data: [UInt32].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
+        guard let inputTexture = input.mtlTexture else {
+            return nil
+        }
+        let outputSRgb = Texture(device: device, id: "sRGB", width: inputTexture.width, height: inputTexture.height, data: [UInt32].init(repeating: 0, count: inputTexture.width * inputTexture.height), usage: [.renderTarget, .shaderRead])
         guard let mtlSrgb = outputSRgb.mtlTexture else {
             return nil
         }
-        let outputP3 = Texture(device: device, id: "p3gamma", width: input.width, height: input.height, data: [UInt64].init(repeating: 0, count: input.width * input.height), usage: [.renderTarget, .shaderRead])
+        let outputP3 = Texture(device: device, id: "p3gamma", width: inputTexture.width, height: inputTexture.height, data: [UInt64].init(repeating: 0, count: inputTexture.width * inputTexture.height), usage: [.renderTarget, .shaderRead])
         guard let mtlP3 = outputP3.mtlTexture else {
             return nil
         }
@@ -59,10 +62,10 @@ class MyFilters {
             return nil
         }
         filterSrgb.inputs = [input]
-        filterSrgb.output = mtlSrgb
+        filterSrgb.output = outputSRgb
         filterSrgb.buffer = Renderer.createSyncBuffer(from: colorTransform, device: device)
         filterP3.inputs = [input]
-        filterP3.output = mtlP3
+        filterP3.output = outputP3
         filterP3.buffer = Renderer.createSyncBuffer(from: float4x4.identity, device: device)
         p3TosRgb = FilterChain()
         p3TosRgb.chain.append(filterSrgb)

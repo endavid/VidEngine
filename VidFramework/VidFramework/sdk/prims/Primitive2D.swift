@@ -53,4 +53,8 @@ public class SpritePrimitive2D : Primitive2D {
             return _sina
         }
     }
+    
+    override public init() {
+        super.init()
+    }
 }

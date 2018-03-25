@@ -48,12 +48,12 @@ open class FilterChain {
             }
         }
     }
-    public var inputs: [MTLTexture] {
+    public var inputs: [Texture] {
         get {
             return chain.first?.inputs ?? []
         }
     }
-    public var output: MTLTexture? {
+    public var output: Texture? {
         get {
             return chain.last?.output
         }

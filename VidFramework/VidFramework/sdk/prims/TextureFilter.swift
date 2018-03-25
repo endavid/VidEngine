@@ -11,24 +11,27 @@ import MetalKit
 
 open class TextureFilter {
     public var id: String
-    public var inputs: [MTLTexture] = []
-    public var output: MTLTexture?
+    public var inputs: [Texture] = []
+    public var output: Texture?
     public var buffer: MTLBuffer?
     let renderPipelineState: MTLRenderPipelineState
     public var bufferOffset: Int = 0
     
-    public convenience init?(id: String, input: MTLTexture, output: MTLTexture, fragmentFunction: String) {
+    public convenience init?(id: String, input: Texture, output: Texture, fragmentFunction: String) {
         guard let renderer = Renderer.shared else {
             return nil
         }
         guard let library = renderer.makeVidLibrary() else {
             return nil
         }
+        guard let outTex = output.mtlTexture else {
+            return nil
+        }
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.vertexFunction = library.makeFunction(name: "passThrough2DVertex")
         descriptor.fragmentFunction = library.makeFunction(name: fragmentFunction)
-        descriptor.colorAttachments[0].pixelFormat = output.pixelFormat
-        descriptor.sampleCount = output.sampleCount
+        descriptor.colorAttachments[0].pixelFormat = outTex.pixelFormat
+        descriptor.sampleCount = outTex.sampleCount
         self.init(id: id, device: renderer.device, descriptor: descriptor)
         self.inputs = [input]
         self.output = output
@@ -46,7 +49,7 @@ open class TextureFilter {
     
     func createRenderPassDescriptor() -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
-        renderPass.colorAttachments[0].texture = output
+        renderPass.colorAttachments[0].texture = output?.mtlTexture
         renderPass.colorAttachments[0].loadAction = .load
         renderPass.colorAttachments[0].storeAction = .store
         return renderPass

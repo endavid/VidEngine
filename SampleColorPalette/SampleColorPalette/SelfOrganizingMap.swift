@@ -43,24 +43,22 @@ class SelfOrganizingMap: FilterChain {
         //let target = LinearRGBA(r: 0, g: 0, b: 1, a: 1)
         let texture = Texture(device: device, id: "SelfOrganizingMap0", width: width, height: height, data: data, usage: [.shaderRead, .renderTarget])
         let target = trainingData.randomElement()
-        if let mtlTexture = texture.mtlTexture,
-           let distanceFilter = DistanceFilter(device: device, library: library, input: mtlTexture, target: target.raw) {
+        if let distanceFilter = DistanceFilter(device: device, library: library, input: texture, target: target.raw) {
             chain.append(distanceFilter)
             self.distanceFilter = distanceFilter
         }
-        var minimum: MTLTexture?
+        var minimum: Texture?
         if let distOutput = distanceFilter?.output,
            let findMin = FindMinimumFilterChain(device: device, library: library, input: distOutput) {
             minimum = findMin.output
             append(findMin)
         }
         let somData = SelfOrganizingMapFilter.SomData(learningRate: startLearningRate, neighborhoodRadius: radius, target: target.raw)
-        if let mtlTexture = texture.mtlTexture,
-           let minTexture = minimum,
-            let somFilter = SelfOrganizingMapFilter(device: device, library: library, input: mtlTexture, minimum: minTexture, data: somData) {
+        if let minTexture = minimum,
+           let somFilter = SelfOrganizingMapFilter(device: device, library: library, input: texture, minimum: minTexture, data: somData) {
             chain.append(somFilter)
             if let somOut = somFilter.output,
-               let copyFilter = CopyTextureFilter(device: device, library: library, input: somOut, output: mtlTexture) {
+               let copyFilter = CopyTextureFilter(device: device, library: library, input: somOut, output: texture) {
                 chain.append(copyFilter)
             }
             self.somFilter = somFilter
@@ -96,7 +94,7 @@ class SelfOrganizingMapFilter: TextureFilter {
     }
     var shaderData: SomData
     
-    init?(device: MTLDevice, library: MTLLibrary, input: MTLTexture, minimum: MTLTexture, data: SomData) {
+    init?(device: MTLDevice, library: MTLLibrary, input: Texture, minimum: Texture, data: SomData) {
         shaderData = data
         guard let vfn = library.makeFunction(name: "passThrough2DVertex"),
             let ffn = library.makeFunction(name: "passSelfOrganizingMap")
@@ -104,15 +102,21 @@ class SelfOrganizingMapFilter: TextureFilter {
                 NSLog("Failed to create shaders")
                 return nil
         }
+        guard let inputTexture = input.mtlTexture else {
+            return nil
+        }
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = vfn
         pipelineDescriptor.fragmentFunction = ffn
-        pipelineDescriptor.colorAttachments[0].pixelFormat = input.pixelFormat
-        pipelineDescriptor.sampleCount = input.sampleCount
+        pipelineDescriptor.colorAttachments[0].pixelFormat = inputTexture.pixelFormat
+        pipelineDescriptor.sampleCount = inputTexture.sampleCount
         super.init(id: "SOMFilter", device: device, descriptor: pipelineDescriptor)
-        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: input.pixelFormat, width: input.width, height: input.height, mipmapped: false)
+        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: inputTexture.pixelFormat, width: inputTexture.width, height: inputTexture.height, mipmapped: false)
         texDescriptor.usage = [.shaderRead, .renderTarget]
-        output = device.makeTexture(descriptor: texDescriptor)
+        guard let outputTexture = device.makeTexture(descriptor: texDescriptor) else {
+            return nil
+        }
+        output = Texture(id: "SomFilterOut", mtlTexture: outputTexture)
         buffer = Renderer.createSyncBuffer(from: data, device: device)
         inputs = [input, minimum]
     }

@@ -12,7 +12,7 @@ import simd
 class DistanceFilter: TextureFilter {
     var target: float4
     
-    init?(device: MTLDevice, library: MTLLibrary, input: MTLTexture, target: float4) {
+    init?(device: MTLDevice, library: MTLLibrary, input: Texture, target: float4) {
         self.target = target
         guard let vfn = library.makeFunction(name: "passThrough2DVertex"),
             let ffn = library.makeFunction(name: "passComputeDistance")
@@ -20,16 +20,22 @@ class DistanceFilter: TextureFilter {
                 NSLog("Failed to create shaders")
                 return nil
         }
+        guard let inputTexture = input.mtlTexture else {
+            return nil
+        }
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = vfn
         pipelineDescriptor.fragmentFunction = ffn
-        pipelineDescriptor.colorAttachments[0].pixelFormat = input.pixelFormat
-        pipelineDescriptor.sampleCount = input.sampleCount
+        pipelineDescriptor.colorAttachments[0].pixelFormat = inputTexture.pixelFormat
+        pipelineDescriptor.sampleCount = inputTexture.sampleCount
         super.init(id: "DistanceFilter", device: device, descriptor: pipelineDescriptor)
         let pixelFormat = MTLPixelFormat.rgba16Unorm
-        let distTexDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: input.width, height: input.height, mipmapped: false)
+        let distTexDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: inputTexture.width, height: inputTexture.height, mipmapped: false)
         distTexDescriptor.usage = [.shaderRead, .renderTarget]
-        output = device.makeTexture(descriptor: distTexDescriptor)
+        guard let outputTexture = device.makeTexture(descriptor: distTexDescriptor) else {
+            return nil
+        }
+        output = Texture(id: "DistanceTex", mtlTexture: outputTexture)
         inputs = [input]
         buffer = Renderer.createSyncBuffer(from: target, device: device)
     }

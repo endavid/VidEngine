@@ -22,6 +22,7 @@ class ViewController: VidController {
     var myFilters: MyFilters?
     var som: SelfOrganizingMap?
     var cc: UniversalColorCategorization?
+    var group2D: Group2D?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +33,10 @@ class ViewController: VidController {
         updateFn = self.updateSamples
         initImageViews()
         cc = UniversalColorCategorization()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        camera.setBounds(view.bounds)
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,15 +49,17 @@ class ViewController: VidController {
         if som?.isCompleted == true {
             if let output = som?.output {
                 initMyFilters(input: output)
-                imageViewP3?.setBackgroundImage(UIImage(texture: output), for: .normal)
+                if let mtlTexture = output.mtlTexture {
+                    imageViewP3?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
+                }
             }
             som = nil
         }
         if myFilters?.isCompleted == true {
-            if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output {
+            if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output?.mtlTexture {
                 imageViewSRGB?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
-            if let mtlTexture = myFilters?.p3ToGammaP3.chain.last?.output {
+            if let mtlTexture = myFilters?.p3ToGammaP3.chain.last?.output?.mtlTexture {
                 imageViewP3?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
             myFilters = nil
@@ -92,17 +99,19 @@ class ViewController: VidController {
             return
         }
         som = SelfOrganizingMap(device: device, library: library, width: 128, height: 128, numIterations: 5000, trainingData: samples)
-        Primitive2D.texture = som?.output
+        group2D?.texture = som?.output
         som?.queue()
     }
     
     private func initSprites() {
-        let sprite = SpritePrimitive2D(priority: 0)
+        let sprite = SpritePrimitive2D()
         sprite.options = [.alignCenter]
         sprite.position = Vec3(0, 0, 0)
         sprite.width = 320
         sprite.height = 320
-        sprite.queue()
+        group2D = Group2D(maxNumOfSprites: 10)
+        group2D?.append(sprite)
+        group2D?.queue()
     }
 
     private func initTexture() {
@@ -110,8 +119,10 @@ class ViewController: VidController {
             return
         }
         let textureLoader = MTKTextureLoader(device: device)
-        textureLoader.newTexture(URL: url, options: nil) { (texture, error) in
-            Primitive2D.texture = texture
+        textureLoader.newTexture(URL: url, options: nil) { [weak self] (texture, error) in
+            if let texture = texture {
+                self?.group2D?.texture = Texture(id: "iconAbout", mtlTexture: texture)
+            }
         }
     }
     
@@ -145,7 +156,7 @@ class ViewController: VidController {
         imageViewSRGB?.frame = CGRect(x: 0.75 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
     }
     
-    private func initMyFilters(input: MTLTexture) {
+    private func initMyFilters(input: Texture) {
         guard let m = sampler?.p3ToSrgb else {
             NSLog("Missing sampler")
             return
