@@ -9,6 +9,8 @@
 import simd
 
 public struct RGBColorSpace {
+    // displayP3 compatibility reference
+    // https://developer.apple.com/library/content/documentation/DeviceInformation/Reference/iOSDeviceCompatibility/Displays/Displays.html
     public static let dciP3 = RGBColorSpace(
         red: CieXYZ(x: 0.5151, y: 0.2412, z: -0.0011),
         green: CieXYZ(x: 0.2920, y: 0.6922, z: 0.0419),

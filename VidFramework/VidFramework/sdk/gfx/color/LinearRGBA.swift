@@ -68,8 +68,8 @@ public struct LinearRGBA: ColorWithAlpha {
         raw = float4(r, g, b, a)
     }
     
-    public init(rgb: float3, alpha: Float = 1.0) {
-        raw = float4(rgb.x, rgb.y, rgb.z, alpha)
+    public init(rgb: float3, a: Float = 1.0) {
+        raw = float4(rgb.x, rgb.y, rgb.z, a)
     }
     
     public init(srgba: NormalizedSRGBA) {
