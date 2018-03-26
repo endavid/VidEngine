@@ -53,6 +53,11 @@ public struct LinearRGBA: ColorWithAlpha {
             return float3(r, g, b)
         }
     }
+    public var color: float3 {
+        get {
+            return rgb
+        }
+    }
     public var rgba8U: UInt32 {
         get {
             return LinearRGBA.toUInt32(raw)
