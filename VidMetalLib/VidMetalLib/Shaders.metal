@@ -11,6 +11,11 @@
 
 using namespace metal;
 
+struct ColorParams {
+    float4x4 transform;
+};
+
+
 vertex VertexInOut passThrough2DVertex(uint vid [[ vertex_id ]],
                                      constant packed_float4* vdata [[ buffer(0) ]])
 {
@@ -43,21 +48,36 @@ fragment half4 passThroughFragment(VertexInOut inFrag [[stage_in]])
     return half4(inFrag.color);
 };
 
-fragment half4 passThroughTexturedFragment(VertexInOut inFrag [[stage_in]],
-                                           texture2d<float> tex [[ texture(0) ]])
+fragment half4 passThroughTexturedFragment(
+    VertexInOut inFrag [[stage_in]],
+    texture2d<float> tex [[ texture(0) ]])
 {
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
     float4 out = texColor * inFrag.color;
     return half4(out);
 }
 
+fragment half4 passLinearTexturedFragment(
+    VertexInOut inFrag [[stage_in]],
+    texture2d<float> tex [[ texture(0) ]],
+    constant ColorParams& params [[ buffer(0) ]])
+{
+    float4 texColor = tex.sample(linearSampler, inFrag.uv);
+    float4 out = texColor * inFrag.color;
+    out = params.transform * out;
+    return half4(out);
+}
+
 // Converts the texture to linear RGB manually
-fragment half4 passThroughSrgbTexturedFragment(VertexInOut inFrag [[stage_in]],
-                                           texture2d<float> tex [[ texture(0) ]])
+fragment half4 passSrgbTexturedFragment(
+    VertexInOut inFrag [[stage_in]],
+    texture2d<float> tex [[ texture(0) ]],
+    constant ColorParams& params [[ buffer(0) ]])
 {
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
     texColor = normalizedSrgbToLinearRgb(texColor);
     float4 out = texColor * inFrag.color;
+    out = params.transform * out;
     return half4(out);
 }
 

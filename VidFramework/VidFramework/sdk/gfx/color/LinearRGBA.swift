@@ -79,10 +79,10 @@ public struct LinearRGBA: ColorWithAlpha {
     
     public init(srgba: NormalizedSRGBA) {
         let f = {(c: Float) -> Float in
-            if c <= 0.04045 {
+            if fabs(c) <= 0.04045 {
                 return c / 12.92
             }
-            return powf((c + 0.055) / 1.055, 2.4)
+            return sign(c) * powf((fabs(c) + 0.055) / 1.055, 2.4)
         }
         raw = float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
     }

@@ -19,7 +19,7 @@ class PostEffectPlugin : GraphicPlugin {
         let passThroughDesc = MTLRenderPipelineDescriptor()
         passThroughDesc.vertexFunction = library.makeFunction(name: "passThrough2DVertex")
         passThroughDesc.fragmentFunction = library.makeFunction(name: "passThroughTexturedFragment")
-        // should be .BGRA8Unorm_sRGB
+        // .bgra8Unorm_srgb, or .bgra10_XR_sRGB if wide color gamut
         passThroughDesc.colorAttachments[0].pixelFormat = view.colorPixelFormat
         passThroughDesc.colorAttachments[0].isBlendingEnabled = false
         passThroughDesc.sampleCount = view.sampleCount

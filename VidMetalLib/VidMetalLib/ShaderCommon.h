@@ -51,7 +51,7 @@ struct ColoredUnlitTexturedVertex
 {
     packed_float3 position;
     packed_float2 texCoords;
-    packed_uchar4 color;
+    packed_float4 color;
 };
 
 struct Uniforms {

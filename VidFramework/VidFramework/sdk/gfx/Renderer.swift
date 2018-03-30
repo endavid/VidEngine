@@ -43,6 +43,7 @@ public class Renderer {
     var device : MTLDevice! = nil
     var camera : Camera = Camera()
     let textureLibrary = TextureLibrary()
+    var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     
     var whiteTexture : MTLTexture {
         get {
@@ -203,7 +204,7 @@ public class Renderer {
         renderPass.colorAttachments[0].texture = gBuffer.albedoTexture
         renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
         renderPass.colorAttachments[0].storeAction = .store
-        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
+        renderPass.colorAttachments[0].clearColor = clearColor
         renderPass.colorAttachments[1].texture = gBuffer.normalTexture
         renderPass.colorAttachments[1].loadAction = clear ? .clear : .load
         renderPass.colorAttachments[1].storeAction = .store
@@ -250,12 +251,16 @@ public class Renderer {
     }
     
     public static func createSyncBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
-        guard let buffer = device.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<T>.size, options: []) else {
+        return createBuffer(from: data, device: device, numCopies: Renderer.NumSyncBuffers)
+    }
+    
+    public static func createBuffer<T>(from data: T, device: MTLDevice, numCopies: Int = 1) -> MTLBuffer? {
+        guard let buffer = device.makeBuffer(length: numCopies * MemoryLayout<T>.size, options: []) else {
             NSLog("Failed to create MTLBuffer")
             return nil
         }
         let vb = buffer.contents().assumingMemoryBound(to: T.self)
-        for i in 0..<NumSyncBuffers {
+        for i in 0..<numCopies {
             vb[i] = data
         }
         return buffer

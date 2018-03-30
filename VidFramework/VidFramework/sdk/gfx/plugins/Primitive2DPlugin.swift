@@ -13,7 +13,9 @@ class Primitive2DPlugin: GraphicPlugin {
     fileprivate var groups: [Group2D] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var sRgbPipelineState: MTLRenderPipelineState! = nil
-
+    fileprivate var colorTransform: MTLBuffer! = nil
+    var isWideColor: Bool
+    
     func queue(_ group: Group2D) {
         let alreadyQueued = groups.contains { $0 === group }
         if !alreadyQueued {
@@ -27,10 +29,12 @@ class Primitive2DPlugin: GraphicPlugin {
         }
     }
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+        isWideColor = view.currentDrawable?.texture.pixelFormat == .bgra10_XR_sRGB
         super.init(device: device, library: library, view: view)
         
-        let fp = library.makeFunction(name: "passThroughTexturedFragment")!
-        let fpSrgb = library.makeFunction(name: "passThroughSrgbTexturedFragment")!
+        setTransform(device: device)
+        let fp = library.makeFunction(name: isWideColor ? "passLinearTexturedFragment" : "passThroughTexturedFragment")!
+        let fpSrgb = library.makeFunction(name: "passSrgbTexturedFragment")!
         let vp = library.makeFunction(name: "passSprite2DVertex")!
         
         let vertexDesc = createVertexDescriptor()
@@ -42,6 +46,11 @@ class Primitive2DPlugin: GraphicPlugin {
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
         }
+    }
+    
+    private func setTransform(device: MTLDevice) {
+        let transform = isWideColor ? WideColor.toSrgb() : float4x4.identity
+        colorTransform = Renderer.createBuffer(from: transform, device: device)
     }
     
     private func createVertexDescriptor() -> MTLVertexDescriptor {
@@ -80,6 +89,11 @@ class Primitive2DPlugin: GraphicPlugin {
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if groups.count > 0 {
+            let isWide = drawable.texture.pixelFormat == .bgra10_XR_sRGB
+            if isWideColor != isWide {
+                isWideColor = isWide
+                setTransform(device: Renderer.shared.device)
+            }
             let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
             guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
                 return
@@ -92,12 +106,16 @@ class Primitive2DPlugin: GraphicPlugin {
                 encoder.setRenderPipelineState(linear ? pipelineState : sRgbPipelineState)
                 encoder.setFragmentTexture(tex, index: 0)
                 encoder.setVertexBuffer(g.spriteVB, offset: g.spriteVBoffset, index: 0)
+                if isWideColor || !linear {
+                    encoder.setFragmentBuffer(colorTransform, offset: 0, index: 0)
+                }
                 encoder.drawIndexedPrimitives(type: .triangle, indexCount: g.sprites.count * 6, indexType: .uint16, indexBuffer: g.spriteIB, indexBufferOffset: 0)
             }
             encoder.popDebugGroup()
             encoder.endEncoding()
         }
     }
+        
     override func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
         for group in groups {
             group.updateBuffers(syncBufferIndex, camera: camera)

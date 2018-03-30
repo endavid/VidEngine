@@ -50,6 +50,9 @@ func CeilDiv(_ a: Int, b: Int) -> Int {
 public func IsClose(_ a: Float, _ b: Float, epsilon: Float = 0.0001) -> Bool {
     return ( fabsf( a - b ) < epsilon )
 }
+public func IsClose(_ a: CGFloat, _ b: CGFloat, epsilon: Float = 0.0001) -> Bool {
+    return ( fabsf( Float(a - b) ) < epsilon )
+}
 
 /// Clamp
 func Clamp(_ value: CGFloat, lowest: CGFloat, highest: CGFloat) -> CGFloat {

@@ -29,13 +29,34 @@ open class VidController: UIViewController, MTKViewDelegate {
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
+    private var _clearColor = UIColor.black
     
-    public var camera : Camera {
+    public var clearColor: UIColor {
+        get {
+            return _clearColor
+        }
+        set {
+            _clearColor = newValue
+            let c = LinearRGBA(newValue)
+            Renderer.shared.clearColor = MTLClearColor(red: Double(c.r), green: Double(c.g), blue: Double(c.b), alpha: Double(c.a))
+        }
+    }
+    
+    public var camera: Camera {
         get {
             return Renderer.shared.camera
         }
         set {
             Renderer.shared.camera = newValue
+        }
+    }
+    public var isWideColor = false {
+        didSet {
+            if let view = self.view as? MTKView {
+                // The pixel format for a MetalKit view must be bgra8Unorm, bgra8Unorm_srgb, rgba16Float, BGRA10_XR, or bgra10_XR_sRGB.
+                // our shaders will be in linear RGB, so automatically apply γ
+                view.colorPixelFormat = isWideColor ? .bgra10_XR_sRGB : .bgra8Unorm_srgb
+            }
         }
     }
         
@@ -54,11 +75,10 @@ open class VidController: UIViewController, MTKViewDelegate {
         let view = self.view as! MTKView
         view.device = device
         view.delegate = self
-        // our shaders will be in linear RGB, so automatically apply γ
-        view.colorPixelFormat = .bgra8Unorm_srgb
+        isWideColor = true
+        
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
-        Renderer.shared = Renderer(device, view: view)
 
         timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
         timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
@@ -74,6 +94,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
             let view = self.view as! MTKView
             Renderer.shared = Renderer(device, view: view)
+            clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
         }
     }

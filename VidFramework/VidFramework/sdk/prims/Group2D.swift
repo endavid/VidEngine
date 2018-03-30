@@ -127,10 +127,10 @@ public class Group2D {
             vb[4*i+1].uv = Vec2(u0, v1)
             vb[4*i+2].uv = Vec2(u1, v0)
             vb[4*i+3].uv = Vec2(u1, v1)
-            vb[4*i+0].color = sprite.color.rgba
-            vb[4*i+1].color = sprite.color.rgba
-            vb[4*i+2].color = sprite.color.rgba
-            vb[4*i+3].color = sprite.color.rgba
+            vb[4*i+0].color = Vec4(sprite.linearColor.raw)
+            vb[4*i+1].color = Vec4(sprite.linearColor.raw)
+            vb[4*i+2].color = Vec4(sprite.linearColor.raw)
+            vb[4*i+3].color = Vec4(sprite.linearColor.raw)
         } // for all sprites
     } // updateSpriteBuffer
 }

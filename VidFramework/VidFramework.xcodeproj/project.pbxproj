@@ -51,6 +51,7 @@
 		632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2866203984E3000562F0 /* FrameworkBundle.swift */; };
 		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
 		6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */ = {isa = PBXBuildFile; fileRef = 6334C979205EEB6A00405E90 /* VidMetalLib.metallib */; };
+		6369035B206E22FA008EE410 /* WideColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6369035A206E22FA008EE410 /* WideColor.swift */; };
 		63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBE2042EEF600D046CF /* TextureInit.swift */; };
 		63711CC120461C5700D046CF /* TextureFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CC020461C5700D046CF /* TextureFilter.swift */; };
 		6377D0AD206654930014EF9E /* Group2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6377D0AC206654930014EF9E /* Group2D.swift */; };
@@ -117,6 +118,7 @@
 		632D2866203984E3000562F0 /* FrameworkBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameworkBundle.swift; sourceTree = "<group>"; };
 		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
 		6334C979205EEB6A00405E90 /* VidMetalLib.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = VidMetalLib.metallib; path = "../../../VidMetalLib/build/Release-iphoneos/VidMetalLib.metallib"; sourceTree = "<group>"; };
+		6369035A206E22FA008EE410 /* WideColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WideColor.swift; sourceTree = "<group>"; };
 		63711CBA2041BF8800D046CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		63711CBE2042EEF600D046CF /* TextureInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureInit.swift; sourceTree = "<group>"; };
 		63711CC020461C5700D046CF /* TextureFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureFilter.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				6393E7B7205B15500098F96F /* LinearRGBA.swift */,
 				6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */,
 				6393E7B3205B14E50098F96F /* Spectrum.swift */,
+				6369035A206E22FA008EE410 /* WideColor.swift */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */,
 				63711CC120461C5700D046CF /* TextureFilter.swift in Sources */,
 				632D2811203896C7000562F0 /* TextPrimitive.swift in Sources */,
+				6369035B206E22FA008EE410 /* WideColor.swift in Sources */,
 				6393E7B02059ED370098F96F /* CieLab.swift in Sources */,
 				632D2822203896C7000562F0 /* PrimitivePlugin.swift in Sources */,
 				632D2815203896C7000562F0 /* Transform.swift in Sources */,

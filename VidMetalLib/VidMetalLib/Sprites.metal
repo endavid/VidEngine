@@ -11,14 +11,13 @@
 #include "ShaderMath.h"
 using namespace metal;
 
-
 vertex VertexInOut passSprite2DVertex(uint vid [[ vertex_id ]],
-                                constant ColoredUnlitTexturedVertex* vdata [[ buffer(0) ]])
+    constant ColoredUnlitTexturedVertex* vdata [[ buffer(0) ]])
 {
     VertexInOut outVertex;
     ColoredUnlitTexturedVertex v = vdata[vid];
     outVertex.position = float4(v.position, 1.0);
     outVertex.uv = v.texCoords;
-    outVertex.color = float4(1,1,1,1); // v.color
+    outVertex.color = float4(v.color);
     return outVertex;
 }

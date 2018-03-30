@@ -24,6 +24,16 @@ public class Primitive2D {
     public var position = Vec3(0,0,0)
     public var color = UIColor.white
     public var options : Primitive2DOptions = []
+    public var linearColor: LinearRGBA {
+        get {
+            return LinearRGBA(color)
+        }
+    }
+    public var gammaColor: NormalizedSRGBA {
+        get {
+            return NormalizedSRGBA(color)
+        }
+    }
 }
 
 public class SpritePrimitive2D : Primitive2D {

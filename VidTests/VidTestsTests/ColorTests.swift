@@ -202,4 +202,31 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(76.0714, 4.8516, -10.5185).isClose(gray, epsilon: e))
     }
     
+    func testP3UIColor() {
+        var fRed : CGFloat = 0
+        var fGreen : CGFloat = 0
+        var fBlue : CGFloat = 0
+        var fAlpha : CGFloat = 0
+        let c = UIColor(displayP3Red: 1, green: 0.5, blue: 0, alpha: 1)
+        c.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
+        XCTAssertTrue(IsClose(fRed, 1.07399773597717))
+        XCTAssertTrue(IsClose(fGreen, 0.462588369846344))
+        XCTAssertTrue(IsClose(fBlue, -0.210467934608459))
+        XCTAssertTrue(IsClose(fAlpha, 1))
+        let p3 = LinearRGBA(srgba: NormalizedSRGBA(rgb: float3(1, 0.5, 0)))
+        let srgb = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ * p3.rgb
+        let cgamma = NormalizedSRGBA(rgba: LinearRGBA(rgb: srgb))
+        XCTAssertTrue(IsClose(Float(fRed), cgamma.r))
+        XCTAssertTrue(IsClose(Float(fGreen), cgamma.g))
+        XCTAssertTrue(IsClose(Float(fBlue), cgamma.b, epsilon: 0.0005))
+        let s = NormalizedSRGBA(c)
+        XCTAssertTrue(IsClose(Float(fRed), s.r))
+        XCTAssertTrue(IsClose(Float(fGreen), s.g))
+        XCTAssertTrue(IsClose(Float(fBlue), s.b))
+        let l = LinearRGBA(srgba: s)
+        XCTAssertTrue(IsClose(srgb.x, l.r, epsilon: 0.0005))
+        XCTAssertTrue(IsClose(srgb.y, l.g, epsilon: 0.0005))
+        XCTAssertTrue(IsClose(srgb.z, l.b, epsilon: 0.0005))
+    }
+    
 }
