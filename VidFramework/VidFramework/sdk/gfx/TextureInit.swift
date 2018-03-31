@@ -76,6 +76,8 @@ public extension MTLTexture {
         let pixelCount = width * height
         var imageBytes = [UInt8](repeating: 0, count: pixelCount * bytesPerPixel)
         let region = MTLRegionMake2D(0, 0, width, height)
+        // getBytes will silently return nothing if the texture is not ready!
+        // https://forums.developer.apple.com/thread/30488
         getBytes(&imageBytes, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
         return imageBytes
     }

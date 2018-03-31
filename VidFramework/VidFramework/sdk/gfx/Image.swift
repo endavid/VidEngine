@@ -24,12 +24,14 @@ func createNoiseTexture(device: MTLDevice, width: Int, height: Int) -> MTLTextur
 extension UIImage {
     public convenience init?(texture: MTLTexture) {
         guard let rgbColorSpace = texture.defaultColorSpace else {
+            NSLog("UIImage.init: unknown ColorSpace")
             return nil
         }
         let isFloat = texture.bitsPerComponent == 16
         let bitmapInfo:CGBitmapInfo = [isFloat ? .byteOrder16Little : .byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
         
         guard let provider = texture.dataProviderRef() else {
+            NSLog("UIImage.init: missing dataProvider")
             return nil
         }
         guard let cgim = CGImage(
@@ -46,6 +48,7 @@ extension UIImage {
             intent: .defaultIntent
             )
         else {
+            NSLog("UIImage.init: Failed to create CGImage")
             return nil
         }
         self.init(cgImage: cgim)
