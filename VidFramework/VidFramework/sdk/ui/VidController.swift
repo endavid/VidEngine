@@ -79,9 +79,6 @@ open class VidController: UIViewController, MTKViewDelegate {
         
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
-
-        timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
-        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
         
         setupMotionController()
     }
@@ -95,6 +92,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             let view = self.view as! MTKView
             Renderer.shared = Renderer(device, view: view)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
+            timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
         }
     }
@@ -103,6 +101,7 @@ open class VidController: UIViewController, MTKViewDelegate {
         if let _ = Renderer.shared {
             NotificationCenter.default.removeObserver(self)
             timer.remove(from: .main, forMode: .defaultRunLoopMode)
+            timer = nil
             Renderer.shared = nil
             inflightSemaphore.signal()
         }
