@@ -55,14 +55,14 @@ public func IsClose(_ a: CGFloat, _ b: CGFloat, epsilon: Float = 0.0001) -> Bool
 }
 
 /// Clamp
-func Clamp(_ value: CGFloat, lowest: CGFloat, highest: CGFloat) -> CGFloat {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+public func Clamp(_ value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
+    return (value<min) ?min:(value>max) ?max:value
 }
-func Clamp(_ value: Float, lowest: Float, highest: Float) -> Float {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+public func Clamp(_ value: Float, min: Float, max: Float) -> Float {
+    return (value<min) ?min:(value>max) ?max:value
 }
-func Clamp(_ value: Int, lowest: Int, highest: Int) -> Int {
-    return (value<lowest) ?lowest:(value>highest) ?highest:value
+public func Clamp(_ value: Int, min: Int, max: Int) -> Int {
+    return (value<min) ?min:(value>max) ?max:value
 }
 /// Random Int. Preferred to rand() % upperBound
 public func Rand(_ upperBound: UInt32) -> UInt32 {
