@@ -18,6 +18,17 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     fileprivate var textPrimitives : [TextPrimitive] = []
     fileprivate var primitives : [Primitive] = []
     
+    override var label: String {
+        get {
+            return "UnlitTransparency"
+        }
+    }
+    
+    override var isEmpty: Bool {
+        get {
+            return textPrimitives.isEmpty && primitives.isEmpty
+        }
+    }
     
     func queue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
@@ -65,20 +76,29 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+        if isEmpty {
+            return
+        }
+        guard let renderer = Renderer.shared else {
+            return
+        }
         let renderPassDescriptor = Renderer.shared.createOITRenderPass(clear: true)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "Unlit Transparency Encoder"
-        encoder?.pushDebugGroup("Unlit OIT")
-        encoder?.setRenderPipelineState(pipelineState)
-        encoder?.setDepthStencilState(depthState)
-        encoder?.setFrontFacing(.counterClockwise)
-        encoder?.setCullMode(.back)
-        Renderer.shared.setGraphicsDataBuffer(encoder!, atIndex: 1)
-        drawPrimitives(primitives, encoder: encoder!)
-        encoder?.setRenderPipelineState(textPipelineState)
-        drawPrimitives(textPrimitives, encoder: encoder!)
-        encoder?.popDebugGroup()
-        encoder?.endEncoding()
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = self.label
+        encoder.pushDebugGroup(self.label)
+        encoder.setRenderPipelineState(pipelineState)
+        encoder.setDepthStencilState(depthState)
+        encoder.setFrontFacing(.counterClockwise)
+        encoder.setCullMode(.back)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
+        drawPrimitives(primitives, encoder: encoder)
+        encoder.setRenderPipelineState(textPipelineState)
+        drawPrimitives(textPrimitives, encoder: encoder)
+        encoder.popDebugGroup()
+        encoder.endEncoding()
+        renderer.frameState.clearedTransparencyBuffer = true
     }
         
     private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {

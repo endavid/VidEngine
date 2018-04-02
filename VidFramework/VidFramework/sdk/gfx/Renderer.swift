@@ -28,6 +28,18 @@ public enum RendererError: Error {
 
 // (View in M-V-C)
 public class Renderer {
+    struct FrameState {
+        var clearedBackbuffer: Bool
+        var clearedLightbuffer: Bool
+        var clearedTransparencyBuffer: Bool
+        var clearedDrawable: Bool
+        init() {
+            clearedBackbuffer = false
+            clearedLightbuffer = false
+            clearedTransparencyBuffer = false
+            clearedDrawable = false
+        }
+    }
     static var shared: Renderer! = nil
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let NumSyncBuffers = 3
@@ -44,6 +56,7 @@ public class Renderer {
     var camera : Camera = Camera()
     let textureLibrary = TextureLibrary()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
+    var frameState = FrameState()
     
     var whiteTexture : MTLTexture {
         get {
@@ -149,6 +162,9 @@ public class Renderer {
                 _gBuffer = GBuffer(device: device, size: size)
             }
         }
+        // reset state
+        frameState = FrameState()
+        // process all plugins
         for plugin in plugins {
             plugin.draw(drawable: currentDrawable, commandBuffer: commandBuffer, camera: camera)
         }

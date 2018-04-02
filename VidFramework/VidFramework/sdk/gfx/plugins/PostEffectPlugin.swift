@@ -11,9 +11,15 @@ import Metal
 import MetalKit
 
 // At the moment, it just passes through
-class PostEffectPlugin : GraphicPlugin {
+class PostEffectPlugin: GraphicPlugin {
     fileprivate var passThroughPipeline: MTLRenderPipelineState! = nil
 
+    override var label: String {
+        get {
+            return "PostFx"
+        }
+    }
+    
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
         let passThroughDesc = MTLRenderPipelineDescriptor()
@@ -31,19 +37,28 @@ class PostEffectPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "PostEffects"
-        passThrough(encoder: encoder!, camera: camera)
-        encoder?.endEncoding()
+        guard let renderer = Renderer.shared else {
+            return
+        }
+        if !renderer.frameState.clearedBackbuffer {
+            // nothing in backbuffer to dump to the drawable
+            return
+        }
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = self.label
+        passThrough(encoder: encoder, renderer: renderer, camera: camera)
+        encoder.endEncoding()
+        renderer.frameState.clearedDrawable = true
     }
     
-    private func passThrough(encoder: MTLRenderCommandEncoder, camera: Camera) {
-        let gBuffer = Renderer.shared.gBuffer
+    private func passThrough(encoder: MTLRenderCommandEncoder, renderer: Renderer, camera: Camera) {
         encoder.pushDebugGroup("PassThrough")
         encoder.setRenderPipelineState(passThroughPipeline)
-        encoder.setFragmentTexture(gBuffer.shadedTexture, index: 0)
-        Renderer.shared.fullScreenQuad.draw(encoder: encoder)
+        encoder.setFragmentTexture(renderer.gBuffer.shadedTexture, index: 0)
+        renderer.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
     

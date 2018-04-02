@@ -15,6 +15,18 @@ class PrimitivePlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil
     
+    override var label: String {
+        get {
+            return "LitPrimitives"
+        }
+    }
+    
+    override var isEmpty: Bool {
+        get {
+            return primitives.isEmpty
+        }
+    }
+    
     func queue(_ primitive: Primitive) {
         let alreadyQueued = primitives.contains { $0 === primitive }
         if !alreadyQueued {
@@ -43,18 +55,23 @@ class PrimitivePlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+        if isEmpty {
+            return
+        }
         let renderPassDescriptor = Renderer.shared.createRenderPassWithGBuffer(true)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "Primitives Encoder"
-        encoder?.pushDebugGroup("primitives")
-        encoder?.setRenderPipelineState(pipelineState)
-        encoder?.setDepthStencilState(depthState)
-        encoder?.setFrontFacing(.counterClockwise)
-        encoder?.setCullMode(.back)
-        Renderer.shared.setGraphicsDataBuffer(encoder!, atIndex: 1)
-        drawPrimitives(encoder: encoder!)
-        encoder?.popDebugGroup()
-        encoder?.endEncoding()
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = self.label
+        encoder.pushDebugGroup(self.label+":primitives")
+        encoder.setRenderPipelineState(pipelineState)
+        encoder.setDepthStencilState(depthState)
+        encoder.setFrontFacing(.counterClockwise)
+        encoder.setCullMode(.back)
+        Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)
+        drawPrimitives(encoder: encoder)
+        encoder.popDebugGroup()
+        encoder.endEncoding()
     }
     
     private func drawPrimitives(encoder: MTLRenderCommandEncoder) {

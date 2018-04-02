@@ -13,6 +13,18 @@ class DeferredLightingPlugin : GraphicPlugin {
     // @todo split in different queues, one per type
     fileprivate var lights : [LightSource] = []
     
+    override var label: String {
+        get {
+            return "DeferredLighting"
+        }
+    }
+    
+    override var isEmpty: Bool {
+        get {
+            return lights.isEmpty
+        }
+    }
+    
     func queue(_ light: LightSource) {
         let alreadyQueued = lights.contains { $0 === light }
         if !alreadyQueued {
@@ -29,14 +41,23 @@ class DeferredLightingPlugin : GraphicPlugin {
         super.init(device: device, library: library, view: view)
     }
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let gBuffer = Renderer.shared.gBuffer
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "Deferred Lighting Encoder"
-        encoder?.pushDebugGroup("deferredLighting")
-        drawDirectionalLights(encoder!)
-        encoder?.popDebugGroup()
-        encoder?.endEncoding()
+        if isEmpty {
+            return
+        }
+        guard let renderer = Renderer.shared else {
+            return
+        }
+        let gBuffer = renderer.gBuffer
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(gBuffer.lightTexture, clear: true)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = self.label
+        encoder.pushDebugGroup(self.label+":directional")
+        drawDirectionalLights(encoder)
+        encoder.popDebugGroup()
+        encoder.endEncoding()
+        renderer.frameState.clearedLightbuffer = true
     }
     
     /// Draw all the directional lights with full-screen passes.

@@ -9,10 +9,22 @@
 import Metal
 import MetalKit
 
-class RainPlugin : GraphicPlugin {
+class RainPlugin: GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var updateState: MTLRenderPipelineState! = nil
     fileprivate var rains: [Rain] = []
+    
+    override var label: String {
+        get {
+            return "Rain"
+        }
+    }
+    
+    override var isEmpty: Bool {
+        get {
+            return rains.isEmpty
+        }
+    }
     
     func queue(_ rain: Rain) {
         let alreadyQueued = rains.contains { $0 === rain }
@@ -61,25 +73,30 @@ class RainPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        if rains.isEmpty {
+        if isEmpty {
             return
         }
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: false)
+        guard let renderer = Renderer.shared else {
+            return
+        }
+        let clear = !renderer.frameState.clearedDrawable
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: clear)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
         for rain in rains {
-            encoder.pushDebugGroup("draw rain")
+            encoder.pushDebugGroup(self.label+":draw")
             encoder.setRenderPipelineState(pipelineState)
             rain.draw(encoder: encoder)
             encoder.popDebugGroup()
-            encoder.pushDebugGroup("update raindrops")
+            encoder.pushDebugGroup(self.label+":update")
             encoder.setRenderPipelineState(updateState)
             rain.update(encoder: encoder)
             encoder.popDebugGroup()
             rain.swapBuffers()
         }
         encoder.endEncoding()
+        renderer.frameState.clearedDrawable = true
     }
     
 

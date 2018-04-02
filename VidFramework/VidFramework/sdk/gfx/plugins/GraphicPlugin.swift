@@ -10,6 +10,17 @@ import Metal
 import MetalKit
 
 class GraphicPlugin {
+    var label: String {
+        get {
+            return "Generic"
+        }
+    }
+    /// Empty = nothing to render
+    var isEmpty: Bool {
+        get {
+            return true
+        }
+    }
     
     init() {
     }

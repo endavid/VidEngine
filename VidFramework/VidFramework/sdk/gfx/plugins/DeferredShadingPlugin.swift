@@ -12,6 +12,12 @@ import MetalKit
 class DeferredShadingPlugin : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
 
+    override var label: String {
+        get {
+            return "DeferredShading"
+        }
+    }
+    
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         
@@ -33,16 +39,25 @@ class DeferredShadingPlugin : GraphicPlugin {
     }
     
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let gBuffer = Renderer.shared.gBuffer
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: true)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "Deferred Shading Encoder"
-        encoder?.pushDebugGroup("deferredShading")
-        encoder?.setRenderPipelineState(pipelineState)
-        encoder?.setFragmentTexture(gBuffer.albedoTexture, index: 0)
-        encoder?.setFragmentTexture(gBuffer.normalTexture, index: 1)
-        Renderer.shared.fullScreenQuad.draw(encoder: encoder!)
-        encoder?.popDebugGroup()
-        encoder?.endEncoding()
+        guard let renderer = Renderer.shared else {
+            return
+        }
+        if !renderer.frameState.clearedLightbuffer {
+            return
+        }
+        let gBuffer = renderer.gBuffer
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: true)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = "Deferred Shading Encoder"
+        encoder.pushDebugGroup("deferredShading")
+        encoder.setRenderPipelineState(pipelineState)
+        encoder.setFragmentTexture(gBuffer.albedoTexture, index: 0)
+        encoder.setFragmentTexture(gBuffer.normalTexture, index: 1)
+        renderer.fullScreenQuad.draw(encoder: encoder)
+        encoder.popDebugGroup()
+        encoder.endEncoding()
+        renderer.frameState.clearedBackbuffer = true
     }    
 }

@@ -14,6 +14,12 @@ import MetalKit
 class ResolveWeightBlendedTransparency : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     
+    override var label: String {
+        get {
+            return "ResolveOIT"
+        }
+    }
+    
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         
@@ -40,16 +46,26 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         }
     }
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let gBuffer = Renderer.shared.gBuffer
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: false)
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        encoder?.label = "Resolve OIT Encoder"
-        encoder?.pushDebugGroup("resolveOIT")
-        encoder?.setRenderPipelineState(pipelineState)
-        encoder?.setFragmentTexture(gBuffer.lightTexture, index: 0)
-        encoder?.setFragmentTexture(gBuffer.revealTexture, index: 1)
-        Renderer.shared.fullScreenQuad.draw(encoder: encoder!)
-        encoder?.popDebugGroup()
-        encoder?.endEncoding()
+        guard let renderer = Renderer.shared else {
+            return
+        }
+        if !renderer.frameState.clearedTransparencyBuffer {
+            return
+        }
+        let gBuffer = renderer.gBuffer
+        let clear = !renderer.frameState.clearedBackbuffer
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(gBuffer.shadedTexture, clear: clear)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        encoder.label = self.label
+        encoder.pushDebugGroup(self.label)
+        encoder.setRenderPipelineState(pipelineState)
+        encoder.setFragmentTexture(gBuffer.lightTexture, index: 0)
+        encoder.setFragmentTexture(gBuffer.revealTexture, index: 1)
+        renderer.fullScreenQuad.draw(encoder: encoder)
+        encoder.popDebugGroup()
+        encoder.endEncoding()
+        renderer.frameState.clearedBackbuffer = true
     }
 }
