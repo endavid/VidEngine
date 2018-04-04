@@ -13,10 +13,12 @@ open class TextureFilter {
     public var id: String
     public var inputs: [Texture] = []
     public var output: Texture?
-    public var buffer: MTLBuffer?
+    public var vertexBuffer: MTLBuffer?
+    public var fragmentBuffer: MTLBuffer?
     let renderPipelineState: MTLRenderPipelineState
-    public var bufferOffset: Int = 0
-    
+    public var fragmentBufferOffset: Int = 0
+    public var vertexBufferOffset: Int = 0
+
     public convenience init?(id: String, input: Texture, output: Texture, fragmentFunction: String) {
         guard let renderer = Renderer.shared else {
             return nil
@@ -60,7 +62,9 @@ open class TextureFilter {
     }
     
     open func updateBuffers(_ syncBufferIndex: Int) {
-        let n = buffer?.length ?? 0
-        bufferOffset = (n * syncBufferIndex) / Renderer.NumSyncBuffers
+        let nf = fragmentBuffer?.length ?? 0
+        fragmentBufferOffset = (nf * syncBufferIndex) / Renderer.NumSyncBuffers
+        let nv = vertexBuffer?.length ?? 0
+        vertexBufferOffset = (nv * syncBufferIndex) / Renderer.NumSyncBuffers
     }
 }

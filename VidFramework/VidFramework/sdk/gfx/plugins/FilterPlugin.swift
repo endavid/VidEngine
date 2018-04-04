@@ -41,8 +41,12 @@ class FilterPlugin: GraphicPlugin {
                 for i in 0..<filter.inputs.count {
                     encoder.setFragmentTexture(filter.inputs[i].mtlTexture, index: i)
                 }
-                if let buffer = filter.buffer {
-                    encoder.setFragmentBuffer(buffer, offset: filter.bufferOffset, index: 0)
+                if let buffer = filter.fragmentBuffer {
+                    encoder.setFragmentBuffer(buffer, offset: filter.fragmentBufferOffset, index: 0)
+                }
+                if let buffer = filter.vertexBuffer {
+                    // at index 0 we pass the vertices of the quad
+                    encoder.setVertexBuffer(buffer, offset: filter.vertexBufferOffset, index: 1)
                 }
                 Renderer.shared.fullScreenQuad.draw(encoder: encoder)
                 encoder.popDebugGroup()

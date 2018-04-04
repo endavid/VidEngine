@@ -33,7 +33,7 @@ class VidTestsTests: XCTestCase {
         memcpy(unsafe, &v, MemoryLayout<float2>.size)
         XCTAssertEqual(0, unsafe[0])
         XCTAssertEqual(3, unsafe[1])
-        unsafe.deallocate(capacity: 2)
+        unsafe.deallocate()
     }
     
     func testSpherical() {

@@ -52,6 +52,11 @@ public class Camera {
         transform.rotation = Quaternion.createRotation(start: float3(0,0,-1), end: dir, up: up)
     }
     
+    public func setViewDirection(target: float3, up: float3) {
+        let dir = normalize(target - transform.position)
+        setViewDirection(dir, up: up)
+    }
+    
     public func setEyePosition(_ pos: float3) {
         transform.position = transform.rotation * pos
     }
