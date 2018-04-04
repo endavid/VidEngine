@@ -59,6 +59,11 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
         }
     }
+    public var textureLibrary: TextureLibrary {
+        get {
+            return Renderer.shared.textureLibrary
+        }
+    }
         
     open override func viewDidLoad() {
         

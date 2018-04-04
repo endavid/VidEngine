@@ -421,7 +421,7 @@ extension MTKTextureLoader {
     }
 }
 
-class TextureLibrary {
+public class TextureLibrary {
     private var lib: [String: MTLTexture] = [:]
     
     private func getUrl(forResource resource: String, bundle: Bundle) -> URL? {
@@ -433,7 +433,7 @@ class TextureLibrary {
         return bundle.url(forResource: String(name), withExtension: String(ext))
     }
     
-    func getTextureAsync(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTextureAsync(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[resource] {
             completion(t, nil)
             return
@@ -445,7 +445,7 @@ class TextureLibrary {
         getTextureAsync(id: resource, fileUrl: url, options: options, addToCache: addToCache, completion: completion)
     }
     
-    func getTextureAsync(id: String, posX: String, negX: String, posY: String, negY: String, posZ: String, negZ: String, bundle: Bundle, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTextureAsync(id: String, posX: String, negX: String, posY: String, negY: String, posZ: String, negZ: String, bundle: Bundle, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
             return
@@ -477,7 +477,7 @@ class TextureLibrary {
         }
     }
     
-    func getTextureAsync(id: String, fileUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTextureAsync(id: String, fileUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
             return
@@ -492,7 +492,7 @@ class TextureLibrary {
         }
     }
     
-    func getTextureAsync(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTextureAsync(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
             return
@@ -507,7 +507,7 @@ class TextureLibrary {
         }
     }
     
-    func getTextureAsync(id: String, posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTextureAsync(id: String, posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
         if let t = lib[id] {
             completion(t, nil)
             return
@@ -522,11 +522,11 @@ class TextureLibrary {
         }
     }
     
-    func remove(_ textureId: String) {
+    public func remove(_ textureId: String) {
         lib.removeValue(forKey: textureId)
     }
     
-    func clear() {
+    public func clear() {
         lib.removeAll()
     }
 }
