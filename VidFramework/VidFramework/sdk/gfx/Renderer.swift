@@ -179,7 +179,7 @@ public class Renderer {
         renderPass.colorAttachments[0].texture = texture
         renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
         renderPass.colorAttachments[0].storeAction = .store
-        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0);
+        renderPass.colorAttachments[0].clearColor = clearColor
         return renderPass
     }
     
