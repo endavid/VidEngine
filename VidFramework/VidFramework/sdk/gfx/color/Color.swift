@@ -10,7 +10,7 @@ import UIKit
 import simd
 
 extension UIColor {
-    convenience init(argb: UInt32) {
+    public convenience init(argb: UInt32) {
         let alpha = CGFloat(0x000000FF & (argb >> 24)) / 255.0
         let red = CGFloat(0x000000FF & (argb >> 16)) / 255.0
         let green = CGFloat(0x000000FF & (argb >> 8)) / 255.0
