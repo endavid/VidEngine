@@ -67,6 +67,7 @@
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
+		63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */; };
 		63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139820476D00000AC2F1 /* FilterChain.swift */; };
 		63E5139B20476F75000AC2F1 /* FilterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139A20476F75000AC2F1 /* FilterPlugin.swift */; };
 /* End PBXBuildFile section */
@@ -135,6 +136,7 @@
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
+		63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHSV.swift; sourceTree = "<group>"; };
 		63E5139820476D00000AC2F1 /* FilterChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterChain.swift; sourceTree = "<group>"; };
 		63E5139A20476F75000AC2F1 /* FilterPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -321,6 +323,7 @@
 				6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */,
 				6393E7B3205B14E50098F96F /* Spectrum.swift */,
 				6369035A206E22FA008EE410 /* WideColor.swift */,
+				63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				6393E7B4205B14E50098F96F /* Spectrum.swift in Sources */,
 				632D2810203896C7000562F0 /* PlanePrimitive.swift in Sources */,
 				632D281B203896C7000562F0 /* Collections.swift in Sources */,
+				63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */,
 				632D2818203896C7000562F0 /* Quaternion.swift in Sources */,
 				632D281F203896C7000562F0 /* GraphicPlugin.swift in Sources */,
 				632D282F203896C7000562F0 /* Material.swift in Sources */,

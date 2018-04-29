@@ -229,4 +229,20 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(srgb.z, l.b, epsilon: 0.0005))
     }
     
+    func testHSVtoRGB() {
+        XCTAssertTrue(ColorHSV(h: 0, s: 1, v: 0.5).rgb.isClose(float3(0.5, 0, 0)))
+        XCTAssertTrue(ColorHSV(h: 0, s: 1, v: 1).rgb.isClose(float3(1, 0, 0)))
+        XCTAssertTrue(ColorHSV(h: 30, s: 1, v: 1).rgb.isClose(float3(1, 0.5, 0)))
+        XCTAssertTrue(ColorHSV(h: 251, s: 0.5, v: 0.7).rgb.isClose(float3(0.4142, 0.35, 0.7)))
+    }
+    
+    func testRGBtoHSV() {
+        XCTAssertTrue(ColorHSV(rgb: float3(0.5, 0, 0)).hsv.isClose(float3(0, 1, 0.5)))
+        XCTAssertTrue(ColorHSV(rgb: float3(1, 0, 0)).hsv.isClose(float3(0, 1, 1)))
+        XCTAssertTrue(ColorHSV(rgb: float3(1, 0.5, 0)).hsv.isClose(float3(30, 1, 1)))
+        // result: (251.006, 0.5, 0.7)
+        XCTAssertTrue(ColorHSV(rgb: float3(0.4142, 0.35, 0.7)).hsv.isClose(float3(251, 0.5, 0.7), epsilon: 0.01))
+
+    }
+    
 }
