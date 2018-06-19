@@ -24,7 +24,7 @@ public class Group2D {
         let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
-    
+
     public func dequeue() {
         let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.dequeue(self)

@@ -57,13 +57,13 @@ public class Renderer {
     let textureLibrary = TextureLibrary()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     var frameState = FrameState()
-    
+
     var whiteTexture : MTLTexture {
         get {
             return _whiteTexture
         }
     }
-    
+
     func getPlugin<T>() -> T? {
         for p in plugins {
             if p is T {
@@ -72,29 +72,29 @@ public class Renderer {
         }
         return nil
     }
-    
+
     var uniformBufferOffset : Int {
         get {
             return MemoryLayout<GraphicsData>.size * syncBufferIndex
         }
     }
-    
+
     var gBuffer : GBuffer {
         get {
             return _gBuffer
         }
     }
-    
+
     var fullScreenQuad : FullScreenQuad {
         get {
             return _fullScreenQuad
         }
     }
-    
+
     func setGraphicsDataBuffer(_ encoder: MTLRenderCommandEncoder, atIndex: Int) {
         encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
-    
+
     init(_ device: MTLDevice, view: MTKView) {
         graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.NumSyncBuffers, options: [])
         graphicsDataBuffer.label = "GraphicsData"
@@ -123,7 +123,7 @@ public class Renderer {
             return nil
         }
     }
-    
+
     fileprivate func initGraphicPlugins(_ view: MTKView) {
         guard let library = makeVidLibrary() else {
             return
@@ -138,7 +138,7 @@ public class Renderer {
         plugins.append(RainPlugin(device: device, library: library, view: view))
         plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
     }
-    
+
     func updateBuffers() {
         let uniformB = graphicsDataBuffer.contents()
         let uniformData = uniformB.advanced(by: MemoryLayout<GraphicsData>.size * syncBufferIndex).assumingMemoryBound(to: Float.self)
@@ -149,7 +149,7 @@ public class Renderer {
             p.updateBuffers(syncBufferIndex, camera: camera)
         }
     }
-    
+
     func draw(_ view: MTKView, commandBuffer: MTLCommandBuffer) {
         guard let currentDrawable = view.currentDrawable else {
             return
@@ -173,7 +173,7 @@ public class Renderer {
         syncBufferIndex = (syncBufferIndex + 1) % Renderer.NumSyncBuffers
         commandBuffer.commit()
     }
-    
+
     func createRenderPassWithColorAttachmentTexture(_ texture: MTLTexture, clear: Bool) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = texture
@@ -182,8 +182,8 @@ public class Renderer {
         renderPass.colorAttachments[0].clearColor = clearColor
         return renderPass
     }
-    
-    
+
+
     func createUnlitRenderPass() -> MTLRenderPassDescriptor {
         // load color and depth, assuming they've been cleared before
         let rp = MTLRenderPassDescriptor()
@@ -197,7 +197,7 @@ public class Renderer {
         rp.depthAttachment.clearDepth = 1.0
         return rp
     }
-    
+
     // Transparency
     func createOITRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()
@@ -214,7 +214,7 @@ public class Renderer {
         rp.depthAttachment.storeAction = .dontCare
         return rp
     }
-    
+
     func createRenderPassWithGBuffer(_ clear: Bool) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = gBuffer.albedoTexture
@@ -232,31 +232,31 @@ public class Renderer {
         return renderPass
     }
 
-    
+
     func createIndexBuffer(_ label: String, elements: [UInt16]) -> MTLBuffer {
         let buffer = device.makeBuffer(bytes: elements, length: elements.count * MemoryLayout<UInt16>.size, options: MTLResourceOptions())
         buffer?.label = label
         return buffer!
     }
-    
+
     func createTexturedVertexBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<TexturedVertex>.size, options: [])
         buffer?.label = label
         return buffer!
     }
-    
+
     func createPerInstanceUniformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<PerInstanceUniforms>.size, options: [])
         buffer?.label = label
         return buffer!
     }
-    
+
     func createTransformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.size, options: [])
         buffer?.label = label
         return buffer!
     }
-    
+
     private func createWhiteTexture() -> MTLTexture {
         let data : [UInt32] = [0xffffffff]
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
@@ -265,11 +265,11 @@ public class Renderer {
         texture?.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
         return texture!
     }
-    
+
     public static func createSyncBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
         return createBuffer(from: data, device: device, numCopies: Renderer.NumSyncBuffers)
     }
-    
+
     public static func createBuffer<T>(from data: T, device: MTLDevice, numCopies: Int = 1) -> MTLBuffer? {
         guard let buffer = device.makeBuffer(length: numCopies * MemoryLayout<T>.size, options: []) else {
             NSLog("Failed to create MTLBuffer")

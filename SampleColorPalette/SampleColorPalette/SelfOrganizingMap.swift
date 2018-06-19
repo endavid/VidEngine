@@ -17,7 +17,7 @@ class SelfOrganizingMap: FilterChain {
     private var distanceFilter: DistanceFilter?
     private var trainingData: [LinearRGBA]
     private var numIterations: Int
-    
+
     init(device: MTLDevice, library: MTLLibrary, width: Int, height: Int, numIterations: Int, trainingData: [LinearRGBA]) {
         self.numIterations = numIterations
         let s = Float(max(width, height))
@@ -64,7 +64,7 @@ class SelfOrganizingMap: FilterChain {
             self.somFilter = somFilter
         }
     }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int) {
         let target = trainingData.randomElement().raw
         //let target = LinearRGBA(r: 0, g: 0, b: 1, a: 1).raw
@@ -93,7 +93,7 @@ class SelfOrganizingMapFilter: TextureFilter {
         }
     }
     var shaderData: SomData
-    
+
     init?(device: MTLDevice, library: MTLLibrary, input: Texture, minimum: Texture, data: SomData) {
         shaderData = data
         guard let vfn = library.makeFunction(name: "passThrough2DVertex"),
@@ -120,7 +120,7 @@ class SelfOrganizingMapFilter: TextureFilter {
         buffer = Renderer.createSyncBuffer(from: data, device: device)
         inputs = [input, minimum]
     }
-    
+
     override func postRender() {
         // ping-pong through the textures
         if let tmp = output {
@@ -128,7 +128,7 @@ class SelfOrganizingMapFilter: TextureFilter {
             inputs[0] = tmp
         }
     }
-    
+
     // this gets called when we need to update the buffers used by the GPU
     override func updateBuffers(_ syncBufferIndex: Int) {
         super.updateBuffers(syncBufferIndex)

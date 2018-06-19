@@ -18,7 +18,7 @@ class MyFilters {
             return p3ToGammaP3.isCompleted && p3TosRgb.isCompleted
         }
     }
-    
+
     init?(device: MTLDevice, input: Texture, colorTransform: float4x4) {
         guard let library = device.makeDefaultLibrary() else {
             NSLog("Failed to create default Metal library")
@@ -74,7 +74,7 @@ class MyFilters {
         p3TosRgb.queue()
         p3ToGammaP3.queue()
     }
-    
+
     private static func bufferFromMatrix(device: MTLDevice, m: float4x4) -> MTLBuffer? {
         guard let buffer = device.makeBuffer(length: MemoryLayout<float4x4>.size, options: []) else {
             NSLog("Failed to create MTLBuffer")

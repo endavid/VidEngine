@@ -11,7 +11,7 @@ import simd
 /// Linear RGB with alpha
 public struct LinearRGBA: ColorWithAlpha {
     public let raw: float4
-    
+
     static func toUInt32(_ rgba: float4) -> UInt32 {
         let r = UInt32((Float(0xFF) * rgba.x).rounded())
         let g = UInt32((Float(0xFF) * rgba.y).rounded())
@@ -27,7 +27,7 @@ public struct LinearRGBA: ColorWithAlpha {
         // the order for a rgba16u texture is ABGR
         return (a << 48 | b << 32 | g << 16 | r)
     }
-    
+
     public var r : Float {
         get {
             return raw.x
@@ -68,15 +68,15 @@ public struct LinearRGBA: ColorWithAlpha {
             return LinearRGBA.toUInt64(raw)
         }
     }
-    
+
     public init(r: Float, g: Float, b: Float, a: Float) {
         raw = float4(r, g, b, a)
     }
-    
+
     public init(rgb: float3, a: Float = 1.0) {
         raw = float4(rgb.x, rgb.y, rgb.z, a)
     }
-    
+
     public init(srgba: NormalizedSRGBA) {
         let f = {(c: Float) -> Float in
             if fabs(c) <= 0.04045 {
@@ -86,7 +86,7 @@ public struct LinearRGBA: ColorWithAlpha {
         }
         raw = float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
     }
-    
+
     /// When using a UIColor, the inverse gamma will be applied and
     /// the color converted to linear RGB.
     public init(_ color: UIColor) {

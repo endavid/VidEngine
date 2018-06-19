@@ -14,7 +14,7 @@ open class Scene {
     public var primitives: [Primitive] = []
     public var groups2D: [Group2D] = []
     public var camera: Camera? = nil
-    
+
     /// Adds all elements to their respective rendering queues
     public func queueAll() {
         for p in primitives {
@@ -24,7 +24,7 @@ open class Scene {
             p.queue()
         }
     }
-    
+
     /// Removes all elements from the rendering queues.
     /// They will stop being rendered, but the elements aren't destroyed.
     public func dequeueAll() {
@@ -35,17 +35,17 @@ open class Scene {
             p.dequeue()
         }
     }
-    
+
     /// Removes all elements from rendering and remove them from the scene.
     public func removeAll() {
         dequeueAll()
         primitives.removeAll()
         groups2D.removeAll()
     }
-    
+
     open func update(_ currentTime: CFTimeInterval) {
     }
-    
+
     public init() {
     }
 }

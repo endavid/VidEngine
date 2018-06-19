@@ -13,7 +13,7 @@ struct TexturedVertex {
     var position : Vec3
     var normal : Vec3
     var uv : Vec2
-    
+
     static func createVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDesc = MTLVertexDescriptor()
         vertexDesc.attributes[0].format = .float3
@@ -38,7 +38,7 @@ struct ColoredUnlitTexturedVertex {
     // in the struct, and the size of this becomes 48 instead of 36...
     // GPU mem layout expects 36 bytes of data.
     var color: Vec4
-    
+
     static func createVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDesc = MTLVertexDescriptor()
         vertexDesc.attributes[0].format = .float3

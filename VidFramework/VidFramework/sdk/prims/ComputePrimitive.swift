@@ -17,7 +17,7 @@ public class ComputePrimitive {
             return false
         }
     }
-    
+
     public func queue() {
         let plugin: ComputePlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
@@ -47,9 +47,9 @@ public class ComputePrimitive {
         // call shader
         //encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: particleCount, instanceCount: 1)
     }
-    
+
     func processResult(_ syncBufferIndex: Int) {
-        
+
     }
 
 }

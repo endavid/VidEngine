@@ -12,7 +12,7 @@ public class VolumetricCompute: ComputePrimitive {
     let width: Int
     let height: Int
     let depth: Int
-    
+
     init?(function: MTLFunction, width: Int, height: Int, depth: Int) {
         if width <= 0 || height <= 0 || depth <= 0 {
             NSLog("VolumetricCompute: wrong dimensions")

@@ -17,13 +17,13 @@ class DeferredShadingPlugin : GraphicPlugin {
             return "DeferredShading"
         }
     }
-    
+
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
-        
+
         let fragmentProgram = library.makeFunction(name: "passLightShading")!
         let vertexProgram = library.makeFunction(name: "passThrough2DVertex")!
-        
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
@@ -37,7 +37,7 @@ class DeferredShadingPlugin : GraphicPlugin {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         guard let renderer = Renderer.shared else {
             return
@@ -59,5 +59,5 @@ class DeferredShadingPlugin : GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
         renderer.frameState.clearedBackbuffer = true
-    }    
+    }
 }

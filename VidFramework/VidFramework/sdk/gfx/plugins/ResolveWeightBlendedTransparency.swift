@@ -13,19 +13,19 @@ import MetalKit
 // Weight-blended OIT
 class ResolveWeightBlendedTransparency : GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
-    
+
     override var label: String {
         get {
             return "ResolveOIT"
         }
     }
-    
+
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
-        
+
         let fragmentProgram = library.makeFunction(name: "passResolveOIT")!
         let vertexProgram = library.makeFunction(name: "passThrough2DVertex")!
-        
+
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram

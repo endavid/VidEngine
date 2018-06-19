@@ -15,19 +15,19 @@ class Primitive2DPlugin: GraphicPlugin {
     fileprivate var sRgbPipelineState: MTLRenderPipelineState! = nil
     fileprivate var colorTransform: MTLBuffer! = nil
     var isWideColor: Bool
-    
+
     override var label: String {
         get {
             return "2D"
         }
     }
-    
+
     override var isEmpty: Bool {
         get {
             return groups.isEmpty
         }
     }
-    
+
     func queue(_ group: Group2D) {
         let alreadyQueued = groups.contains { $0 === group }
         if !alreadyQueued {
@@ -43,12 +43,12 @@ class Primitive2DPlugin: GraphicPlugin {
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         isWideColor = view.currentDrawable?.texture.pixelFormat == .bgra10_XR_sRGB
         super.init(device: device, library: library, view: view)
-        
+
         setTransform(device: device)
         let fp = library.makeFunction(name: isWideColor ? "passLinearTexturedFragment" : "passThroughTexturedFragment")!
         let fpSrgb = library.makeFunction(name: "passSrgbTexturedFragment")!
         let vp = library.makeFunction(name: "passSprite2DVertex")!
-        
+
         let vertexDesc = createVertexDescriptor()
         let pipeDesc = createPipelineDescriptor(vp: vp, fp: fp, vertexDesc: vertexDesc, pixelFormat: view.colorPixelFormat, sampleCount: view.sampleCount)
         let sRgbPipeDesc = createPipelineDescriptor(vp: vp, fp: fpSrgb, vertexDesc: vertexDesc, pixelFormat: view.colorPixelFormat, sampleCount: view.sampleCount)
@@ -59,12 +59,12 @@ class Primitive2DPlugin: GraphicPlugin {
             NSLog("Failed to create pipeline state, error \(error)")
         }
     }
-    
+
     private func setTransform(device: MTLDevice) {
         let transform = isWideColor ? WideColor.toSrgb() : float4x4.identity
         colorTransform = Renderer.createBuffer(from: transform, device: device)
     }
-    
+
     private func createVertexDescriptor() -> MTLVertexDescriptor {
         // check ColoredUnlitTexturedVertex
         let vertexDesc = MTLVertexDescriptor()
@@ -81,7 +81,7 @@ class Primitive2DPlugin: GraphicPlugin {
         vertexDesc.layouts[0].stride = MemoryLayout<ColoredUnlitTexturedVertex>.size
         return vertexDesc
     }
-    
+
     private func createPipelineDescriptor(vp: MTLFunction, fp: MTLFunction, vertexDesc: MTLVertexDescriptor, pixelFormat: MTLPixelFormat, sampleCount: Int) -> MTLRenderPipelineDescriptor {
         let desc = MTLRenderPipelineDescriptor()
         desc.vertexFunction = vp
@@ -98,7 +98,7 @@ class Primitive2DPlugin: GraphicPlugin {
         desc.sampleCount = sampleCount
         return desc
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         guard let renderer = Renderer.shared else {
             return
@@ -134,11 +134,11 @@ class Primitive2DPlugin: GraphicPlugin {
         encoder.endEncoding()
         renderer.frameState.clearedDrawable = true
     }
-        
+
     override func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
         for group in groups {
             group.updateBuffers(syncBufferIndex, camera: camera)
         }
     }
-    
+
 }

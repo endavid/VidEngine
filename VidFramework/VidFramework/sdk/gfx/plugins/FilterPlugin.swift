@@ -11,7 +11,7 @@ import MetalKit
 
 class FilterPlugin: GraphicPlugin {
     fileprivate var filterChains: [FilterChain] = []
-    
+
     func queue(_ filterChain: FilterChain) {
         let alreadyQueued = filterChains.contains { $0 === filterChain }
         if !alreadyQueued {
@@ -24,7 +24,7 @@ class FilterPlugin: GraphicPlugin {
             filterChains.remove(at: i)
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         for filterChain in filterChains {
             for filter in filterChain.chain {
@@ -55,7 +55,7 @@ class FilterPlugin: GraphicPlugin {
             }
         }
     }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         var i = filterChains.count - 1
         while i >= 0 {

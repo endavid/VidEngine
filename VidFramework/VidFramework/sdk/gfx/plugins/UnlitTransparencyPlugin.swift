@@ -17,19 +17,19 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     fileprivate var depthState : MTLDepthStencilState! = nil
     fileprivate var textPrimitives : [TextPrimitive] = []
     fileprivate var primitives : [Primitive] = []
-    
+
     override var label: String {
         get {
             return "UnlitTransparency"
         }
     }
-    
+
     override var isEmpty: Bool {
         get {
             return textPrimitives.isEmpty && primitives.isEmpty
         }
     }
-    
+
     func queue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
             let alreadyQueued = textPrimitives.contains { $0 === textPrim }
@@ -43,7 +43,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
+
     func dequeue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
             let index = textPrimitives.index { $0 === textPrim }
@@ -57,13 +57,13 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
+
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
-        
+
         let pipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library)
         let textPipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
-        
+
         let depthDescriptor = gBuffer.createDepthStencilDescriptor()
         depthDescriptor.isDepthWriteEnabled = false
         do {
@@ -74,7 +74,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             print("Failed to create pipeline state, error \(error)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if isEmpty {
             return
@@ -100,18 +100,18 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder.endEncoding()
         renderer.frameState.clearedTransparencyBuffer = true
     }
-        
+
     private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {
         let whiteTexture = Renderer.shared.whiteTexture
         var currentAlbedoTexture : MTLTexture? = nil
-        
+
         for p in prims {
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
                 encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
             }
             for mesh in p.submeshes {
-                
+
                 if currentAlbedoTexture !== mesh.albedoTexture {
                     if let tex = mesh.albedoTexture {
                         encoder.setFragmentTexture(tex, index: 0)
@@ -126,7 +126,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
             }
         }
     }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)

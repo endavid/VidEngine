@@ -11,7 +11,7 @@ import MetalKit
 
 public struct Primitive2DOptions : OptionSet {
     public let rawValue: Int
-    
+
     public static let alignCenter  = Primitive2DOptions(rawValue: 1 << 0)
     public static let alignBottom = Primitive2DOptions(rawValue: 1 << 1)
     public static let allowRotation = Primitive2DOptions(rawValue: 1 << 2)
@@ -42,7 +42,7 @@ public class SpritePrimitive2D : Primitive2D {
     private var _angle : Float = 0
     private var _cosa : Float = 1
     private var _sina : Float = 0
-    
+
     var angle : Float {
         get {
             return _angle
@@ -63,7 +63,7 @@ public class SpritePrimitive2D : Primitive2D {
             return _sina
         }
     }
-    
+
     override public init() {
         super.init()
     }

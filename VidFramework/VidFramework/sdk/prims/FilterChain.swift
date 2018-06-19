@@ -58,23 +58,23 @@ open class FilterChain {
             return chain.last?.output
         }
     }
-    
+
     public init() {}
-    
+
     public func queue() {
         let plugin : FilterPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
-    
+
     public func dequeue() {
         let p: FilterPlugin? = Renderer.shared.getPlugin()
         p?.dequeue(self)
     }
-    
+
     public func append(_ filterChain: FilterChain) {
         chain.append(contentsOf: filterChain.chain)
     }
-    
+
     // this gets called when we need to update the buffers used by the GPU
     open func updateBuffers(_ syncBufferIndex: Int) {
         _step += 1

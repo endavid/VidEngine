@@ -14,32 +14,32 @@ import simd
 import VidFramework
 
 class ViewController: VidController {
-    
+
     var world : World?
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
-    
+
     override func viewDidLoad() {
-        
+
         super.viewDidLoad()
-        
+
         world = World()
         if let cam = world?.scene.camera {
             camera = cam
         }
         camera.setBounds(view.bounds)
-        
+
         let tapGest = UITapGestureRecognizer(target: self, action: #selector(ViewController.screenTap(_:)))
         tapGest.numberOfTouchesRequired = 1
         tapGest.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGest)
-        
+
         debugCube = CubePrimitive(numInstances: 1)
         debugCube.transform.scale = float3(0.1,0.1,0.1)
         debugCube.queue()
     }
-    
+
     override func update(_ elapsed: TimeInterval) {
         world?.update(elapsed)
     }

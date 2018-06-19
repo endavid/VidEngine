@@ -11,7 +11,7 @@ import MetalKit
 
 /// A 3D model from a file.
 public class ModelPrimitive : Primitive {
-    
+
     /// Asynchronously load a 3D model from a Json file.
     /// - parameters:
     ///   - forResource: resource name in the given Bundle.
@@ -38,7 +38,7 @@ public class ModelPrimitive : Primitive {
             completion(model, nil)
             }.resume()
     }
-    
+
     /// Create multiple instances of a model with a hash map from a Json file.
     public init?(json: [String: Any], bundle: Bundle?, numInstances: Int) {
         super.init(numInstances: numInstances)
@@ -49,13 +49,13 @@ public class ModelPrimitive : Primitive {
             return nil
         }
     }
-    
-    
+
+
     /// Create model with a hash map from a Json file.
     public convenience init?(json: [String: Any], bundle: Bundle?) {
         self.init(json: json, bundle: bundle, numInstances: 1)
     }
-    
+
     func parseJson(_ json: [String: Any], bundle: Bundle?) throws {
         guard let vertexData = json["vertices"] as? [Float] else {
             throw SerializationError.missing("vertices")
@@ -101,12 +101,12 @@ public class ModelPrimitive : Primitive {
             }
         }
     } // parseJson
-    
+
     init(vertices: [TexturedVertex], triangles: [UInt16]) {
         super.init(numInstances: 1)
         initBuffers(vertices, triangles: triangles)
     }
-    
+
     fileprivate func initBuffers(_ vertices: [TexturedVertex], triangles: [UInt16]) {
         vertexBuffer = Renderer.shared.createTexturedVertexBuffer("model VB", numElements: vertices.count)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
