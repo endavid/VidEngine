@@ -96,7 +96,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             let view = self.view as! MTKView
             Renderer.shared = Renderer(device, view: view)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
-            timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
+            timer = CADisplayLink(target: self, selector: #selector(newFrame))
             timer.add(to: .main, forMode: .defaultRunLoopMode)
         }
     }

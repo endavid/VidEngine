@@ -46,7 +46,7 @@ class ViewController: VidController {
 
     override func update(_ elapsed: TimeInterval) {
         updateFn?(elapsed)
-        if som?.isCompleted == true {
+        if som?.isCompleted {
             if let output = som?.output {
                 initMyFilters(input: output)
                 if let mtlTexture = output.mtlTexture {
@@ -55,7 +55,7 @@ class ViewController: VidController {
             }
             som = nil
         }
-        if myFilters?.isCompleted == true {
+        if myFilters?.isCompleted {
             if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output?.mtlTexture {
                 imageViewSRGB?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
@@ -127,9 +127,9 @@ class ViewController: VidController {
     }
 
     private func createButton() -> UIButton {
-        let button = UIButton(frame: CGRect())
+        let button = UIButton(frame: .zero)
         button.backgroundColor = .clear
-        button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.setTitleColor(UIColor(displayP3Red: 1, green: 0, blue: 0, alpha: 1), for: .normal)
         button.setTitle("*", for: .normal)
         button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Bold", size: 24)
