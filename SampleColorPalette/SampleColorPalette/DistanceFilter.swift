@@ -11,7 +11,7 @@ import simd
 
 class DistanceFilter: TextureFilter {
     var target: float4
-    
+
     init?(device: MTLDevice, library: MTLLibrary, input: Texture, target: float4) {
         self.target = target
         guard let vfn = library.makeFunction(name: "passThrough2DVertex"),
@@ -39,7 +39,7 @@ class DistanceFilter: TextureFilter {
         inputs = [input]
         buffer = Renderer.createSyncBuffer(from: target, device: device)
     }
-        
+
     // this gets called when we need to update the buffers used by the GPU
     override func updateBuffers(_ syncBufferIndex: Int) {
         super.updateBuffers(syncBufferIndex)

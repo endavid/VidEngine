@@ -27,7 +27,7 @@ public enum UniversalColorCategoryEx: Int {
 
 public class UniversalColorCategorization {
     private var lut: [UInt8]
-    
+
     public init?() {
         guard let bundle = try? FrameworkBundle.mainBundle() else {
             return nil
@@ -41,7 +41,7 @@ public class UniversalColorCategorization {
         lut = [UInt8](repeating: 0, count: data.length)
         data.getBytes(&lut, length: data.length)
     }
-    
+
     public func getCategory(_ color: NormalizedSRGBA) -> UniversalColorCategoryEx? {
         // the lut has only 5 bits -- quantize
         let r = Int(31 * color.r)

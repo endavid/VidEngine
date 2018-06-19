@@ -17,7 +17,7 @@ extension UIColor {
         let blue = CGFloat(0x000000FF & argb) / 255.0
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
-    
+
     var argb : UInt32 {
         get {
             var fRed : CGFloat = 0

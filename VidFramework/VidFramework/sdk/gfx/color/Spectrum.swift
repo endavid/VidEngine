@@ -11,13 +11,13 @@ import simd
 public class Spectrum {
     fileprivate let data : [Int : Float]
     fileprivate let sortedKeys : [Int]
-    
+
     public init(data: [Int : Float]) {
         self.data = data
         let keys : [Int] = Array(data.keys)
         sortedKeys = keys.sorted { $0 < $1 }
     }
-    
+
     // linearly interpolate between the closest wavelengths (in nm)
     public func getIntensity(_ wavelength: Int) -> Float {
         // exact match
@@ -44,13 +44,13 @@ public class Spectrum {
 }
 
 public extension CieXYZ {
-    
+
     // http://www.fourmilab.ch/documents/specrend/
     public init(spectrum: Spectrum) {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:
-         
+
          cie_colour_match[(lambda - 380) / 5][0] = xBar
          cie_colour_match[(lambda - 380) / 5][1] = yBar
          cie_colour_match[(lambda - 380) / 5][2] = zBar

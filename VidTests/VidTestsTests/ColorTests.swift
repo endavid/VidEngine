@@ -12,7 +12,7 @@ import VidFramework
 @testable import VidTests
 
 class ColorTests: XCTestCase {
-    
+
     func testInverseGamma() {
         let srgb = NormalizedSRGBA(r: 0.2, g: 0.3, b: 0.4, a: 1.0)
         let rgb = LinearRGBA(srgba: srgb)
@@ -22,7 +22,7 @@ class ColorTests: XCTestCase {
         let v = float3(Float(c.components![0]), Float(c.components![1]), Float(c.components![2]))
         XCTAssert(rgb.rgb.isClose(v))
     }
-    
+
     func testGamma() {
         let rgb = LinearRGBA(rgb: float3(0.2, 0.3, 0.4))
         let srgb = NormalizedSRGBA(rgba: rgb)
@@ -34,7 +34,7 @@ class ColorTests: XCTestCase {
         let v = float3(Float(cγ.components![0]), Float(cγ.components![1]), Float(cγ.components![2]))
         XCTAssert(srgb.rgb.isClose(v))
     }
-    
+
     func testSpectrum() {
         let spectrum = Spectrum(data: [400: 0.343, 404: 0.445, 408: 0.551, 412: 0.624])
         let m1 = spectrum.getIntensity(404)
@@ -42,7 +42,7 @@ class ColorTests: XCTestCase {
         XCTAssertEqual(0.445, m1)
         XCTAssertEqual(0.471500009, m2)
     }
-    
+
     func testXYZtoRGB() {
         // http://www.brucelindbloom.com
         // Model: sRGB D50, Gamma: 1.0
@@ -53,7 +53,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(0.8, rgba.g))
         XCTAssertTrue(IsClose(0.3, rgba.b))
     }
-        
+
     func testsXYZtoRGBMatrix() {
         // XYZ to linear sRGB D50
         let m = RGBColorSpace.sRGB.toRGB
@@ -68,7 +68,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ref[1].isClose(m[1], epsilon: e))
         XCTAssertTrue(ref[2].isClose(m[2], epsilon: e))
     }
-    
+
     func testXYZUsingCGColor() {
         let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
         let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
@@ -102,7 +102,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(gXYZ.isClose(m[1], epsilon: e))
         XCTAssertTrue(bXYZ.isClose(m[2], epsilon: e))
     }
-    
+
     func testWhites() {
         let e: Float = 0.001
         // https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
@@ -111,7 +111,7 @@ class ColorTests: XCTestCase {
         // from the http://www.brucelindbloom.com/index.html?ColorCalculator.html
         XCTAssertTrue(float3(0.964220, 1, 0.825210).isClose(ReferenceWhite.D50.xyz.xyz, epsilon: e))
     }
-    
+
     func testP3ToXYZ() {
         let m = RGBColorSpace.dciP3.toXYZ
         let r = m * float3(1, 0, 0)
@@ -122,7 +122,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.2920, 0.6922, 0.0419).isClose(g))
         XCTAssertTrue(float3(0.1571, 0.0666, 0.7841).isClose(b))
     }
-    
+
     func testSRGBToXYZ() {
         let m = RGBColorSpace.sRGB.toXYZ
         let r = m * float3(1, 0, 0)
@@ -133,7 +133,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.3851, 0.7169, 0.0971).isClose(g))
         XCTAssertTrue(float3(0.1431, 0.0606, 0.7141).isClose(b))
     }
-    
+
     func testSRGBToP3() {
         // values from ColorSync Utility
         let rγ = NormalizedSRGBA(rgb: float3(0.9175, 0.2002, 0.1386))
@@ -150,7 +150,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ref[1].isClose(m[1], epsilon: e))
         XCTAssertTrue(ref[2].isClose(m[2], epsilon: e))
     }
-    
+
     func testSRGBToP3Gamma() {
         // ref. values extracted from Color Sync Utility Calculator
         let m = RGBColorSpace.dciP3.toRGB * RGBColorSpace.sRGB.toXYZ
@@ -162,7 +162,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(green.rgb, epsilon: e))
         XCTAssertTrue(float3(0, 0, 0.9597).isClose(blue.rgb, epsilon: e))
     }
-    
+
     func testSRGBToP3UsingCGColor() {
         let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
         let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
@@ -179,7 +179,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.4585, 0.9852, 0.2983).isClose(gP3))
         XCTAssertTrue(float3(0, 0, 0.9597).isClose(bP3))
     }
-    
+
     func testLabToXYZ() {
         let white = CieXYZ(Lab: CieLab(L: 100, a: 0, b: 0)).xyz
         let red = CieXYZ(Lab: CieLab(L: 50, a: 100, b: 0)).xyz
@@ -190,7 +190,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0.4384, 0.1842, 0.1519).isClose(red, epsilon: e))
         XCTAssertTrue(float3(0.0994, 0.1842, 0.0268).isClose(green, epsilon: e))
     }
-    
+
     func testXYZToLab() {
         let white = CieLab(xyz: CieXYZ(x: 1, y: 1, z: 1)).Lab
         let red = CieLab(xyz: CieXYZ(x: 1, y: 0, z: 0)).Lab
@@ -201,7 +201,7 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(float3(0, 437.1465, 0).isClose(red, epsilon: e))
         XCTAssertTrue(float3(76.0714, 4.8516, -10.5185).isClose(gray, epsilon: e))
     }
-    
+
     func testP3UIColor() {
         var fRed : CGFloat = 0
         var fGreen : CGFloat = 0
@@ -228,14 +228,14 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(srgb.y, l.g, epsilon: 0.0005))
         XCTAssertTrue(IsClose(srgb.z, l.b, epsilon: 0.0005))
     }
-    
+
     func testHSVtoRGB() {
         XCTAssertTrue(ColorHSV(h: 0, s: 1, v: 0.5).rgb.isClose(float3(0.5, 0, 0)))
         XCTAssertTrue(ColorHSV(h: 0, s: 1, v: 1).rgb.isClose(float3(1, 0, 0)))
         XCTAssertTrue(ColorHSV(h: 30, s: 1, v: 1).rgb.isClose(float3(1, 0.5, 0)))
         XCTAssertTrue(ColorHSV(h: 251, s: 0.5, v: 0.7).rgb.isClose(float3(0.4142, 0.35, 0.7)))
     }
-    
+
     func testRGBtoHSV() {
         XCTAssertTrue(ColorHSV(rgb: float3(0.5, 0, 0)).hsv.isClose(float3(0, 1, 0.5)))
         XCTAssertTrue(ColorHSV(rgb: float3(1, 0, 0)).hsv.isClose(float3(0, 1, 1)))
@@ -244,5 +244,5 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(ColorHSV(rgb: float3(0.4142, 0.35, 0.7)).hsv.isClose(float3(251, 0.5, 0.7), epsilon: 0.01))
 
     }
-    
+
 }

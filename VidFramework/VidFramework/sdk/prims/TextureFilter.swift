@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 open class TextureFilter {
@@ -38,7 +37,7 @@ open class TextureFilter {
         self.inputs = [input]
         self.output = output
     }
-    
+
     public init?(id: String, device: MTLDevice, descriptor: MTLRenderPipelineDescriptor) {
         self.id = id
         do {
@@ -48,7 +47,7 @@ open class TextureFilter {
             return nil
         }
     }
-    
+
     func createRenderPassDescriptor() -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = output?.mtlTexture
@@ -56,11 +55,11 @@ open class TextureFilter {
         renderPass.colorAttachments[0].storeAction = .store
         return renderPass
     }
-    
+
     open func postRender() {
-        
+
     }
-    
+
     open func updateBuffers(_ syncBufferIndex: Int) {
         let nf = fragmentBuffer?.length ?? 0
         fragmentBufferOffset = (nf * syncBufferIndex) / Renderer.NumSyncBuffers

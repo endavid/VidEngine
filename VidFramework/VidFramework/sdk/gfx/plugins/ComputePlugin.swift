@@ -6,12 +6,11 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 class ComputePlugin: GraphicPlugin {
     fileprivate var computePrimitives: [ComputePrimitive] = []
-    
+
     func queue(_ prim: ComputePrimitive) {
         let alreadyQueued = computePrimitives.contains { $0 === prim }
         if !alreadyQueued {
@@ -24,7 +23,7 @@ class ComputePlugin: GraphicPlugin {
             computePrimitives.remove(at: i)
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if computePrimitives.isEmpty {
             return
@@ -40,7 +39,7 @@ class ComputePlugin: GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
     }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for prim in computePrimitives {
             prim.processResult(syncBufferIndex)

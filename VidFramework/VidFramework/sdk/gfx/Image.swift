@@ -29,7 +29,7 @@ extension UIImage {
         }
         let isFloat = texture.bitsPerComponent == 16
         let bitmapInfo:CGBitmapInfo = [isFloat ? .byteOrder16Little : .byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
-        
+
         guard let provider = texture.dataProviderRef() else {
             NSLog("UIImage.init: missing dataProvider")
             return nil

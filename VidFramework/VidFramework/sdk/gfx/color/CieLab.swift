@@ -27,7 +27,7 @@ public struct CieLab {
             return LinearRGBA.toUInt64(float4(L/100, 0.5 + 0.5*a/128, 0.5 + 0.5*b/128, 1.0))
         }
     }
-    
+
     public init(L: Float, a: Float, b: Float) {
         Lab = float3(L, a, b)
     }

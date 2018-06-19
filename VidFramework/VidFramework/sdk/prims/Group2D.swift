@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 /// Encapsulates a group of sprites that share the same
@@ -24,7 +23,7 @@ public class Group2D {
         let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.queue(self)
     }
-    
+
     public func dequeue() {
         let plugin : Primitive2DPlugin? = Renderer.shared.getPlugin()
         plugin?.dequeue(self)

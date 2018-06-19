@@ -6,22 +6,21 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 import UIKit
-import Metal
 import MetalKit
 import CoreMotion
 import AVFoundation
 import simd
 
 open class VidController: UIViewController, MTKViewDelegate {
-    
+
     public var device: MTLDevice! = nil
-    
+
     var commandQueue: MTLCommandQueue! = nil
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: TimeInterval = 0.0
     var elapsedTimeGPU: TimeInterval = 0.0
     let inflightSemaphore = DispatchSemaphore(value: Renderer.NumSyncBuffers)
-    
+
     // for motion control
     let motionManager = CMMotionManager()
     var currentPitch : Double = 0
@@ -30,7 +29,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
-    
+
     public var clearColor: UIColor {
         get {
             return _clearColor
@@ -41,7 +40,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             Renderer.shared.clearColor = MTLClearColor(red: Double(c.r), green: Double(c.g), blue: Double(c.b), alpha: Double(c.a))
         }
     }
-    
+
     public var camera: Camera {
         get {
             return Renderer.shared.camera
@@ -64,30 +63,30 @@ open class VidController: UIViewController, MTKViewDelegate {
             return Renderer.shared.textureLibrary
         }
     }
-        
+
     open override func viewDidLoad() {
-        
+
         super.viewDidLoad()
-        
+
         device = MTLCreateSystemDefaultDevice()
         guard device != nil else { // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
             print("Metal is not supported on this device")
             self.view = UIView(frame: self.view.frame)
             return
         }
-        
+
         // setup view properties
         let view = self.view as! MTKView
         view.device = device
         view.delegate = self
         isWideColor = true
-        
+
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
-        
+
         setupMotionController()
     }
-    
+
     override open func viewWillAppear(_ animated: Bool) {
         if device == nil {
             return
@@ -97,11 +96,11 @@ open class VidController: UIViewController, MTKViewDelegate {
             let view = self.view as! MTKView
             Renderer.shared = Renderer(device, view: view)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
-            timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
-            timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+            timer = CADisplayLink(target: self, selector: #selector(newFrame))
+            timer.add(to: .main, forMode: .defaultRunLoopMode)
         }
     }
-    
+
     override open func viewWillDisappear(_ animated: Bool) {
         if let _ = Renderer.shared {
             NotificationCenter.default.removeObserver(self)
@@ -111,12 +110,12 @@ open class VidController: UIViewController, MTKViewDelegate {
             inflightSemaphore.signal()
         }
     }
-    
+
     fileprivate func setupMotionController() {
         if motionManager.isGyroAvailable {
             motionManager.deviceMotionUpdateInterval = 0.2;
             motionManager.startDeviceMotionUpdates()
-            
+
             motionManager.gyroUpdateInterval = 0.2
             if let queue = OperationQueue.current {
                 motionManager.startGyroUpdates()
@@ -134,27 +133,27 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
         }
     }
-    
+
     fileprivate func dataUpdate(_ renderer: Renderer) {
         renderer.graphicsData.elapsedTime = Float(elapsedTimeGPU)
         renderer.graphicsData.currentPitch = Float(-sin(currentPitch))
         renderer.graphicsData.currentTouch = currentTouch
     }
-    
+
     public func draw(in view: MTKView) {
         guard let renderer = Renderer.shared else {
             return
         }
         // use semaphore to encode 3 frames ahead
-        let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        let _ = inflightSemaphore.wait(timeout: .distantFuture)
         // could check here for .timedOut to count number of skipped frames
-        
+
         dataUpdate(renderer)
         renderer.updateBuffers()
-        
+
         let commandBuffer = commandQueue.makeCommandBuffer()
         commandBuffer?.label = "Frame command buffer"
-        
+
         // use completion handler to signal the semaphore when this frame is completed allowing the encoding of the next frame to proceed
         // use capture list to avoid any retain cycles if the command buffer gets retained anywhere besides this stack frame
         commandBuffer?.addCompletedHandler{ [weak self] commandBuffer in
@@ -165,14 +164,14 @@ open class VidController: UIViewController, MTKViewDelegate {
         }
         renderer.draw(view, commandBuffer: commandBuffer!)
     }
-    
-    
+
+
     // Updates the view’s contents upon receiving a change in layout, resolution, or size.
     // Use this method to recompute any view or projection matrices, or to regenerate any buffers to be compatible with the view’s new size.
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         camera.setBounds(view.bounds)
     }
-    
+
     // https://www.raywenderlich.com/81399/ios-8-metal-tutorial-swift-moving-to-3d
     @objc func newFrame(_ displayLink: CADisplayLink){
         if lastFrameTimestamp == 0.0 {
@@ -185,11 +184,11 @@ open class VidController: UIViewController, MTKViewDelegate {
         lastFrameTimestamp = displayLink.timestamp
         self.update(elapsed)
     }
-    
+
     open func update(_ elapsed: TimeInterval) {
-        
+
     }
-    
+
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if Renderer.shared == nil {
             return

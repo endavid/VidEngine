@@ -18,11 +18,11 @@ enum FontAtlasError : Error {
 
 class GlyphDescriptor: NSObject, NSSecureCoding {
     public static var supportsSecureCoding: Bool { get { return true } }
-    
+
     let glyphIndex: CGGlyph
     let topLeftTexCoord: CGPoint
     let bottomRightTexCoord: CGPoint
-    
+
     init(glyphIndex: CGGlyph, topLeftTexCoord: CGPoint, bottomRightTexCoord: CGPoint) {
         self.glyphIndex = glyphIndex
         self.topLeftTexCoord = topLeftTexCoord
@@ -42,7 +42,7 @@ class GlyphDescriptor: NSObject, NSSecureCoding {
 
 public class FontAtlas: NSObject, NSSecureCoding {
     public static var supportsSecureCoding: Bool { get { return true } }
-    
+
     static let atlasSize: Int = 4096
     var glyphs : [GlyphDescriptor] = []
     let parentFont: UIFont
@@ -55,7 +55,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             return _fontTexture
         }
     }
-    
+
     /// If the FontAtlas has been created before, it will attempt to load it from disk
     public static func createFontAtlas(font: UIFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
         let candidates = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -77,7 +77,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             return try FontAtlas(font: font, textureSize: textureSize)
         }
     }
-    
+
     public init(font: UIFont, textureSize: Int) throws {
         self.parentFont = font
         self.textureSize = textureSize
@@ -94,7 +94,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             _fontTexture = try createTexture(device: Renderer.shared.device)
         }
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         guard let fontName = aDecoder.decodeObject(forKey: "FontName") as? String else {
             NSLog("Invalid font name")
@@ -141,7 +141,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         aCoder.encode(textureSize, forKey: "TextureSize")
         aCoder.encode(glyphs, forKey: "GlyphDescriptors")
     }
-    
+
     func createTexture(device: MTLDevice) throws -> MTLTexture {
         guard let texData = _textureData else {
             throw FontAtlasError.AtlasNotInitialized
@@ -155,7 +155,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         texture?.replace(region: region, mipmapLevel: 0, withBytes: texData.bytes, bytesPerRow: textureSize)
         return texture!
     }
-    
+
     private func createTextureData() {
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let bitmapInfo: CGBitmapInfo = CGBitmapInfo(rawValue: 0) //[CGBitmapInfo.alphaInfoMask, CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)]
@@ -187,7 +187,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         distanceField.deinitialize(count: atlasSize2)
         distanceField.deallocate()
     }
-    
+
     private func createAtlasForFont(context: CGContext, font: UIFont, width: Int, height: Int) {
         // Turn off antialiasing so we only get fully-on or fully-off pixels.
         // This implicitly disables subpixel antialiasing and hinting.
@@ -199,7 +199,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         context.setFillColor(red: 0, green: 0, blue: 0, alpha: 1)
         let fullRect = CGRect(x: 0, y: 0, width: width, height: height)
         context.fill(fullRect)
-        
+
         fontPointSize = pointSizeThatFitsForFont(font, rect:CGRect(x: 0, y: 0, width: width, height: height))
         let ctFont = CTFontCreateWithName(font.fontName as CFString, CGFloat(fontPointSize), nil)
         guard let parentFont = UIFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
@@ -251,7 +251,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             origin.x += boundingRect.width + glyphMargin
         }
     }
-    
+
     private func pointSizeThatFitsForFont(_ font: UIFont, rect: CGRect) -> Float {
         var fittedSize = Float(font.pointSize)
         while isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
@@ -262,7 +262,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
         return fittedSize
     }
-    
+
     private func isLikelyToFit(font: UIFont, size: CGFloat, rect: CGRect) -> Bool {
         let textureArea = rect.size.width * rect.size.height
         guard let trialFont = UIFont(name: font.fontName, size: size) else {
@@ -275,14 +275,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let estimatedGlyphTotalArea = (averageGlyphSize.width + glyphMargin) * (averageGlyphSize.height + glyphMargin) * CGFloat(fontGlyphCount)
         return (estimatedGlyphTotalArea < textureArea)
     }
-    
+
     private func estimatedLineWidthForFont(_ font: UIFont) -> CGFloat {
         let myString = "!" as NSString
         let size: CGSize = myString.size(withAttributes: [NSAttributedStringKey.font: font])
         let estimatedStrokeWidth = Float(size.width)
         return CGFloat(ceilf(estimatedStrokeWidth))
     }
-    
+
     private func estimatedGlyphSizeForFont(_ font: UIFont) -> CGSize {
         let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
         let exemplarStringSize = exemplarString.size(withAttributes: [NSAttributedStringKey.font: font ])
@@ -290,7 +290,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         let maxGlyphHeight = ceilf(Float(exemplarStringSize.height))
         return CGSize(width: CGFloat(averageGlyphWidth), height: CGFloat(maxGlyphHeight))
     }
-    
+
     /// Compute signed-distance field for an 8-bpp grayscale image (values greater than 127 are considered "on")
     /// For details of this algorithm, see "The 'dead reckoning' signed distance transform" [Grevera 2004]
     private func createSignedDistanceFieldForGrayscaleImage(imageData: UnsafeMutablePointer<UInt8>, width: Int, height: Int) -> UnsafeMutablePointer<Float> {
@@ -394,7 +394,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         boundaryPointMap.deallocate()
         return distanceMap
     }
-    
+
     private func createResampledData(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, scaleFactor: Int) throws -> (UnsafeMutablePointer<Float>, Int) {
         if width % scaleFactor != 0 || height % scaleFactor != 0 {
             // Scale factor does not evenly divide width and height of source distance field
@@ -419,7 +419,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
         return (outData, count)
     }
-    
+
     private func createQuantizedDistanceField(_ inData: UnsafeMutablePointer<Float>, width: Int, height: Int, normalizationFactor: Float) -> UnsafeMutablePointer<UInt8> {
         let count = width * height
         let outData = UnsafeMutablePointer<UInt8>.allocate(capacity: count)

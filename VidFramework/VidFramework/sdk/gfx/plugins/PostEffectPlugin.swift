@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
 
 // At the moment, it just passes through
@@ -19,7 +18,7 @@ class PostEffectPlugin: GraphicPlugin {
             return "PostFx"
         }
     }
-    
+
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
         super.init(device: device, library: library, view: view)
         let passThroughDesc = MTLRenderPipelineDescriptor()
@@ -35,7 +34,7 @@ class PostEffectPlugin: GraphicPlugin {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
     }
-    
+
     override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         guard let renderer = Renderer.shared else {
             return
@@ -53,7 +52,7 @@ class PostEffectPlugin: GraphicPlugin {
         encoder.endEncoding()
         renderer.frameState.clearedDrawable = true
     }
-    
+
     private func passThrough(encoder: MTLRenderCommandEncoder, renderer: Renderer, camera: Camera) {
         encoder.pushDebugGroup("PassThrough")
         encoder.setRenderPipelineState(passThroughPipeline)
@@ -61,5 +60,5 @@ class PostEffectPlugin: GraphicPlugin {
         renderer.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
-    
+
 }

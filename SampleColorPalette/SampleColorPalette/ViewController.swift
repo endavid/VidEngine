@@ -34,7 +34,7 @@ class ViewController: VidController {
         initImageViews()
         cc = UniversalColorCategorization()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         camera.setBounds(view.bounds)
     }
@@ -43,10 +43,10 @@ class ViewController: VidController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     override func update(_ elapsed: TimeInterval) {
         updateFn?(elapsed)
-        if som?.isCompleted == true {
+        if som?.isCompleted {
             if let output = som?.output {
                 initMyFilters(input: output)
                 if let mtlTexture = output.mtlTexture {
@@ -55,7 +55,7 @@ class ViewController: VidController {
             }
             som = nil
         }
-        if myFilters?.isCompleted == true {
+        if myFilters?.isCompleted {
             if let mtlTexture = myFilters?.p3TosRgb.chain.last?.output?.mtlTexture {
                 imageViewSRGB?.setBackgroundImage(UIImage(texture: mtlTexture), for: .normal)
             }
@@ -65,7 +65,7 @@ class ViewController: VidController {
             myFilters = nil
         }
     }
-    
+
     private func updateSamples(_ elapsed: TimeInterval) {
         let start = DispatchTime.now()
         let choppyFramerate = 2 * elapsed
@@ -89,7 +89,7 @@ class ViewController: VidController {
         }
         framesTilInit += 1
     }
-    
+
     private func didInitSamples() {
         let ratio = (100 * Float(samples.count) / Float(sampler?.volume ?? 0)).rounded(toPlaces: 4)
         print("#samples: \(samples.count); \(ratio)% of the P3 space not covered by sRGB")
@@ -102,7 +102,7 @@ class ViewController: VidController {
         group2D?.texture = som?.output
         som?.queue()
     }
-    
+
     private func initSprites() {
         let sprite = SpritePrimitive2D()
         sprite.options = [.alignCenter]
@@ -125,37 +125,37 @@ class ViewController: VidController {
             }
         }
     }
-    
+
     private func createButton() -> UIButton {
-        let button = UIButton(frame: CGRect())
+        let button = UIButton(frame: .zero)
         button.backgroundColor = .clear
-        button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.setTitleColor(UIColor(displayP3Red: 1, green: 0, blue: 0, alpha: 1), for: .normal)
         button.setTitle("*", for: .normal)
         button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Bold", size: 24)
         view.addSubview(button)
         return button
     }
-    
+
     @objc func buttonAction(_ sender:UIButton!) {
         if let image = sender.backgroundImage(for: .normal) {
             saveImage(image: image)
         }
     }
-    
+
     private func initImageViews() {
         self.imageViewP3 = createButton()
         self.imageViewP3?.setTitle("P3", for: .normal)
         self.imageViewSRGB = createButton()
         self.imageViewSRGB?.setTitle("sRGB", for: .normal)
     }
-    
+
     override func viewDidLayoutSubviews() {
         let s: CGFloat = 180
         imageViewP3?.frame = CGRect(x: 0.25 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
         imageViewSRGB?.frame = CGRect(x: 0.75 * view.frame.width - 0.5 * s, y: view.frame.height - s - 10, width: s, height: s)
     }
-    
+
     private func initMyFilters(input: Texture) {
         guard let m = sampler?.p3ToSrgb else {
             NSLog("Missing sampler")
@@ -169,7 +169,7 @@ class ViewController: VidController {
             ])
         myFilters = MyFilters(device: device, input: input, colorTransform: colorTransform)
     }
-    
+
     func saveImage(image: UIImage) {
         guard let data = UIImagePNGRepresentation(image) else {
             NSLog("Failed to create PNG representation")

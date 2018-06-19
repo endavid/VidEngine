@@ -20,7 +20,7 @@ public class MdlParser {
     fileprivate var spectral : [Int : Float] = [:]
     fileprivate var materials : [String : Material] = [:]
     fileprivate var materialName : String = ""
-    
+
     public init(path: String) {
         self.path = path
         self.scene = Scene()
@@ -37,7 +37,7 @@ public class MdlParser {
             "vrtxPstn": readVertexPosition
         ]
     }
-    
+
     public func parse() -> Scene {
         do {
             let text = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
@@ -56,13 +56,13 @@ public class MdlParser {
         }
         return scene
     }
-    
+
     fileprivate func getComponents(_ line: String) -> [String] {
         var components = line.components(separatedBy: separators)
         components = components.filter { $0 != "" }
         return components
     }
-    
+
     fileprivate func advance() -> String? {
         let line = lines.remove(at: 0)
         let components = getComponents(line)
@@ -75,7 +75,7 @@ public class MdlParser {
         }
         return nil
     }
-    
+
     fileprivate func computeNormals() {
         let numTriangles = triangles.count / 3
         for i in 0..<numTriangles {
@@ -96,7 +96,7 @@ public class MdlParser {
             vertices[i2] = TexturedVertex(position: v2.position, normal: Vec3(normal), uv: v2.uv)
         }
     }
-    
+
     fileprivate func readPlanarMesh(_ header: String) {
         var head = ""
         while head != "end" {
@@ -113,7 +113,7 @@ public class MdlParser {
         vertices.removeAll()
         triangles.removeAll()
     }
-    
+
     fileprivate func readVertexPosition(_ header: String) {
         var head = ""
         while head != "end" {
@@ -131,7 +131,7 @@ public class MdlParser {
             }
         }
     }
-    
+
     fileprivate func readComplexPolygon(_ header: String) {
         var head = ""
         while head != "end" {
@@ -140,7 +140,7 @@ public class MdlParser {
             }
         }
     }
-    
+
     fileprivate func readPolygon(_ header: String) {
         var polygon : [UInt16] = []
         var components = getComponents(header)
@@ -157,7 +157,7 @@ public class MdlParser {
         }
         triangles = triangularizePolygon(polygon)
     }
-    
+
     fileprivate func triangularizePolygon(_ indices: [UInt16]) -> [UInt16] {
         var tris : [UInt16] = []
         // should apply something like the ear-clipping algorithm, but for now assume we only have quads in our data
@@ -172,7 +172,7 @@ public class MdlParser {
         }
         return tris
     }
-    
+
     fileprivate func readCamera(_ header: String) {
         var c = getComponents(lines.remove(at: 0))
         let eyePoint = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
@@ -203,7 +203,7 @@ public class MdlParser {
             }
         }
     }
-    
+
     fileprivate func readMaterial(_ header: String) {
         let split = header.split(separator: "\"")
         let name = String(split[1])
@@ -223,7 +223,7 @@ public class MdlParser {
         let material = Material(diffuse: rgba)
         self.materials[name] = material
     }
-    
+
     fileprivate func readLambertian(_ header: String) {
         var head = ""
         while head != "end" {
@@ -232,16 +232,16 @@ public class MdlParser {
             }
         }
     }
-    
+
     fileprivate func readPhongLuminaire(_ header: String) {
         var head = ""
         while head != "end" {
             if let h = advance() {
                 head = h
             }
-        }        
+        }
     }
-    
+
     fileprivate func readSpectral(_ header: String) {
         var head = ""
         while head != "end" {
@@ -254,7 +254,7 @@ public class MdlParser {
             head = c[0]
         }
     }
-    
+
     fileprivate func readMaterialName(_ header: String) {
         let split = header.split(separator: "\"")
         self.materialName = String(split[1])
