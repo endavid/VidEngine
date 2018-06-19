@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 import UIKit
-import Metal
 import MetalKit
 import CoreMotion
 import AVFoundation
@@ -98,7 +97,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             Renderer.shared = Renderer(device, view: view)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
-            timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+            timer.add(to: .main, forMode: .defaultRunLoopMode)
         }
     }
 
@@ -146,7 +145,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             return
         }
         // use semaphore to encode 3 frames ahead
-        let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+        let _ = inflightSemaphore.wait(timeout: .distantFuture)
         // could check here for .timedOut to count number of skipped frames
 
         dataUpdate(renderer)

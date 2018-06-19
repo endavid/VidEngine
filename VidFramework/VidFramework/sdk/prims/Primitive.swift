@@ -6,7 +6,6 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 /// A `Primitive` is an object that requires 3D rendering to be displayed.

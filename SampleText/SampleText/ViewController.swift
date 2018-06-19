@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Metal
 import MetalKit
 import CoreMotion
 import simd

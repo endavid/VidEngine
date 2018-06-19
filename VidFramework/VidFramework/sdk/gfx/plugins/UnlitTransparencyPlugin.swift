@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Metal
 import MetalKit
 
 /// Uses Weight-blended OIT

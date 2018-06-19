@@ -6,7 +6,6 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
-import Metal
 import MetalKit
 
 public class ComputePrimitive {

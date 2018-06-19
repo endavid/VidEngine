@@ -7,7 +7,7 @@
 //
 
 import VidFramework
-import Metal
+import MetalKit
 import simd
 
 class MyFilters {

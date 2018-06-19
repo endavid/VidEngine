@@ -7,7 +7,7 @@
 //
 
 import simd
-import Metal
+import MetalKit
 
 struct TexturedVertex {
     var position : Vec3
