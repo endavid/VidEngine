@@ -8,7 +8,6 @@
 import UIKit
 import Metal
 import MetalKit
-import CoreMotion
 import AVFoundation
 import simd
 
@@ -22,14 +21,12 @@ open class VidController: UIViewController, MTKViewDelegate {
     var elapsedTimeGPU: TimeInterval = 0.0
     let inflightSemaphore = DispatchSemaphore(value: Renderer.NumSyncBuffers)
     
-    // for motion control
-    let motionManager = CMMotionManager()
-    var currentPitch : Double = 0
-    var currentTouch = float2(0, -2)
+    private var currentTouch = float2(0, -2)
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
+    private var motionController: MotionController?
     
     public var clearColor: UIColor {
         get {
@@ -59,6 +56,21 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
         }
     }
+    public var isMotionControllerActive: Bool {
+        get {
+            return motionController != nil
+        }
+        set {
+            let current = motionController != nil
+            if current != newValue {
+                if newValue {
+                    motionController = MotionController()
+                } else {
+                    motionController = nil
+                }
+            }
+        }
+    }
     public var textureLibrary: TextureLibrary {
         get {
             return Renderer.shared.textureLibrary
@@ -84,8 +96,6 @@ open class VidController: UIViewController, MTKViewDelegate {
         
         commandQueue = device.makeCommandQueue()
         commandQueue.label = "main command queue"
-        
-        setupMotionController()
     }
     
     override open func viewWillAppear(_ animated: Bool) {
@@ -111,34 +121,14 @@ open class VidController: UIViewController, MTKViewDelegate {
             inflightSemaphore.signal()
         }
     }
-    
-    fileprivate func setupMotionController() {
-        if motionManager.isGyroAvailable {
-            motionManager.deviceMotionUpdateInterval = 0.2;
-            motionManager.startDeviceMotionUpdates()
-            
-            motionManager.gyroUpdateInterval = 0.2
-            if let queue = OperationQueue.current {
-                motionManager.startGyroUpdates()
-                motionManager.startGyroUpdates(to: queue) {
-                    [weak self] (gyroData: CMGyroData?, error: Error?) in
-                    guard let weakSelf = self else { return }
-                    if let motion = weakSelf.motionManager.deviceMotion {
-                        weakSelf.currentPitch = motion.attitude.pitch
-                        //print(motion.attitude)
-                    }
-                    if let error = error {
-                        NSLog("setupMotionController: \(error.localizedDescription)")
-                    }
-                }
-            }
-        }
-    }
-    
+        
     fileprivate func dataUpdate(_ renderer: Renderer) {
         renderer.graphicsData.elapsedTime = Float(elapsedTimeGPU)
-        renderer.graphicsData.currentPitch = Float(-sin(currentPitch))
+        renderer.graphicsData.currentPitch = 0
         renderer.graphicsData.currentTouch = currentTouch
+        if let pitch = motionController?.currentPitch {
+            renderer.graphicsData.currentPitch = Float(-sin(pitch))
+        }
     }
     
     public func draw(in view: MTKView) {

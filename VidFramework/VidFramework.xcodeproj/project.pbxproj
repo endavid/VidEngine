@@ -67,6 +67,7 @@
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
+		63BA72112128C05A0023E879 /* MotionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA72102128C05A0023E879 /* MotionController.swift */; };
 		63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */; };
 		63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139820476D00000AC2F1 /* FilterChain.swift */; };
 		63E5139B20476F75000AC2F1 /* FilterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139A20476F75000AC2F1 /* FilterPlugin.swift */; };
@@ -136,6 +137,7 @@
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
+		63BA72102128C05A0023E879 /* MotionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionController.swift; sourceTree = "<group>"; };
 		63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHSV.swift; sourceTree = "<group>"; };
 		63E5139820476D00000AC2F1 /* FilterChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterChain.swift; sourceTree = "<group>"; };
 		63E5139A20476F75000AC2F1 /* FilterPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPlugin.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 		632D27DD203896C7000562F0 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
+				63BA720F2128BFE10023E879 /* motion */,
 				632D285C2038A20D000562F0 /* ui */,
 				632D27DE203896C7000562F0 /* parsers */,
 				632D27E0203896C7000562F0 /* prims */,
@@ -328,6 +331,14 @@
 			path = color;
 			sourceTree = "<group>";
 		};
+		63BA720F2128BFE10023E879 /* motion */ = {
+			isa = PBXGroup;
+			children = (
+				63BA72102128C05A0023E879 /* MotionController.swift */,
+			);
+			path = motion;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -434,6 +445,7 @@
 				632D2821203896C7000562F0 /* DeferredLightingPlugin.swift in Sources */,
 				632D288F20398CD9000562F0 /* Rain.swift in Sources */,
 				632D2830203896C7000562F0 /* Camera.swift in Sources */,
+				63BA72112128C05A0023E879 /* MotionController.swift in Sources */,
 				632D2817203896C7000562F0 /* Matrix.swift in Sources */,
 				632D2832203896C7000562F0 /* Color.swift in Sources */,
 				6393E7B2205B141A0098F96F /* CieXYZ.swift in Sources */,
