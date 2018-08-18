@@ -63,10 +63,10 @@ class MyFilters {
         }
         filterSrgb.inputs = [input]
         filterSrgb.output = outputSRgb
-        filterSrgb.buffer = Renderer.createSyncBuffer(from: colorTransform, device: device)
+        filterSrgb.fragmentBuffer = Renderer.createSyncBuffer(from: colorTransform, device: device)
         filterP3.inputs = [input]
         filterP3.output = outputP3
-        filterP3.buffer = Renderer.createSyncBuffer(from: float4x4.identity, device: device)
+        filterP3.fragmentBuffer = Renderer.createSyncBuffer(from: float4x4.identity, device: device)
         p3TosRgb = FilterChain()
         p3TosRgb.chain.append(filterSrgb)
         p3ToGammaP3 = FilterChain()

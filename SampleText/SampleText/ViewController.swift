@@ -20,10 +20,8 @@ class ViewController: VidController {
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
     
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         world = World()
         if let cam = world?.scene.camera {
             camera = cam

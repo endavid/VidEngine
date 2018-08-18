@@ -22,12 +22,16 @@ class World {
     }
     
     private func initSprites() {
-        let sprite = SpritePrimitive2D(priority: 0)
+        let sprite = SpritePrimitive2D()
         sprite.options = [.alignCenter]
         sprite.position = Vec3(-0.75, -0.75, 0)
         sprite.width = 40
         sprite.height = 20
-        sprite.queue()
+        if let g = Group2D(maxNumOfSprites: 20) {
+            g.append(sprite)
+            scene.groups2D.append(g)
+        }
+        scene.queueAll()
     }
     
     private func initTextDemo() {
@@ -52,7 +56,6 @@ class World {
             debugPanel.albedoTexture = fontAtlas.fontTexture
             debugPanel.queue()
             self.scene?.primitives.append(debugPanel)
-            
         } else {
             NSLog("Error initializing FontAtlas")
         }

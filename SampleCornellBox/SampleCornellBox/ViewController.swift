@@ -15,6 +15,10 @@ class ViewController: VidController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         setupScene()
     }
 

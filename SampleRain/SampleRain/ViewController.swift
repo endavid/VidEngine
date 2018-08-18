@@ -20,9 +20,9 @@ class ViewController: VidController {
     fileprivate var player : AVAudioPlayer?
     
     
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.isMotionControllerActive = true
         setupBgm()
         camera.setBounds(view.bounds)
         

@@ -50,7 +50,7 @@ class FindMinimumFilterChain: FilterChain {
             let texelV = 0.5 / Float(2 * h)
             filter.inputs = [input_i]
             filter.output = output
-            filter.buffer = Renderer.createSyncBuffer(from: float4(-texelU, -texelV, texelU, texelV), device: device)
+            filter.fragmentBuffer = Renderer.createSyncBuffer(from: float4(-texelU, -texelV, texelU, texelV), device: device)
             chain.append(filter)
             input_i = output
         }

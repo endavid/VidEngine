@@ -117,7 +117,7 @@ class SelfOrganizingMapFilter: TextureFilter {
             return nil
         }
         output = Texture(id: "SomFilterOut", mtlTexture: outputTexture)
-        buffer = Renderer.createSyncBuffer(from: data, device: device)
+        fragmentBuffer = Renderer.createSyncBuffer(from: data, device: device)
         inputs = [input, minimum]
     }
     
@@ -132,10 +132,10 @@ class SelfOrganizingMapFilter: TextureFilter {
     // this gets called when we need to update the buffers used by the GPU
     override func updateBuffers(_ syncBufferIndex: Int) {
         super.updateBuffers(syncBufferIndex)
-        guard let contents = buffer?.contents() else {
+        guard let contents = fragmentBuffer?.contents() else {
             return
         }
-        let data = contents.advanced(by: bufferOffset).assumingMemoryBound(to: SomData.self)
+        let data = contents.advanced(by: fragmentBufferOffset).assumingMemoryBound(to: SomData.self)
         memcpy(data, &shaderData, MemoryLayout<SomData>.size)
     }
 }

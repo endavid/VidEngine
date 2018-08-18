@@ -37,16 +37,16 @@ class DistanceFilter: TextureFilter {
         }
         output = Texture(id: "DistanceTex", mtlTexture: outputTexture)
         inputs = [input]
-        buffer = Renderer.createSyncBuffer(from: target, device: device)
+        fragmentBuffer = Renderer.createSyncBuffer(from: target, device: device)
     }
         
     // this gets called when we need to update the buffers used by the GPU
     override func updateBuffers(_ syncBufferIndex: Int) {
         super.updateBuffers(syncBufferIndex)
-        guard let contents = buffer?.contents() else {
+        guard let contents = fragmentBuffer?.contents() else {
             return
         }
-        let data = contents.advanced(by: bufferOffset).assumingMemoryBound(to: float4.self)
+        let data = contents.advanced(by: fragmentBufferOffset).assumingMemoryBound(to: float4.self)
         memcpy(data, &target, MemoryLayout<float4>.size)
     }
 }
