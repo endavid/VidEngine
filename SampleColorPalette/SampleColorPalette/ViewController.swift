@@ -23,9 +23,14 @@ class ViewController: VidController {
     var som: SelfOrganizingMap?
     var cc: UniversalColorCategorization?
     var group2D: Group2D?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        camera.setBounds(view.bounds)
+        setup()
+    }
+    
+    private func setup() {
         initSprites()
         initTexture()
         // bits = 7 -> 1162 * 538 samples
@@ -33,11 +38,6 @@ class ViewController: VidController {
         updateFn = self.updateSamples
         initImageViews()
         cc = UniversalColorCategorization()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        camera.setBounds(view.bounds)
     }
 
     override func didReceiveMemoryWarning() {
