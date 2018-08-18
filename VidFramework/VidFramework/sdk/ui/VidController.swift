@@ -52,7 +52,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             if let view = self.view as? MTKView {
                 // The pixel format for a MetalKit view must be bgra8Unorm, bgra8Unorm_srgb, rgba16Float, BGRA10_XR, or bgra10_XR_sRGB.
                 // our shaders will be in linear RGB, so automatically apply γ
-                view.colorPixelFormat = isWideColor ? .bgra10_XR_sRGB : .bgra8Unorm_srgb
+                view.colorPixelFormat = isWideColor ? .bgra10_xr_srgb : .bgra8Unorm_srgb
             }
         }
     }
@@ -108,14 +108,14 @@ open class VidController: UIViewController, MTKViewDelegate {
             Renderer.shared = Renderer(device, view: view)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
-            timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+            timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         }
     }
     
     override open func viewWillDisappear(_ animated: Bool) {
         if let _ = Renderer.shared {
             NotificationCenter.default.removeObserver(self)
-            timer.remove(from: .main, forMode: .defaultRunLoopMode)
+            timer.remove(from: .main, forMode: RunLoop.Mode.default)
             timer = nil
             Renderer.shared = nil
             inflightSemaphore.signal()

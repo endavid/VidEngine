@@ -41,7 +41,7 @@ class ViewController: VidController {
     fileprivate func setupBgm() {
         do {
             // Removed deprecated use of AVAudioSessionDelegate protocol
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+            try AVAudioSession.sharedInstance().setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.ambient))
             try AVAudioSession.sharedInstance().setActive(true)
             let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
             player = try AVAudioPlayer(contentsOf: music)
@@ -64,3 +64,8 @@ class ViewController: VidController {
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
+}

@@ -130,7 +130,7 @@ class ViewController: VidController {
     private func createButton() -> UIButton {
         let button = UIButton(frame: CGRect())
         button.backgroundColor = .clear
-        button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(ViewController.buttonAction(_:)), for: UIControl.Event.touchUpInside)
         button.setTitleColor(UIColor(displayP3Red: 1, green: 0, blue: 0, alpha: 1), for: .normal)
         button.setTitle("*", for: .normal)
         button.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Bold", size: 24)
@@ -172,7 +172,7 @@ class ViewController: VidController {
     }
     
     func saveImage(image: UIImage) {
-        guard let data = UIImagePNGRepresentation(image) else {
+        guard let data = image.pngData() else {
             NSLog("Failed to create PNG representation")
             return
         }

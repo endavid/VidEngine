@@ -278,14 +278,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
     
     private func estimatedLineWidthForFont(_ font: UIFont) -> CGFloat {
         let myString = "!" as NSString
-        let size: CGSize = myString.size(withAttributes: [NSAttributedStringKey.font: font])
+        let size: CGSize = myString.size(withAttributes: [NSAttributedString.Key.font: font])
         let estimatedStrokeWidth = Float(size.width)
         return CGFloat(ceilf(estimatedStrokeWidth))
     }
     
     private func estimatedGlyphSizeForFont(_ font: UIFont) -> CGSize {
         let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
-        let exemplarStringSize = exemplarString.size(withAttributes: [NSAttributedStringKey.font: font ])
+        let exemplarStringSize = exemplarString.size(withAttributes: [NSAttributedString.Key.font: font ])
         let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))
         let maxGlyphHeight = ceilf(Float(exemplarStringSize.height))
         return CGSize(width: CGFloat(averageGlyphWidth), height: CGFloat(maxGlyphHeight))

@@ -41,7 +41,7 @@ class Primitive2DPlugin: GraphicPlugin {
         }
     }
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
-        isWideColor = view.currentDrawable?.texture.pixelFormat == .bgra10_XR_sRGB
+        isWideColor = view.currentDrawable?.texture.pixelFormat == .bgra10_xr_srgb
         super.init(device: device, library: library, view: view)
         
         setTransform(device: device)
@@ -107,7 +107,7 @@ class Primitive2DPlugin: GraphicPlugin {
             // if !cleared, this is our last chance to clear the surface!
             return
         }
-        let isWide = drawable.texture.pixelFormat == .bgra10_XR_sRGB
+        let isWide = drawable.texture.pixelFormat == .bgra10_xr_srgb
         if isWideColor != isWide {
             isWideColor = isWide
             setTransform(device: renderer.device)

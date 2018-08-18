@@ -127,7 +127,7 @@ class VidTestsTests: XCTestCase {
             for i in 0..<count {
                 array[(i+1)%count] = Float(i)
             }
-            array.deallocate(capacity: count)
+            array.deallocate()
         }
     }
 
