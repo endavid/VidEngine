@@ -13,6 +13,7 @@ import simd
 open class Scene {
     public var primitives: [Primitive] = []
     public var groups2D: [Group2D] = []
+    public var lights: [LightSource] = []
     public var camera: Camera? = nil
     
     /// Adds all elements to their respective rendering queues
@@ -22,6 +23,9 @@ open class Scene {
         }
         for p in groups2D {
             p.queue()
+        }
+        for l in lights {
+            l.queue()
         }
     }
     
@@ -34,6 +38,9 @@ open class Scene {
         for p in groups2D {
             p.dequeue()
         }
+        for l in lights {
+            l.dequeue()
+        }
     }
     
     /// Removes all elements from rendering and remove them from the scene.
@@ -41,6 +48,7 @@ open class Scene {
         dequeueAll()
         primitives.removeAll()
         groups2D.removeAll()
+        lights.removeAll()
     }
     
     open func update(_ currentTime: CFTimeInterval) {

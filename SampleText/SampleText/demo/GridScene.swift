@@ -43,6 +43,13 @@ class GridScene : Scene {
 
     init(numRows: Int, numColumns: Int) {
         //let prim = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
+        super.init()
+        setupCubes(numRows, numColumns)
+        setupLights()
+        setupCamera()
+    }
+    
+    private func setupCubes(_ numRows: Int, _ numColumns: Int) {
         let prim = CubePrimitive(numInstances: numRows * numColumns)
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
@@ -59,8 +66,18 @@ class GridScene : Scene {
             }
         }
         prim.queue()
-        super.init()
         primitives.append(prim)
+    }
+    
+    private func setupLights() {
+        let sun = DirectionalLight(numInstances: 1)
+        sun.color = LinearRGBA(r: 1, g: 0.9, b: 0.8, a: 1.0)
+        sun.direction = normalize(float3(1, 1, 1))
+        sun.queue()
+        lights.append(sun)
+    }
+    
+    private func setupCamera() {
         camera = Camera()
         camera?.setViewDirection(float3(0,0,-1), up: float3(0,1,0))
         camera?.setEyePosition(float3(0,2,20))

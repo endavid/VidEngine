@@ -131,6 +131,7 @@ public class Renderer {
         // order is important!
         plugins.append(FilterPlugin())
         plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(DeferredLightingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
@@ -196,6 +197,15 @@ public class Renderer {
         rp.depthAttachment.storeAction = .store
         rp.depthAttachment.clearDepth = 1.0
         return rp
+    }
+    
+    func createLightAccumulationRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
+        let renderPass = MTLRenderPassDescriptor()
+        renderPass.colorAttachments[0].texture = gBuffer.lightTexture
+        renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
+        renderPass.colorAttachments[0].storeAction = .store
+        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
+        return renderPass
     }
     
     // Transparency
@@ -268,6 +278,16 @@ public class Renderer {
     
     public static func createSyncBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {
         return createBuffer(from: data, device: device, numCopies: Renderer.NumSyncBuffers)
+    }
+    
+    public static func createSyncBuffer<T>(from array: [T], label: String, device: MTLDevice) -> MTLBuffer? {
+        let numElements = array.count * Renderer.NumSyncBuffers
+        guard let buffer = device.makeBuffer(length: numElements * MemoryLayout<T>.size, options: []) else {
+            NSLog("Failed to create MTLBuffer")
+            return nil
+        }
+        buffer.label = label
+        return buffer
     }
     
     public static func createBuffer<T>(from data: T, device: MTLDevice, numCopies: Int = 1) -> MTLBuffer? {

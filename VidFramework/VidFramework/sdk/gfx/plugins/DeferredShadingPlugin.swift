@@ -54,7 +54,7 @@ class DeferredShadingPlugin : GraphicPlugin {
         encoder.pushDebugGroup("deferredShading")
         encoder.setRenderPipelineState(pipelineState)
         encoder.setFragmentTexture(gBuffer.albedoTexture, index: 0)
-        encoder.setFragmentTexture(gBuffer.normalTexture, index: 1)
+        encoder.setFragmentTexture(gBuffer.lightTexture, index: 1)
         renderer.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
         encoder.endEncoding()

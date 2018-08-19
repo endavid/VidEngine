@@ -11,11 +11,32 @@
 #include "ShaderMath.h"
 using namespace metal;
 
+struct DirectionalLightInstance
+{
+    float4 color;
+    float4 direction;
+};
+
+struct DirectionalLightVertexInOut {
+    float4  position [[position]];
+    float4  color;
+    float4  direction;
+    float2  uv;
+};
+
+float3x3 getViewRotation(float4x4 viewMatrix) {
+    float3x3 viewRotation;
+    viewRotation[0].xyz = viewMatrix[0].xyz;
+    viewRotation[1].xyz = viewMatrix[1].xyz;
+    viewRotation[2].xyz = viewMatrix[2].xyz;
+    return viewRotation;
+}
+
 vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
-                                uint iid [[ instance_id ]],
-                                constant TexturedVertex* vdata [[ buffer(0) ]],
-                                constant Uniforms& uniforms  [[ buffer(1) ]],
-                                constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
+  uint iid [[ instance_id ]],
+  constant TexturedVertex* vdata [[ buffer(0) ]],
+  constant Uniforms& uniforms  [[ buffer(1) ]],
+  constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
 {
     VertexGBuffer outVertex;
     Transform t = perInstanceUniforms[iid].transform;
@@ -40,14 +61,53 @@ fragment FragmentGBuffer passLightFragment(VertexGBuffer inFrag [[stage_in]],
     return outFragment;
 };
 
-fragment half4 passLightShading(VertexInOut inFrag [[stage_in]],
-                                texture2d<float> albedoTex [[ texture(0) ]],
-                                texture2d<float> normalTex [[ texture(1) ]])
+
+vertex DirectionalLightVertexInOut directionalLightVertex(
+  uint vid [[ vertex_id ]],
+  uint iid [[ instance_id ]],
+  const device packed_float4* vdata [[ buffer(0) ]],
+  constant Uniforms& uniforms  [[ buffer(1) ]],
+  const device DirectionalLightInstance* instances [[ buffer(2) ]])
+{
+    DirectionalLightVertexInOut out;
+    float4 xyuv = vdata[vid];
+    out.position = float4(xyuv.xy, 0, 1);
+    out.color = instances[iid].color;
+    out.uv = xyuv.zw;
+    // light direction in view space (normals are in view space as well)
+    float3x3 viewRotation = getViewRotation(uniforms.viewMatrix);
+    out.direction = float4(viewRotation * instances[iid].direction.xyz, 0.0);
+    return out;
+}
+
+fragment half4 lightAccumulationDirectionalLight(
+  DirectionalLightVertexInOut inFrag [[stage_in]],
+  texture2d<float> normalTex [[ texture(0) ]])
+{
+    float4 normal = normalTex.sample(linearSampler, inFrag.uv);
+    float3 direction = inFrag.direction.xyz;
+    float4 out = inFrag.color;
+    float cosTi = max(dot(normal.xyz, direction), 0.0);
+    out.rgb *= cosTi;
+    // specular
+    // in view space, view direction is always the Z axis
+    float3 viewDirection = float3(0,0,1);
+    float3 h = normalize(viewDirection + direction);
+    float cosH = max(dot(h, normal.xyz), 0.0);
+    float m = 16.0;
+    float spec = cosTi * pow(cosH, m) * (m + 8.0) / 8.0;
+    float arbitraryScale = 0.1;
+    out.a = arbitraryScale * spec;
+    return half4(out);
+};
+
+fragment half4 passLightShading(
+  VertexInOut inFrag [[stage_in]],
+  texture2d<float> albedoTex [[ texture(0) ]],
+  texture2d<float> lightTex [[ texture(1) ]])
 {
     float4 albedo = albedoTex.sample(linearSampler, inFrag.uv);
-    float4 normal = normalTex.sample(linearSampler, inFrag.uv);
-    float3 sunDirection = normalize(float3(1,1,-0.5));
-    float cosTi = dot(normal.xyz, sunDirection);
-    float4 out = albedo * float4(cosTi, cosTi, cosTi, 1);
+    float4 light = lightTex.sample(linearSampler, inFrag.uv);
+    float4 out = float4(albedo.rgb * light.rgb + light.a, albedo.a);
     return half4(out);
 }

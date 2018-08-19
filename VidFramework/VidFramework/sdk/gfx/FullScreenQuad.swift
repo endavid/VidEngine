@@ -25,8 +25,8 @@ class FullScreenQuad {
         vb[3] = Vec4( 1,  1, 1, 0)
     }
     
-    func draw(encoder: MTLRenderCommandEncoder) {
+    func draw(encoder: MTLRenderCommandEncoder, instanceCount: Int = 1) {
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        encoder.drawIndexedPrimitives(type: .triangleStrip, indexCount: 4, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
+        encoder.drawIndexedPrimitives(type: .triangleStrip, indexCount: 4, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: instanceCount)
     }
 }
