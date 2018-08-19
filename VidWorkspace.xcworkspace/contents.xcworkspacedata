@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:SampleAR/SampleAR.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:SampleColorPalette/SampleColorPalette.xcodeproj">
    </FileRef>
    <FileRef
