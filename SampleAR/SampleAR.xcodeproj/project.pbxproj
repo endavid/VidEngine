@@ -12,7 +12,23 @@
 		63BA72242129E4DC0023E879 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63BA72222129E4DC0023E879 /* Main.storyboard */; };
 		63BA72262129E4DD0023E879 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BA72252129E4DD0023E879 /* Assets.xcassets */; };
 		63BA72292129E4DD0023E879 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63BA72272129E4DD0023E879 /* LaunchScreen.storyboard */; };
+		63BA7231212AADC00023E879 /* VidFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BA7230212AADC00023E879 /* VidFramework.framework */; };
+		63BA7232212AADC00023E879 /* VidFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BA7230212AADC00023E879 /* VidFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		63BA7233212AADC00023E879 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				63BA7232212AADC00023E879 /* VidFramework.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		63BA721B2129E4DC0023E879 /* SampleAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -22,6 +38,7 @@
 		63BA72252129E4DD0023E879 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63BA72282129E4DD0023E879 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63BA722A2129E4DD0023E879 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63BA7230212AADC00023E879 /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63BA7231212AADC00023E879 /* VidFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +56,7 @@
 		63BA72122129E4DC0023E879 = {
 			isa = PBXGroup;
 			children = (
+				63BA7230212AADC00023E879 /* VidFramework.framework */,
 				63BA721D2129E4DC0023E879 /* SampleAR */,
 				63BA721C2129E4DC0023E879 /* Products */,
 			);
@@ -74,6 +93,7 @@
 				63BA72172129E4DC0023E879 /* Sources */,
 				63BA72182129E4DC0023E879 /* Frameworks */,
 				63BA72192129E4DC0023E879 /* Resources */,
+				63BA7233212AADC00023E879 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

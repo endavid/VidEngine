@@ -8,10 +8,22 @@
 import UIKit
 import Metal
 import MetalKit
+import ARKit
 import AVFoundation
 import simd
 
-open class VidController: UIViewController, MTKViewDelegate {
+/// The core controller class that implements rendering.
+///
+/// Setup the renderer on `viewDidLoad`
+/// * `isWideColor`: uses displayP3 color space if true
+/// * `isMotionControllerActive`: sets up the gyroscope, for plugins that need it
+/// * `isARActive`: for AR applications.
+///
+/// At the moment, all the other objects need to be called after
+/// `viewWillAppear` has been called, since they will need a default
+/// renderer to be set up. The default renderer depends on the configuration
+/// specified in `viewDidLoad`.
+open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     
     public var device: MTLDevice! = nil
     
@@ -27,6 +39,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
     private var motionController: MotionController?
+    private var arSession: ARSession?
     
     public var clearColor: UIColor {
         get {
@@ -71,6 +84,22 @@ open class VidController: UIViewController, MTKViewDelegate {
             }
         }
     }
+    public var isARActive: Bool {
+        get {
+            return arSession != nil
+        }
+        set {
+            let current = arSession != nil
+            if current != newValue {
+                if newValue {
+                    arSession = ARSession()
+                    arSession?.delegate = self
+                } else {
+                    arSession = nil
+                }
+            }
+        }
+    }
     public var textureLibrary: TextureLibrary {
         get {
             return Renderer.shared.textureLibrary
@@ -109,6 +138,10 @@ open class VidController: UIViewController, MTKViewDelegate {
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
+        }
+        if let session = arSession {
+            let configuration = ARWorldTrackingConfiguration()
+            session.run(configuration)
         }
     }
     
@@ -216,5 +249,17 @@ open class VidController: UIViewController, MTKViewDelegate {
         }
         currentTouch.x = 0
         currentTouch.y = -2
+    }
+    
+    // MARK: - ARSessionDelegate
+    open func session(_ session: ARSession, didFailWithError error: Error) {
+        // Present an error message to the user
+        
+    }
+    open func sessionWasInterrupted(_ session: ARSession) {
+        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+    }
+    open func sessionInterruptionEnded(_ session: ARSession) {
+        // Reset tracking and/or remove existing anchors if consistent tracking is required
     }
 }
