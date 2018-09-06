@@ -8,12 +8,13 @@
 
 import UIKit
 import VidFramework
+import ARKit
 
 class ViewController: VidController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        isARActive = true
+        arConfiguration = ARWorldTrackingConfiguration()
     }
 
 }

@@ -8,6 +8,7 @@
 
 import Metal
 import MetalKit
+import ARKit
 import QuartzCore
 import simd
 
@@ -57,7 +58,10 @@ public class Renderer {
     let textureLibrary = TextureLibrary()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     var frameState = FrameState()
-    
+    var arSession: ARSession?
+    var capturedImageTextureY: CVMetalTexture?
+    var capturedImageTextureCbCr: CVMetalTexture?
+
     var whiteTexture : MTLTexture {
         get {
             return _whiteTexture
@@ -95,14 +99,17 @@ public class Renderer {
         encoder.setVertexBuffer(graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
     
-    init(_ device: MTLDevice, view: MTKView) {
+    init(_ device: MTLDevice, view: MTKView, doAR: Bool) {
         graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.NumSyncBuffers, options: [])
         graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
         _whiteTexture = createWhiteTexture()
-        self.initGraphicPlugins(view)
+        self.initGraphicPlugins(view, doAR: doAR)
+        if doAR {
+            arSession = ARSession()
+        }
     }
 
     func makeVidLibrary() -> MTLLibrary? {
@@ -124,12 +131,15 @@ public class Renderer {
         }
     }
     
-    fileprivate func initGraphicPlugins(_ view: MTKView) {
+    fileprivate func initGraphicPlugins(_ view: MTKView, doAR: Bool) {
         guard let library = makeVidLibrary() else {
             return
         }
         // order is important!
         plugins.append(FilterPlugin())
+        if (doAR) {
+            plugins.append(ARPlugin(device: device, library: library, view: view))
+        }
         plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(DeferredLightingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))

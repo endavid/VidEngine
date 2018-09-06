@@ -39,7 +39,7 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
     private var motionController: MotionController?
-    private var arSession: ARSession?
+    public var arConfiguration: ARConfiguration?
     
     public var clearColor: UIColor {
         get {
@@ -84,20 +84,9 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             }
         }
     }
-    public var isARActive: Bool {
+    public var isAREnabled: Bool {
         get {
-            return arSession != nil
-        }
-        set {
-            let current = arSession != nil
-            if current != newValue {
-                if newValue {
-                    arSession = ARSession()
-                    arSession?.delegate = self
-                } else {
-                    arSession = nil
-                }
-            }
+            return Renderer.shared?.arSession != nil
         }
     }
     public var textureLibrary: TextureLibrary {
@@ -134,19 +123,19 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
         if Renderer.shared == nil {
             // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
             let view = self.view as! MTKView
-            Renderer.shared = Renderer(device, view: view)
+            Renderer.shared = Renderer(device, view: view, doAR: arConfiguration != nil)
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         }
-        if let session = arSession {
-            let configuration = ARWorldTrackingConfiguration()
-            session.run(configuration)
+        if let arConfiguration = arConfiguration {
+            Renderer.shared.arSession?.run(arConfiguration)
         }
     }
     
     override open func viewWillDisappear(_ animated: Bool) {
-        if let _ = Renderer.shared {
+        if let renderer = Renderer.shared {
+            renderer.arSession?.pause()
             NotificationCenter.default.removeObserver(self)
             timer.remove(from: .main, forMode: RunLoop.Mode.default)
             timer = nil
@@ -180,11 +169,12 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
         
         // use completion handler to signal the semaphore when this frame is completed allowing the encoding of the next frame to proceed
         // use capture list to avoid any retain cycles if the command buffer gets retained anywhere besides this stack frame
+        var textures = [renderer.capturedImageTextureY, renderer.capturedImageTextureCbCr]
         commandBuffer?.addCompletedHandler{ [weak self] commandBuffer in
             if let strongSelf = self {
                 strongSelf.inflightSemaphore.signal()
             }
-            return
+            textures.removeAll()
         }
         renderer.draw(view, commandBuffer: commandBuffer!)
     }

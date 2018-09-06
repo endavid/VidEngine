@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		632BC491212CC538006059FF /* ARPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632BC490212CC538006059FF /* ARPlugin.swift */; };
 		632D27D720389549000562F0 /* VidFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 632D27D520389549000562F0 /* VidFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		632D280C203896C7000562F0 /* MdlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27DF203896C7000562F0 /* MdlParser.swift */; };
 		632D280D203896C7000562F0 /* SpherePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27E1203896C7000562F0 /* SpherePrimitive.swift */; };
@@ -74,6 +75,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		632BC490212CC538006059FF /* ARPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPlugin.swift; sourceTree = "<group>"; };
 		632D27D220389549000562F0 /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		632D27D520389549000562F0 /* VidFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VidFramework.h; sourceTree = "<group>"; };
 		632D27D620389549000562F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,9 +283,11 @@
 		632D27F7203896C7000562F0 /* plugins */ = {
 			isa = PBXGroup;
 			children = (
+				632BC490212CC538006059FF /* ARPlugin.swift */,
 				639D0705203B774F00F9905D /* ComputePlugin.swift */,
 				632D27FA203896C7000562F0 /* DeferredLightingPlugin.swift */,
 				632D2800203896C7000562F0 /* DeferredShadingPlugin.swift */,
+				63E5139A20476F75000AC2F1 /* FilterPlugin.swift */,
 				632D27F8203896C7000562F0 /* GraphicPlugin.swift */,
 				632D27FD203896C7000562F0 /* PostEffectPlugin.swift */,
 				632D27FE203896C7000562F0 /* Primitive2DPlugin.swift */,
@@ -291,7 +295,6 @@
 				632D27FC203896C7000562F0 /* RainPlugin.swift */,
 				632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */,
 				632D27FF203896C7000562F0 /* UnlitTransparencyPlugin.swift */,
-				63E5139A20476F75000AC2F1 /* FilterPlugin.swift */,
 			);
 			path = plugins;
 			sourceTree = "<group>";
@@ -474,6 +477,7 @@
 				63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */,
 				632D2818203896C7000562F0 /* Quaternion.swift in Sources */,
 				632D281F203896C7000562F0 /* GraphicPlugin.swift in Sources */,
+				632BC491212CC538006059FF /* ARPlugin.swift in Sources */,
 				632D282F203896C7000562F0 /* Material.swift in Sources */,
 				632D281C203896C7000562F0 /* Errors.swift in Sources */,
 				632D2823203896C7000562F0 /* RainPlugin.swift in Sources */,

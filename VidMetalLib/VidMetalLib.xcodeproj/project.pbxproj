@@ -14,6 +14,7 @@
 		632D27C320389456000562F0 /* Transparency.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BC20389456000562F0 /* Transparency.metal */; };
 		632D27C420389456000562F0 /* Fx.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BD20389456000562F0 /* Fx.metal */; };
 		632D27C520389456000562F0 /* ShaderMath.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BE20389456000562F0 /* ShaderMath.metal */; };
+		637215ED2141D6850077F456 /* AR.metal in Sources */ = {isa = PBXBuildFile; fileRef = 637215EC2141D6850077F456 /* AR.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,8 @@
 		632D27BE20389456000562F0 /* ShaderMath.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShaderMath.metal; sourceTree = "<group>"; };
 		632D27C62038946F000562F0 /* ShaderCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderCommon.h; sourceTree = "<group>"; };
 		632D27C72038946F000562F0 /* ShaderMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderMath.h; sourceTree = "<group>"; };
+		637215EC2141D6850077F456 /* AR.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AR.metal; sourceTree = "<group>"; };
+		637215EE2141D6F80077F456 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -58,6 +61,8 @@
 				632D27B920389456000562F0 /* Sprites.metal */,
 				632D27BB20389456000562F0 /* TextRendering.metal */,
 				632D27BC20389456000562F0 /* Transparency.metal */,
+				637215EC2141D6850077F456 /* AR.metal */,
+				637215EE2141D6F80077F456 /* ShaderTypes.h */,
 			);
 			path = VidMetalLib;
 			sourceTree = "<group>";
@@ -121,6 +126,7 @@
 				632D27C520389456000562F0 /* ShaderMath.metal in Sources */,
 				632D27C020389456000562F0 /* Sprites.metal in Sources */,
 				632D27BF20389456000562F0 /* Lighting.metal in Sources */,
+				637215ED2141D6850077F456 /* AR.metal in Sources */,
 				632D27C420389456000562F0 /* Fx.metal in Sources */,
 				632D27C320389456000562F0 /* Transparency.metal in Sources */,
 				632D27C220389456000562F0 /* TextRendering.metal in Sources */,
