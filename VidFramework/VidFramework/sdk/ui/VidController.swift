@@ -127,6 +127,7 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
+            camera.setBounds(view.bounds)
         }
         if let arConfiguration = arConfiguration {
             Renderer.shared.arSession?.run(arConfiguration)
