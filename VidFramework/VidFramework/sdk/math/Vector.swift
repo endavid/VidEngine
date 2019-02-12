@@ -34,6 +34,14 @@ public extension float3 {
     }
 }
 
+public extension float4 {
+    public var xyz: float3 {
+        get {
+            return float3(x, y, z)
+        }
+    }
+}
+
 public struct Vec4 {
     let x : Float
     let y : Float

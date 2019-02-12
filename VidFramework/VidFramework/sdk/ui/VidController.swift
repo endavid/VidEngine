@@ -152,6 +152,13 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
         if let pitch = motionController?.currentPitch {
             renderer.graphicsData.currentPitch = Float(-sin(pitch))
         }
+        if let frame = renderer.arSession?.currentFrame {
+            updateArCamera(frame)
+        }
+    }
+    
+    fileprivate func updateArCamera(_ frame: ARFrame) {
+        camera.viewTransformMatrix = frame.camera.viewMatrix(for: .landscapeRight)
     }
     
     public func draw(in view: MTKView) {
@@ -212,6 +219,9 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     }
     override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if Renderer.shared == nil {
+            return
+        }
+        if isAREnabled {
             return
         }
         let overTheFinger : CGFloat = -30

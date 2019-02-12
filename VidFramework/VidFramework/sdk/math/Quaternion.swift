@@ -78,7 +78,23 @@ public struct Quaternion : CustomStringConvertible {
         let axis = normalize(cross(start, end))
         return Quaternion.createRotationAxis(angle, unitVector: axis)
     }
-
+    public static func fromMatrix(_ m: float3x3) -> Quaternion {
+        let (cx, cy, cz) = m.columns
+        let angle = acos((cx.x + cy.y + cz.z - 1.0) / 2.0)
+        var axis = float3(0, 0, 1)
+        if !IsClose(angle, 0) {
+            let d = float3(
+                cz.y - cy.z,
+                cx.z - cz.x,
+                cy.x - cx.y)
+            let dd = length(d)
+            if (!IsClose(dd, 0))
+            {
+                axis = normalize(d)
+            }
+        }
+        return createRotationAxis(angle, unitVector: axis)
+    }
 }
 
 // -----------------------------------------------------------

@@ -34,6 +34,14 @@ public struct Transform {
         self.scale = scale
         self.rotation = rotation
     }
+    public init(matrix: float4x4) {
+        let (c0, c1, c2, c3) = matrix.columns
+        
+        position = float3(c3.x, c3.y, c3.z)
+        // assume scale = 1; otherwise we'd need to compute SVD
+        scale = float3(1, 1, 1)
+        rotation = Quaternion.fromMatrix(float3x3(c0.xyz, c1.xyz, c2.xyz))
+    }
     public init() {
     }
 }

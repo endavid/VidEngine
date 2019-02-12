@@ -35,6 +35,9 @@ public class Camera {
         get {
             return self.viewTransform.toMatrix4()
         }
+        set {
+            transform = Transform(matrix: newValue)
+        }
     }
 
     public func setBounds(_ bounds: CGRect) {
