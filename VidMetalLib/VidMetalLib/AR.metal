@@ -8,6 +8,7 @@
 
 #include <metal_stdlib>
 #include <simd/simd.h>
+#include "ShaderCommon.h"
 
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #import "ShaderTypes.h"
@@ -60,7 +61,9 @@ fragment float4 capturedImageFragmentShader(ImageColorInOut in [[stage_in]],
                           capturedImageTextureCbCr.sample(colorSampler, in.texCoord).rg, 1.0);
     
     // Return converted RGB color
-    return ycbcrToRGBTransform * ycbcr;
+    float4 color = ycbcrToRGBTransform * ycbcr;
+    // our framebuffer is in linear space
+    return normalizedSrgbToLinearRgb(color);
 }
 
 

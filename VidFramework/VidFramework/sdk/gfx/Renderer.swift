@@ -145,7 +145,7 @@ public class Renderer {
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
-        plugins.append(PostEffectPlugin(device: device, library: library, view: view))
+        plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
         plugins.append(RainPlugin(device: device, library: library, view: view))
         plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
     }

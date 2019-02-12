@@ -20,17 +20,27 @@ class PostEffectPlugin: GraphicPlugin {
         }
     }
     
-    override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
+    init(device: MTLDevice, library: MTLLibrary, view: MTKView, blend: Bool) {
         super.init(device: device, library: library, view: view)
-        let passThroughDesc = MTLRenderPipelineDescriptor()
-        passThroughDesc.vertexFunction = library.makeFunction(name: "passThrough2DVertex")
-        passThroughDesc.fragmentFunction = library.makeFunction(name: "passThroughTexturedFragment")
+        let desc = MTLRenderPipelineDescriptor()
+        desc.vertexFunction = library.makeFunction(name: "passThrough2DVertex")
+        desc.fragmentFunction = library.makeFunction(name: "passThroughTexturedFragment")
         // .bgra8Unorm_srgb, or .bgra10_XR_sRGB if wide color gamut
-        passThroughDesc.colorAttachments[0].pixelFormat = view.colorPixelFormat
-        passThroughDesc.colorAttachments[0].isBlendingEnabled = false
-        passThroughDesc.sampleCount = view.sampleCount
+        desc.colorAttachments[0].pixelFormat = view.colorPixelFormat
+        if blend {
+            desc.colorAttachments[0].isBlendingEnabled = true
+            desc.colorAttachments[0].rgbBlendOperation = .add
+            desc.colorAttachments[0].alphaBlendOperation = .add
+            desc.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+            desc.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+            desc.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+            desc.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        } else {
+            desc.colorAttachments[0].isBlendingEnabled = false
+        }
+        desc.sampleCount = view.sampleCount
         do {
-            try passThroughPipeline = device.makeRenderPipelineState(descriptor: passThroughDesc)
+            try passThroughPipeline = device.makeRenderPipelineState(descriptor: desc)
         } catch let error {
             NSLog("Failed to create pipeline state: \(error.localizedDescription)")
         }
@@ -44,7 +54,8 @@ class PostEffectPlugin: GraphicPlugin {
             // nothing in backbuffer to dump to the drawable
             return
         }
-        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
+        let clear = !renderer.frameState.clearedDrawable
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: clear)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }

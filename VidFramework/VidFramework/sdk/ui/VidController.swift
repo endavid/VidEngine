@@ -124,13 +124,15 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
             let view = self.view as! MTKView
             Renderer.shared = Renderer(device, view: view, doAR: arConfiguration != nil)
-            clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
             camera.setBounds(view.bounds)
         }
         if let arConfiguration = arConfiguration {
             Renderer.shared.arSession?.run(arConfiguration)
+            clearColor = .clear
+        } else {
+            clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
         }
     }
     
@@ -159,6 +161,8 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     
     fileprivate func updateArCamera(_ frame: ARFrame) {
         camera.viewTransformMatrix = frame.camera.viewMatrix(for: .landscapeRight)
+        camera.projectionMatrix = frame.camera.projectionMatrix(for: .landscapeRight, viewportSize: view.bounds.size, zNear: CGFloat(camera.near), zFar: CGFloat(camera.far))
+        camera.inverseProjectionMatrix = camera.projectionMatrix.inverse
     }
     
     public func draw(in view: MTKView) {
