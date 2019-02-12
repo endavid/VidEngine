@@ -20,9 +20,9 @@ vertex VertexOIT passGeometryOIT(uint vid [[ vertex_id ]],
     VertexOIT outVertex;
     Transform t = perInstanceUniforms[iid].transform;
     Material mat = perInstanceUniforms[iid].material;
-    float4x4 m = uniforms.projectionMatrix * uniforms.viewMatrix;
     TexturedVertex v = vdata[vid];
-    outVertex.position = m * float4(t * v.position, 1.0);
+    float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
+    outVertex.position = uniforms.projectionMatrix * viewPos;
     outVertex.uv = v.texCoords;// * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     //outVertex.color = float4(outVertex.uv, 0, 1);
