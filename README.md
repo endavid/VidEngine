@@ -17,6 +17,12 @@ Build
 ====
 Use the provided build.sh, because I can't figure out how to get the shaders in VidMetalLib to get linked to the correct location from Xcode... 😅
 
+Overview
+=======
+
+### 3D rendering
+
+Vid Engine uses a right-handed coordinate system, with `Y` being the vertical direction. The camera looks to `-Z` by default. That means that `+Z` points towards the screen, and `+X` towards the right side of the screen. Units are given in meters by default. Therefore, both coordinate system and units match ARKit, so working with AR scene should be straightforward.
 
 Samples
 =======

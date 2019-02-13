@@ -41,7 +41,7 @@ class ViewController: VidController {
     fileprivate func setupBgm() {
         do {
             // Removed deprecated use of AVAudioSessionDelegate protocol
-            try AVAudioSession.sharedInstance().setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.ambient))
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.ambient, mode: AVAudioSession.Mode.default)
             try AVAudioSession.sharedInstance().setActive(true)
             let music = URL(fileURLWithPath: Bundle.main.path(forResource: "Rain_Background-Mike_Koenig", ofType: "mp3")!)
             player = try AVAudioPlayer(contentsOf: music)

@@ -89,6 +89,11 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             return Renderer.shared?.arSession != nil
         }
     }
+    public var arSession: ARSession? {
+        get {
+            return Renderer.shared?.arSession
+        }
+    }
     public var textureLibrary: TextureLibrary {
         get {
             return Renderer.shared.textureLibrary
@@ -129,7 +134,7 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             camera.setBounds(view.bounds)
         }
         if let arConfiguration = arConfiguration {
-            Renderer.shared.arSession?.run(arConfiguration)
+            arSession?.run(arConfiguration)
             clearColor = .clear
         } else {
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
@@ -160,9 +165,10 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     }
     
     fileprivate func updateArCamera(_ frame: ARFrame) {
-        camera.viewTransformMatrix = frame.camera.viewMatrix(for: .landscapeRight)
-        camera.projectionMatrix = frame.camera.projectionMatrix(for: .landscapeRight, viewportSize: view.bounds.size, zNear: CGFloat(camera.near), zFar: CGFloat(camera.far))
-        camera.inverseProjectionMatrix = camera.projectionMatrix.inverse
+        //let (_,_,_, pos) = frame.camera.transform.columns
+        //camera.transform.position = pos.xyz
+        camera.transform = Transform(matrix: frame.camera.transform)
+        camera.projection = frame.camera.projectionMatrix(for: .landscapeRight, viewportSize: view.bounds.size, zNear: CGFloat(camera.near), zFar: CGFloat(camera.far))
     }
     
     public func draw(in view: MTKView) {
@@ -243,9 +249,9 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
             let y = fov * Float((p1.y - p0.y) / self.view.frame.height)
             cameraAngleX += x
             cameraAngleY += y
-            let qx = Quaternion.createRotationAxis(cameraAngleX, unitVector: float3(0,1,0))
-            let qy = Quaternion.createRotationAxis(cameraAngleY, unitVector: float3(1,0,0))
-            camera.transform.rotation = qy * qx
+            let aax = AngleAxis(angle: cameraAngleX, axis: float3(0,1,0))
+            let aay = AngleAxis(angle: cameraAngleY, axis: float3(1,0,0))
+            camera.transform.rotation = Quaternion(aay) * Quaternion(aax)
         }
     }
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

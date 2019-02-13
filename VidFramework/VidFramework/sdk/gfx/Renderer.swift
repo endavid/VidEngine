@@ -153,8 +153,8 @@ public class Renderer {
     func updateBuffers() {
         let uniformB = graphicsDataBuffer.contents()
         let uniformData = uniformB.advanced(by: MemoryLayout<GraphicsData>.size * syncBufferIndex).assumingMemoryBound(to: Float.self)
-        graphicsData.projectionMatrix = camera.projectionMatrix
-        graphicsData.viewMatrix = camera.viewTransformMatrix
+        graphicsData.projectionMatrix = camera.projection
+        graphicsData.viewMatrix = camera.viewMatrix
         memcpy(uniformData, &graphicsData, MemoryLayout<GraphicsData>.size)
         for p in plugins {
             p.updateBuffers(syncBufferIndex, camera: camera)

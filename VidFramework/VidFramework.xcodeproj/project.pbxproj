@@ -52,6 +52,7 @@
 		632D2867203984E3000562F0 /* FrameworkBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D2866203984E3000562F0 /* FrameworkBundle.swift */; };
 		632D288F20398CD9000562F0 /* Rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D288E20398CD9000562F0 /* Rain.swift */; };
 		6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */ = {isa = PBXBuildFile; fileRef = 6334C979205EEB6A00405E90 /* VidMetalLib.metallib */; };
+		635EAEE42214BC0E00D18734 /* AngleAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635EAEE32214BC0E00D18734 /* AngleAxis.swift */; };
 		6369035B206E22FA008EE410 /* WideColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6369035A206E22FA008EE410 /* WideColor.swift */; };
 		63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CBE2042EEF600D046CF /* TextureInit.swift */; };
 		63711CC120461C5700D046CF /* TextureFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711CC020461C5700D046CF /* TextureFilter.swift */; };
@@ -122,6 +123,7 @@
 		632D2866203984E3000562F0 /* FrameworkBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameworkBundle.swift; sourceTree = "<group>"; };
 		632D288E20398CD9000562F0 /* Rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rain.swift; sourceTree = "<group>"; };
 		6334C979205EEB6A00405E90 /* VidMetalLib.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = VidMetalLib.metallib; path = "../../../VidMetalLib/build/Release-iphoneos/VidMetalLib.metallib"; sourceTree = "<group>"; };
+		635EAEE32214BC0E00D18734 /* AngleAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleAxis.swift; sourceTree = "<group>"; };
 		6369035A206E22FA008EE410 /* WideColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WideColor.swift; sourceTree = "<group>"; };
 		63711CBA2041BF8800D046CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		63711CBE2042EEF600D046CF /* TextureInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureInit.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				632D27EB203896C7000562F0 /* Vector.swift */,
 				632D27EC203896C7000562F0 /* Matrix.swift */,
 				632D27ED203896C7000562F0 /* Quaternion.swift */,
+				635EAEE32214BC0E00D18734 /* AngleAxis.swift */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -444,6 +447,7 @@
 				6393E76C2054B0C80098F96F /* ColorCategory.swift in Sources */,
 				632D280F203896C7000562F0 /* CubePrimitive.swift in Sources */,
 				6393E7B8205B15500098F96F /* LinearRGBA.swift in Sources */,
+				635EAEE42214BC0E00D18734 /* AngleAxis.swift in Sources */,
 				632D280C203896C7000562F0 /* MdlParser.swift in Sources */,
 				632D281D203896C7000562F0 /* Scene.swift in Sources */,
 				632D2821203896C7000562F0 /* DeferredLightingPlugin.swift in Sources */,

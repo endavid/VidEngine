@@ -9,15 +9,27 @@ import simd
 import UIKit
 
 public class Camera {
-    public var transform = Transform()         ///< position of the camera
-    public var projectionMatrix = float4x4()
-    public var inverseProjectionMatrix = float4x4()
     var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
     var fov : Float = 45
     var near : Float = 0.1
     var far : Float = 100
+    private var _transform = Transform()
+    private var _viewMatrix = float4x4()
+    private var _projection = float4x4()
+    private var _projectionInverse = float4x4()
     
-    public var rotation : Quaternion {
+    /// position and direction of the camera
+    public var transform: Transform {
+        get {
+            return _transform
+        }
+        set {
+            _transform = newValue
+            _viewMatrix = self.viewTransform.toMatrix4()
+        }
+    }
+    /// camera rotation
+    public var rotation: Quaternion {
         get {
             return transform.rotation
         }
@@ -25,18 +37,29 @@ public class Camera {
             transform.rotation = newValue
         }
     }
-    
-    public var viewTransform : Transform {
+    /// inverse of the transform, to convert to view space
+    public var viewTransform: Transform {
         get {
             return transform.inverse()
         }
     }
-    public var viewTransformMatrix : float4x4 {
+    public var viewMatrix: float4x4 {
         get {
-            return self.viewTransform.toMatrix4()
+            return _viewMatrix
+        }
+    }
+    public var projection: float4x4 {
+        get {
+            return _projection
         }
         set {
-            transform = Transform(matrix: newValue)
+            _projection = newValue
+            _projectionInverse = newValue.inverse
+        }
+    }
+    public var projectionInverse: float4x4 {
+        get {
+            return _projectionInverse
         }
     }
 
@@ -74,14 +97,14 @@ public class Camera {
         self.fov = fov
         self.near = near
         self.far = far
-        projectionMatrix = float4x4.perspective(fov: fov, near: near, far: far, aspectRatio: aspectRatio)
+        _projection = float4x4.perspective(fov: fov, near: near, far: far, aspectRatio: aspectRatio)
         // remember inverse projection as well. Handy for casting rays
-        inverseProjectionMatrix = float4x4.perspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
+        _projectionInverse = float4x4.perspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
     }
 
     public func worldFromScreenCoordinates(x: Float, y: Float) -> float3 {
         let screenHalfway = float4(x, y, 0.75, 1)
-        let viewW = inverseProjectionMatrix * screenHalfway
+        let viewW = projectionInverse * screenHalfway
         //let mierda = transform.toMatrix4() * inverseProjectionMatrix * screenHalfway
         //let worldHalfWay = float3(mierda.x, mierda.y, mierda.z) * (1.0 / mierda.w)
         let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)

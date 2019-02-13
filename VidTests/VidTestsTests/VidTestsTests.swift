@@ -45,7 +45,7 @@ class VidTestsTests: XCTestCase {
         
     func testTransform() {
         let p0 = float3(7, 12, -3)
-        let t = Transform(position: float3(-1, 2, 0.5), scale: float3(1, 1, 1), rotation: Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0)))
+        let t = Transform(position: float3(-1, 2, 0.5), scale: float3(1, 1, 1), rotation: Quaternion(AngleAxis(angle: .pi / 4, axis: float3(0,1,0))))
         let p1 = t * p0
         XCTAssertLessThanOrEqual(distance(p1, float3(1.82843, 14.0, -6.57107)), epsilon)
         let p2 = t.inverse() * p1
@@ -62,40 +62,48 @@ class VidTestsTests: XCTestCase {
         camera.setPerspectiveProjection(fov: 90, near: 0.1, far: 100, aspectRatio: 1)
         camera.setViewDirection(float3(0,0,-1), up: float3(0,1,0))
         camera.setEyePosition(float3(0,2,20))
-        XCTAssertLessThanOrEqual(distance(camera.projectionMatrix[0], float4(1,0,0,0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.projectionMatrix[1], float4(0,1,0,0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.projectionMatrix[2], float4(0,0,-1.002,-1.0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.projectionMatrix[3], float4(0,0,-0.2002,0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.inverseProjectionMatrix[0], float4(1,0,0,0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.inverseProjectionMatrix[1], float4(0,1,0,0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.inverseProjectionMatrix[2], float4(0,0,0,-4.995)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.inverseProjectionMatrix[3], float4(0,0,-1,5.005)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.transform.position, float3(0,2.0,20)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.transform.scale, float3(1.0,1.0,1.0)), epsilon)
-        XCTAssertLessThanOrEqual(distance(camera.transform.rotation.q, float4(0,0,0,1)), epsilon)
+        assertAlmostEqual(float4x4([
+                float4(1,0,0,0),
+                float4(0,1,0,0),
+                float4(0,0,-1.002,-1.0),
+                float4(0,0,-0.2002,0)
+            ]),
+            camera.projection, epsilon: epsilon)
+        assertAlmostEqual(float4x4([
+                float4(1,0,0,0),
+                float4(0,1,0,0),
+                float4(0,0,0,-4.995),
+                float4(0,0,-1,5.005)
+            ]),
+            camera.projectionInverse, epsilon: epsilon)
+        assertAlmostEqual(Transform(
+                position: float3(0, 2, 20),
+                scale: float3(1, 1, 1),
+                rotation: Quaternion(w: 1, v: float3(0,0,0))
+            ),
+            camera.transform, epsilon: epsilon)
         let worldPoint = float3(0.6, 1.2, -5)
         var viewPoint = camera.viewTransform * worldPoint
         // checked with Octave
-        XCTAssertLessThanOrEqual(distance(viewPoint, float3(0.6, -0.8, -25.0)), epsilon)
+        assertAlmostEqual(float3(0.6, -0.8, -25.0), viewPoint, epsilon: epsilon)
         var worldPoint4 = float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
-        var viewPoint4 = camera.viewTransformMatrix * worldPoint4
-        XCTAssertLessThanOrEqual(distance(viewPoint4, float4(0.6, -0.8, -25.0, 1.0)), epsilon)
-        let screenPoint = camera.projectionMatrix * viewPoint4
-        XCTAssertLessThanOrEqual(distance(screenPoint, float4(0.6, -0.8, 24.84980, 25.0)), epsilon)
+        var viewPoint4 = camera.viewMatrix * worldPoint4
+        assertAlmostEqual(float4(0.6, -0.8, -25.0, 1.0), viewPoint4, epsilon: epsilon)
+        let screenPoint = camera.projection * viewPoint4
+        assertAlmostEqual(float4(0.6, -0.8, 24.84980, 25.0), screenPoint, epsilon: epsilon)
         var p = screenPoint * (1.0 / screenPoint.w)
-        p = camera.inverseProjectionMatrix * p
+        p = camera.projectionInverse * p
         p = p * (1.0 / p.w)
-        XCTAssertLessThanOrEqual(distance(viewPoint4, p), epsilon)
+        assertAlmostEqual(p, viewPoint4, epsilon: epsilon)
         let wp = camera.transform * float3(p.x, p.y, p.z)
-        XCTAssertLessThanOrEqual(distance(worldPoint, wp), epsilon)
-        let qx = Quaternion.createRotationAxis(.pi / 4, unitVector: float3(0,1,0))
+        assertAlmostEqual(wp, worldPoint, epsilon: epsilon)
+        let qx = Quaternion(AngleAxis(angle: .pi / 4, axis: float3(0,1,0)))
         camera.rotation = qx
         viewPoint = camera.viewTransform * worldPoint
-        XCTAssertLessThanOrEqual(distance(viewPoint, float3(18.1019, -0.8, -17.2534)), epsilon)
+        assertAlmostEqual(float3(18.1019, -0.8, -17.2534), viewPoint, epsilon: epsilon)
         worldPoint4 = float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
-        viewPoint4 = camera.viewTransformMatrix * worldPoint4
-        print(viewPoint4)
-        XCTAssertLessThanOrEqual(distance(viewPoint4, float4(18.1019, -0.8, -17.2534, 1.0)), epsilon)
+        viewPoint4 = camera.viewMatrix * worldPoint4
+        assertAlmostEqual(float4(18.1019, -0.8, -17.2534, 1.0), viewPoint4, epsilon: epsilon)
     }
     
     // average: 0.027 secs

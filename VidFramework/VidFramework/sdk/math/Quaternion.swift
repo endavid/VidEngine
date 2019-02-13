@@ -17,7 +17,7 @@ public struct Quaternion : CustomStringConvertible {
     }
     public var v : float3 {
         get {
-            return float3(q.x, q.y, q.z)
+            return q.xyz
         }
     }
     public var description : String {
@@ -27,6 +27,13 @@ public struct Quaternion : CustomStringConvertible {
     }
     public init(w: Float, v: float3) {
         q = float4(v.x, v.y, v.z, w)
+    }
+    public init(_ angleAxis: AngleAxis) {
+        let a = angleAxis.angle
+        // rotation axis
+        let w = cosf(0.5 * a)
+        let v = sinf(0.5 * a) * angleAxis.axis
+        self.init(w: w, v: v)
     }
     public func conjugate() -> Quaternion {
         return Quaternion(w: self.w, v: -self.v)
@@ -59,10 +66,6 @@ public struct Quaternion : CustomStringConvertible {
         return m
     }
     
-    
-    public static func createRotationAxis(_ angle: Float, unitVector: float3) -> Quaternion {
-        return Quaternion(w: cosf(0.5 * angle), v: sinf(0.5 * angle) * unitVector)
-    }
     public static func createRotation(start: float3, end: float3) -> Quaternion {
         let up = float3(start.x, start.z, start.y)
         return createRotation(start: start, end: end, up: up)
@@ -72,11 +75,11 @@ public struct Quaternion : CustomStringConvertible {
             return Quaternion()
         }
         if end.isClose(-start, epsilon: 0.01) { // opposite vectors
-            return Quaternion.createRotationAxis(PI, unitVector: up)
+            return Quaternion(AngleAxis(angle: .pi, axis: up))
         }
         let angle = acosf(dot(start, end))
         let axis = normalize(cross(start, end))
-        return Quaternion.createRotationAxis(angle, unitVector: axis)
+        return Quaternion(AngleAxis(angle: angle, axis: axis))
     }
     public static func fromMatrix(_ m: float3x3) -> Quaternion {
         let (cx, cy, cz) = m.columns
@@ -84,16 +87,16 @@ public struct Quaternion : CustomStringConvertible {
         var axis = float3(0, 0, 1)
         if !IsClose(angle, 0) {
             let d = float3(
-                cz.y - cy.z,
-                cx.z - cz.x,
-                cy.x - cx.y)
+                cy.z - cz.y,
+                cz.x - cx.z,
+                cx.y - cy.x)
             let dd = length(d)
             if (!IsClose(dd, 0))
             {
                 axis = normalize(d)
             }
         }
-        return createRotationAxis(angle, unitVector: axis)
+        return Quaternion(AngleAxis(angle: angle, axis: axis))
     }
 }
 
