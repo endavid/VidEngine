@@ -44,15 +44,17 @@ vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
     TexturedVertex v = vdata[vid];
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
     float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
+    float4 viewNormal = uniforms.viewMatrix * float4(worldNormal, 0.0);
     outVertex.position = uniforms.projectionMatrix * viewPos;
     outVertex.uv = float2(0,0);
     outVertex.color = mat.diffuse;
-    outVertex.normal = worldNormal;
+    outVertex.normal = viewNormal.xyz;
     return outVertex;
 }
 
-fragment FragmentGBuffer passLightFragment(VertexGBuffer inFrag [[stage_in]],
-                                 texture2d<float> tex [[ texture(0) ]])
+fragment FragmentGBuffer passLightFragment(
+  VertexGBuffer inFrag [[stage_in]],
+  texture2d<float> tex [[ texture(0) ]])
 {
     FragmentGBuffer outFragment;
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
