@@ -38,11 +38,13 @@ class ViewController: VidController {
     @objc
     func handleTap(gestureRecognize: UITapGestureRecognizer) {
         // Create anchor using the camera's current position
-        if let currentFrame = arSession?.currentFrame {
-            let (_, _, _, pos) = currentFrame.camera.transform.columns
-            print(pos)
-            //print(currentFrame.camera.transform)
-            //print(currentFrame.camera.viewMatrix(for: .landscapeRight))
+        if let _ = arSession {
+            let cube = CubePrimitive(numInstances: 1)
+            // place the cube a bit further away from the camera
+            cube.transform.position = camera.transform * float3(0, 0, -0.2)
+            cube.transform.scale = float3(0.1, 0.1, 0.1)
+            cube.queue()
+            print(cube.transform.position)
         }
     }
 }
