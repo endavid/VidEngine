@@ -19,6 +19,7 @@
 		635EAEE0221391D600D18734 /* TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635EAEDF221391D600D18734 /* TransformTests.swift */; };
 		635EAEE2221398DF00D18734 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635EAEE1221398DF00D18734 /* TestHelpers.swift */; };
 		63711C95203F961B00D046CF /* ColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63711C94203F961B00D046CF /* ColorTests.swift */; };
+		6389DFB8221AAC6A001625B4 /* SphericalHarmonicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFB7221AAC6A001625B4 /* SphericalHarmonicsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		635EAEDF221391D600D18734 /* TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformTests.swift; sourceTree = "<group>"; };
 		635EAEE1221398DF00D18734 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		63711C94203F961B00D046CF /* ColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTests.swift; sourceTree = "<group>"; };
+		6389DFB7221AAC6A001625B4 /* SphericalHarmonicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalHarmonicsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 				632D28D8203B6661000562F0 /* VidTestsTests.swift */,
 				635EAEDF221391D600D18734 /* TransformTests.swift */,
 				635EAEE1221398DF00D18734 /* TestHelpers.swift */,
+				6389DFB7221AAC6A001625B4 /* SphericalHarmonicsTests.swift */,
 			);
 			path = VidTestsTests;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				635EAEE0221391D600D18734 /* TransformTests.swift in Sources */,
+				6389DFB8221AAC6A001625B4 /* SphericalHarmonicsTests.swift in Sources */,
 				632D28D9203B6661000562F0 /* VidTestsTests.swift in Sources */,
 				63711C95203F961B00D046CF /* ColorTests.swift in Sources */,
 				635EAEE2221398DF00D18734 /* TestHelpers.swift in Sources */,

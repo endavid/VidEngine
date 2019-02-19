@@ -14,7 +14,10 @@ class ViewController: VidController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        arConfiguration = ARWorldTrackingConfiguration()
+        let cfg = ARWorldTrackingConfiguration()
+        cfg.planeDetection = .horizontal
+        cfg.environmentTexturing = .automatic
+        arConfiguration = cfg
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(gestureRecognize:)))
         view.addGestureRecognizer(tapGesture)
     }

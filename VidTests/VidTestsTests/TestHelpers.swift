@@ -37,3 +37,24 @@ func assertAlmostEqual(_ expected: Transform, _ actual: Transform, epsilon: Floa
     assertAlmostEqual(expected.scale, actual.scale, epsilon: epsilon)
     assertAlmostEqual(expected.rotation.q, actual.rotation.q, epsilon: epsilon)
 }
+func assertAlmostEqual(_ expected: Spherical, _ actual: Spherical, epsilon: Float = 1e-6) {
+    let d0 = fabsf(expected.r - actual.r)
+    let d1 = fabsf(expected.θ - actual.θ)
+    let d2 = fabsf(expected.φ - actual.φ)
+    if d0 > epsilon || d1 > epsilon || d2 > epsilon {
+        NSLog("expected: \(expected); actual: \(actual)")
+    }
+    XCTAssertLessThanOrEqual(d0, epsilon)
+    XCTAssertLessThanOrEqual(d1, epsilon)
+    XCTAssertLessThanOrEqual(d2, epsilon)
+}
+func assertAlmostEqual(_ expected: Vec3, _ actual: Vec3, epsilon: Float = 1e-6) {
+    assertAlmostEqual(float3(expected), float3(actual))
+}
+func assertAlmostEqual(_ expected: [Double], _ actual: [Double], epsilon: Double = 1e-6) {
+    XCTAssertEqual(expected.count, actual.count)
+    for i in 0..<expected.count {
+        let d = fabs(expected[i] - actual[i])
+        XCTAssertLessThanOrEqual(d, epsilon)
+    }
+}

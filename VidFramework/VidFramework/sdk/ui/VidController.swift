@@ -135,6 +135,7 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
         }
         if let arConfiguration = arConfiguration {
             arSession?.run(arConfiguration)
+            arSession?.delegate = self
             clearColor = .clear
         } else {
             clearColor = UIColor(red: 48/255, green: 45/255, blue: 45/255, alpha: 1)
@@ -263,9 +264,21 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     }
     
     // MARK: - ARSessionDelegate
+    open func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        var count = 0
+        for anchor in anchors {
+            if #available(iOS 12.0, *) {
+                if anchor is AREnvironmentProbeAnchor {
+                    count += 1
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+        print("EnvMaps: \(count)")
+    }
     open func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
-        
     }
     open func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay

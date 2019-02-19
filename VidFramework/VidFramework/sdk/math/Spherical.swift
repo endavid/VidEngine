@@ -8,10 +8,13 @@
 
 import simd
 
-public class Spherical {
-    public var r       : Float = 1     ///< Radial distance
-    public var θ       : Float = 0     ///< Inclination (theta) {0,π}
-    public var φ       : Float = 0     ///< Azimuth (phi) {0,2π}
+public struct Spherical {
+    /// Radial distance
+    public let r: Float
+    /// Inclination (theta) {0,π}
+    public let θ: Float
+    /// Azimuth (phi) {0,2π}
+    public let φ: Float
     
     // Maybe I'll hate myself later for using symbols 😂
     // (they aren't difficult to type with Japanese input, type シータ and ファイ)
@@ -26,11 +29,14 @@ public class Spherical {
         r = length(v)
         θ = acosf(v.y / r)
         // convert -pi..pi to 0..2pi
-        φ = atan2f(v.x, v.z)
-        φ = φ < 0 ? PI2 + φ : φ
+        let phi = atan2f(v.x, v.z)
+        φ = phi < 0 ? PI2 + phi : phi
     }
     
     public init () {
+        r = 1
+        θ = 0
+        φ = 0
     }
     
     public func toCartesian() -> float3 {

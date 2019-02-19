@@ -8,7 +8,7 @@
 import simd
 
 public extension float3 {
-    internal init(_ v: Vec3) {
+    public init(_ v: Vec3) {
         self.init(v.x, v.y, v.z)
     }
     public func inverse() -> float3 {
@@ -61,11 +61,18 @@ public struct Vec4 {
     }
 }
 
-// sizeof(float3) = 16!! sizeof(Vec3) = 12
+/// 3-dimensional vector that's smaller than a float3
+/// `sizeof(float3) = 16`!! `sizeof(Vec3) = 12`
 public struct Vec3 {
+    public static let zero = Vec3(0, 0, 0)
     let x : Float
     let y : Float
     let z : Float
+    subscript(row: Int) -> Float {
+        get {
+            return row == 0 ? x : row == 1 ? y : z
+        }
+    }
     public init(_ x: Float, _ y: Float, _ z: Float) {
         self.x = x
         self.y = y

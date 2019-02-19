@@ -8,16 +8,15 @@
 import Foundation
 import UIKit
 
-let PI      : Float = 3.1415926535897932384626433832795
-let PI_2    = 0.5 * PI
-let PI2     = 2.0 * PI
-let PI_INV  = 1.0 / PI
+let PI_2   : Float  = 0.5 * .pi
+let PI2    : Float  = 2.0 * .pi
+let PI_INV : Float  = 1.0 / .pi
 let NORM_SQR_ERROR_TOLERANCE : Float = 0.001
-let π       : Double = Double(PI)
+let π       : Double = .pi
 
 /// Converts angle in degrees to radians
 public func DegToRad(_ angle: Float) -> Float {
-    return angle * (PI/180.0)
+    return angle * (.pi/180.0)
 }
 /// Gets the sign of a number
 func Sign(_ n: Float) -> Float {
@@ -85,6 +84,37 @@ public func RandEvent(_ probality: Float) -> Bool {
     let r = Float(Rand(10000))
     return r < 10000.0 * probality
 }
+
+// Factorial of a number with a cache
+public func Factorial(_ n: Int) -> Double { // 64-bit ints aren't enough for big factorials
+    struct CacheData {
+        static let maxCount = 33
+        static var isFactorialCached = false
+        static var factorialCache : [Double] = [Double](repeating: 1, count: maxCount)
+    }
+    
+    if (n < 2) {
+        return 1
+    }
+    if (!CacheData.isFactorialCached) {
+        // init cache
+        var r : Double = 1
+        for c in 0..<CacheData.maxCount {
+            r *= Double(c+2)
+            CacheData.factorialCache[c] = r
+        }
+        CacheData.isFactorialCached = true
+    }
+    if (n - 2 < CacheData.maxCount) {
+        return CacheData.factorialCache[n-2]
+    }
+    var r = CacheData.factorialCache[CacheData.maxCount-1]
+    for i in (CacheData.maxCount+2)...n {
+        r *= Double(i)
+    }
+    return r
+}
+
 public extension Array {
     public func shuffled() -> [Element] {
         var list = self
