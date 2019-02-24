@@ -17,6 +17,7 @@ public class SHLight: LightSource {
         computeSH,
         readyToRender
     }
+    let identifier: UUID
     let shBuffer: SHBuffer
     let sh: SphericalHarmonics
     public var transform: Transform
@@ -24,7 +25,7 @@ public class SHLight: LightSource {
     internal var indexBuffer: MTLBuffer!
     fileprivate var _phase: Phase
     fileprivate var _sampleIndex: Int
-    fileprivate var _anchor: ARAnchor?
+    fileprivate var _envmap: MTLTexture?
     
     var areSamplesReady: Bool {
         get {
@@ -34,6 +35,15 @@ public class SHLight: LightSource {
     var phase: Phase {
         get {
             return _phase
+        }
+    }
+    var environmentTexture: MTLTexture? {
+        get {
+            return _envmap
+        }
+        set {
+            _phase = .readCubemap
+            _envmap = newValue
         }
     }
     
@@ -59,8 +69,10 @@ public class SHLight: LightSource {
         if #available(iOS 12.0, *) {
             let probeAnchor = AREnvironmentProbeAnchor(name: "sceneProbe", transform: Transform(position: position).toMatrix4(), extent: extent)
             session.add(anchor: probeAnchor)
-            _anchor = probeAnchor
+            identifier = probeAnchor.identifier
+            print(probeAnchor)
         } else {
+            identifier = UUID()
             NSLog("Environment Probe not available <iOS12.0")
         }
         let transform = Transform(position: position, scale: extent)
@@ -111,25 +123,20 @@ public class SHLight: LightSource {
     }
     
     func readCubemapSamples(encoder: MTLRenderCommandEncoder) {
-        if #available(iOS 12.0, *) {
-            guard let probe = _anchor as? AREnvironmentProbeAnchor else {
-                return
-            }
-            guard let tex = probe.environmentTexture else {
-                return
-            }
-            encoder.setVertexBuffer(shBuffer.normalBuffer, offset: 0, index: 0)
-            encoder.setVertexBuffer(shBuffer.radianceBuffer, offset: 0, index: 1)
-            encoder.setVertexTexture(tex, index: 0)
-            encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Int(shBuffer.numSamples))
-            _phase = .computeSH
-        } else {
-            // Fallback on earlier versions
+        guard let tex = _envmap else {
+            return
         }
+        encoder.setVertexBuffer(shBuffer.normalBuffer, offset: 0, index: 0)
+        encoder.setVertexBuffer(shBuffer.radianceBuffer, offset: 0, index: 1)
+        encoder.setVertexTexture(tex, index: 0)
+        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Int(shBuffer.numSamples))
+        _phase = .computeSH
+        _sampleIndex = 0
     }
     
     /// For debugging the values obtained
     func dump6Irradiances() {
+        print("Updated probe \(identifier.uuidString)")
         let up = sh.getIrradianceApproximation(normal: float3(0, 1, 0))
         let down = sh.getIrradianceApproximation(normal: float3(0, -1, 0))
         let west = sh.getIrradianceApproximation(normal: float3(-1, 0, 0))

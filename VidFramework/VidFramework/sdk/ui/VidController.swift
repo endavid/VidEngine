@@ -265,17 +265,18 @@ open class VidController: UIViewController, MTKViewDelegate, ARSessionDelegate {
     
     // MARK: - ARSessionDelegate
     open func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
-        var count = 0
         for anchor in anchors {
             if #available(iOS 12.0, *) {
-                if anchor is AREnvironmentProbeAnchor {
-                    count += 1
+                if let probe = anchor as? AREnvironmentProbeAnchor,
+                    let plugin: ARPlugin? = Renderer.shared?.getPlugin(),
+                    let shLight = plugin?.findProbe(identifier: probe.identifier)
+                {
+                    shLight.environmentTexture = probe.environmentTexture
                 }
             } else {
                 // Fallback on earlier versions
             }
         }
-        print("EnvMaps: \(count)")
     }
     open func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user

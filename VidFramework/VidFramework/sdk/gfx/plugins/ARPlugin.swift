@@ -16,7 +16,7 @@ class ARPlugin: GraphicPlugin {
     var capturedImagePipelineState: MTLRenderPipelineState!
     var capturedImageDepthState: MTLDepthStencilState!
     var readCubemapState: MTLRenderPipelineState!
-    fileprivate var lightProbes: [SHLight] = []
+    fileprivate var lightProbes: [UUID: SHLight] = [:]
     
     var viewportSize = CGSize()
     // Vertex data for an image plane
@@ -34,16 +34,13 @@ class ARPlugin: GraphicPlugin {
     }
     
     func queue(_ lightProbe: SHLight) {
-        let alreadyQueued = lightProbes.contains { $0 === lightProbe }
-        if !alreadyQueued {
-            lightProbes.append(lightProbe)
-        }
+        lightProbes[lightProbe.identifier] = lightProbe
     }
     func dequeue(_ lightProbe: SHLight) {
-        let index = lightProbes.index { $0 === lightProbe }
-        if let i = index {
-            lightProbes.remove(at: i)
-        }
+        lightProbes.removeValue(forKey: lightProbe.identifier)
+    }
+    func findProbe(identifier: UUID) -> SHLight? {
+        return lightProbes[identifier]
     }
     
     fileprivate func createReadCubemapDescriptor(library: MTLLibrary, pixelFormat: MTLPixelFormat) -> MTLRenderPipelineDescriptor {
@@ -201,9 +198,12 @@ class ARPlugin: GraphicPlugin {
     }
     
     private func updateLightProbes(encoder: MTLRenderCommandEncoder) {
-        for probe in lightProbes {
+        for (_, probe) in lightProbes {
             if probe.phase == .readCubemap {
+                encoder.pushDebugGroup("UpdateLightProbes")
+                encoder.setRenderPipelineState(readCubemapState)
                 probe.readCubemapSamples(encoder: encoder)
+                encoder.popDebugGroup()
             } else {
                 probe.update()
             }
