@@ -14,19 +14,23 @@ class SHBuffer: SHStorage {
     let numCoeffs   : UInt
     let numSamples  : UInt
     let sqrtSamples : UInt
-    var samplesBuffer     : MTLBuffer!
-    var coeffsBuffer      : MTLBuffer!
+    var normalBuffer      : MTLBuffer!
+    var radianceBuffer    : MTLBuffer!
     /// Irradiance matrices
     var irradiancesBuffer : MTLBuffer!
+    var sphericals        : [Spherical]
+    var coeffsPerSample   : [[Double]]
+    var coeffs            : [Vec3]
 
-    var samples: UnsafeMutablePointer<SHSample> {
+    
+    var normals: UnsafeMutablePointer<Vec3> {
         get {
-            return samplesBuffer.contents().assumingMemoryBound(to: SHSample.self)
+            return normalBuffer.contents().assumingMemoryBound(to: Vec3.self)
         }
     }
-    var coeffs: UnsafeMutablePointer<Vec3> {
+    var radiances: UnsafeMutablePointer<Vec3> {
         get {
-            return coeffsBuffer.contents().assumingMemoryBound(to: Vec3.self)
+            return radianceBuffer.contents().assumingMemoryBound(to: Vec3.self)
         }
     }
     var irradiances: UnsafeMutablePointer<float4x4> {
@@ -42,14 +46,17 @@ class SHBuffer: SHStorage {
         numCoeffs = numBands * numBands
         let emptyMatrix = float4x4()
         irradiancesBuffer = Renderer.createBuffer(from: emptyMatrix, device: device, numCopies: 3)
+        let n = Int(self.numSamples)
         let coefficients = [Double](repeating: 0, count: Int(numCoeffs))
-        let emptySample = SHSample(sph: Spherical(), vec: .zero, coeff: coefficients)
-        samplesBuffer = Renderer.createBuffer(from: emptySample, device: device, numCopies: Int(self.numSamples))
-        coeffsBuffer = Renderer.createBuffer(from: Vec3.zero, device: device, numCopies: Int(numCoeffs))
+        coeffsPerSample = [[Double]](repeating: coefficients, count: n)
+        sphericals = [Spherical](repeating: Spherical(), count: n)
+        normalBuffer = Renderer.createBuffer(from: Vec3.zero, device: device, numCopies: n)
+        radianceBuffer = Renderer.createBuffer(from: Vec3.zero, device: device, numCopies: n)
+        coeffs = [Vec3](repeating: .zero, count: Int(numCoeffs))
     }
     
     func getSample(i: Int) -> SHSample {
-        return samples[i]
+        return SHSample(sph: sphericals[i], vec: normals[i], coeff: coeffsPerSample[i])
     }
     
     func getCoefficient(i: Int) -> Vec3 {
@@ -61,15 +68,15 @@ class SHBuffer: SHStorage {
     }
 
     func setSample(i: Int, sph: Spherical) {
-        samples[i].sph = sph
+        sphericals[i] = sph
     }
     
     func setSample(i: Int, vec: Vec3) {
-        samples[i].vec = vec
+        normals[i] = vec
     }
     
     func setSample(i: Int, ci: Int, _ value: Double) {
-        samples[i].coeff[ci] = value
+        coeffsPerSample[i][ci] = value
     }
     
     func setCoefficient(i: Int, _ vec: Vec3) {

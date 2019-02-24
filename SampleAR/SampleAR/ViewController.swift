@@ -16,7 +16,7 @@ class ViewController: VidController {
         super.viewDidLoad()
         let cfg = ARWorldTrackingConfiguration()
         cfg.planeDetection = .horizontal
-        cfg.environmentTexturing = .automatic
+        cfg.environmentTexturing = .manual
         arConfiguration = cfg
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(gestureRecognize:)))
         view.addGestureRecognizer(tapGesture)
@@ -41,14 +41,26 @@ class ViewController: VidController {
     @objc
     func handleTap(gestureRecognize: UITapGestureRecognizer) {
         // Create anchor using the camera's current position
-        if let _ = arSession {
-            let cube = CubePrimitive(numInstances: 1)
+        if let session = arSession {
             // place the cube a bit further away from the camera
-            cube.transform.position = camera.transform * float3(0, 0, -0.2)
-            cube.transform.scale = float3(0.1, 0.1, 0.1)
-            cube.queue()
-            print(cube.transform.position)
+            let pos = camera.transform * float3(0, 0, -0.2)
+            print(pos)
+            addCube(position: pos)
+            addLightProbe(position: pos, session: session)
         }
+    }
+    
+    func addCube(position: float3) {
+        let cube = CubePrimitive(numInstances: 1)
+        cube.transform.position = position
+        cube.transform.scale = float3(0.1, 0.1, 0.1)
+        cube.queue()
+    }
+    
+    func addLightProbe(position: float3, session: ARSession) {
+        let extent = float3(5, 5, 5)
+        let probe = SHLight(position: position, extent: extent, session: session)
+        probe.queue()
     }
 }
 

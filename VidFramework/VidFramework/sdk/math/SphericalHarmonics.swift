@@ -202,26 +202,36 @@ public class SphericalHarmonics {
        - fn: the Polar Function. If the polar function is an image, pass a function that retrieves (R,G,B) values from it given a spherical coordinate.
     */
     public func projectPolarFn(_ fn: (Float, Float) -> Vec3) {
-        let weight: Float = 4.0 * .pi
         // for each sample
         for i : Int in 0..<Int(storage.numSamples) {
             let sample = storage.getSample(i: i)
             let θ = sample.sph.θ
             let φ = sample.sph.φ
-            for n : Int in 0..<Int(storage.numCoeffs) {
-                let c = storage.getCoefficient(i: n)
-                storage.setCoefficient(i: n, c + fn(θ,φ) * Float(sample.coeff[n]))
-            }
+            updateCoefficients(sampleIndex: i, fn(θ,φ))
         }
+        normalizeCoefficients()
+        // compute matrices for later
+        computeIrradianceApproximationMatrices()
+    }
+    
+    func updateCoefficients(sampleIndex i: Int, _ v: Vec3) {
+        let coeff = storage.getSample(i: i).coeff
+        for n : Int in 0..<Int(storage.numCoeffs) {
+            let c = storage.getCoefficient(i: n)
+            storage.setCoefficient(i: n, c + v * Float(coeff[n]))
+        }
+    }
+    
+    func normalizeCoefficients() {
         // divide the result by weight and number of samples
+        let weight: Float = 4.0 * .pi
         let factor = weight / Float(storage.numSamples)
         for i : Int in 0..<Int(storage.numCoeffs) {
             let c = storage.getCoefficient(i: i)
             storage.setCoefficient(i: i, factor * c)
         }
-        // compute matrices for later
-        computeIrradianceApproximationMatrices()
     }
+    
     
     /**
      * Reconstruct the approximated function for the given input direction,

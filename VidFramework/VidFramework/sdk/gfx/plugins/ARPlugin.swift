@@ -15,7 +15,9 @@ class ARPlugin: GraphicPlugin {
     var imagePlaneVertexBuffer: MTLBuffer!
     var capturedImagePipelineState: MTLRenderPipelineState!
     var capturedImageDepthState: MTLDepthStencilState!
-
+    var readCubemapState: MTLRenderPipelineState!
+    fileprivate var lightProbes: [SHLight] = []
+    
     var viewportSize = CGSize()
     // Vertex data for an image plane
     let kImagePlaneVertexData: [Float] = [
@@ -29,6 +31,30 @@ class ARPlugin: GraphicPlugin {
         get {
             return "AR"
         }
+    }
+    
+    func queue(_ lightProbe: SHLight) {
+        let alreadyQueued = lightProbes.contains { $0 === lightProbe }
+        if !alreadyQueued {
+            lightProbes.append(lightProbe)
+        }
+    }
+    func dequeue(_ lightProbe: SHLight) {
+        let index = lightProbes.index { $0 === lightProbe }
+        if let i = index {
+            lightProbes.remove(at: i)
+        }
+    }
+    
+    fileprivate func createReadCubemapDescriptor(library: MTLLibrary, pixelFormat: MTLPixelFormat) -> MTLRenderPipelineDescriptor {
+        let fn = library.makeFunction(name: "readCubemapSamples")!
+        let desc = MTLRenderPipelineDescriptor()
+        desc.vertexFunction = fn
+        // vertex output is void
+        desc.isRasterizationEnabled = false
+        // pixel format needs to be set
+        desc.colorAttachments[0].pixelFormat = pixelFormat
+        return desc
     }
     
     override init(device: MTLDevice, library: MTLLibrary, view: MTKView) {
@@ -74,10 +100,13 @@ class ARPlugin: GraphicPlugin {
         capturedImagePipelineStateDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
         capturedImagePipelineStateDescriptor.stencilAttachmentPixelFormat = view.depthStencilPixelFormat
         
+        let readCubemapDesc = createReadCubemapDescriptor(library: library, pixelFormat: view.colorPixelFormat)
+        
         do {
             try capturedImagePipelineState = device.makeRenderPipelineState(descriptor: capturedImagePipelineStateDescriptor)
+            try readCubemapState = device.makeRenderPipelineState(descriptor: readCubemapDesc)
         } catch let error {
-            print("Failed to created captured image pipeline state, error \(error)")
+            NSLog("Failed to created captured image pipeline state, error \(error)")
         }
         
         let capturedImageDepthStateDescriptor = MTLDepthStencilDescriptor()
@@ -102,7 +131,8 @@ class ARPlugin: GraphicPlugin {
             return
         }
         encoder.label = self.label
-        drawCapturedImage(renderEncoder: encoder)
+        updateLightProbes(encoder: encoder)
+        drawCapturedImage(encoder: encoder)
         encoder.endEncoding()
         renderer.frameState.clearedDrawable = true
     }
@@ -144,30 +174,39 @@ class ARPlugin: GraphicPlugin {
         }
     }
     
-    private func drawCapturedImage(renderEncoder: MTLRenderCommandEncoder) {
+    private func drawCapturedImage(encoder: MTLRenderCommandEncoder) {
         guard let textureY = Renderer.shared.capturedImageTextureY, let textureCbCr = Renderer.shared.capturedImageTextureCbCr else {
             return
         }
         
         // Push a debug group allowing us to identify render commands in the GPU Frame Capture tool
-        renderEncoder.pushDebugGroup("DrawCapturedImage")
+        encoder.pushDebugGroup("DrawCapturedImage")
         
         // Set render command encoder state
-        renderEncoder.setCullMode(.none)
-        renderEncoder.setRenderPipelineState(capturedImagePipelineState)
-        renderEncoder.setDepthStencilState(capturedImageDepthState)
+        encoder.setCullMode(.none)
+        encoder.setRenderPipelineState(capturedImagePipelineState)
+        encoder.setDepthStencilState(capturedImageDepthState)
         
         // Set mesh's vertex buffers
-        renderEncoder.setVertexBuffer(imagePlaneVertexBuffer, offset: 0, index: 0)
+        encoder.setVertexBuffer(imagePlaneVertexBuffer, offset: 0, index: 0)
         
         // Set any textures read/sampled from our render pipeline
-        renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: 1)
-        renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: 2)
+        encoder.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: 1)
+        encoder.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: 2)
         
         // Draw each submesh of our mesh
-        renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+        encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         
-        renderEncoder.popDebugGroup()
+        encoder.popDebugGroup()
     }
     
+    private func updateLightProbes(encoder: MTLRenderCommandEncoder) {
+        for probe in lightProbes {
+            if probe.phase == .readCubemap {
+                probe.readCubemapSamples(encoder: encoder)
+            } else {
+                probe.update()
+            }
+        }
+    }
 }

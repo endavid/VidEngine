@@ -12,6 +12,7 @@ import MetalKit
 class DeferredLightingPlugin: GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var directionalLights : [DirectionalLight] = []
+    fileprivate var shLights: [SHLight] = []
     
     override var label: String {
         get {
@@ -31,6 +32,11 @@ class DeferredLightingPlugin: GraphicPlugin {
             if !alreadyQueued {
                 directionalLights.append(l)
             }
+        } else if let l = light as? SHLight {
+            let alreadyQueued = shLights.contains { $0 === l }
+            if !alreadyQueued {
+                shLights.append(l)
+            }
         } else {
             NSLog("LightSource \(light.name) -- unsupported type")
         }
@@ -40,6 +46,11 @@ class DeferredLightingPlugin: GraphicPlugin {
             let index = directionalLights.index { $0 === l }
             if let i = index {
                 directionalLights.remove(at: i)
+            }
+        } else if let l = light as? SHLight {
+            let index = shLights.index { $0 === l }
+            if let i = index {
+                shLights.remove(at: i)
             }
         }
     }

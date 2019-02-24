@@ -18,8 +18,9 @@ struct LineParticle
     float4 end;
 };
 
-vertex VertexInOut passVertexRaindrop(uint vid [[ vertex_id ]],
-                                      constant packed_float4* position  [[ buffer(0) ]])
+vertex VertexInOut passVertexRaindrop(
+  uint vid [[ vertex_id ]],
+  constant packed_float4* position  [[ buffer(0) ]])
 {
     VertexInOut outVertex;
     
@@ -43,11 +44,12 @@ float2 uvForNoiseTexture(float clipx) {
 }
 
 // can only write to a buffer if the output is set to void
-vertex void updateRaindrops(uint vid [[ vertex_id ]],
-                            constant LineParticle* particle  [[ buffer(0) ]],
-                            device LineParticle* updatedParticle  [[ buffer(1) ]],
-                            constant Uniforms& uniforms  [[ buffer(2) ]],
-                            texture2d<float> noiseTexture [[ texture(0) ]])
+vertex void updateRaindrops(
+  uint vid [[ vertex_id ]],
+  constant LineParticle* particle  [[ buffer(0) ]],
+  device LineParticle* updatedParticle  [[ buffer(1) ]],
+  constant Uniforms& uniforms  [[ buffer(2) ]],
+  texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
     float4 velocity = float4(particle[vid].start.zw, particle[vid].end.zw);

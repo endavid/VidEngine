@@ -59,6 +59,7 @@
 		6377D0AD206654930014EF9E /* Group2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6377D0AC206654930014EF9E /* Group2D.swift */; };
 		6389DFB422177FA7001625B4 /* SphericalHarmonics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFB322177FA7001625B4 /* SphericalHarmonics.swift */; };
 		6389DFB622178E96001625B4 /* SHBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFB522178E96001625B4 /* SHBuffer.swift */; };
+		6389DFBA221CC86E001625B4 /* SHLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFB9221CC86E001625B4 /* SHLight.swift */; };
 		6393E76A2054B0980098F96F /* cc14.raw in Resources */ = {isa = PBXBuildFile; fileRef = 6393E7692054B0980098F96F /* cc14.raw */; };
 		6393E76C2054B0C80098F96F /* ColorCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E76B2054B0C80098F96F /* ColorCategory.swift */; };
 		6393E7B02059ED370098F96F /* CieLab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7AF2059ED370098F96F /* CieLab.swift */; };
@@ -133,6 +134,7 @@
 		6377D0AC206654930014EF9E /* Group2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group2D.swift; sourceTree = "<group>"; };
 		6389DFB322177FA7001625B4 /* SphericalHarmonics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalHarmonics.swift; sourceTree = "<group>"; };
 		6389DFB522178E96001625B4 /* SHBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHBuffer.swift; sourceTree = "<group>"; };
+		6389DFB9221CC86E001625B4 /* SHLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHLight.swift; sourceTree = "<group>"; };
 		6393E7692054B0980098F96F /* cc14.raw */ = {isa = PBXFileReference; lastKnownFileType = file; path = cc14.raw; sourceTree = "<group>"; };
 		6393E76B2054B0C80098F96F /* ColorCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCategory.swift; sourceTree = "<group>"; };
 		6393E7AF2059ED370098F96F /* CieLab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CieLab.swift; sourceTree = "<group>"; };
@@ -216,19 +218,22 @@
 		632D27E0203896C7000562F0 /* prims */ = {
 			isa = PBXGroup;
 			children = (
-				632D27E1203896C7000562F0 /* SpherePrimitive.swift */,
-				632D27E2203896C7000562F0 /* Primitive.swift */,
-				632D27E3203896C7000562F0 /* CubePrimitive.swift */,
-				632D27E4203896C7000562F0 /* PlanePrimitive.swift */,
-				632D27E5203896C7000562F0 /* TextPrimitive.swift */,
-				632D27E6203896C7000562F0 /* Primitive2D.swift */,
-				632D288E20398CD9000562F0 /* Rain.swift */,
 				639D0707203B7A6B00F9905D /* ComputePrimitive.swift */,
-				639D0709203B7EF600F9905D /* VolumetricCompute.swift */,
-				63711CC020461C5700D046CF /* TextureFilter.swift */,
+				632D27E3203896C7000562F0 /* CubePrimitive.swift */,
 				63E5139820476D00000AC2F1 /* FilterChain.swift */,
 				6377D0AC206654930014EF9E /* Group2D.swift */,
+				632D2804203896C7000562F0 /* LightSource.swift */,
+				632D2807203896C7000562F0 /* ModelPrimitive.swift */,
+				632D27E4203896C7000562F0 /* PlanePrimitive.swift */,
+				632D27E2203896C7000562F0 /* Primitive.swift */,
+				632D27E6203896C7000562F0 /* Primitive2D.swift */,
+				632D288E20398CD9000562F0 /* Rain.swift */,
 				6389DFB522178E96001625B4 /* SHBuffer.swift */,
+				6389DFB9221CC86E001625B4 /* SHLight.swift */,
+				632D27E1203896C7000562F0 /* SpherePrimitive.swift */,
+				632D27E5203896C7000562F0 /* TextPrimitive.swift */,
+				63711CC020461C5700D046CF /* TextureFilter.swift */,
+				639D0709203B7EF600F9905D /* VolumetricCompute.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -277,9 +282,7 @@
 				632D27F6203896C7000562F0 /* GBuffer.swift */,
 				632D2806203896C7000562F0 /* GfxData.swift */,
 				632D2803203896C7000562F0 /* Image.swift */,
-				632D2804203896C7000562F0 /* LightSource.swift */,
 				632D2808203896C7000562F0 /* Material.swift */,
-				632D2807203896C7000562F0 /* ModelPrimitive.swift */,
 				632D2802203896C7000562F0 /* Renderer.swift */,
 				632D27F5203896C7000562F0 /* Scene.swift */,
 				632D280A203896C7000562F0 /* Texture.swift */,
@@ -440,6 +443,7 @@
 				632D2828203896C7000562F0 /* FontAtlas.swift in Sources */,
 				632D282A203896C7000562F0 /* Image.swift in Sources */,
 				632D2816203896C7000562F0 /* Vector.swift in Sources */,
+				6389DFBA221CC86E001625B4 /* SHLight.swift in Sources */,
 				63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */,
 				63711CC120461C5700D046CF /* TextureFilter.swift in Sources */,
 				632D2811203896C7000562F0 /* TextPrimitive.swift in Sources */,

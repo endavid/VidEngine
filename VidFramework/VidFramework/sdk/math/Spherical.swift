@@ -40,7 +40,7 @@ public struct Spherical {
     }
     
     public func toCartesian() -> float3 {
-        return float3(r * sinf(θ) * sinf(φ), r * cosf(θ), r * sinf(θ) * cos(φ))
+        return r * float3(sinf(θ) * sinf(φ), cosf(θ), sinf(θ) * cos(φ))
     }
     
     public static func randomSample() -> Spherical {

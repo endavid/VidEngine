@@ -72,8 +72,19 @@ struct PerInstanceUniforms
     Material material;
 };
 
-constexpr sampler pointSampler(coord::normalized, filter::nearest, address::clamp_to_edge);
-constexpr sampler linearSampler(coord::normalized, filter::linear, address::clamp_to_edge);
+constexpr sampler pointSampler(
+    coord::normalized,
+    filter::nearest,
+    address::clamp_to_edge);
+constexpr sampler linearSampler(
+    coord::normalized,
+    filter::linear,
+    address::clamp_to_edge);
+constexpr sampler cubemapSampler(
+    coord::normalized,
+    filter::linear,
+    address::clamp_to_edge,
+    mip_filter::linear);
 
 float4 linearRgbToNormalizedSrgb(float4 color);
 float4 normalizedSrgbToLinearRgb(float4 color);
