@@ -70,22 +70,27 @@ public class Primitive {
     }
     
     public func queue() {
-        if lightingType == .LitOpaque {
-            let plugin : PrimitivePlugin? = Renderer.shared.getPlugin()
-            plugin?.queue(self)
-        }
-        else if lightingType == .UnlitTransparent {
-            let plugin : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
-            plugin?.queue(self)
+        switch lightingType {
+        case .LitOpaque:
+            let p: LitOpaquePlugin? = Renderer.shared.getPlugin()
+            p?.queue(self)
+        case .UnlitOpaque:
+            let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+            p?.queue(self)
+        case .UnlitTransparent:
+            let p : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
+            p?.queue(self)
         }
     }
     
     public func dequeue() {
-        let p1 : PrimitivePlugin? = Renderer.shared.getPlugin()
-        let p2 : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
+        let p1: LitOpaquePlugin? = Renderer.shared.getPlugin()
+        let p2: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+        let p3: UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
         // just in case, dequeue from all
         p1?.dequeue(self)
         p2?.dequeue(self)
+        p3?.dequeue(self)
     }
     
     // this gets called when we need to update the buffers used by the GPU

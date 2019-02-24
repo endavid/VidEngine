@@ -31,11 +31,13 @@ public enum RendererError: Error {
 public class Renderer {
     struct FrameState {
         var clearedBackbuffer: Bool
+        var clearedGBuffer: Bool
         var clearedLightbuffer: Bool
         var clearedTransparencyBuffer: Bool
         var clearedDrawable: Bool
         init() {
             clearedBackbuffer = false
+            clearedGBuffer = false
             clearedLightbuffer = false
             clearedTransparencyBuffer = false
             clearedDrawable = false
@@ -140,9 +142,10 @@ public class Renderer {
         if (doAR) {
             plugins.append(ARPlugin(device: device, library: library, view: view))
         }
-        plugins.append(PrimitivePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(LitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(DeferredLightingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
@@ -195,15 +198,14 @@ public class Renderer {
     }
     
     
-    func createUnlitRenderPass() -> MTLRenderPassDescriptor {
-        // load color and depth, assuming they've been cleared before
+    func createUnlitRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()
         rp.colorAttachments[0].texture = gBuffer.shadedTexture
-        rp.colorAttachments[0].loadAction = .load
+        rp.colorAttachments[0].loadAction = clear ? .clear : .load
         rp.colorAttachments[0].storeAction = .store
-        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1.0)
+        rp.colorAttachments[0].clearColor = clearColor
         rp.depthAttachment.texture = gBuffer.depthTexture
-        rp.depthAttachment.loadAction = .load
+        rp.depthAttachment.loadAction = clear ? .clear : .load
         rp.depthAttachment.storeAction = .store
         rp.depthAttachment.clearDepth = 1.0
         return rp
@@ -235,7 +237,7 @@ public class Renderer {
         return rp
     }
     
-    func createRenderPassWithGBuffer(_ clear: Bool) -> MTLRenderPassDescriptor {
+    func createRenderPassWithGBuffer(clear: Bool) -> MTLRenderPassDescriptor {
         let renderPass = MTLRenderPassDescriptor()
         renderPass.colorAttachments[0].texture = gBuffer.albedoTexture
         renderPass.colorAttachments[0].loadAction = clear ? .clear : .load

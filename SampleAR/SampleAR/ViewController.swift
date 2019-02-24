@@ -29,6 +29,7 @@ class ViewController: VidController {
 
     private func setupScene() {
         let cube = CubePrimitive(numInstances: 1)
+        cube.lightingType = .UnlitOpaque
         cube.transform.position = float3(0, 0, -2)
         cube.transform.scale = float3(0.2, 0.2, 0.2)
         cube.queue()

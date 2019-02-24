@@ -9,7 +9,7 @@
 import Metal
 import MetalKit
 
-class PrimitivePlugin : GraphicPlugin {
+class PrimitivePlugin: GraphicPlugin {
     
     fileprivate var primitives : [Primitive] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
@@ -17,7 +17,7 @@ class PrimitivePlugin : GraphicPlugin {
     
     override var label: String {
         get {
-            return "LitPrimitives"
+            return "GenericPrimitives"
         }
     }
     
@@ -41,16 +41,36 @@ class PrimitivePlugin : GraphicPlugin {
         }
     }
     
+    func createPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
+        return gBuffer.createPipelineDescriptor(device: device, library: library)
+    }
+    
+    func createDepthDescriptor(gBuffer: GBuffer) -> MTLDepthStencilDescriptor {
+        return gBuffer.createDepthStencilDescriptor()
+    }
+    
+    func createEncoder(commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
+        let renderer = Renderer.shared!
+        let clear = !renderer.frameState.clearedGBuffer
+        let renderPassDescriptor = renderer.createRenderPassWithGBuffer(clear: clear)
+        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+        if let e = encoder {
+            e.label = self.label
+            renderer.frameState.clearedGBuffer = true
+        }
+        return encoder
+    }
+    
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         
-        let pipelineStateDescriptor = gBuffer.createPipelineDescriptor(device: device, library: library)
-        let depthDescriptor = gBuffer.createDepthStencilDescriptor()
+        let pipelineDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer)
+        let depthDesc = createDepthDescriptor(gBuffer: gBuffer)
         do {
-            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
-            depthState = device.makeDepthStencilState(descriptor: depthDescriptor)
+            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineDesc)
+            depthState = device.makeDepthStencilState(descriptor: depthDesc)
         } catch let error {
-            print("Failed to create pipeline state, error \(error)")
+            NSLog("Failed to create pipeline state, error \(error)")
         }
     }
     
@@ -58,8 +78,7 @@ class PrimitivePlugin : GraphicPlugin {
         if isEmpty {
             return
         }
-        let renderPassDescriptor = Renderer.shared.createRenderPassWithGBuffer(true)
-        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+        guard let encoder = createEncoder(commandBuffer: commandBuffer) else {
             return
         }
         encoder.label = self.label

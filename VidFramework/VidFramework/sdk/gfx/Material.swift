@@ -19,6 +19,8 @@ public enum LightingType {
     case
     /// Opaque lit objects.
     LitOpaque,
+    /// Opaque unlit objects.
+    UnlitOpaque,
     /// Unlit transparent objects.
     UnlitTransparent
 }

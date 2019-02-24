@@ -85,6 +85,9 @@ class DeferredLightingPlugin: GraphicPlugin {
         guard let renderer = Renderer.shared else {
             return
         }
+        if !renderer.frameState.clearedGBuffer {
+            return
+        }
         let renderPassDescriptor = renderer.createLightAccumulationRenderPass(clear: true)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
