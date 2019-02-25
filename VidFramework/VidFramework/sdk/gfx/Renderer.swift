@@ -107,7 +107,7 @@ public class Renderer {
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
-        _whiteTexture = createWhiteTexture()
+        _whiteTexture = TextureUtils.createWhiteTexture(device: device)
         self.initGraphicPlugins(view, doAR: doAR)
         if doAR {
             arSession = ARSession()
@@ -277,15 +277,6 @@ public class Renderer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.size, options: [])
         buffer?.label = label
         return buffer!
-    }
-    
-    private func createWhiteTexture() -> MTLTexture {
-        let data : [UInt32] = [0xffffffff]
-        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
-        let texture = device.makeTexture(descriptor: texDescriptor)
-        let region = MTLRegionMake2D(0, 0, 1, 1)
-        texture?.replace(region: region, mipmapLevel: 0, withBytes: data, bytesPerRow: 4 * 4)
-        return texture!
     }
     
     public static func createSyncBuffer<T>(from data: T, device: MTLDevice) -> MTLBuffer? {

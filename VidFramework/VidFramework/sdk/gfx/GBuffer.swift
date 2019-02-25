@@ -67,9 +67,9 @@ struct GBuffer {
         return pipelineStateDescriptor
     }
     
-    func createUnlitPipelineDescriptor(device: MTLDevice, library: MTLLibrary, isBlending: Bool, fragmentShader: String? = nil) -> MTLRenderPipelineDescriptor {
+    func createUnlitPipelineDescriptor(device: MTLDevice, library: MTLLibrary, isBlending: Bool, fragmentShader: String? = nil, vertexShader: String? = nil) -> MTLRenderPipelineDescriptor {
         let fragmentProgram = library.makeFunction(name: fragmentShader ?? "passThroughTexturedFragment")!
-        let vertexProgram = library.makeFunction(name: "passGeometry")!
+        let vertexProgram = library.makeFunction(name: vertexShader ?? "passGeometry")!
         
         let vertexDesc = TexturedVertex.createVertexDescriptor()
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()

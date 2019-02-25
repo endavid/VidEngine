@@ -46,7 +46,8 @@ class ViewController: VidController {
             // place the cube a bit further away from the camera
             let pos = camera.transform * float3(0, 0, -0.2)
             print(pos)
-            addCube(position: pos)
+            //addCube(position: pos)
+            //addSphere(position: pos)
             addLightProbe(position: pos, session: session)
         }
     }
@@ -58,9 +59,17 @@ class ViewController: VidController {
         cube.queue()
     }
     
+    func addSphere(position: float3) {
+        let desc = SphereDescriptor(isInterior: false, widthSegments: 8, heightSegments: 8)
+        let sphere = SpherePrimitive(numInstances: 1, descriptor: desc)
+        sphere.transform = Transform(position: position, scale: 0.1)
+        sphere.queue()
+    }
+    
     func addLightProbe(position: float3, session: ARSession) {
         let extent = float3(5, 5, 5)
         let probe = SHLight(position: position, extent: extent, session: session)
+        probe.debug = true
         probe.queue()
     }
 }

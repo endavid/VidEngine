@@ -36,6 +36,10 @@ public struct Transform {
         self.position = position
         self.scale = scale
     }
+    public init(position: float3, scale: Float) {
+        self.position = position
+        self.scale = float3(scale, scale, scale)
+    }
     public init(position: float3, scale: float3, rotation: Quaternion) {
         self.position = position
         self.scale = scale

@@ -13,7 +13,7 @@ class PrimitivePlugin: GraphicPlugin {
     
     fileprivate var primitives : [Primitive] = []
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
-    fileprivate var depthState : MTLDepthStencilState! = nil
+    var depthState : MTLDepthStencilState! = nil
     
     override var label: String {
         get {
@@ -82,6 +82,11 @@ class PrimitivePlugin: GraphicPlugin {
             return
         }
         encoder.label = self.label
+        draw(encoder: encoder)
+        encoder.endEncoding()
+    }
+    
+    func draw(encoder: MTLRenderCommandEncoder) {
         encoder.pushDebugGroup(self.label+":primitives")
         encoder.setRenderPipelineState(pipelineState)
         encoder.setDepthStencilState(depthState)
@@ -90,14 +95,15 @@ class PrimitivePlugin: GraphicPlugin {
         Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)
         drawPrimitives(encoder: encoder)
         encoder.popDebugGroup()
-        encoder.endEncoding()
+    }
+
+    private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: self.primitives, defaultTexture: Renderer.shared.whiteTexture)
     }
     
-    private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
-        let whiteTexture = Renderer.shared.whiteTexture
+    static func drawAll(encoder: MTLRenderCommandEncoder, primitives: [Primitive], defaultTexture: MTLTexture) {
         var currentAlbedoTexture : MTLTexture? = nil
-        
-        for p in self.primitives {
+        for p in primitives {
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
                 encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
@@ -110,8 +116,8 @@ class PrimitivePlugin: GraphicPlugin {
                     currentAlbedoTexture = mesh.albedoTexture
                 }
                 if currentAlbedoTexture == nil {
-                    encoder.setFragmentTexture(whiteTexture, index: 0)
-                    currentAlbedoTexture = whiteTexture
+                    encoder.setFragmentTexture(defaultTexture, index: 0)
+                    currentAlbedoTexture = defaultTexture
                 }
                 p.drawMesh(encoder: encoder, mesh: mesh)
             }

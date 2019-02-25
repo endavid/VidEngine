@@ -26,6 +26,7 @@ public class SHLight: LightSource {
     fileprivate var _phase: Phase
     fileprivate var _sampleIndex: Int
     fileprivate var _envmap: MTLTexture?
+    fileprivate var _debugSphere: Primitive?
     
     var areSamplesReady: Bool {
         get {
@@ -44,6 +45,23 @@ public class SHLight: LightSource {
         set {
             _phase = .readCubemap
             _envmap = newValue
+            _debugSphere?.albedoTexture = _envmap
+        }
+    }
+    public var debug: Bool {
+        get {
+            return _debugSphere != nil
+        }
+        set {
+            if newValue {
+                if _debugSphere == nil {
+                    _debugSphere = createDebugSphere()
+                    _debugSphere?.queue()
+                }
+            } else {
+                _debugSphere?.dequeue()
+                _debugSphere = nil
+            }
         }
     }
     
@@ -132,6 +150,13 @@ public class SHLight: LightSource {
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Int(shBuffer.numSamples))
         _phase = .computeSH
         _sampleIndex = 0
+    }
+    
+    fileprivate func createDebugSphere() -> Primitive {
+        let sphere = EnvironmentSphere(isInterior: false, widthSegments: 8, heightSegments: 8)
+        sphere.transform = Transform(position: self.transform.position, scale: 0.1)
+        sphere.albedoTexture = environmentTexture
+        return sphere
     }
     
     /// For debugging the values obtained

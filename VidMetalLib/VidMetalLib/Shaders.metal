@@ -27,11 +27,12 @@ vertex VertexInOut passThrough2DVertex(uint vid [[ vertex_id ]],
     return outVertex;
 }
 
-vertex VertexInOut passGeometry(uint vid [[ vertex_id ]],
-                                uint iid [[ instance_id ]],
-                                constant TexturedVertex* vdata [[ buffer(0) ]],
-                                constant Uniforms& uniforms  [[ buffer(1) ]],
-                                constant Transform* perInstanceUniforms [[ buffer(2) ]])
+vertex VertexInOut passGeometry(
+  uint vid [[ vertex_id ]],
+  uint iid [[ instance_id ]],
+  constant TexturedVertex* vdata [[ buffer(0) ]],
+  constant Uniforms& uniforms  [[ buffer(1) ]],
+  constant Transform* perInstanceUniforms [[ buffer(2) ]])
 {
     VertexInOut outVertex;
     Transform t = perInstanceUniforms[iid];
