@@ -44,11 +44,10 @@ vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
     TexturedVertex v = vdata[vid];
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
     float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
-    float4 viewNormal = uniforms.viewMatrix * float4(worldNormal, 0.0);
     outVertex.position = uniforms.projectionMatrix * viewPos;
     outVertex.uv = float2(0,0);
     outVertex.color = mat.diffuse;
-    outVertex.normal = viewNormal.xyz;
+    outVertex.normal = worldNormal;
     return outVertex;
 }
 
@@ -76,9 +75,7 @@ vertex DirectionalLightVertexInOut directionalLightVertex(
     out.position = float4(xyuv.xy, 0, 1);
     out.color = instances[iid].color;
     out.uv = xyuv.zw;
-    // light direction in view space (normals are in view space as well)
-    float3x3 viewRotation = getViewRotation(uniforms.viewMatrix);
-    out.direction = float4(viewRotation * instances[iid].direction.xyz, 0.0);
+    out.direction = instances[iid].direction;
     return out;
 }
 
@@ -92,7 +89,7 @@ fragment half4 lightAccumulationDirectionalLight(
     float cosTi = max(dot(normal.xyz, direction), 0.0);
     out.rgb *= cosTi;
     // specular
-    // in view space, view direction is always the Z axis
+    // @todo pass view direction
     float3 viewDirection = float3(0,0,1);
     float3 h = normalize(viewDirection + direction);
     float cosH = max(dot(h, normal.xyz), 0.0);

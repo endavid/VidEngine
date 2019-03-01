@@ -23,6 +23,8 @@ public class SHLight: LightSource {
     public var transform: Transform
     internal var vertexBuffer: MTLBuffer!
     internal var indexBuffer: MTLBuffer!
+    internal var transformBuffer: MTLBuffer!
+    internal var bufferOffset = 0
     fileprivate var _phase: Phase
     fileprivate var _sampleIndex: Int
     fileprivate var _envmap: MTLTexture?
@@ -99,6 +101,7 @@ public class SHLight: LightSource {
         sh = SphericalHarmonics(shBuffer)
         vertexBuffer = CubePrimitive.createCubeVertexBuffer()
         indexBuffer = CubePrimitive.createCubeIndexBuffer()
+        transformBuffer = Renderer.shared.createPerInstanceUniformsBuffer("shlightTransform", numElements: Renderer.NumSyncBuffers)
         _phase = .initSamples
         _sampleIndex = 0
     }
@@ -175,4 +178,14 @@ public class SHLight: LightSource {
         print("SH south: \(south)")
         print("SH north: \(north)")
     }
+    
+    
+    // this gets called when we need to update the buffers used by the GPU
+    func updateBuffers(_ syncBufferIndex: Int) {
+        bufferOffset = MemoryLayout<Transform>.size * syncBufferIndex
+        let uniformB = transformBuffer.contents()
+        let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
+        memcpy(uniformData, &transform, MemoryLayout<Transform>.size)
+    }
+    
 }

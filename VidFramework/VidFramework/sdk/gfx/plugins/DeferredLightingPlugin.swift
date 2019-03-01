@@ -10,7 +10,8 @@ import Metal
 import MetalKit
 
 class DeferredLightingPlugin: GraphicPlugin {
-    fileprivate var pipelineState: MTLRenderPipelineState! = nil
+    fileprivate var directionalState: MTLRenderPipelineState! = nil
+    fileprivate var shLightState: MTLRenderPipelineState! = nil
     fileprivate var directionalLights : [DirectionalLight] = []
     fileprivate var shLights: [SHLight] = []
     
@@ -22,7 +23,7 @@ class DeferredLightingPlugin: GraphicPlugin {
     
     override var isEmpty: Bool {
         get {
-            return directionalLights.isEmpty
+            return directionalLights.isEmpty && shLights.isEmpty
         }
     }
     
@@ -54,26 +55,33 @@ class DeferredLightingPlugin: GraphicPlugin {
             }
         }
     }
+    
+    func createPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer, fragment: String, vertex: String) -> MTLRenderPipelineDescriptor {
+        let fragmentProgram = library.makeFunction(name: fragment)!
+        let vertexProgram = library.makeFunction(name: vertex)!
+        let desc = MTLRenderPipelineDescriptor()
+        desc.vertexFunction = vertexProgram
+        desc.fragmentFunction = fragmentProgram
+        desc.colorAttachments[0].pixelFormat = gBuffer.lightTexture.pixelFormat
+        desc.colorAttachments[0].isBlendingEnabled = true
+        desc.colorAttachments[0].rgbBlendOperation = .add
+        desc.colorAttachments[0].alphaBlendOperation = .add
+        desc.colorAttachments[0].sourceRGBBlendFactor = .one
+        desc.colorAttachments[0].sourceAlphaBlendFactor = .one
+        desc.colorAttachments[0].destinationRGBBlendFactor = .one
+        desc.colorAttachments[0].destinationAlphaBlendFactor = .one
+        desc.sampleCount = gBuffer.lightTexture.sampleCount
+        return desc
+    }
+    
+    
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
-        // for directional lights only atm
-        let fragmentProgram = library.makeFunction(name: "lightAccumulationDirectionalLight")!
-        let vertexProgram = library.makeFunction(name: "directionalLightVertex")!
-        
-        let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
-        pipelineStateDescriptor.vertexFunction = vertexProgram
-        pipelineStateDescriptor.fragmentFunction = fragmentProgram
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = gBuffer.lightTexture.pixelFormat
-        pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = true
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = .add
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = .add
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
-        pipelineStateDescriptor.sampleCount = view.sampleCount
+        let directionalDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationDirectionalLight", vertex: "directionalLightVertex")
+        let shLightDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationSHLight", vertex: "shLightVertex")
         do {
-            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+            try directionalState = device.makeRenderPipelineState(descriptor: directionalDesc)
+            try shLightState = device.makeRenderPipelineState(descriptor: shLightDesc)
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
         }
@@ -93,12 +101,8 @@ class DeferredLightingPlugin: GraphicPlugin {
             return
         }
         encoder.label = self.label
-        encoder.pushDebugGroup(self.label+":directional")
-        encoder.setRenderPipelineState(pipelineState)
-        encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
-        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         drawDirectionalLights(encoder)
-        encoder.popDebugGroup()
+        drawSHLights(encoder)
         encoder.endEncoding()
         renderer.frameState.clearedLightbuffer = true
     }
@@ -108,10 +112,34 @@ class DeferredLightingPlugin: GraphicPlugin {
     /// Supposedly the shadow maps can be computed in parallel with the earlier pipeline.
     /// All non-shadow casting lights can be computed with a single draw call using instancing.
     fileprivate func drawDirectionalLights(_ encoder: MTLRenderCommandEncoder) {
+        let renderer = Renderer.shared!
+        encoder.pushDebugGroup(self.label+":directional")
+        encoder.setRenderPipelineState(directionalState)
+        encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         for l in directionalLights {
             encoder.setVertexBuffer(l.uniformBuffer, offset: l.bufferOffset, index: 2)
-            Renderer.shared.fullScreenQuad.draw(encoder: encoder, instanceCount: l.numInstances)
+            renderer.fullScreenQuad.draw(encoder: encoder, instanceCount: l.numInstances)
         }
+        encoder.popDebugGroup()
+    }
+    
+    /// Spherical Harmonic lights are drawn inside the area defined
+    /// by a CubePrimitive
+    fileprivate func drawSHLights(_ encoder: MTLRenderCommandEncoder) {
+        let renderer = Renderer.shared!
+        let numIndices = CubePrimitive.numIndices
+        encoder.pushDebugGroup(self.label+":shlights")
+        encoder.setRenderPipelineState(shLightState)
+        encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
+        for l in shLights {
+            encoder.setVertexBuffer(l.vertexBuffer, offset: 0, index: 0)
+            encoder.setVertexBuffer(l.transformBuffer, offset: l.bufferOffset, index: 2)
+            encoder.setFragmentBuffer(l.shBuffer.irradiancesBuffer, offset: 0, index: 0)
+            encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: l.indexBuffer, indexBufferOffset: 0)
+        }
+        encoder.popDebugGroup()
     }
 
     /// Draw all spot lights using spot light geometry.
@@ -122,6 +150,9 @@ class DeferredLightingPlugin: GraphicPlugin {
     
     override func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
         for l in directionalLights {
+            l.updateBuffers(syncBufferIndex)
+        }
+        for l in shLights {
             l.updateBuffers(syncBufferIndex)
         }
     }

@@ -33,10 +33,6 @@ class ViewController: VidController {
         cube.transform.position = float3(0, 0, -2)
         cube.transform.scale = float3(0.2, 0.2, 0.2)
         cube.queue()
-        let sun = DirectionalLight(numInstances: 1)
-        sun.color = LinearRGBA(r: 1, g: 0.9, b: 0.8, a: 1.0)
-        sun.direction = normalize(float3(1, 1, 1))
-        sun.queue()
     }
     
     @objc
@@ -47,7 +43,7 @@ class ViewController: VidController {
             let pos = camera.transform * float3(0, 0, -0.2)
             print(pos)
             //addCube(position: pos)
-            //addSphere(position: pos)
+            addSphere(position: pos + float3(0, 0.1, 0))
             addLightProbe(position: pos, session: session)
         }
     }

@@ -106,7 +106,7 @@ class PrimitivePlugin: GraphicPlugin {
         for p in primitives {
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
-                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
+                encoder.setVertexBuffer(p.uniformBuffer, offset: p.bufferOffset, index: 2)
             }
             for mesh in p.submeshes {
                 if currentAlbedoTexture !== mesh.albedoTexture {

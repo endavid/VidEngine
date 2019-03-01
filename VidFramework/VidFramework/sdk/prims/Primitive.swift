@@ -19,6 +19,7 @@ public class Primitive {
     let uniformBuffer : MTLBuffer!
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
+    var bufferOffset = 0
     
     public var numInstances: Int {
         get {
@@ -96,7 +97,8 @@ public class Primitive {
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        let uniformData = uniformB.advanced(by: MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count * syncBufferIndex).assumingMemoryBound(to: Float.self)
+        bufferOffset = MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count * syncBufferIndex
+        let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
         memcpy(uniformData, &perInstanceUniforms, MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count)
     }
     
