@@ -10,18 +10,19 @@
 #import "ShaderCommon.h"
 using namespace metal;
 
-vertex VertexOIT passGeometryOIT(uint vid [[ vertex_id ]],
-                                 uint iid [[ instance_id ]],
-                                 constant TexturedVertex* vdata [[ buffer(0) ]],
-                                 constant Uniforms& uniforms  [[ buffer(1) ]],
-                                 constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
+vertex VertexOIT passGeometryOIT(
+  uint vid [[ vertex_id ]],
+  uint iid [[ instance_id ]],
+  constant TexturedVertex* vdata [[ buffer(0) ]],
+  constant Scene& scene [[ buffer(1) ]],
+  constant PrimitiveInstance* instances [[ buffer(2) ]])
 {
     VertexOIT outVertex;
-    Transform t = perInstanceUniforms[iid].transform;
-    Material mat = perInstanceUniforms[iid].material;
+    Transform t = instances[iid].transform;
+    Material mat = instances[iid].material;
     TexturedVertex v = vdata[vid];
-    float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
-    outVertex.position = uniforms.projectionMatrix * viewPos;
+    float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
+    outVertex.position = scene.projectionMatrix * viewPos;
     outVertex.uv = v.texCoords;// * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     //outVertex.color = float4(outVertex.uv, 0, 1);

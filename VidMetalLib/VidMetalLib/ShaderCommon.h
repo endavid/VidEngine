@@ -54,7 +54,7 @@ struct ColoredUnlitTexturedVertex
     packed_float4 color;
 };
 
-struct Uniforms {
+struct Scene {
     float elapsedTime;
     float windDirection;
     float2 touchPosition;
@@ -66,7 +66,7 @@ struct Material {
     float4 diffuse;
 };
 
-struct PerInstanceUniforms
+struct PrimitiveInstance
 {
     Transform transform;
     Material material;

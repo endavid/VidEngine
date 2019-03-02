@@ -41,14 +41,14 @@ vertex SHLightVertexInOut shLightVertex(
   uint vid [[ vertex_id ]],
   uint iid [[ instance_id ]],
   constant TexturedVertex* vdata [[ buffer(0) ]],
-  constant Uniforms& uniforms [[ buffer(1) ]],
+  constant Scene& scene [[ buffer(1) ]],
   constant SHInstance& instance [[ buffer(2) ]])
 {
     SHLightVertexInOut out;
     TexturedVertex v = vdata[vid];
     Transform t = instance.transform;
-    float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
-    float4 p = uniforms.projectionMatrix * viewPos;
+    float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
+    float4 p = scene.projectionMatrix * viewPos;
     out.position = p;
     out.pos = p;
     out.tonemap = instance.tonemap;

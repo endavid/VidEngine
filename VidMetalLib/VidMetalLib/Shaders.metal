@@ -31,14 +31,14 @@ vertex VertexInOut passGeometry(
   uint vid [[ vertex_id ]],
   uint iid [[ instance_id ]],
   constant TexturedVertex* vdata [[ buffer(0) ]],
-  constant Uniforms& uniforms  [[ buffer(1) ]],
-  constant Transform* perInstanceUniforms [[ buffer(2) ]])
+  constant Scene& scene [[ buffer(1) ]],
+  constant Transform* instances [[ buffer(2) ]])
 {
     VertexInOut outVertex;
-    Transform t = perInstanceUniforms[iid];
+    Transform t = instances[iid];
     TexturedVertex v = vdata[vid];
-    float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
-    outVertex.position = uniforms.projectionMatrix * viewPos;
+    float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
+    outVertex.position = scene.projectionMatrix * viewPos;
     outVertex.uv = float2(0,0);
     outVertex.color = float4(0.5 * v.normal + 0.5, 1);
     return outVertex;

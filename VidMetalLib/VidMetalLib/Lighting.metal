@@ -34,16 +34,16 @@ float3x3 getViewRotation(float4x4 viewMatrix) {
 vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
   uint iid [[ instance_id ]],
   constant TexturedVertex* vdata [[ buffer(0) ]],
-  constant Uniforms& uniforms  [[ buffer(1) ]],
-  constant PerInstanceUniforms* perInstanceUniforms [[ buffer(2) ]])
+  constant Scene& scene [[ buffer(1) ]],
+  constant PrimitiveInstance* instances [[ buffer(2) ]])
 {
     VertexGBuffer outVertex;
-    Transform t = perInstanceUniforms[iid].transform;
-    Material mat = perInstanceUniforms[iid].material;
+    Transform t = instances[iid].transform;
+    Material mat = instances[iid].material;
     TexturedVertex v = vdata[vid];
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
-    float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
-    outVertex.position = uniforms.projectionMatrix * viewPos;
+    float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
+    outVertex.position = scene.projectionMatrix * viewPos;
     outVertex.uv = float2(0,0);
     outVertex.color = mat.diffuse;
     outVertex.normal = worldNormal;
@@ -66,7 +66,7 @@ vertex DirectionalLightVertexInOut directionalLightVertex(
   uint vid [[ vertex_id ]],
   uint iid [[ instance_id ]],
   const device packed_float4* vdata [[ buffer(0) ]],
-  constant Uniforms& uniforms  [[ buffer(1) ]],
+  constant Scene& scene [[ buffer(1) ]],
   const device DirectionalLightInstance* instances [[ buffer(2) ]])
 {
     DirectionalLightVertexInOut out;

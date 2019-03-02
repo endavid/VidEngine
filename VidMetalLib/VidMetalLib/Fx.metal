@@ -48,20 +48,20 @@ vertex void updateRaindrops(
   uint vid [[ vertex_id ]],
   constant LineParticle* particle  [[ buffer(0) ]],
   device LineParticle* updatedParticle  [[ buffer(1) ]],
-  constant Uniforms& uniforms  [[ buffer(2) ]],
+  constant Scene& scene  [[ buffer(2) ]],
   texture2d<float> noiseTexture [[ texture(0) ]])
 {
     LineParticle outParticle;
     float4 velocity = float4(particle[vid].start.zw, particle[vid].end.zw);
     float speed = 1.5;
-    velocity += uniforms.windDirection * float4(1, 0, 1, 0);
-    velocity *= uniforms.elapsedTime * speed;
+    velocity += scene.windDirection * float4(1, 0, 1, 0);
+    velocity *= scene.elapsedTime * speed;
     outParticle.start = particle[vid].start + float4(velocity.xy, 0, 0);
     outParticle.end = particle[vid].end + float4(velocity.zw, 0, 0);
     float fingerWidth = 0.2;
     float dropHeight = 0.2;
-    bool endHitFinger = outParticle.end.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.end.y < uniforms.touchPosition.y;
-    bool startHitFinger = outParticle.start.x > -0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.x < 0.5 * fingerWidth + uniforms.touchPosition.x && outParticle.start.y < uniforms.touchPosition.y;
+    bool endHitFinger = outParticle.end.x > -0.5 * fingerWidth + scene.touchPosition.x && outParticle.end.x < 0.5 * fingerWidth + scene.touchPosition.x && outParticle.end.y < scene.touchPosition.y;
+    bool startHitFinger = outParticle.start.x > -0.5 * fingerWidth + scene.touchPosition.x && outParticle.start.x < 0.5 * fingerWidth + scene.touchPosition.x && outParticle.start.y < scene.touchPosition.y;
     if ((outParticle.end.y < -1 || endHitFinger)  && velocity.w < 0) { // hit the ground (or obstacle)
         outParticle.end.zw = float2(0,0);
     }
@@ -80,8 +80,8 @@ vertex void updateRaindrops(
         float2 randomVelocity = noiseTexture.sample(pointSampler, randomVec).xy;
         outParticle.end.y = 1 + 2.4 * randomVec.y;
         outParticle.end.zw = float2(0,-2 * (0.9 + 0.2 * randomVelocity.y));
-        outParticle.start.x = 2 * randomVec.x - 1 - uniforms.windDirection; // apply wind offset to fill the screen
-        outParticle.end.x = outParticle.start.x + 0.1 * uniforms.windDirection;
+        outParticle.start.x = 2 * randomVec.x - 1 - scene.windDirection; // apply wind offset to fill the screen
+        outParticle.end.x = outParticle.start.x + 0.1 * scene.windDirection;
         outParticle.start.y = outParticle.end.y + dropHeight;
         outParticle.start.zw = outParticle.end.zw;
     }

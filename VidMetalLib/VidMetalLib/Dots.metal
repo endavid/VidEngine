@@ -26,7 +26,7 @@ vertex DotVertex dotsVertex(
   uint vid [[ vertex_id ]],
   uint iid [[ instance_id ]],
   constant packed_float3* vdata [[ buffer(0) ]],
-  constant Uniforms& scene [[ buffer(1) ]],
+  constant Scene& scene [[ buffer(1) ]],
   constant packed_float3* colors [[ buffer(2) ]],
   constant DotInstance* dotInstance [[ buffer(3) ]])
 {
