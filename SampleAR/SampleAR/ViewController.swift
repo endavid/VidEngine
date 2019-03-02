@@ -28,7 +28,7 @@ class ViewController: VidController {
     }
 
     private func setupScene() {
-        let cube = CubePrimitive(numInstances: 1)
+        let cube = CubePrimitive(instanceCount: 1)
         cube.lightingType = .UnlitOpaque
         cube.transform.position = float3(0, 0, -2)
         cube.transform.scale = float3(0.2, 0.2, 0.2)
@@ -49,7 +49,7 @@ class ViewController: VidController {
     }
     
     func addCube(position: float3) {
-        let cube = CubePrimitive(numInstances: 1)
+        let cube = CubePrimitive(instanceCount: 1)
         cube.transform.position = position
         cube.transform.scale = float3(0.1, 0.1, 0.1)
         cube.queue()
@@ -57,7 +57,7 @@ class ViewController: VidController {
     
     func addSphere(position: float3) {
         let desc = SphereDescriptor(isInterior: false, widthSegments: 8, heightSegments: 8)
-        let sphere = SpherePrimitive(numInstances: 1, descriptor: desc)
+        let sphere = SpherePrimitive(instanceCount: 1, descriptor: desc)
         sphere.transform = Transform(position: position, scale: 0.1)
         sphere.queue()
     }

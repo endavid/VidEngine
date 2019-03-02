@@ -23,8 +23,8 @@ public class CubePrimitive : Primitive {
         23, 20, 21, 23, 21, 22] // back
     internal static let numIndices = CubePrimitive.triangleList.count
     
-    public override init(numInstances: Int) {
-        super.init(numInstances: numInstances)
+    public override init(instanceCount: Int) {
+        super.init(instanceCount: instanceCount)
         vertexBuffer = CubePrimitive.cubeVB
         let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil)
         submeshes.append(mesh)

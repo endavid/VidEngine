@@ -40,8 +40,8 @@ public class ModelPrimitive : Primitive {
     }
     
     /// Create multiple instances of a model with a hash map from a Json file.
-    public init?(json: [String: Any], bundle: Bundle?, numInstances: Int) {
-        super.init(numInstances: numInstances)
+    public init?(json: [String: Any], bundle: Bundle?, instanceCount: Int) {
+        super.init(instanceCount: instanceCount)
         do {
             try parseJson(json, bundle: bundle)
         } catch let error {
@@ -53,7 +53,7 @@ public class ModelPrimitive : Primitive {
     
     /// Create model with a hash map from a Json file.
     public convenience init?(json: [String: Any], bundle: Bundle?) {
-        self.init(json: json, bundle: bundle, numInstances: 1)
+        self.init(json: json, bundle: bundle, instanceCount: 1)
     }
     
     func parseJson(_ json: [String: Any], bundle: Bundle?) throws {
@@ -103,7 +103,7 @@ public class ModelPrimitive : Primitive {
     } // parseJson
     
     init(vertices: [TexturedVertex], triangles: [UInt16]) {
-        super.init(numInstances: 1)
+        super.init(instanceCount: 1)
         initBuffers(vertices, triangles: triangles)
     }
     

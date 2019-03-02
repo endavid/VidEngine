@@ -37,9 +37,9 @@ public class SpherePrimitive : Primitive {
     fileprivate let isInterior : Bool
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
-    public init(numInstances: Int, descriptor: SphereDescriptor) {
+    public init(instanceCount: Int, descriptor: SphereDescriptor) {
         self.isInterior = descriptor.isInterior
-        super.init(numInstances: numInstances)
+        super.init(instanceCount: instanceCount)
         if descriptor.isRegularGrid {
             let ss = SubdivisionSphere(widthSegments: descriptor.widthSegments, heightSegments: descriptor.heightSegments)
             initBuffers(vertices: ss.vertices, faces: ss.faces, uvs: ss.uvs)

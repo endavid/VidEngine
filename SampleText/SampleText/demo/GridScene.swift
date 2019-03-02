@@ -42,7 +42,7 @@ class GridScene : Scene {
     fileprivate var rotationAnims : [RotationAnim] = []
 
     init(numRows: Int, numColumns: Int) {
-        //let prim = SpherePrimitive(priority: 0, numInstances: numRows * numColumns, tessellationLevel: 2)
+        //let prim = SpherePrimitive(priority: 0, instanceCount: numRows * numColumns, tessellationLevel: 2)
         super.init()
         setupCubes(numRows, numColumns)
         setupLights()
@@ -50,7 +50,7 @@ class GridScene : Scene {
     }
     
     private func setupCubes(_ numRows: Int, _ numColumns: Int) {
-        let prim = CubePrimitive(numInstances: numRows * numColumns)
+        let prim = CubePrimitive(instanceCount: numRows * numColumns)
         let cubeSize = float2(1, 1)
         let marginSize = float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
@@ -61,7 +61,7 @@ class GridScene : Scene {
                 let x = startPoint.x + Float(j) * (cubeSize.x + marginSize.x)
                 let y = startPoint.y + Float(i) * (cubeSize.y + marginSize.y)
                 let index = i * numColumns + j
-                prim.perInstanceUniforms[index].transform.position = float3(x, y, 0)
+                prim.instances[index].transform.position = float3(x, y, 0)
                 rotationAnims.append(RotationAnim())
             }
         }
@@ -70,7 +70,7 @@ class GridScene : Scene {
     }
     
     private func setupLights() {
-        let sun = DirectionalLight(numInstances: 1)
+        let sun = DirectionalLight(instanceCount: 1)
         sun.color = LinearRGBA(r: 1, g: 0.9, b: 0.8, a: 1.0)
         sun.direction = normalize(float3(1, 1, 1))
         sun.queue()
@@ -85,8 +85,8 @@ class GridScene : Scene {
     }
     
     override func update(_ currentTime: CFTimeInterval) {
-        for i in 0..<primitives[0].numInstances {
-            primitives[0].perInstanceUniforms[i].transform.rotation = rotationAnims[i].update(currentTime)
+        for i in 0..<primitives[0].instanceCount {
+            primitives[0].instances[i].transform.rotation = rotationAnims[i].update(currentTime)
         }
     }
 }

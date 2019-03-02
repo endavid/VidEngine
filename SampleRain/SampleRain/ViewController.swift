@@ -33,7 +33,7 @@ class ViewController: VidController {
         
         let rain = Rain(numParticles: 2000)
         rain?.queue()
-        debugCube = CubePrimitive(numInstances: 1)
+        debugCube = CubePrimitive(instanceCount: 1)
         debugCube.transform.scale = float3(0.1,0.1,0.1)
         debugCube.queue()
     }

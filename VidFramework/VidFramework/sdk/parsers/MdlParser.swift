@@ -107,7 +107,7 @@ public class MdlParser {
         computeNormals()
         let model = ModelPrimitive(vertices: vertices, triangles: triangles)
         if let mat = materials[materialName] {
-            model.perInstanceUniforms[0].material = mat
+            model.instances[0].material = mat
         }
         scene.primitives.append(model)
         vertices.removeAll()

@@ -56,12 +56,3 @@ struct ColoredUnlitTexturedVertex {
     }
 }
 
-public struct PerInstanceUniforms {
-    public var transform : Transform
-    public var material : Material
-}
-
-public struct DirectionalLightInstance {
-    public var color: LinearRGBA
-    public var direction: float4
-}

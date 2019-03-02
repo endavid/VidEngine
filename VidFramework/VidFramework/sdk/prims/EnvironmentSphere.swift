@@ -15,7 +15,7 @@ import MetalKit
 public class EnvironmentSphere: SpherePrimitive {
     public init(isInterior: Bool, widthSegments: Int, heightSegments: Int) {
         let desc = SphereDescriptor(isInterior: isInterior, widthSegments: widthSegments, heightSegments: heightSegments)
-        super.init(numInstances: 1, descriptor: desc)
+        super.init(instanceCount: 1, descriptor: desc)
         lightingType = .UnlitOpaque
     }
 }

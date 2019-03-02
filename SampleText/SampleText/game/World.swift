@@ -44,13 +44,13 @@ class World {
         if let fontAtlas = try? FontAtlas.createFontAtlas(font: font, textureSize: 2048, archive: true) {
             let makeItStand = Quaternion(AngleAxis(angle: .pi / 2, axis: float3(1,0,0)))
             let tiltToOneSide = Quaternion(AngleAxis(angle: .pi / 4, axis: float3(0,1,0)))
-            let prim = TextPrimitive(numInstances: 1, font: fontAtlas, text: "Hello World! :)", fontSizeMeters: 1, enclosingFrame: CGRect(x: -2, y: -5, width: 4, height: 10))
+            let prim = TextPrimitive(instanceCount: 1, font: fontAtlas, text: "Hello World! :)", fontSizeMeters: 1, enclosingFrame: CGRect(x: -2, y: -5, width: 4, height: 10))
             prim.transform.position = float3(0,0,12)
             prim.transform.rotation = tiltToOneSide * makeItStand
             prim.queue()
             self.scene?.primitives.append(prim)
             // debug the font atlas
-            let debugPanel = PlanePrimitive(numInstances: 1)
+            let debugPanel = PlanePrimitive(instanceCount: 1)
             debugPanel.lightingType = .UnlitTransparent
             debugPanel.transform = Transform(position: float3(0, 1.5, 18), scale: float3(1,1,1), rotation: makeItStand)
             debugPanel.albedoTexture = fontAtlas.fontTexture

@@ -266,13 +266,7 @@ public class Renderer {
         buffer?.label = label
         return buffer!
     }
-    
-    func createPerInstanceUniformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
-        let buffer = device.makeBuffer(length: numElements * MemoryLayout<PerInstanceUniforms>.size, options: [])
-        buffer?.label = label
-        return buffer!
-    }
-    
+        
     func createTransformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
         let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.size, options: [])
         buffer?.label = label

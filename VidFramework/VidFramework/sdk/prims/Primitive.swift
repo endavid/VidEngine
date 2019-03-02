@@ -12,39 +12,43 @@ import MetalKit
 /// A `Primitive` is an object that requires 3D rendering to be displayed.
 /// All primitives allow instancing.
 public class Primitive {
+    public struct Instance {
+        public var transform: Transform
+        public var material: Material
+    }
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
     var vertexBuffer : MTLBuffer!
     public var name: String = ""
-    public var perInstanceUniforms : [PerInstanceUniforms]
-    let uniformBuffer : MTLBuffer!
+    public var instances: [Instance]
+    let uniformBuffer: MTLBuffer!
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
     var bufferOffset = 0
     
-    public var numInstances: Int {
+    public var instanceCount: Int {
         get {
-            return perInstanceUniforms.count
+            return instances.count
         }
     }
     // convenience getter & setter for the case we have only 1 instance
     public var transform: Transform {
         get {
-            return perInstanceUniforms[0].transform
+            return instances[0].transform
         }
         set {
-            for i in 0..<numInstances {
-                perInstanceUniforms[i].transform = newValue
+            for i in 0..<instanceCount {
+                instances[i].transform = newValue
             }
         }
     }
     // convenience getter & setter for the case we have only 1 instance
     public var material: Material {
         get {
-            return perInstanceUniforms[0].material
+            return instances[0].material
         }
         set {
-            for i in 0..<numInstances {
-                perInstanceUniforms[i].material = newValue
+            for i in 0..<instanceCount {
+                instances[i].material = newValue
             }
         }
     }
@@ -60,14 +64,16 @@ public class Primitive {
     }
     
     
-    init(numInstances: Int) {
-        assert(numInstances > 0, "The number of instances should be >0")
-        self.perInstanceUniforms = [PerInstanceUniforms](repeating: PerInstanceUniforms(transform: Transform(), material: Material.white), count: numInstances)
-        self.uniformBuffer = Renderer.shared.createPerInstanceUniformsBuffer("primUniforms", numElements: Renderer.NumSyncBuffers * numInstances)
+    init(instanceCount: Int) {
+        assert(instanceCount > 0, "The number of instances should be >0")
+        self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white), count: instanceCount)
+        let device = Renderer.shared.device
+        uniformBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
+        uniformBuffer.label = "primUniforms"
     }
     
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
-        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: self.numInstances)
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: self.instanceCount)
     }
     
     public func queue() {
@@ -97,9 +103,9 @@ public class Primitive {
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        bufferOffset = MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count * syncBufferIndex
+        bufferOffset = MemoryLayout<Instance>.size * instances.count * syncBufferIndex
         let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
-        memcpy(uniformData, &perInstanceUniforms, MemoryLayout<PerInstanceUniforms>.size * perInstanceUniforms.count)
+        memcpy(uniformData, &instances, MemoryLayout<Instance>.size * instances.count)
     }
     
     public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {

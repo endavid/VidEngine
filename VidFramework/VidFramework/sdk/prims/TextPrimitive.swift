@@ -12,8 +12,8 @@ import MetalKit
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
     
-    public init(numInstances: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
-        super.init(numInstances: numInstances)
+    public init(instanceCount: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
+        super.init(instanceCount: instanceCount)
         self.lightingType = .UnlitTransparent
         buildMeshWithString(text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
     }

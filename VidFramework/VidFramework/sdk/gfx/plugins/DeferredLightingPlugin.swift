@@ -119,7 +119,7 @@ class DeferredLightingPlugin: GraphicPlugin {
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         for l in directionalLights {
             encoder.setVertexBuffer(l.uniformBuffer, offset: l.bufferOffset, index: 2)
-            renderer.fullScreenQuad.draw(encoder: encoder, instanceCount: l.numInstances)
+            renderer.fullScreenQuad.draw(encoder: encoder, instanceCount: l.instanceCount)
         }
         encoder.popDebugGroup()
     }

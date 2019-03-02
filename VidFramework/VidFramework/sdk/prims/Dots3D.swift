@@ -44,7 +44,9 @@ public class Dots3D {
         self.vertexCount = vertexCount
         let s = float4(1, 1, 1, 1) * dotSize
         instances = [Instance(transform: transform, dotSize: s)]
-        instanceBuffer = Renderer.shared.createPerInstanceUniformsBuffer("Dot3DInstances", numElements: Renderer.NumSyncBuffers)
+        let device = Renderer.shared.device
+        instanceBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size, options: [])!
+        instanceBuffer.label = "Dot3DInstances"
     }
     func draw(encoder: MTLRenderCommandEncoder) {
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: vertexCount, instanceCount: instanceCount)

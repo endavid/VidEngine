@@ -27,11 +27,15 @@ public class LightSource {
 }
 
 public class DirectionalLight: LightSource {
-    public var instances: [DirectionalLightInstance]
+    public struct Instance {
+        public var color: LinearRGBA
+        public var direction: float4
+    }
+    public var instances: [Instance]
     let uniformBuffer: MTLBuffer!
     var bufferOffset = 0
     
-    public var numInstances: Int {
+    public var instanceCount: Int {
         get {
             return instances.count
         }
@@ -44,7 +48,7 @@ public class DirectionalLight: LightSource {
         set {
             let w = instances[0].direction.w
             let d = float4(newValue.x, newValue.y, newValue.z, w)
-            for i in 0..<numInstances {
+            for i in 0..<instanceCount {
                 instances[i].direction = d
             }
         }
@@ -54,24 +58,24 @@ public class DirectionalLight: LightSource {
             return instances[0].color
         }
         set {
-            for i in 0..<numInstances {
+            for i in 0..<instanceCount {
                 instances[i].color = newValue
             }
         }
     }
     
-    public init(numInstances: Int) {
-        assert(numInstances > 0, "The number of instances should be >0")
+    public init(instanceCount: Int) {
+        assert(instanceCount > 0, "The number of instances should be >0")
         assert(Renderer.shared != nil, "The Renderer hasn't been created")
         assert(Renderer.shared.device != nil, "Missing device")
-        self.instances = [DirectionalLightInstance](repeating: DirectionalLightInstance(color: LinearRGBA(r: 1, g: 1, b: 1, a: 1), direction: float4(0,1,0,0)), count: numInstances)
+        self.instances = [Instance](repeating: Instance(color: LinearRGBA(r: 1, g: 1, b: 1, a: 1), direction: float4(0,1,0,0)), count: instanceCount)
         self.uniformBuffer = Renderer.createSyncBuffer(from: instances, label: "directionalLights", device: Renderer.shared.device)
     }
     
     func updateBuffers(_ syncBufferIndex: Int) {
-        bufferOffset = MemoryLayout<DirectionalLightInstance>.size * instances.count * syncBufferIndex
+        bufferOffset = MemoryLayout<Instance>.size * instances.count * syncBufferIndex
         let uniformB = uniformBuffer.contents()
         let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
-        memcpy(uniformData, &instances, MemoryLayout<DirectionalLightInstance>.size * instances.count)
+        memcpy(uniformData, &instances, MemoryLayout<Instance>.size * instances.count)
     }
 }
