@@ -12,7 +12,9 @@ import MetalKit
 class PrimitivePlugin: GraphicPlugin {
     
     fileprivate var primitives : [Primitive] = []
-    fileprivate var pipelineState: MTLRenderPipelineState! = nil
+    fileprivate var dots: [Dots3D] = []
+    fileprivate var primState: MTLRenderPipelineState! = nil
+    fileprivate var dotState: MTLRenderPipelineState! = nil
     var depthState : MTLDepthStencilState! = nil
     
     override var label: String {
@@ -23,7 +25,7 @@ class PrimitivePlugin: GraphicPlugin {
     
     override var isEmpty: Bool {
         get {
-            return primitives.isEmpty
+            return primitives.isEmpty && dots.isEmpty
         }
     }
     
@@ -33,11 +35,23 @@ class PrimitivePlugin: GraphicPlugin {
             primitives.append(primitive)
         }
     }
+    func queue(_ dot: Dots3D) {
+        let alreadyQueued = dots.contains { $0 === dot }
+        if !alreadyQueued {
+            dots.append(dot)
+        }
+    }
     
     func dequeue(_ primitive: Primitive) {
         let index = primitives.index { $0 === primitive }
         if let i = index {
             primitives.remove(at: i)
+        }
+    }
+    func dequeue(_ dot: Dots3D) {
+        let index = dots.index { $0 === dot }
+        if let i = index {
+            dots.remove(at: i)
         }
     }
     
@@ -47,6 +61,10 @@ class PrimitivePlugin: GraphicPlugin {
     
     func createDepthDescriptor(gBuffer: GBuffer) -> MTLDepthStencilDescriptor {
         return gBuffer.createDepthStencilDescriptor()
+    }
+    
+    func createDotsDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
+        return gBuffer.createPipelineDescriptor(device: device, library: library)
     }
     
     func createEncoder(commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
@@ -66,8 +84,10 @@ class PrimitivePlugin: GraphicPlugin {
         
         let pipelineDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer)
         let depthDesc = createDepthDescriptor(gBuffer: gBuffer)
+        let dotsDesc = createDotsDescriptor(device: device, library: library, gBuffer: gBuffer)
         do {
-            try pipelineState = device.makeRenderPipelineState(descriptor: pipelineDesc)
+            try primState = device.makeRenderPipelineState(descriptor: pipelineDesc)
+            try dotState = device.makeRenderPipelineState(descriptor: dotsDesc)
             depthState = device.makeDepthStencilState(descriptor: depthDesc)
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
@@ -87,18 +107,35 @@ class PrimitivePlugin: GraphicPlugin {
     }
     
     func draw(encoder: MTLRenderCommandEncoder) {
+        drawPrimitives(encoder: encoder)
+        drawDots(encoder: encoder)
+    }
+
+    private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
         encoder.pushDebugGroup(self.label+":primitives")
-        encoder.setRenderPipelineState(pipelineState)
+        encoder.setRenderPipelineState(primState)
         encoder.setDepthStencilState(depthState)
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
         Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)
-        drawPrimitives(encoder: encoder)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: self.primitives, defaultTexture: Renderer.shared.whiteTexture)
         encoder.popDebugGroup()
     }
-
-    private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
-        PrimitivePlugin.drawAll(encoder: encoder, primitives: self.primitives, defaultTexture: Renderer.shared.whiteTexture)
+    
+    private func drawDots(encoder: MTLRenderCommandEncoder) {
+        if dots.isEmpty {
+            return
+        }
+        encoder.pushDebugGroup(self.label+":dots")
+        encoder.setRenderPipelineState(dotState)
+        encoder.setCullMode(.none)
+        for p in dots {
+            encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
+            encoder.setVertexBuffer(p.colorBuffer, offset: 0, index: 2)
+            encoder.setVertexBuffer(p.instanceBuffer, offset: p.bufferOffset, index: 3)
+            p.draw(encoder: encoder)
+        }
+        encoder.popDebugGroup()
     }
     
     static func drawAll(encoder: MTLRenderCommandEncoder, primitives: [Primitive], defaultTexture: MTLTexture) {
@@ -126,6 +163,9 @@ class PrimitivePlugin: GraphicPlugin {
     
     override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
+            p.updateBuffers(syncBufferIndex)
+        }
+        for p in dots {
             p.updateBuffers(syncBufferIndex)
         }
     }

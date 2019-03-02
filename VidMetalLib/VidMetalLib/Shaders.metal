@@ -16,8 +16,9 @@ struct ColorParams {
 };
 
 
-vertex VertexInOut passThrough2DVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float4* vdata [[ buffer(0) ]])
+vertex VertexInOut passThrough2DVertex(
+  uint vid [[ vertex_id ]],
+  constant packed_float4* vdata [[ buffer(0) ]])
 {
     VertexInOut outVertex;
     float4 xyuv = vdata[vid];

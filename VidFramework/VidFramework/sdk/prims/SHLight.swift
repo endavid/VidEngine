@@ -10,6 +10,12 @@ import MetalKit
 import ARKit
 
 public class SHLight: LightSource {
+    public enum DebugMode {
+        case
+        none,
+        sphere,
+        samples
+    }
     enum Phase {
         case
         initSamples,
@@ -29,6 +35,7 @@ public class SHLight: LightSource {
     fileprivate var _sampleIndex: Int
     fileprivate var _envmap: MTLTexture?
     fileprivate var _debugSphere: Primitive?
+    fileprivate var _debugDots: Dots3D?
     
     var areSamplesReady: Bool {
         get {
@@ -50,18 +57,34 @@ public class SHLight: LightSource {
             _debugSphere?.albedoTexture = _envmap
         }
     }
-    public var debug: Bool {
+    public var debug: DebugMode {
         get {
-            return _debugSphere != nil
+            if _debugSphere != nil {
+                return DebugMode.sphere
+            }
+            if _debugDots != nil {
+                return DebugMode.samples
+            }
+            return DebugMode.none
         }
         set {
-            if newValue {
+            switch newValue {
+            case .sphere:
                 if _debugSphere == nil {
                     _debugSphere = createDebugSphere()
                     _debugSphere?.queue()
+                    _debugDots?.dequeue()
                 }
-            } else {
+            case .samples:
+                if _debugDots == nil {
+                    _debugDots = createDebugDots()
+                    _debugDots?.queue()
+                    _debugSphere?.dequeue()
+                }
+            default:
+                _debugDots?.dequeue()
                 _debugSphere?.dequeue()
+                _debugDots = nil
                 _debugSphere = nil
             }
         }
@@ -160,6 +183,12 @@ public class SHLight: LightSource {
         sphere.transform = Transform(position: self.transform.position, scale: 0.1)
         sphere.albedoTexture = environmentTexture
         return sphere
+    }
+    
+    fileprivate func createDebugDots() -> Dots3D {
+        let t = Transform(position: transform.position, scale: 0.1)
+        let dots = Dots3D(transform: t, dotSize: 3, vertexBuffer: shBuffer.normalBuffer, colorBuffer: shBuffer.normalBuffer, vertexCount: Int(shBuffer.numSamples))
+        return dots
     }
     
     /// For debugging the values obtained

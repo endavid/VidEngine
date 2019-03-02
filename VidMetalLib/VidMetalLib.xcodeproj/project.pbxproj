@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6311EE59222A9F5400B5A87F /* Dots.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE58222A9F5400B5A87F /* Dots.metal */; };
 		632D27BF20389456000562F0 /* Lighting.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B820389456000562F0 /* Lighting.metal */; };
 		632D27C020389456000562F0 /* Sprites.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B920389456000562F0 /* Sprites.metal */; };
 		632D27C120389456000562F0 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BA20389456000562F0 /* Shaders.metal */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6311EE58222A9F5400B5A87F /* Dots.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Dots.metal; sourceTree = "<group>"; };
 		632D27AE20389353000562F0 /* VidMetalLib.metallib */ = {isa = PBXFileReference; explicitFileType = "archive.metal-library"; includeInIndex = 0; path = VidMetalLib.metallib; sourceTree = BUILT_PRODUCTS_DIR; };
 		632D27B820389456000562F0 /* Lighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Lighting.metal; sourceTree = "<group>"; };
 		632D27B920389456000562F0 /* Sprites.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sprites.metal; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				637215EC2141D6850077F456 /* AR.metal */,
+				6311EE58222A9F5400B5A87F /* Dots.metal */,
 				632D27BD20389456000562F0 /* Fx.metal */,
 				6389DFBB2221F48B001625B4 /* Harmonics.metal */,
 				632D27B820389456000562F0 /* Lighting.metal */,
@@ -133,6 +136,7 @@
 				632D27C520389456000562F0 /* ShaderMath.metal in Sources */,
 				632D27C020389456000562F0 /* Sprites.metal in Sources */,
 				632D27BF20389456000562F0 /* Lighting.metal in Sources */,
+				6311EE59222A9F5400B5A87F /* Dots.metal in Sources */,
 				6389DFC222235073001625B4 /* Skybox.metal in Sources */,
 				637215ED2141D6850077F456 /* AR.metal in Sources */,
 				632D27C420389456000562F0 /* Fx.metal in Sources */,

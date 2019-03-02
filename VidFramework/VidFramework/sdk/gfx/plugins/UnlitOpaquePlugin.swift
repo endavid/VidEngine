@@ -47,6 +47,9 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     override func createPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false)
     }
+    override func createDotsDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
+        return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "dotsFragment", vertexShader: "dotsVertex")
+    }
     func createEnvSphereDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "passSkyboxFragment", vertexShader: "passSkyboxGeometry")
     }
@@ -73,6 +76,12 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     }
     override func draw(encoder: MTLRenderCommandEncoder) {
         super.draw(encoder: encoder)
+        drawEnvSpheres(encoder: encoder)
+    }
+    func drawEnvSpheres(encoder: MTLRenderCommandEncoder) {
+        if envSpheres.isEmpty {
+            return
+        }
         encoder.pushDebugGroup(self.label+":envSpheres")
         encoder.setRenderPipelineState(envSpherePipelineState)
         encoder.setDepthStencilState(depthState)

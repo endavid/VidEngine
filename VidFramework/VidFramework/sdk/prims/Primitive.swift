@@ -13,7 +13,7 @@ import MetalKit
 /// All primitives allow instancing.
 public class Primitive {
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
-    internal var vertexBuffer : MTLBuffer!
+    var vertexBuffer : MTLBuffer!
     public var name: String = ""
     public var perInstanceUniforms : [PerInstanceUniforms]
     let uniformBuffer : MTLBuffer!
