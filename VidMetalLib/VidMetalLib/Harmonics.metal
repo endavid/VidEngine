@@ -8,12 +8,19 @@
 
 #include <metal_stdlib>
 #include "ShaderCommon.h"
+#include "ShaderMath.h"
 
 using namespace metal;
 
 struct SHLightVertexInOut {
-    float4  position [[position]];
-    float4  pos;
+    float4 position [[position]];
+    float4 pos;
+    float4 tonemap;
+};
+
+struct SHInstance {
+    Transform transform;
+    float4 tonemap;
 };
 
 // can only write to a buffer if the output is set to void
@@ -36,15 +43,16 @@ vertex SHLightVertexInOut shLightVertex(
   uint iid [[ instance_id ]],
   constant TexturedVertex* vdata [[ buffer(0) ]],
   constant Uniforms& uniforms [[ buffer(1) ]],
-  constant Transform& transform [[ buffer(2) ]])
+  constant SHInstance& instance [[ buffer(2) ]])
 {
     SHLightVertexInOut out;
     TexturedVertex v = vdata[vid];
-    Transform t = transform;
+    Transform t = instance.transform;
     float4 viewPos = uniforms.viewMatrix * float4(t * v.position, 1.0);
     float4 p = uniforms.projectionMatrix * viewPos;
     out.position = p;
     out.pos = p;
+    out.tonemap = instance.tonemap;
     return out;
 }
 
@@ -63,8 +71,9 @@ fragment half4 lightAccumulationSHLight(
     float x = dot(n, irradiances[0] * n);
     float y = dot(n, irradiances[1] * n);
     float z = dot(n, irradiances[2] * n);
-    half specular = 0;
-    return half4(x, y, z, specular);
+    float specular = 0;
+    float4 out = float4(x, y, z, specular) * inFrag.tonemap;
+    return half4(out);
     //return half4(inFrag.uv.x, inFrag.uv.y, 0, 1);
     //return half4(half3(normal.xyz), 1.0);
 };

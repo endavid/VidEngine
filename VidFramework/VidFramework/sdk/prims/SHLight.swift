@@ -23,20 +23,32 @@ public class SHLight: LightSource {
         computeSH,
         readyToRender
     }
+    struct Instance {
+        var transform: Transform
+        var tonemap: float4
+    }
     let identifier: UUID
     let shBuffer: SHBuffer
     let sh: SphericalHarmonics
-    public var transform: Transform
     internal var vertexBuffer: MTLBuffer!
     internal var indexBuffer: MTLBuffer!
-    internal var transformBuffer: MTLBuffer!
+    internal var instanceBuffer: MTLBuffer!
     internal var bufferOffset = 0
     fileprivate var _phase: Phase
     fileprivate var _sampleIndex: Int
     fileprivate var _envmap: MTLTexture?
     fileprivate var _debugSphere: Primitive?
     fileprivate var _debugDots: Dots3D?
+    fileprivate var _instance: Instance
     
+    var transform: Transform {
+        get {
+            return _instance.transform
+        }
+        set {
+            _instance.transform = newValue
+        }
+    }
     var areSamplesReady: Bool {
         get {
             return sh.isInit
@@ -120,13 +132,16 @@ public class SHLight: LightSource {
             identifier = UUID()
             NSLog("Environment Probe not available <iOS12.0")
         }
-        let transform = Transform(position: position, scale: extent)
-        self.transform = transform
+        let t = Transform(position: position, scale: extent)
+        let s: Float = 2.0 / .pi // divide by .pi to convert irradiance to radiance
+        let tonemap = float4(s, s, s, 1.0)
+        _instance = Instance(transform: t, tonemap: tonemap)
         shBuffer = SHBuffer(device: Renderer.shared.device, numBands: 3, sqrtSamples: 100)
         sh = SphericalHarmonics(shBuffer)
         vertexBuffer = CubePrimitive.createCubeVertexBuffer()
         indexBuffer = CubePrimitive.createCubeIndexBuffer()
-        transformBuffer = Renderer.shared.createPerInstanceUniformsBuffer("shlightTransform", numElements: Renderer.NumSyncBuffers)
+        instanceBuffer = Renderer.createSyncBuffer(from: _instance, device: Renderer.shared.device)
+        instanceBuffer.label = "shlightTransform"
         _phase = .initSamples
         _sampleIndex = 0
     }
@@ -213,10 +228,10 @@ public class SHLight: LightSource {
     
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
-        bufferOffset = MemoryLayout<Transform>.size * syncBufferIndex
-        let uniformB = transformBuffer.contents()
-        let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
-        memcpy(uniformData, &transform, MemoryLayout<Transform>.size)
+        bufferOffset = MemoryLayout<Instance>.size * syncBufferIndex
+        let b = instanceBuffer.contents()
+        let data = b.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
+        memcpy(data, &_instance, MemoryLayout<Transform>.size)
     }
     
 }
