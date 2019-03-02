@@ -7,7 +7,7 @@
 //
 
 #include <metal_stdlib>
-#include "ShaderCommon.h"
+#import "ShaderCommon.h"
 
 using namespace metal;
 

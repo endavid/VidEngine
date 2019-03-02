@@ -7,7 +7,7 @@
 //
 
 #include <metal_stdlib>
-#include "ShaderMath.h"
+#import "ShaderMath.h"
 using namespace metal;
 
 /// Quaternion Inverse

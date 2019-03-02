@@ -7,8 +7,7 @@
 //
 
 #include <metal_stdlib>
-#include "ShaderCommon.h"
-#include "ShaderMath.h"
+#import "ShaderCommon.h"
 using namespace metal;
 
 struct DirectionalLightInstance

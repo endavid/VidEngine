@@ -7,8 +7,8 @@
 //
 
 #include <metal_stdlib>
-#include "ShaderCommon.h"
-#include "ShaderMath.h"
+#import "ShaderCommon.h"
+
 using namespace metal;
 
 vertex VertexInOut passSprite2DVertex(uint vid [[ vertex_id ]],

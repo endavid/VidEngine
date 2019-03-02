@@ -8,9 +8,7 @@
 
 #include <metal_stdlib>
 #include <simd/simd.h>
-#include "ShaderCommon.h"
-
-// Include header shared between this Metal shader code and C code executing Metal API commands
+#import "ShaderCommon.h"
 #import "ShaderTypes.h"
 
 using namespace metal;

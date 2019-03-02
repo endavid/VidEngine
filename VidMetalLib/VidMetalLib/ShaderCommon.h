@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "ShaderMath.h"
+#import "ShaderMath.h"
 using namespace metal;
 
 struct VertexInOut {
