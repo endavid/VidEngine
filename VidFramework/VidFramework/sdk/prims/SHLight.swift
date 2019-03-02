@@ -52,7 +52,9 @@ public class SHLight: LightSource {
             return _envmap
         }
         set {
-            _phase = .readCubemap
+            if _phase != .initSamples {
+                _phase = .readCubemap
+            }
             _envmap = newValue
             _debugSphere?.albedoTexture = _envmap
         }
@@ -186,8 +188,8 @@ public class SHLight: LightSource {
     }
     
     fileprivate func createDebugDots() -> Dots3D {
-        let t = Transform(position: transform.position, scale: 0.1)
-        let dots = Dots3D(transform: t, dotSize: 3, vertexBuffer: shBuffer.normalBuffer, colorBuffer: shBuffer.normalBuffer, vertexCount: Int(shBuffer.numSamples))
+        let t = Transform(position: transform.position, scale: 0.05)
+        let dots = Dots3D(transform: t, dotSize: 3, vertexBuffer: shBuffer.normalBuffer, colorBuffer: shBuffer.radianceBuffer, vertexCount: Int(shBuffer.numSamples))
         return dots
     }
     
