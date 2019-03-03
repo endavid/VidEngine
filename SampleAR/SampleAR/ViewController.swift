@@ -63,9 +63,10 @@ class ViewController: VidController {
     }
     
     func addLightProbe(position: float3, session: ARSession) {
-        let extent = float3(5, 5, 5)
+        let extent = float3(0.5, 0.5, 0.5)
         let probe = SHLight(position: position, extent: extent, session: session)
-        probe.debug = .samples
+        probe.debug = .sphere
+        probe.showBoundingBox = true
         probe.queue()
     }
 }

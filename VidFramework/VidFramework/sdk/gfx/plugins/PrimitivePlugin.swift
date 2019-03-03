@@ -13,8 +13,10 @@ class PrimitivePlugin: GraphicPlugin {
     
     fileprivate var primitives : [Primitive] = []
     fileprivate var dots: [Dots3D] = []
+    fileprivate var wires: [WirePrimitive] = []
     fileprivate var primState: MTLRenderPipelineState! = nil
     fileprivate var dotState: MTLRenderPipelineState! = nil
+    fileprivate var wireState: MTLRenderPipelineState! = nil
     var depthState : MTLDepthStencilState! = nil
     
     override var label: String {
@@ -41,6 +43,12 @@ class PrimitivePlugin: GraphicPlugin {
             dots.append(dot)
         }
     }
+    func queue(_ wire: WirePrimitive) {
+        let alreadyQueued = wires.contains { $0 === wire }
+        if !alreadyQueued {
+            wires.append(wire)
+        }
+    }
     
     func dequeue(_ primitive: Primitive) {
         let index = primitives.index { $0 === primitive }
@@ -54,17 +62,24 @@ class PrimitivePlugin: GraphicPlugin {
             dots.remove(at: i)
         }
     }
+    func dequeue(_ wire: WirePrimitive) {
+        let index = wires.index { $0 === wire }
+        if let i = index {
+            wires.remove(at: i)
+        }
+    }
     
     func createPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createPipelineDescriptor(device: device, library: library)
     }
-    
     func createDepthDescriptor(gBuffer: GBuffer) -> MTLDepthStencilDescriptor {
         return gBuffer.createDepthStencilDescriptor()
     }
-    
     func createDotsDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createPipelineDescriptor(device: device, library: library)
+    }
+    func createWiresDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor? {
+        return nil
     }
     
     func createEncoder(commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
@@ -88,6 +103,9 @@ class PrimitivePlugin: GraphicPlugin {
         do {
             try primState = device.makeRenderPipelineState(descriptor: pipelineDesc)
             try dotState = device.makeRenderPipelineState(descriptor: dotsDesc)
+            if let d = createWiresDescriptor(device: device, library: library, gBuffer: gBuffer) {
+                try wireState = device.makeRenderPipelineState(descriptor: d)
+            }
             depthState = device.makeDepthStencilState(descriptor: depthDesc)
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
@@ -109,6 +127,7 @@ class PrimitivePlugin: GraphicPlugin {
     func draw(encoder: MTLRenderCommandEncoder) {
         drawPrimitives(encoder: encoder)
         drawDots(encoder: encoder)
+        drawWires(encoder: encoder)
     }
 
     private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
@@ -134,6 +153,21 @@ class PrimitivePlugin: GraphicPlugin {
             encoder.setVertexBuffer(p.colorBuffer, offset: 0, index: 2)
             encoder.setVertexBuffer(p.instanceBuffer, offset: p.bufferOffset, index: 3)
             p.draw(encoder: encoder)
+        }
+        encoder.popDebugGroup()
+    }
+    
+    private func drawWires(encoder: MTLRenderCommandEncoder) {
+        if wires.isEmpty {
+            return
+        }
+        encoder.pushDebugGroup(self.label+":wires")
+        encoder.setRenderPipelineState(wireState)
+        encoder.setCullMode(.none)
+        for w in wires {
+            encoder.setVertexBuffer(w.vertexBuffer, offset: 0, index: 0)
+            encoder.setVertexBuffer(w.instanceBuffer, offset: 0, index: 2)
+            w.draw(encoder: encoder)
         }
         encoder.popDebugGroup()
     }
@@ -167,6 +201,9 @@ class PrimitivePlugin: GraphicPlugin {
         }
         for p in dots {
             p.updateBuffers(syncBufferIndex)
+        }
+        for w in wires {
+            w.updateBuffers(syncBufferIndex)
         }
     }
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6311EE59222A9F5400B5A87F /* Dots.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE58222A9F5400B5A87F /* Dots.metal */; };
+		6311EE5F222C3BAC00B5A87F /* Wires.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE5E222C3BAC00B5A87F /* Wires.metal */; };
 		632D27BF20389456000562F0 /* Lighting.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B820389456000562F0 /* Lighting.metal */; };
 		632D27C020389456000562F0 /* Sprites.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27B920389456000562F0 /* Sprites.metal */; };
 		632D27C120389456000562F0 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 632D27BA20389456000562F0 /* Shaders.metal */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		6311EE58222A9F5400B5A87F /* Dots.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Dots.metal; sourceTree = "<group>"; };
+		6311EE5E222C3BAC00B5A87F /* Wires.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Wires.metal; sourceTree = "<group>"; };
 		632D27AE20389353000562F0 /* VidMetalLib.metallib */ = {isa = PBXFileReference; explicitFileType = "archive.metal-library"; includeInIndex = 0; path = VidMetalLib.metallib; sourceTree = BUILT_PRODUCTS_DIR; };
 		632D27B820389456000562F0 /* Lighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Lighting.metal; sourceTree = "<group>"; };
 		632D27B920389456000562F0 /* Sprites.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sprites.metal; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				632D27B920389456000562F0 /* Sprites.metal */,
 				632D27BB20389456000562F0 /* TextRendering.metal */,
 				632D27BC20389456000562F0 /* Transparency.metal */,
+				6311EE5E222C3BAC00B5A87F /* Wires.metal */,
 			);
 			path = VidMetalLib;
 			sourceTree = "<group>";
@@ -137,6 +140,7 @@
 				632D27C020389456000562F0 /* Sprites.metal in Sources */,
 				632D27BF20389456000562F0 /* Lighting.metal in Sources */,
 				6311EE59222A9F5400B5A87F /* Dots.metal in Sources */,
+				6311EE5F222C3BAC00B5A87F /* Wires.metal in Sources */,
 				6389DFC222235073001625B4 /* Skybox.metal in Sources */,
 				637215ED2141D6850077F456 /* AR.metal in Sources */,
 				632D27C420389456000562F0 /* Fx.metal in Sources */,

@@ -41,6 +41,7 @@ public class SHLight: LightSource {
     fileprivate var _envmap: MTLTexture?
     fileprivate var _debugSphere: Primitive?
     fileprivate var _debugDots: Dots3D?
+    fileprivate var _debugBB: WireCube?
     fileprivate var _instance: Instance
     fileprivate var _previousIrradiances: [float4x4]
     fileprivate var _irradianceBlendStep = 30
@@ -106,6 +107,22 @@ public class SHLight: LightSource {
                 _debugSphere?.dequeue()
                 _debugDots = nil
                 _debugSphere = nil
+            }
+        }
+    }
+    public var showBoundingBox: Bool {
+        get {
+            return _debugBB != nil
+        }
+        set {
+            if newValue {
+                if _debugBB == nil {
+                    _debugBB = createDebugBoundingBox()
+                    _debugBB?.queue()
+                }
+            } else {
+                _debugBB?.dequeue()
+                _debugBB = nil
             }
         }
     }
@@ -217,6 +234,13 @@ public class SHLight: LightSource {
         let t = Transform(position: transform.position, scale: 0.05)
         let dots = Dots3D(transform: t, dotSize: 3, vertexBuffer: shBuffer.normalBuffer, colorBuffer: shBuffer.radianceBuffer, vertexCount: Int(shBuffer.numSamples))
         return dots
+    }
+    
+    fileprivate func createDebugBoundingBox() -> WireCube {
+        let cube = WireCube(instanceCount: 1)
+        cube.transform = transform
+        cube.color = LinearRGBA(UIColor.green)
+        return cube
     }
     
     /// For debugging the values obtained

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6311EE57222A8E9200B5A87F /* Dots3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE56222A8E9200B5A87F /* Dots3D.swift */; };
+		6311EE5B222BF2A900B5A87F /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE5A222BF2A900B5A87F /* Line.swift */; };
+		6311EE5D222BF34F00B5A87F /* WirePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE5C222BF34F00B5A87F /* WirePrimitive.swift */; };
+		6311EE61222C3D3C00B5A87F /* WireCube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6311EE60222C3D3C00B5A87F /* WireCube.swift */; };
 		632BC491212CC538006059FF /* ARPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632BC490212CC538006059FF /* ARPlugin.swift */; };
 		632D27D720389549000562F0 /* VidFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 632D27D520389549000562F0 /* VidFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		632D280C203896C7000562F0 /* MdlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27DF203896C7000562F0 /* MdlParser.swift */; };
@@ -85,6 +88,9 @@
 
 /* Begin PBXFileReference section */
 		6311EE56222A8E9200B5A87F /* Dots3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dots3D.swift; sourceTree = "<group>"; };
+		6311EE5A222BF2A900B5A87F /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		6311EE5C222BF34F00B5A87F /* WirePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WirePrimitive.swift; sourceTree = "<group>"; };
+		6311EE60222C3D3C00B5A87F /* WireCube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WireCube.swift; sourceTree = "<group>"; };
 		632BC490212CC538006059FF /* ARPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPlugin.swift; sourceTree = "<group>"; };
 		632D27D220389549000562F0 /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		632D27D520389549000562F0 /* VidFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VidFramework.h; sourceTree = "<group>"; };
@@ -246,6 +252,8 @@
 				632D27E5203896C7000562F0 /* TextPrimitive.swift */,
 				63711CC020461C5700D046CF /* TextureFilter.swift */,
 				639D0709203B7EF600F9905D /* VolumetricCompute.swift */,
+				6311EE5C222BF34F00B5A87F /* WirePrimitive.swift */,
+				6311EE60222C3D3C00B5A87F /* WireCube.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -261,6 +269,7 @@
 				632D27ED203896C7000562F0 /* Quaternion.swift */,
 				635EAEE32214BC0E00D18734 /* AngleAxis.swift */,
 				6389DFB322177FA7001625B4 /* SphericalHarmonics.swift */,
+				6311EE5A222BF2A900B5A87F /* Line.swift */,
 			);
 			path = math;
 			sourceTree = "<group>";
@@ -468,6 +477,7 @@
 				6393E7B02059ED370098F96F /* CieLab.swift in Sources */,
 				6311EE57222A8E9200B5A87F /* Dots3D.swift in Sources */,
 				632D2822203896C7000562F0 /* PrimitivePlugin.swift in Sources */,
+				6311EE61222C3D3C00B5A87F /* WireCube.swift in Sources */,
 				632D2815203896C7000562F0 /* Transform.swift in Sources */,
 				632D280D203896C7000562F0 /* SpherePrimitive.swift in Sources */,
 				632D2829203896C7000562F0 /* Renderer.swift in Sources */,
@@ -509,6 +519,7 @@
 				632D2810203896C7000562F0 /* PlanePrimitive.swift in Sources */,
 				6389DFB422177FA7001625B4 /* SphericalHarmonics.swift in Sources */,
 				632D281B203896C7000562F0 /* Collections.swift in Sources */,
+				6311EE5D222BF34F00B5A87F /* WirePrimitive.swift in Sources */,
 				63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */,
 				632D2818203896C7000562F0 /* Quaternion.swift in Sources */,
 				6389DFBE2223222A001625B4 /* LitOpaquePlugin.swift in Sources */,
@@ -520,6 +531,7 @@
 				632D2824203896C7000562F0 /* PostEffectPlugin.swift in Sources */,
 				632D2819203896C7000562F0 /* SubdivisonSphere.swift in Sources */,
 				632D282D203896C7000562F0 /* GfxData.swift in Sources */,
+				6311EE5B222BF2A900B5A87F /* Line.swift in Sources */,
 				632D2813203896C7000562F0 /* Math.swift in Sources */,
 				632D281A203896C7000562F0 /* PlatonicSolid.swift in Sources */,
 			);

@@ -50,6 +50,9 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     override func createDotsDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "dotsFragment", vertexShader: "dotsVertex")
     }
+    override func createWiresDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor? {
+        return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "wiresFragment", vertexShader: "wiresVertex")
+    }
     func createEnvSphereDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "passSkyboxFragment", vertexShader: "passSkyboxGeometry")
     }
