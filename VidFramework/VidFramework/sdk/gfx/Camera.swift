@@ -18,6 +18,15 @@ public class Camera {
     private var _projection = float4x4()
     private var _projectionInverse = float4x4()
     
+    public var orientation: UIInterfaceOrientation {
+        get {
+            if bounds.width > bounds.height {
+                return UIInterfaceOrientation.landscapeRight
+            }
+            return UIInterfaceOrientation.portrait
+        }
+    }
+
     /// position and direction of the camera
     public var transform: Transform {
         get {

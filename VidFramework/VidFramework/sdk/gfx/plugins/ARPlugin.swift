@@ -120,7 +120,7 @@ class ARPlugin: GraphicPlugin {
             updateCapturedImageTextures(frame: frame)
             if viewportSize.width != camera.bounds.width || viewportSize.height != camera.bounds.height {
                 viewportSize = camera.bounds.size
-                updateImagePlane(frame: frame)
+                updateImagePlane(frame: frame, orientation: camera.orientation)
             }
         }
         let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: true)
@@ -157,9 +157,9 @@ class ARPlugin: GraphicPlugin {
         return texture
     }
 
-    private func updateImagePlane(frame: ARFrame) {
+    private func updateImagePlane(frame: ARFrame, orientation: UIInterfaceOrientation) {
         // Update the texture coordinates of our image plane to aspect fill the viewport
-        let displayToCameraTransform = frame.displayTransform(for: .landscapeRight, viewportSize: viewportSize).inverted()
+        let displayToCameraTransform = frame.displayTransform(for: orientation, viewportSize: viewportSize).inverted()
         
         let vertexData = imagePlaneVertexBuffer.contents().assumingMemoryBound(to: Float.self)
         for index in 0...3 {
