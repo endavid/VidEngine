@@ -287,6 +287,19 @@ public class Renderer {
         return buffer
     }
     
+    public static func createBuffer<T>(from array: [T], device: MTLDevice) -> MTLBuffer? {
+        let count = array.count
+        guard let buffer = device.makeBuffer(length: count * MemoryLayout<T>.size, options: []) else {
+            NSLog("Failed to create MTLBuffer")
+            return nil
+        }
+        let vb = buffer.contents().assumingMemoryBound(to: T.self)
+        for i in 0..<count {
+            vb[i] = array[i]
+        }
+        return buffer
+    }
+    
     public static func createBuffer<T>(from data: T, device: MTLDevice, numCopies: Int = 1) -> MTLBuffer? {
         guard let buffer = device.makeBuffer(length: numCopies * MemoryLayout<T>.size, options: []) else {
             NSLog("Failed to create MTLBuffer")

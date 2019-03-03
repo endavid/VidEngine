@@ -16,8 +16,8 @@ class SHBuffer: SHStorage {
     let sqrtSamples : UInt
     var normalBuffer      : MTLBuffer!
     var radianceBuffer    : MTLBuffer!
-    /// Irradiance matrices
-    var irradiancesBuffer : MTLBuffer!
+    /// Irradiance matrices will need to be copied to a MTLBuffer for rendering
+    var irradiances       : [float4x4]
     var sphericals        : [Spherical]
     var coeffsPerSample   : [[Double]]
     var coeffs            : [Vec3]
@@ -33,19 +33,13 @@ class SHBuffer: SHStorage {
             return radianceBuffer.contents().assumingMemoryBound(to: Vec3.self)
         }
     }
-    var irradiances: UnsafeMutablePointer<float4x4> {
-        get {
-            return irradiancesBuffer.contents().assumingMemoryBound(to: float4x4.self)
-        }
-    }
     
     init(device: MTLDevice, numBands: UInt = 3, sqrtSamples: UInt = 100) {
         self.numBands = numBands
         self.numSamples = sqrtSamples * sqrtSamples
         self.sqrtSamples = sqrtSamples
         numCoeffs = numBands * numBands
-        let emptyMatrix = float4x4()
-        irradiancesBuffer = Renderer.createBuffer(from: emptyMatrix, device: device, numCopies: 3)
+        irradiances = Array(repeating: float4x4(), count: 3)
         let n = Int(self.numSamples)
         let coefficients = [Double](repeating: 0, count: Int(numCoeffs))
         coeffsPerSample = [[Double]](repeating: coefficients, count: n)

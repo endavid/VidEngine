@@ -136,7 +136,7 @@ class DeferredLightingPlugin: GraphicPlugin {
         for l in shLights {
             encoder.setVertexBuffer(l.vertexBuffer, offset: 0, index: 0)
             encoder.setVertexBuffer(l.instanceBuffer, offset: l.bufferOffset, index: 2)
-            encoder.setFragmentBuffer(l.shBuffer.irradiancesBuffer, offset: 0, index: 0)
+            encoder.setFragmentBuffer(l.irradianceBuffer, offset: 0, index: 0)
             encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: l.indexBuffer, indexBufferOffset: 0)
         }
         encoder.popDebugGroup()

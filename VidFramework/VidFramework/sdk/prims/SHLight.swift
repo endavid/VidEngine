@@ -27,19 +27,23 @@ public class SHLight: LightSource {
         var transform: Transform
         var tonemap: float4
     }
+    let irradianceBlendFrameCount = 30
     let identifier: UUID
     let shBuffer: SHBuffer
     let sh: SphericalHarmonics
-    internal var vertexBuffer: MTLBuffer!
-    internal var indexBuffer: MTLBuffer!
-    internal var instanceBuffer: MTLBuffer!
-    internal var bufferOffset = 0
+    var vertexBuffer: MTLBuffer!
+    var indexBuffer: MTLBuffer!
+    var instanceBuffer: MTLBuffer!
+    var irradianceBuffer: MTLBuffer!
+    var bufferOffset = 0
     fileprivate var _phase: Phase
     fileprivate var _sampleIndex: Int
     fileprivate var _envmap: MTLTexture?
     fileprivate var _debugSphere: Primitive?
     fileprivate var _debugDots: Dots3D?
     fileprivate var _instance: Instance
+    fileprivate var _previousIrradiances: [float4x4]
+    fileprivate var _irradianceBlendStep = 30
     
     var transform: Transform {
         get {
@@ -69,6 +73,8 @@ public class SHLight: LightSource {
             }
             _envmap = newValue
             _debugSphere?.albedoTexture = _envmap
+            _previousIrradiances = blendIrradianceMatrices()
+            _irradianceBlendStep = irradianceBlendFrameCount
         }
     }
     public var debug: DebugMode {
@@ -132,16 +138,20 @@ public class SHLight: LightSource {
             identifier = UUID()
             NSLog("Environment Probe not available <iOS12.0")
         }
+        let device = Renderer.shared.device!
         let t = Transform(position: position, scale: extent)
         let s: Float = 2.0 / .pi // divide by .pi to convert irradiance to radiance
         let tonemap = float4(s, s, s, 1.0)
         _instance = Instance(transform: t, tonemap: tonemap)
         shBuffer = SHBuffer(device: Renderer.shared.device, numBands: 3, sqrtSamples: 100)
         sh = SphericalHarmonics(shBuffer)
+        _previousIrradiances = shBuffer.irradiances
         vertexBuffer = CubePrimitive.createCubeVertexBuffer()
         indexBuffer = CubePrimitive.createCubeIndexBuffer()
-        instanceBuffer = Renderer.createSyncBuffer(from: _instance, device: Renderer.shared.device)
+        instanceBuffer = Renderer.createSyncBuffer(from: _instance, device: device)
         instanceBuffer.label = "shlightTransform"
+        irradianceBuffer = Renderer.createBuffer(from: _previousIrradiances, device: device)
+        irradianceBuffer.label = "irradiances"
         _phase = .initSamples
         _sampleIndex = 0
     }
@@ -176,7 +186,8 @@ public class SHLight: LightSource {
                 sh.normalizeCoefficients()
                 sh.computeIrradianceApproximationMatrices()
                 _phase = .readyToRender
-                dump6Irradiances()
+                _irradianceBlendStep = 0
+                //dump6Irradiances()
             }
         default:
             break
@@ -225,13 +236,35 @@ public class SHLight: LightSource {
         print("SH north: \(north)")
     }
     
+    private func blendIrradianceMatrices() -> [float4x4] {
+        let a = Float(_irradianceBlendStep) / Float(irradianceBlendFrameCount)
+        var out: [float4x4] = []
+        for i in 0..<3 {
+            let m = shBuffer.irradiances[i] * a + (1 - a) * _previousIrradiances[i]
+            out.append(m)
+        }
+        return out
+    }
     
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
+        if _irradianceBlendStep <= irradianceBlendFrameCount {
+            updateIrradianceBuffer()
+            _irradianceBlendStep += 1
+        }
         bufferOffset = MemoryLayout<Instance>.size * syncBufferIndex
         let b = instanceBuffer.contents()
         let data = b.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
         memcpy(data, &_instance, MemoryLayout<Transform>.size)
+    }
+    
+    private func updateIrradianceBuffer() {
+        let blend = blendIrradianceMatrices()
+        let b = irradianceBuffer.contents()
+        let data = b.assumingMemoryBound(to: float4x4.self)
+        for i in 0..<3 {
+            data[i] = blend[i]
+        }
     }
     
 }
