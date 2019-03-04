@@ -12,6 +12,7 @@ import MetalKit
 class DeferredLightingPlugin: GraphicPlugin {
     fileprivate var directionalState: MTLRenderPipelineState! = nil
     fileprivate var shLightState: MTLRenderPipelineState! = nil
+    fileprivate var shLightDepthState: MTLDepthStencilState! = nil
     fileprivate var directionalLights : [DirectionalLight] = []
     fileprivate var shLights: [SHLight] = []
     
@@ -74,14 +75,23 @@ class DeferredLightingPlugin: GraphicPlugin {
         return desc
     }
     
+    func createSHLightPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
+        let desc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationSHLight", vertex: "shLightVertex")
+        desc.depthAttachmentPixelFormat = gBuffer.depthStencilTexture.pixelFormat
+        desc.stencilAttachmentPixelFormat = gBuffer.depthStencilTexture.pixelFormat
+        return desc
+    }
+    
     
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
         super.init(device: device, library: library, view: view)
         let directionalDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationDirectionalLight", vertex: "directionalLightVertex")
-        let shLightDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationSHLight", vertex: "shLightVertex")
+        let shLightDesc = createSHLightPipelineDescriptor(device: device, library: library, gBuffer: gBuffer)
+        let shLightDepthDesc = gBuffer.createDepthStencilDescriptorForAmbientLights()
         do {
             try directionalState = device.makeRenderPipelineState(descriptor: directionalDesc)
             try shLightState = device.makeRenderPipelineState(descriptor: shLightDesc)
+            shLightDepthState = device.makeDepthStencilState(descriptor: shLightDepthDesc)
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
         }
@@ -96,14 +106,20 @@ class DeferredLightingPlugin: GraphicPlugin {
         if !renderer.frameState.clearedGBuffer {
             return
         }
-        let renderPassDescriptor = renderer.createLightAccumulationRenderPass(clear: true)
-        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+        let d0 = renderer.createLightAccumulationRenderPass(clear: true, depthStencil: false)
+        guard let e0 = commandBuffer.makeRenderCommandEncoder(descriptor: d0) else {
             return
         }
-        encoder.label = self.label
-        drawDirectionalLights(encoder)
-        drawSHLights(encoder)
-        encoder.endEncoding()
+        e0.label = self.label
+        drawDirectionalLights(e0)
+        e0.endEncoding()
+        let d1 = renderer.createLightAccumulationRenderPass(clear: false, depthStencil: true)
+        guard let e1 = commandBuffer.makeRenderCommandEncoder(descriptor: d1) else {
+            return
+        }
+        e1.label = self.label+"withDepth"
+        drawSHLights(e1)
+        e1.endEncoding()
         renderer.frameState.clearedLightbuffer = true
     }
     
@@ -131,6 +147,9 @@ class DeferredLightingPlugin: GraphicPlugin {
         let numIndices = CubePrimitive.numIndices
         encoder.pushDebugGroup(self.label+":shlights")
         encoder.setRenderPipelineState(shLightState)
+        encoder.setDepthStencilState(shLightDepthState)
+        encoder.setStencilReferenceValues(front: LightMask.all.rawValue, back: LightMask.all.rawValue)
+        encoder.setCullMode(.front)
         encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         for l in shLights {

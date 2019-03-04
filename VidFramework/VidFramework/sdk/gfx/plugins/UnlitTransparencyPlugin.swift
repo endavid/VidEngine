@@ -64,7 +64,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         let pipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library)
         let textPipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
         
-        let depthDescriptor = gBuffer.createDepthStencilDescriptor()
+        let depthDescriptor = gBuffer.createDepthDescriptor()
         depthDescriptor.isDepthWriteEnabled = false
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)

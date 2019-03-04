@@ -204,20 +204,28 @@ public class Renderer {
         rp.colorAttachments[0].loadAction = clear ? .clear : .load
         rp.colorAttachments[0].storeAction = .store
         rp.colorAttachments[0].clearColor = clearColor
-        rp.depthAttachment.texture = gBuffer.depthTexture
+        rp.depthAttachment.texture = gBuffer.depthStencilTexture
         rp.depthAttachment.loadAction = clear ? .clear : .load
         rp.depthAttachment.storeAction = .store
         rp.depthAttachment.clearDepth = 1.0
         return rp
     }
     
-    func createLightAccumulationRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
-        let renderPass = MTLRenderPassDescriptor()
-        renderPass.colorAttachments[0].texture = gBuffer.lightTexture
-        renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
-        renderPass.colorAttachments[0].storeAction = .store
-        renderPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
-        return renderPass
+    func createLightAccumulationRenderPass(clear: Bool, depthStencil: Bool) -> MTLRenderPassDescriptor {
+        let rp = MTLRenderPassDescriptor()
+        rp.colorAttachments[0].texture = gBuffer.lightTexture
+        rp.colorAttachments[0].loadAction = clear ? .clear : .load
+        rp.colorAttachments[0].storeAction = .store
+        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
+        if depthStencil {
+            rp.depthAttachment.texture = gBuffer.depthStencilTexture
+            rp.depthAttachment.loadAction = .load
+            rp.depthAttachment.storeAction = .dontCare
+            rp.stencilAttachment.texture = gBuffer.depthStencilTexture
+            rp.stencilAttachment.loadAction = .load
+            rp.stencilAttachment.storeAction = .store
+        }
+        return rp
     }
     
     // Transparency
@@ -231,7 +239,7 @@ public class Renderer {
         rp.colorAttachments[1].loadAction = clear ? .clear : .load
         rp.colorAttachments[1].storeAction = .store
         rp.colorAttachments[1].clearColor = MTLClearColorMake(0, 0, 0, 1)
-        rp.depthAttachment.texture = gBuffer.depthTexture
+        rp.depthAttachment.texture = gBuffer.depthStencilTexture
         rp.depthAttachment.loadAction = .load
         rp.depthAttachment.storeAction = .dontCare
         return rp
@@ -247,10 +255,14 @@ public class Renderer {
         renderPass.colorAttachments[1].loadAction = clear ? .clear : .load
         renderPass.colorAttachments[1].storeAction = .store
         renderPass.colorAttachments[1].clearColor = MTLClearColorMake(0, 1, 0, 0)
-        renderPass.depthAttachment.texture = gBuffer.depthTexture
-        renderPass.depthAttachment.loadAction = .clear
+        renderPass.depthAttachment.texture = gBuffer.depthStencilTexture
+        renderPass.depthAttachment.loadAction = clear ? .clear : .load
         renderPass.depthAttachment.storeAction = .store
         renderPass.depthAttachment.clearDepth = 1.0
+        renderPass.stencilAttachment.texture = gBuffer.depthStencilTexture
+        renderPass.stencilAttachment.loadAction = clear ? .clear : .load
+        renderPass.stencilAttachment.storeAction = .store
+        renderPass.stencilAttachment.clearStencil = 0xff
         return renderPass
     }
 

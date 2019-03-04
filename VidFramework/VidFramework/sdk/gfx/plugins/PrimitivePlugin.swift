@@ -73,7 +73,7 @@ class PrimitivePlugin: GraphicPlugin {
         return gBuffer.createPipelineDescriptor(device: device, library: library)
     }
     func createDepthDescriptor(gBuffer: GBuffer) -> MTLDepthStencilDescriptor {
-        return gBuffer.createDepthStencilDescriptor()
+        return gBuffer.createDepthDescriptor()
     }
     func createDotsDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createPipelineDescriptor(device: device, library: library)
