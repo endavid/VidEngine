@@ -19,7 +19,8 @@ enum LightMask: UInt32 {
 struct GBuffer {
     let width : Int
     let height : Int
-    let depthStencilTexture: MTLTexture
+    let depthTexture: MTLTexture
+    let stencilTexture: MTLTexture
     let albedoTexture: MTLTexture
     let normalTexture: MTLTexture
     /// light accumulation buffer; cleared and reused for transparency
@@ -32,8 +33,10 @@ struct GBuffer {
     init(device: MTLDevice, size: CGSize) {
         width = Int(size.width)
         height = Int(size.height)
-        let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float_stencil8, width: width, height: height, mipmapped: false)
+        let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
         depthDesc.usage = .renderTarget
+        let stencilDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .stencil8, width: width, height: height, mipmapped: false)
+        stencilDesc.usage = .renderTarget
         let albedoDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
         albedoDesc.usage = [.renderTarget, .shaderRead]
         let normalDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
@@ -44,8 +47,10 @@ struct GBuffer {
         revealDesc.usage = [.renderTarget, .shaderRead]
         let shadedDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
         shadedDesc.usage = [.renderTarget, .shaderRead]
-        depthStencilTexture = device.makeTexture(descriptor: depthDesc)!
-        depthStencilTexture.label = "GBuffer:DepthStencil"
+        depthTexture = device.makeTexture(descriptor: depthDesc)!
+        depthTexture.label = "GBuffer:Depth"
+        stencilTexture = device.makeTexture(descriptor: stencilDesc)!
+        stencilTexture.label = "GBuffer:Stencil"
         albedoTexture = device.makeTexture(descriptor: albedoDesc)!
         albedoTexture.label = "GBuffer:Albedo"
         normalTexture = device.makeTexture(descriptor: normalDesc)!
@@ -72,8 +77,8 @@ struct GBuffer {
         pipelineStateDescriptor.colorAttachments[1].pixelFormat = normalTexture.pixelFormat
         pipelineStateDescriptor.colorAttachments[1].isBlendingEnabled = false
         pipelineStateDescriptor.sampleCount = albedoTexture.sampleCount
-        pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilTexture.pixelFormat
-        pipelineStateDescriptor.stencilAttachmentPixelFormat = depthStencilTexture.pixelFormat
+        pipelineStateDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
+        pipelineStateDescriptor.stencilAttachmentPixelFormat = stencilTexture.pixelFormat
         return pipelineStateDescriptor
     }
     
@@ -98,7 +103,7 @@ struct GBuffer {
             
         }
         pipelineStateDescriptor.sampleCount = shadedTexture.sampleCount
-        pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilTexture.pixelFormat
+        pipelineStateDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
         return pipelineStateDescriptor
     }
     
@@ -128,7 +133,7 @@ struct GBuffer {
         pipelineStateDescriptor.colorAttachments[1].destinationRGBBlendFactor = .one
         pipelineStateDescriptor.colorAttachments[1].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         pipelineStateDescriptor.sampleCount = self.lightTexture.sampleCount
-        pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilTexture.pixelFormat
+        pipelineStateDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
         return pipelineStateDescriptor
     }
     
@@ -139,15 +144,15 @@ struct GBuffer {
         return desc
     }
     
-    func createDepthStencilDescriptorForAmbientLights() -> MTLDepthStencilDescriptor {
+    func createDepthStencilDescriptorForAmbientLightGeometry() -> MTLDepthStencilDescriptor {
         let desc = MTLDepthStencilDescriptor()
         desc.isDepthWriteEnabled = false
         desc.depthCompareFunction = .less
         let bf = MTLStencilDescriptor()
-        bf.stencilFailureOperation = .replace
+        bf.stencilFailureOperation = .keep
         bf.depthFailureOperation = .replace
         bf.depthStencilPassOperation = .keep
-        bf.stencilCompareFunction = .always
+        bf.stencilCompareFunction = .notEqual
         bf.readMask = LightMask.ambient.rawValue
         bf.writeMask = LightMask.light.rawValue
         let ff = MTLStencilDescriptor()
@@ -161,4 +166,20 @@ struct GBuffer {
         desc.frontFaceStencil = ff
         return desc
     }
+    
+    func createDepthStencilDescriptorForAmbientLight() -> MTLDepthStencilDescriptor {
+        let desc = MTLDepthStencilDescriptor()
+        desc.isDepthWriteEnabled = false
+        desc.depthCompareFunction = .less
+        let ff = MTLStencilDescriptor()
+        ff.stencilFailureOperation = .keep
+        ff.depthFailureOperation = .keep
+        ff.depthStencilPassOperation = .replace
+        ff.stencilCompareFunction = .notEqual
+        ff.readMask = LightMask.light.rawValue
+        ff.writeMask = LightMask.all.rawValue
+        desc.frontFaceStencil = ff
+        return desc
+    }
+    
 }

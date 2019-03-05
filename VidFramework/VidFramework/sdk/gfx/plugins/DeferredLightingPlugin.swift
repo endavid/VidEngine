@@ -12,7 +12,9 @@ import MetalKit
 class DeferredLightingPlugin: GraphicPlugin {
     fileprivate var directionalState: MTLRenderPipelineState! = nil
     fileprivate var shLightState: MTLRenderPipelineState! = nil
+    fileprivate var shGeometryState: MTLRenderPipelineState! = nil
     fileprivate var shLightDepthState: MTLDepthStencilState! = nil
+    fileprivate var shLightDepthColorState: MTLDepthStencilState! = nil
     fileprivate var directionalLights : [DirectionalLight] = []
     fileprivate var shLights: [SHLight] = []
     
@@ -75,10 +77,23 @@ class DeferredLightingPlugin: GraphicPlugin {
         return desc
     }
     
+    func createGeometryOnlyDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
+        let fragmentProgram = library.makeFunction(name: "dummyFragmentSHLight")!
+        let vertexProgram = library.makeFunction(name: "shLightVertex")!
+        let desc = MTLRenderPipelineDescriptor()
+        desc.vertexFunction = vertexProgram
+        desc.fragmentFunction = fragmentProgram
+        // no color attachment
+        desc.depthAttachmentPixelFormat = gBuffer.depthTexture.pixelFormat
+        desc.stencilAttachmentPixelFormat = gBuffer.stencilTexture.pixelFormat
+        desc.sampleCount = gBuffer.stencilTexture.sampleCount
+        return desc
+    }
+    
     func createSHLightPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         let desc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationSHLight", vertex: "shLightVertex")
-        desc.depthAttachmentPixelFormat = gBuffer.depthStencilTexture.pixelFormat
-        desc.stencilAttachmentPixelFormat = gBuffer.depthStencilTexture.pixelFormat
+        desc.depthAttachmentPixelFormat = gBuffer.depthTexture.pixelFormat
+        desc.stencilAttachmentPixelFormat = gBuffer.stencilTexture.pixelFormat
         return desc
     }
     
@@ -87,11 +102,15 @@ class DeferredLightingPlugin: GraphicPlugin {
         super.init(device: device, library: library, view: view)
         let directionalDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationDirectionalLight", vertex: "directionalLightVertex")
         let shLightDesc = createSHLightPipelineDescriptor(device: device, library: library, gBuffer: gBuffer)
-        let shLightDepthDesc = gBuffer.createDepthStencilDescriptorForAmbientLights()
+        let shGeomDesc = createGeometryOnlyDescriptor(device: device, library: library, gBuffer: gBuffer)
+        let shLightDepthDesc = gBuffer.createDepthStencilDescriptorForAmbientLightGeometry()
+        let shLightDepthColorDesc = gBuffer.createDepthStencilDescriptorForAmbientLight()
         do {
             try directionalState = device.makeRenderPipelineState(descriptor: directionalDesc)
             try shLightState = device.makeRenderPipelineState(descriptor: shLightDesc)
+            try shGeometryState = device.makeRenderPipelineState(descriptor: shGeomDesc)
             shLightDepthState = device.makeDepthStencilState(descriptor: shLightDepthDesc)
+            shLightDepthColorState = device.makeDepthStencilState(descriptor: shLightDepthColorDesc)
         } catch let error {
             NSLog("Failed to create pipeline state, error \(error)")
         }
@@ -106,21 +125,19 @@ class DeferredLightingPlugin: GraphicPlugin {
         if !renderer.frameState.clearedGBuffer {
             return
         }
-        let d0 = renderer.createLightAccumulationRenderPass(clear: true, depthStencil: false)
-        guard let e0 = commandBuffer.makeRenderCommandEncoder(descriptor: d0) else {
-            return
-        }
-        e0.label = self.label
-        drawDirectionalLights(e0)
-        e0.endEncoding()
-        let d1 = renderer.createLightAccumulationRenderPass(clear: false, depthStencil: true)
-        guard let e1 = commandBuffer.makeRenderCommandEncoder(descriptor: d1) else {
-            return
-        }
-        e1.label = self.label+"withDepth"
-        drawSHLights(e1)
-        e1.endEncoding()
+        drawLights(commandBuffer: commandBuffer)
+        drawSHLights(commandBuffer: commandBuffer)
         renderer.frameState.clearedLightbuffer = true
+    }
+    
+    fileprivate func drawLights(commandBuffer: MTLCommandBuffer) {
+        let desc = Renderer.shared.createLightAccumulationRenderPass(clear: true, color: true, depthStencil: false)
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: desc) else {
+            return
+        }
+        encoder.label = self.label
+        drawDirectionalLights(encoder)
+        encoder.endEncoding()
     }
     
     /// Draw all the directional lights with full-screen passes.
@@ -140,24 +157,64 @@ class DeferredLightingPlugin: GraphicPlugin {
         encoder.popDebugGroup()
     }
     
+    fileprivate func drawSHLights(commandBuffer: MTLCommandBuffer) {
+        let renderer = Renderer.shared!
+        // it feels horrible to create 2 render encoders per SHLight!!!
+        // but that seems the only way to do the 3 stencil passes...
+        for l in shLights {
+            let descStencil = renderer.createLightAccumulationRenderPass(clear: false, color: false, depthStencil: true)
+            guard let encoderStencil = commandBuffer.makeRenderCommandEncoder(descriptor: descStencil) else {
+                continue
+            }
+            encoderStencil.label = self.label+":SH(Stencil)"
+            drawSHLightStencil(l, encoder: encoderStencil)
+            encoderStencil.endEncoding()
+            let descColor = renderer.createLightAccumulationRenderPass(clear: false, color: true, depthStencil: true)
+            guard let encoderColor = commandBuffer.makeRenderCommandEncoder(descriptor: descColor) else {
+                continue
+            }
+            encoderColor.label = self.label+":SH(Color)"
+            drawSHLight(l, encoder: encoderColor)
+            encoderColor.endEncoding()
+        }
+    }
+
+    
     /// Spherical Harmonic lights are drawn inside the area defined
     /// by a CubePrimitive
-    fileprivate func drawSHLights(_ encoder: MTLRenderCommandEncoder) {
+    fileprivate func drawSHLightStencil(_ light: SHLight, encoder: MTLRenderCommandEncoder) {
         let renderer = Renderer.shared!
-        let numIndices = CubePrimitive.numIndices
-        encoder.pushDebugGroup(self.label+":shlights")
-        encoder.setRenderPipelineState(shLightState)
+        encoder.pushDebugGroup("SH(\(light.identifier.uuidString))")
+        encoder.setRenderPipelineState(shGeometryState)
         encoder.setDepthStencilState(shLightDepthState)
-        encoder.setStencilReferenceValues(front: LightMask.all.rawValue, back: LightMask.all.rawValue)
-        encoder.setCullMode(.front)
-        encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
+        encoder.setStencilReferenceValues(front: LightMask.none.rawValue, back: LightMask.all.rawValue)
+        encoder.setFrontFacing(.counterClockwise)
+        encoder.setDepthClipMode(.clamp)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
-        for l in shLights {
-            encoder.setVertexBuffer(l.vertexBuffer, offset: 0, index: 0)
-            encoder.setVertexBuffer(l.instanceBuffer, offset: l.bufferOffset, index: 2)
-            encoder.setFragmentBuffer(l.irradianceBuffer, offset: 0, index: 0)
-            encoder.drawIndexedPrimitives(type: .triangle, indexCount: numIndices, indexType: .uint16, indexBuffer: l.indexBuffer, indexBufferOffset: 0)
-        }
+        encoder.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
+        encoder.setVertexBuffer(light.instanceBuffer, offset: light.bufferOffset, index: 2)
+        encoder.setCullMode(.front)
+        light.draw(encoder: encoder)
+        encoder.setCullMode(.back)
+        light.draw(encoder: encoder)
+        encoder.popDebugGroup()
+    }
+    
+    fileprivate func drawSHLight(_ light: SHLight, encoder: MTLRenderCommandEncoder) {
+        let renderer = Renderer.shared!
+        encoder.pushDebugGroup("SH(\(light.identifier.uuidString))")
+        encoder.setRenderPipelineState(shLightState)
+        encoder.setDepthStencilState(shLightDepthColorState)
+        encoder.setStencilReferenceValues(front: LightMask.ambient.rawValue, back: 0)
+        encoder.setFrontFacing(.counterClockwise)
+        encoder.setDepthClipMode(.clamp)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
+        encoder.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
+        encoder.setVertexBuffer(light.instanceBuffer, offset: light.bufferOffset, index: 2)
+        encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
+        encoder.setFragmentBuffer(light.irradianceBuffer, offset: 0, index: 0)
+        encoder.setCullMode(.back)
+        light.draw(encoder: encoder)
         encoder.popDebugGroup()
     }
 

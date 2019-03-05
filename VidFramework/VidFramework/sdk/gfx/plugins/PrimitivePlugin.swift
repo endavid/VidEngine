@@ -134,6 +134,9 @@ class PrimitivePlugin: GraphicPlugin {
         encoder.pushDebugGroup(self.label+":primitives")
         encoder.setRenderPipelineState(primState)
         encoder.setDepthStencilState(depthState)
+        // the default is CW, but the default in OpenGL is CCW
+        // --which makes more sense if you think of "unscrewing"
+        //   and the normal direction of the vector product
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
         Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)

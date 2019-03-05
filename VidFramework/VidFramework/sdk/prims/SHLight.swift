@@ -223,6 +223,10 @@ public class SHLight: LightSource {
         _sampleIndex = 0
     }
     
+    func draw(encoder: MTLRenderCommandEncoder) {
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: CubePrimitive.numIndices, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
+    }
+    
     fileprivate func createDebugSphere() -> Primitive {
         let sphere = EnvironmentSphere(isInterior: false, widthSegments: 8, heightSegments: 8)
         sphere.transform = Transform(position: self.transform.position, scale: 0.1)

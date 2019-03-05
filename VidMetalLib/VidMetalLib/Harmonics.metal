@@ -55,6 +55,12 @@ vertex SHLightVertexInOut shLightVertex(
     return out;
 }
 
+fragment half4 dummyFragmentSHLight(
+  SHLightVertexInOut inFrag [[stage_in]])
+{
+    return half4(1,1,1,0);
+}
+
 fragment half4 lightAccumulationSHLight(
   SHLightVertexInOut inFrag [[stage_in]],
   constant float4x4* irradiances [[ buffer(0) ]],
