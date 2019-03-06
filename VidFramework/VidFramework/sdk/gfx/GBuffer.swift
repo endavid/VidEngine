@@ -169,8 +169,6 @@ struct GBuffer {
     
     func createDepthStencilDescriptorForAmbientLight() -> MTLDepthStencilDescriptor {
         let desc = MTLDepthStencilDescriptor()
-        desc.isDepthWriteEnabled = false
-        desc.depthCompareFunction = .less
         let ff = MTLStencilDescriptor()
         ff.stencilFailureOperation = .keep
         ff.depthFailureOperation = .keep
@@ -179,6 +177,7 @@ struct GBuffer {
         ff.readMask = LightMask.light.rawValue
         ff.writeMask = LightMask.all.rawValue
         desc.frontFaceStencil = ff
+        desc.backFaceStencil = ff
         return desc
     }
     

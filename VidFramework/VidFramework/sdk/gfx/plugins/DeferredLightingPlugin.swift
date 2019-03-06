@@ -92,7 +92,6 @@ class DeferredLightingPlugin: GraphicPlugin {
     
     func createSHLightPipelineDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         let desc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer, fragment: "lightAccumulationSHLight", vertex: "shLightVertex")
-        desc.depthAttachmentPixelFormat = gBuffer.depthTexture.pixelFormat
         desc.stencilAttachmentPixelFormat = gBuffer.stencilTexture.pixelFormat
         return desc
     }
@@ -131,7 +130,7 @@ class DeferredLightingPlugin: GraphicPlugin {
     }
     
     fileprivate func drawLights(commandBuffer: MTLCommandBuffer) {
-        let desc = Renderer.shared.createLightAccumulationRenderPass(clear: true, color: true, depthStencil: false)
+        let desc = Renderer.shared.createLightAccumulationRenderPass(clear: true, color: true, depth: false, stencil: false)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: desc) else {
             return
         }
@@ -162,14 +161,14 @@ class DeferredLightingPlugin: GraphicPlugin {
         // it feels horrible to create 2 render encoders per SHLight!!!
         // but that seems the only way to do the 3 stencil passes...
         for l in shLights {
-            let descStencil = renderer.createLightAccumulationRenderPass(clear: false, color: false, depthStencil: true)
+            let descStencil = renderer.createLightAccumulationRenderPass(clear: false, color: false, depth: true, stencil: true)
             guard let encoderStencil = commandBuffer.makeRenderCommandEncoder(descriptor: descStencil) else {
                 continue
             }
             encoderStencil.label = self.label+":SH(Stencil)"
             drawSHLightStencil(l, encoder: encoderStencil)
             encoderStencil.endEncoding()
-            let descColor = renderer.createLightAccumulationRenderPass(clear: false, color: true, depthStencil: true)
+            let descColor = renderer.createLightAccumulationRenderPass(clear: false, color: true, depth: false, stencil: true)
             guard let encoderColor = commandBuffer.makeRenderCommandEncoder(descriptor: descColor) else {
                 continue
             }
@@ -189,7 +188,6 @@ class DeferredLightingPlugin: GraphicPlugin {
         encoder.setDepthStencilState(shLightDepthState)
         encoder.setStencilReferenceValues(front: LightMask.none.rawValue, back: LightMask.all.rawValue)
         encoder.setFrontFacing(.counterClockwise)
-        encoder.setDepthClipMode(.clamp)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         encoder.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
         encoder.setVertexBuffer(light.instanceBuffer, offset: light.bufferOffset, index: 2)
@@ -205,15 +203,17 @@ class DeferredLightingPlugin: GraphicPlugin {
         encoder.pushDebugGroup("SH(\(light.identifier.uuidString))")
         encoder.setRenderPipelineState(shLightState)
         encoder.setDepthStencilState(shLightDepthColorState)
-        encoder.setStencilReferenceValues(front: LightMask.ambient.rawValue, back: 0)
+        let ref = LightMask.ambient.rawValue
+        encoder.setStencilReferenceValues(front: ref, back: ref)
         encoder.setFrontFacing(.counterClockwise)
-        encoder.setDepthClipMode(.clamp)
+        // cull front and render back, to avoid clipping light
+        // because of front polygon too close to camera near clip
+        encoder.setCullMode(.front)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
         encoder.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
         encoder.setVertexBuffer(light.instanceBuffer, offset: light.bufferOffset, index: 2)
         encoder.setFragmentTexture(renderer.gBuffer.normalTexture, index: 0)
         encoder.setFragmentBuffer(light.irradianceBuffer, offset: 0, index: 0)
-        encoder.setCullMode(.back)
         light.draw(encoder: encoder)
         encoder.popDebugGroup()
     }

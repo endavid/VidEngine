@@ -211,7 +211,7 @@ public class Renderer {
         return rp
     }
     
-    func createLightAccumulationRenderPass(clear: Bool, color: Bool, depthStencil: Bool) -> MTLRenderPassDescriptor {
+    func createLightAccumulationRenderPass(clear: Bool, color: Bool, depth: Bool, stencil: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()
         if color {
             rp.colorAttachments[0].texture = gBuffer.lightTexture
@@ -219,10 +219,12 @@ public class Renderer {
             rp.colorAttachments[0].storeAction = .store
             rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
         }
-        if depthStencil {
+        if depth {
             rp.depthAttachment.texture = gBuffer.depthTexture
             rp.depthAttachment.loadAction = .load
             rp.depthAttachment.storeAction = .dontCare
+        }
+        if stencil {
             rp.stencilAttachment.texture = gBuffer.stencilTexture
             rp.stencilAttachment.loadAction = .load
             rp.stencilAttachment.storeAction = .store
