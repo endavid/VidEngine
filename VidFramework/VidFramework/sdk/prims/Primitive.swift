@@ -23,6 +23,7 @@ public class Primitive {
     let uniformBuffer: MTLBuffer!
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
+    var uuidInstanceMap: [UUID: Int] = [:]
     var bufferOffset = 0
     
     public var instanceCount: Int {

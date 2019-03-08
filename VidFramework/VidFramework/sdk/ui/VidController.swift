@@ -39,8 +39,14 @@ open class VidController: UIViewController, MTKViewDelegate {
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
     private var motionController: MotionController?
+    private var _scene = Scene()
     public var arConfiguration: ARConfiguration?
-    
+
+    public var scene: Scene {
+        get {
+            return _scene
+        }
+    }
     public var clearColor: UIColor {
         get {
             return _clearColor
@@ -225,7 +231,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     }
     
     open func update(_ elapsed: TimeInterval) {
-        
+        _scene.update(elapsed)
     }
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

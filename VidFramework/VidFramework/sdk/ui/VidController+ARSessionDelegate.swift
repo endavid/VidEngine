@@ -17,9 +17,45 @@ extension VidController: ARSessionDelegate {
                     let shLight = plugin?.findProbe(identifier: probe.identifier)
                 {
                     shLight.environmentTexture = probe.environmentTexture
+                    continue
                 }
             } else {
                 // Fallback on earlier versions
+            }
+            if let plane = anchor as? ARPlaneAnchor {
+                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier) {
+                    print("Updating plane \(plane.identifier.uuidString)")
+                    var t = Transform(matrix: plane.transform)
+                    t.scale = plane.extent
+                    primitive.instances[instanceIndex].transform = t
+                }
+            }
+        }
+    }
+    open func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        let arPlanesName = "ARPlanes"
+        for anchor in anchors {
+            if let plane = anchor as? ARPlaneAnchor {
+                if let primitive = scene.findPrimitive(by: arPlanesName) {
+                    // @todo add instance
+                } else {
+                    let primitive = PlanePrimitive(instanceCount: 1)
+                    primitive.name = arPlanesName
+                    primitive.transform = Transform(matrix: plane.transform)
+                    primitive.transform.scale = plane.extent
+                    primitive.uuidInstanceMap[plane.identifier] = 0
+                    scene.queue(primitive)
+                }
+            }
+        }
+    }
+    open func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+        for anchor in anchors {
+            if let plane = anchor as? ARPlaneAnchor {
+                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier) {
+                    // @todo remove instance
+                    print("Removing \(plane)")
+                }
             }
         }
     }

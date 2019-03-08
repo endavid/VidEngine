@@ -16,6 +16,12 @@ open class Scene {
     public var lights: [LightSource] = []
     public var camera: Camera? = nil
     
+    /// Add & queue for rendering
+    public func queue(_ primitive: Primitive) {
+        primitives.append(primitive)
+        primitive.queue()
+    }
+    
     /// Adds all elements to their respective rendering queues
     public func queueAll() {
         for p in primitives {
@@ -55,5 +61,23 @@ open class Scene {
     }
     
     public init() {
+    }
+    
+    public func findPrimitive(by name: String) -> Primitive? {
+        let index = primitives.index { $0.name == name }
+        if let i = index {
+            return primitives[i]
+        }
+        return nil
+    }
+    
+    public func findPrimitiveInstance(by uuid: UUID) -> (Primitive, Int)? {
+        let index = primitives.index { $0.uuidInstanceMap[uuid] != nil }
+        if let i = index {
+            let prim = primitives[i]
+            let instanceIndex = prim.uuidInstanceMap[uuid]!
+            return (prim, instanceIndex)
+        }
+        return nil
     }
 }
