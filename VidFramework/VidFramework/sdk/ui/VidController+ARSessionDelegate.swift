@@ -26,7 +26,7 @@ extension VidController: ARSessionDelegate {
                 if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier) {
                     print("Updating plane \(plane.identifier.uuidString)")
                     var t = Transform(matrix: plane.transform)
-                    t.scale = plane.extent
+                    t.scale = float3(plane.extent.x, 1, plane.extent.z)
                     primitive.instances[instanceIndex].transform = t
                 }
             }
@@ -36,13 +36,19 @@ extension VidController: ARSessionDelegate {
         let arPlanesName = "ARPlanes"
         for anchor in anchors {
             if let plane = anchor as? ARPlaneAnchor {
-                if let primitive = scene.findPrimitive(by: arPlanesName) {
-                    // @todo add instance
+                var t = Transform(matrix: plane.transform)
+                t.scale = float3(plane.extent.x, 1, plane.extent.z)
+                if let primitive = scene.findPrimitive(by: arPlanesName), let planePrim = primitive as? PlanePrimitive {
+                    scene.dequeue(primitive)
+                    let instance = Primitive.Instance(transform: t, material: .white)
+                    let p = PlanePrimitive(planePrim, add: instance)
+                    p.uuidInstanceMap[plane.identifier] = primitive.instanceCount
+                    scene.queue(p)
                 } else {
                     let primitive = PlanePrimitive(instanceCount: 1)
                     primitive.name = arPlanesName
                     primitive.transform = Transform(matrix: plane.transform)
-                    primitive.transform.scale = plane.extent
+                    primitive.transform.scale = float3(plane.extent.x, 1, plane.extent.z)
                     primitive.uuidInstanceMap[plane.identifier] = 0
                     scene.queue(primitive)
                 }
@@ -52,9 +58,13 @@ extension VidController: ARSessionDelegate {
     open func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
         for anchor in anchors {
             if let plane = anchor as? ARPlaneAnchor {
-                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier) {
-                    // @todo remove instance
-                    print("Removing \(plane)")
+                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier),
+                    let planePrim = primitive as? PlanePrimitive {
+                    scene.dequeue(primitive)
+                    if let p = PlanePrimitive(planePrim, without: instanceIndex) {
+                        scene.queue(p)
+                    }
+                    print("Removing \(plane.identifier.uuidString)")
                 }
             }
         }

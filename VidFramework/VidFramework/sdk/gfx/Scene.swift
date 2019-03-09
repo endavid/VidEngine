@@ -22,6 +22,15 @@ open class Scene {
         primitive.queue()
     }
     
+    /// Remove & dequeue
+    public func dequeue(_ primitive: Primitive) {
+        let index = primitives.index { $0 === primitive }
+        if let i = index {
+            primitives.remove(at: i)
+            primitive.dequeue()
+        }
+    }
+    
     /// Adds all elements to their respective rendering queues
     public func queueAll() {
         for p in primitives {

@@ -73,6 +73,39 @@ public class Primitive {
         uniformBuffer.label = "primUniforms"
     }
     
+    convenience init?(_ primitive: Primitive, without instanceIndex: Int) {
+        let count = primitive.instances.count
+        if instanceIndex >= count {
+            return nil
+        }
+        self.init(instanceCount: count - 1)
+        var j = 0
+        for i in 0..<count {
+            if i == instanceIndex {
+                continue
+            }
+            self.instances[j] = primitive.instances[i]
+            j += 1
+        }
+        for (uuid, i) in primitive.uuidInstanceMap {
+            if i == instanceIndex {
+                continue
+            }
+            self.uuidInstanceMap[uuid] = i
+        }
+        self.name = primitive.name
+        self.lightingType = primitive.lightingType
+    }
+    
+    convenience init(_ primitive: Primitive, add instance: Instance) {
+        let count = primitive.instances.count
+        self.init(instanceCount: count + 1)
+        self.instances = primitive.instances
+        self.instances.append(instance)
+        self.name = primitive.name
+        self.lightingType = primitive.lightingType
+    }
+    
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
         encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: self.instanceCount)
     }
