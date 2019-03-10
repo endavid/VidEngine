@@ -12,8 +12,13 @@ public struct Ray {
     let start: float3
     let direction: float3
     
+    public init(start: float3, direction: float3) {
+        self.start = start
+        self.direction = direction
+    }
+    
     // https://en.wikipedia.org/wiki/Möller–Trumbore_intersection_algorithm
-    func intersects(triangle: Triangle) -> Float? {
+    public func intersects(triangle: Triangle) -> Float? {
         let e1 = triangle.b - triangle.a
         let e2 = triangle.c - triangle.a
         // plane normal
@@ -48,7 +53,7 @@ public struct Ray {
         return nil
     }
     
-    func travelDistance(d: Float) -> float3 {
+    public func travelDistance(d: Float) -> float3 {
         return start + d * direction
     }
 }

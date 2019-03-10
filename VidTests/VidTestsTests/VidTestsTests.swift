@@ -5,6 +5,18 @@
 //  Created by David Gavilan on 2018/02/19.
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
+//
+
+/*
+ Troubleshooting
+ ---------------
+VidTests.app encountered an error (Failed to establish communication with the test runner. (Underlying error: Unable to connect to test manager on 7e59a77b00b93c4d868e5dd675d97fee0024ec9e. (Underlying error: kAMDInvalidServiceError: The service is invalid.)))
+ 
+ This seems to happen when trying to run the tests wirelessly,
+ on iPhoneX at least. Plugging the device using a USB cable seems
+ to fix the issue.
+*/
+
 
 import XCTest
 import simd
