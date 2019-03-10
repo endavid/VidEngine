@@ -231,7 +231,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     }
     
     open func update(_ elapsed: TimeInterval) {
-        _scene.update(elapsed)
+        _scene.update(elapsed, camera: camera)
     }
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

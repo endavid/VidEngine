@@ -12,6 +12,12 @@ import MetalKit
 /// A `Primitive` is an object that requires 3D rendering to be displayed.
 /// All primitives allow instancing.
 public class Primitive {
+    struct Mesh {
+        let numIndices: Int
+        let indexBuffer: MTLBuffer
+        // this is not in the Material because it can only be set for ALL instances
+        var albedoTexture: MTLTexture?
+    }
     public struct Instance {
         public var transform: Transform
         public var material: Material
@@ -166,10 +172,28 @@ public class Primitive {
         }
     }
     
-    struct Mesh {
-        let numIndices: Int
-        let indexBuffer: MTLBuffer
-        // this is not in the Material because it can only be set for ALL instances
-        var albedoTexture: MTLTexture?
+    func getTriangles() -> [Triangle] {
+        return []
+    }
+    
+    func getSurfaceIntersection(ray: Ray) -> SurfaceIntersection? {
+        // convert the ray to model space, less operations
+        // than converting all the triangles to world space
+        let modelRay = transform.inverse() * ray
+        let triangles = getTriangles()
+        var distance = Float.greatestFiniteMagnitude
+        var triangle: Triangle?
+        for t in triangles {
+            if let d = modelRay.intersects(triangle: t), d < distance {
+                distance = d
+                triangle = t
+            }
+        }
+        guard let t = triangle else {
+            return nil
+        }
+        // convert triangle to world space
+        let wt = transform * t
+        return SurfaceIntersection(distance: distance, point: ray.travelDistance(d: distance), normal: wt.getNormal())
     }
 }

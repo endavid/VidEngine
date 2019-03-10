@@ -33,7 +33,7 @@ extension VidController: ARSessionDelegate {
         }
     }
     open func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-        let arPlanesName = "ARPlanes"
+        let arPlanesName = Scene.arPlanesPrimitiveName
         for anchor in anchors {
             if let plane = anchor as? ARPlaneAnchor {
                 var t = Transform(matrix: plane.transform)

@@ -82,6 +82,12 @@ public class Camera {
         return transform.rotation * float3(0,1,0)
     }
     
+    public func getGazeRay() -> Ray {
+        let viewDirection = transform.rotation * float3(0,0,-1)
+        let p = transform.position
+        return Ray(start: p, direction: viewDirection)
+    }
+    
     public func setViewDirection(_ dir: float3, up: float3) {
         // at start, camera is looking at -Z
         transform.rotation = Quaternion.createRotation(start: float3(0,0,-1), end: dir, up: up)

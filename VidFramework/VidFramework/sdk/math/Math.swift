@@ -12,6 +12,7 @@ let PI_2   : Float  = 0.5 * .pi
 let PI2    : Float  = 2.0 * .pi
 let PI_INV : Float  = 1.0 / .pi
 let NORM_SQR_ERROR_TOLERANCE : Float = 0.001
+let GENEROUS_EPSILON: Float = 0.0001
 let π       : Double = .pi
 
 /// Converts angle in degrees to radians

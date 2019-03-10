@@ -47,4 +47,10 @@ public class PlanePrimitive : Primitive {
         vb[ 3] = TexturedVertex(position: d, normal: up, uv: Vec2(1,0))
         return buffer
     }
+    
+    override func getTriangles() -> [Triangle] {
+        let t1 = Triangle(a: float3(0.5, 0, -0.5), b: float3(-0.5, 0, -0.5), c: float3(-0.5, 0, 0.5))
+        let t2 = Triangle(a: float3(-0.5, 0, 0.5), b: float3(0.5, 0, 0.5), c: float3(0.5, 0, -0.5))
+        return [t1, t2]
+    }
 }

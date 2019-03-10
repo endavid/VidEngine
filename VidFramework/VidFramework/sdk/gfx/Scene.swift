@@ -11,11 +11,18 @@ import UIKit
 import simd
 
 open class Scene {
+    static let arPlanesPrimitiveName = "ARPlanes"
     public var primitives: [Primitive] = []
     public var groups2D: [Group2D] = []
     public var lights: [LightSource] = []
+    /// When deserializing a Scene, this will have the initial
+    /// camera position. The actual camera used in rendering
+    /// is passed in the `update` function from the `VidController`.
     public var camera: Camera? = nil
-    
+    /// An object that it's placed where the camera view vector
+    /// intersects with the scene
+    public var cursor: Cursor3D?
+
     /// Add & queue for rendering
     public func queue(_ primitive: Primitive) {
         primitives.append(primitive)
@@ -66,7 +73,9 @@ open class Scene {
         lights.removeAll()
     }
     
-    open func update(_ currentTime: CFTimeInterval) {
+    open func update(_ currentTime: CFTimeInterval, camera: Camera) {
+        let ray = camera.getGazeRay()
+        updateCursor(gazeRay: ray)
     }
     
     public init() {
@@ -88,5 +97,31 @@ open class Scene {
             return (prim, instanceIndex)
         }
         return nil
+    }
+    
+    private func updateCursor(gazeRay: Ray) {
+        guard let c = cursor else {
+            return
+        }
+        var prims: [Primitive] = []
+        switch c.targetSurface {
+        case .arPlanes:
+            if let p = findPrimitive(by: Scene.arPlanesPrimitiveName) {
+                prims = [p]
+            }
+        case .all:
+            prims = self.primitives
+        }
+        var intersection: SurfaceIntersection?
+        var distance = Float.greatestFiniteMagnitude
+        for p in prims {
+            if let si = p.getSurfaceIntersection(ray: gazeRay), si.distance < distance {
+                distance = si.distance
+                intersection = si
+            }
+        }
+        if let si = intersection {
+            c.update(intersection: si)
+        }
     }
 }
