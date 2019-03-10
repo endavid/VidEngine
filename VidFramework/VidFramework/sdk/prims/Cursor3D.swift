@@ -14,6 +14,7 @@ public class Cursor3D {
     }
     let primitive: Primitive
     public var targetSurface = TargetSurface.arPlanes
+    public var defaultDistanceFromCamera: Float = 2
     private var _show: Bool = true
     
     public var show: Bool {
@@ -37,9 +38,9 @@ public class Cursor3D {
         primitive.queue()
     }
     
-    func update(intersection: SurfaceIntersection) {
-        primitive.transform.position = intersection.point
-        primitive.transform.rotation = Quaternion.createRotation(start: float3(0,1,0), end: intersection.normal)
+    func set(position: float3, normal: float3) {
+        primitive.transform.position = position
+        primitive.transform.rotation = Quaternion.createRotation(start: float3(0,1,0), end: normal)
     }
     
 }
