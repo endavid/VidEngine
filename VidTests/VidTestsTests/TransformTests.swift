@@ -70,4 +70,14 @@ class TransformTests: XCTestCase {
         let p2w = m * float4(p1.x, p1.y, p1.z, 1.0)
         assertAlmostEqual(p0, p2w.xyz, epsilon: epsilon)
     }
+    
+    func testInverseCheckIdentity() {
+        let t = Transform(position: float3(-0.2,0,-1), scale: float3(1,1,1), rotation: Quaternion(AngleAxis(angle: -.pi / 4, axis: float3(0,1,0))))
+        let ti = t.inverse()
+        let i1 = ti * t
+        let identity = Transform()
+        assertAlmostEqual(identity, i1)
+        let i2 = t * ti
+        assertAlmostEqual(identity, i2)
+    }
 }

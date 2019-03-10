@@ -177,23 +177,27 @@ public class Primitive {
     }
     
     func getSurfaceIntersection(ray: Ray) -> SurfaceIntersection? {
-        // convert the ray to model space, less operations
-        // than converting all the triangles to world space
-        let modelRay = transform.inverse() * ray
         let triangles = getTriangles()
         var distance = Float.greatestFiniteMagnitude
+        var transform: Transform?
         var triangle: Triangle?
-        for t in triangles {
-            if let d = modelRay.intersects(triangle: t), d < distance {
-                distance = d
-                triangle = t
+        for i in instances {
+            // convert the ray to model space, less operations
+            // than converting all the triangles to world space
+            let modelRay = i.transform.inverse() * ray
+            for t in triangles {
+                if let d = modelRay.intersects(triangle: t), d < distance {
+                    distance = d
+                    triangle = t
+                    transform = i.transform
+                }
             }
         }
-        guard let t = triangle else {
+        guard let t = triangle, let tr = transform else {
             return nil
         }
         // convert triangle to world space
-        let wt = transform * t
+        let wt = tr * t
         return SurfaceIntersection(distance: distance, point: ray.travelDistance(d: distance), normal: wt.getNormal())
     }
 }
