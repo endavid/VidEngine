@@ -21,7 +21,7 @@ public struct Triangle {
     public func getNormal() -> float3 {
         let bc = c - b
         let ba = a - b
-        return cross(bc, ba)
+        return normalize(cross(bc, ba))
     }
 }
 

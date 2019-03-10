@@ -24,6 +24,7 @@ func assertVectorRotation(angleAxis: AngleAxis, vector: float3, expected: float3
 
 class TransformTests: XCTestCase {
     let epsilon : Float = 0.0001
+    let testTransform = Transform(position: float3(-1, 2, 0.5), scale: float3(1, 1, 1), rotation: Quaternion(AngleAxis(angle: .pi / 4, axis: float3(0,1,0))))
     
     func testVectorRotation() {
         let sq2 = sqrtf(2) / 2
@@ -51,5 +52,22 @@ class TransformTests: XCTestCase {
         assertAlmostEqual(t0.position, t1.position)
         assertAlmostEqual(t0.scale, t1.scale)
         assertAlmostEqual(t0.rotation.q, t1.rotation.q)
+    }
+    
+    func testTransformVector() {
+        let p0 = float3(7, 12, -3)
+        let p = testTransform * p0
+        assertAlmostEqual(float3(1.82843, 14.0, -6.57107), p, epsilon: epsilon)
+    }
+
+    func testInverseTransformVector() {
+        let p0 = float3(7, 12, -3)
+        let p1 = testTransform * p0
+        let p2 = testTransform.inverse() * p1
+        assertAlmostEqual(p0, p2, epsilon: epsilon)
+        let m = testTransform.inverse().toMatrix4()
+        XCTAssertLessThanOrEqual(abs(m[3,3]-1), epsilon)
+        let p2w = m * float4(p1.x, p1.y, p1.z, 1.0)
+        assertAlmostEqual(p0, p2w.xyz, epsilon: epsilon)
     }
 }

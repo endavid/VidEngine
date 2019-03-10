@@ -66,6 +66,6 @@ public struct SurfaceIntersection {
 
 public func * (t: Transform, ray: Ray) -> Ray {
     let start = t * ray.start
-    let direction = t * ray.direction
+    let direction = t.rotation * ray.direction
     return Ray(start: start, direction: direction)
 }
