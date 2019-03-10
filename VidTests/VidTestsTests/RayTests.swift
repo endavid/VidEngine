@@ -165,19 +165,42 @@ class RayTests: XCTestCase {
         if let i = i {
             let p = ray.travelDistance(d: i)
             assertAlmostEqual(float3(0, 6.4, -0.8), p)
+            XCTAssert(IsClose(i, 6.44980621))
         }
+    }
+    func testRayInverse() {
+        let t = Transform(position: float3(-1, 0, -2), scale: float3(2, 1, 2), rotation: Quaternion(AngleAxis(angle: .pi/2, axis: float3(0,1,0))))
+        let p = t * float3(0.5, 0, 0)
+        assertAlmostEqual(float3(-1,0,-3), p)
+        let ray = Ray(start: origin, direction: float3(0, 0, -1))
+        let ir = t.inverse() * ray
+        let ti = t.toMatrix4().inverse
+        let d = ti * float4(ray.direction.x, ray.direction.y, ray.direction.z, 0)
+        let direction = normalize(d.xyz)
+        assertAlmostEqual(float3(-1, 0, 0.5), ir.start)
+        assertAlmostEqual(float3(1, 0, 0), ir.direction)
+        assertAlmostEqual(direction, ir.direction)
     }
     func testScaledRayTriangleIntersection() {
         var transform = testYrotation
         transform.scale = float3(2, 10, 2)
         let ray = Ray(start: origin, direction: normalize(float3(0, 8, -1)))
         let sray = transform.inverse() * ray
+        let ti = transform.toMatrix4().inverse
+        let start = ti * float4(origin.x, origin.y, origin.z, 1)
+        assertAlmostEqual(start.xyz, sray.start)
+        let d = ti * float4(ray.direction.x, ray.direction.y, ray.direction.z, 0)
+        let direction = normalize(d.xyz)
+        assertAlmostEqual(direction, sray.direction)
         let i = sray.intersects(triangle: testCenteredTriangle)
         XCTAssertNotNil(i)
         if let i = i {
             let p1 = sray.travelDistance(d: i)
-            assertAlmostEqual(float3(0, 6.4, -0.8), p1)
-            let p2 = ray.travelDistance(d: i)
+            assertAlmostEqual(float3(0.14142138, 0.64, 0.0), p1)
+            XCTAssert(IsClose(i, 0.754718482))
+            // note that the distance is scaled! we can't use it
+            // to traverse the original ray
+            let p2 = transform * p1
             assertAlmostEqual(float3(0, 6.4, -0.8), p2)
         }
     }

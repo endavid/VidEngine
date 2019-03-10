@@ -80,4 +80,16 @@ class TransformTests: XCTestCase {
         let i2 = t * ti
         assertAlmostEqual(identity, i2)
     }
+    
+    func testRotationInverse() {
+        let t = Transform(position: float3(-1, 0, -2), scale: float3(2, 1, 2), rotation: Quaternion(AngleAxis(angle: .pi/2, axis: float3(0,1,0))))
+        let d = float3(0, 0, -1)
+        let it = t.inverse()
+        let inverseDirection = it.rotate(direction: d)
+        let matrixInverse = t.toMatrix4().inverse
+        let id0 = matrixInverse * float4(d.x, d.y, d.z, 0)
+        let inverseDirectionFromMatrix = normalize(id0.xyz)
+        assertAlmostEqual(float3(1, 0, 0), inverseDirection)
+        assertAlmostEqual(inverseDirectionFromMatrix, inverseDirection)
+    }
 }

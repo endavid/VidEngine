@@ -9,8 +9,8 @@
 import simd
 
 public struct Ray {
-    let start: float3
-    let direction: float3
+    public let start: float3
+    public let direction: float3
     
     public init(start: float3, direction: float3) {
         self.start = start
@@ -66,6 +66,6 @@ public struct SurfaceIntersection {
 
 public func * (t: Transform, ray: Ray) -> Ray {
     let start = t * ray.start
-    let direction = t.rotation * ray.direction
+    let direction = t.rotate(direction: ray.direction)
     return Ray(start: start, direction: direction)
 }

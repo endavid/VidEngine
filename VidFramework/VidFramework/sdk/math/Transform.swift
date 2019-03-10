@@ -55,6 +55,11 @@ public struct Transform {
     }
     public init() {
     }
+    public func rotate(direction: float3) -> float3 {
+        // parenthesis are important! Otherwise the scale
+        // vector will be rotated, and then transformed!
+        return normalize(rotation * (scale * direction))
+    }
 }
 
 public func * (t1: Transform, t2: Transform) -> Transform {
