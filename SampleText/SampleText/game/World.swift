@@ -12,13 +12,14 @@ import simd
 import VidFramework
 
 class World {
-    var scene : Scene!
+    var scene: Scene
     
     // should be initialized after all the graphics are initialized
     init() {
         scene = GridScene(numRows: 12, numColumns: 20)
         initSprites()
         initTextDemo()
+        scene.queueAll()
     }
     
     private func initSprites() {
@@ -31,7 +32,6 @@ class World {
             g.append(sprite)
             scene.groups2D.append(g)
         }
-        scene.queueAll()
     }
     
     private func initTextDemo() {
@@ -47,21 +47,15 @@ class World {
             let prim = TextPrimitive(instanceCount: 1, font: fontAtlas, text: "Hello World! :)", fontSizeMeters: 1, enclosingFrame: CGRect(x: -2, y: -5, width: 4, height: 10))
             prim.transform.position = float3(0,0,12)
             prim.transform.rotation = tiltToOneSide * makeItStand
-            prim.queue()
-            self.scene?.primitives.append(prim)
+            scene.primitives.append(prim)
             // debug the font atlas
             let debugPanel = PlanePrimitive(instanceCount: 1)
             debugPanel.lightingType = .UnlitTransparent
             debugPanel.transform = Transform(position: float3(0, 1.5, 18), scale: float3(1,1,1), rotation: makeItStand)
             debugPanel.albedoTexture = fontAtlas.fontTexture
-            debugPanel.queue()
-            self.scene?.primitives.append(debugPanel)
+            scene.primitives.append(debugPanel)
         } else {
             NSLog("Error initializing FontAtlas")
         }
-    }
-    
-    func update(_ currentTime: CFTimeInterval) {
-        scene.update(currentTime)
     }
 }

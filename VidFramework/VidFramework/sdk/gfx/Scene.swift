@@ -22,7 +22,34 @@ open class Scene {
     /// An object that it's placed where the camera view vector
     /// intersects with the scene
     public var cursor: Cursor3D?
+    private var _debugARPlanes: Bool = false
 
+    public var debugARPlanes: Bool {
+        get {
+            return _debugARPlanes
+        }
+        set {
+            if _debugARPlanes != newValue {
+                _debugARPlanes = newValue
+                if let p = findPrimitive(by: Scene.arPlanesPrimitiveName) {
+                    p.dequeue()
+                    setupARPlanes(p)
+                    p.queue()
+                }
+            }
+        }
+    }
+    
+    func setupARPlanes(_ prim: Primitive) {
+        if _debugARPlanes {
+            prim.lightingType = .UnlitTransparent
+            prim.material.diffuse = .white
+        } else {
+            prim.lightingType = .LitOpaque
+            prim.material.diffuse = .transparent
+        }
+    }
+    
     /// Add & queue for rendering
     public func queue(_ primitive: Primitive) {
         primitives.append(primitive)

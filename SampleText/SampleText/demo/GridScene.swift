@@ -84,7 +84,8 @@ class GridScene : Scene {
         camera?.setPerspectiveProjection(fov: 40, near: 0.1, far: 100)
     }
     
-    override func update(_ currentTime: CFTimeInterval) {
+    override func update(_ currentTime: CFTimeInterval, camera: Camera) {
+        super.update(currentTime, camera: camera)
         for i in 0..<primitives[0].instanceCount {
             primitives[0].instances[i].transform.rotation = rotationAnims[i].update(currentTime)
         }

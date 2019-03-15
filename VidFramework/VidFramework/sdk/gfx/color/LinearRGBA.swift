@@ -10,6 +10,9 @@ import simd
 
 /// Linear RGB with alpha
 public struct LinearRGBA: ColorWithAlpha {
+    public static let white = LinearRGBA(r: 1,g: 1,b: 1,a: 1)
+    public static let black = LinearRGBA(r: 0,g: 0,b: 0,a: 1)
+    public static let transparent = LinearRGBA(r: 0,g: 0,b: 0,a: 0)
     public let raw: float4
     
     static func toUInt32(_ rgba: float4) -> UInt32 {

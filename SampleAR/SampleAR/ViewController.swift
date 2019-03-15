@@ -32,6 +32,7 @@ class ViewController: VidController {
         cube.lightingType = .UnlitOpaque
         cube.transform.scale = float3(0.05, 0.05, 0.05)
         self.scene.cursor = Cursor3D(primitive: cube)
+        self.scene.debugARPlanes = true
     }
     
     @objc

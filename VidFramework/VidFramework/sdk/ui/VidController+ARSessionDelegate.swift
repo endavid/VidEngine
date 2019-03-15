@@ -46,6 +46,7 @@ extension VidController: ARSessionDelegate {
                     scene.queue(p)
                 } else {
                     let primitive = PlanePrimitive(instanceCount: 1)
+                    scene.setupARPlanes(primitive)
                     primitive.name = arPlanesName
                     primitive.transform = Transform(matrix: plane.transform)
                     primitive.transform.scale = float3(plane.extent.x, 1, plane.extent.z)

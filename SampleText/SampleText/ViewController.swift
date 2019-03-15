@@ -15,7 +15,7 @@ import VidFramework
 
 class ViewController: VidController {
     
-    var world : World?
+    var world : World!
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
@@ -23,10 +23,11 @@ class ViewController: VidController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         world = World()
-        if let cam = world?.scene.camera {
+        if let cam = world.scene.camera {
             camera = cam
         }
         camera.setBounds(view.bounds)
+        scene = world.scene
         
         let tapGest = UITapGestureRecognizer(target: self, action: #selector(ViewController.screenTap(_:)))
         tapGest.numberOfTouchesRequired = 1
@@ -38,10 +39,6 @@ class ViewController: VidController {
         debugCube.queue()
     }
     
-    override func update(_ elapsed: TimeInterval) {
-        world?.update(elapsed)
-    }
-
     @objc func screenTap(_ sender: UITapGestureRecognizer) {
         let p = sender.location(in: self.view)
         let x = Float(2.0 * p.x / self.view.frame.width - 1.0)
