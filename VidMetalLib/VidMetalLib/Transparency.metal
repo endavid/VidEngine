@@ -27,8 +27,8 @@ vertex VertexOIT passGeometryOIT(
     outVertex.color = mat.diffuse;
     //outVertex.color = float4(outVertex.uv, 0, 1);
     // distance from camera
-    float w = outVertex.position.z / outVertex.position.w;
-    outVertex.weight = 100.0 * exp(-0.001 * w * w);
+    float w = (scene.nearTransparency.z - outVertex.position.z) * scene.nearTransparency.w;
+    outVertex.weight = w;
     return outVertex;
 }
 
@@ -49,23 +49,29 @@ fragment FragmentOIT passFragmentOIT(VertexOIT inFrag [[stage_in]],
     // if texture has no premultiplied alpha, apply this,
     color.rgb *= color.a;
     
-    // Blend Func: GL_ONE, GL_ONE
-    out.accumulation = float4(color.rgb * inFrag.weight, color.a);
-    // Blend Func: GL_ZERO, GL_ONE_MINUS_SRC_ALPHA
-    out.reveal = color.a * inFrag.weight;
+    float smallestHalf = exp2(-14.0);
+    float w = exp10(inFrag.weight);
+    float weight = max(255.0 * smallestHalf, color.a * w);
+    
+    // Blend Func .add: .one, .one
+    out.accumulation = color.rgba * weight;
+    // Blend Func .add: .oneMinusSourceColor, .oneMinusSourceAlpha
+    out.reveal = color.a;
     return out;
 }
 
-fragment half4 passResolveOIT(VertexInOut inFrag [[stage_in]],
-                              texture2d<float> accumulationTex [[ texture(0) ]],
-                              texture2d<float> revealTex [[ texture(1) ]])
+fragment half4 blendWithOIT(
+  VertexInOut inFrag [[stage_in]],
+  texture2d<float> tex [[ texture(0) ]],
+  texture2d<float> accumulationTex [[ texture(1) ]],
+  texture2d<float> revealTex [[ texture(2) ]])
 {
+    float4 texColor = tex.sample(linearSampler, inFrag.uv);
+    float4 color = texColor * inFrag.color;
     float4 accum = accumulationTex.sample(linearSampler, inFrag.uv);
     float reveal = revealTex.sample(linearSampler, inFrag.uv).r;
-    float r = accum.a;
-    accum.a = reveal;
-    // Blend Func: GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA
-    float4 out = float4(accum.rgb / clamp(accum.a, 1e-4, 5e4), r);
-    return half4(out);
+    float4 oit = float4(accum.rgb / max(accum.a, 1e-24), reveal);
+    color.rgb = color.rgb * oit.a + (1.0 - oit.a) * oit.rgb;
+    color.a = (1.0 - oit.a) + oit.a * color.a;
+    return half4(color);
 }
-

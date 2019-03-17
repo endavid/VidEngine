@@ -20,6 +20,7 @@ struct GraphicsData {
     var currentTouch = float2(0, 0)
     var projectionMatrix = float4x4()
     var viewMatrix = float4x4()
+    var nearTransparency = float4(0, 0, 2, 2)
 }
 
 public enum RendererError: Error {
@@ -147,7 +148,6 @@ public class Renderer {
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-        plugins.append(ResolveWeightBlendedTransparency(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
         plugins.append(RainPlugin(device: device, library: library, view: view))
         plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
@@ -238,11 +238,13 @@ public class Renderer {
         rp.colorAttachments[0].texture = gBuffer.lightTexture
         rp.colorAttachments[0].loadAction = clear ? .clear : .load
         rp.colorAttachments[0].storeAction = .store
-        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1) // important for OIT!
+        // important for OIT!
+        rp.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
         rp.colorAttachments[1].texture = gBuffer.revealTexture
         rp.colorAttachments[1].loadAction = clear ? .clear : .load
         rp.colorAttachments[1].storeAction = .store
-        rp.colorAttachments[1].clearColor = MTLClearColorMake(0, 0, 0, 1)
+        // alpha is stored in Red channel; it's a R16 texture
+        rp.colorAttachments[1].clearColor = MTLClearColorMake(1, 1, 1, 1)
         rp.depthAttachment.texture = gBuffer.depthTexture
         rp.depthAttachment.loadAction = .load
         rp.depthAttachment.storeAction = .dontCare

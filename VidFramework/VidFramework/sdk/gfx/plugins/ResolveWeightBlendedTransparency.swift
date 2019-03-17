@@ -35,9 +35,9 @@ class ResolveWeightBlendedTransparency : GraphicPlugin {
         pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = .add
         pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = .add
         pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusSourceAlpha
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusSourceAlpha
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .destinationAlpha
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .sourceAlpha
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .sourceAlpha
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         pipelineStateDescriptor.sampleCount = view.sampleCount
         do {
             try pipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)

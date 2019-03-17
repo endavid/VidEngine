@@ -100,6 +100,26 @@ open class VidController: UIViewController, MTKViewDelegate {
             return Renderer.shared.textureLibrary
         }
     }
+    /// Distance in meters where the closest transparent object is expected to be.
+    public var orderIndependentTransparencyNearPlane: Float {
+        get {
+            return Renderer.shared.graphicsData.nearTransparency.z
+        }
+        set {
+            Renderer.shared.graphicsData.nearTransparency.z = newValue
+        }
+    }
+    /// Distance in meters between transparent objects. The amount
+    /// of blend is 10% smaller at every step, until running out
+    /// of precision (only 16-bit floats can be used).
+    public var orderIndependentTransparencyLogStep: Float {
+        get {
+            return Renderer.shared.graphicsData.nearTransparency.w
+        }
+        set {
+            Renderer.shared.graphicsData.nearTransparency.w = newValue
+        }
+    }
         
     open override func viewDidLoad() {
         

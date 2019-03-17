@@ -60,6 +60,7 @@ struct Scene {
     float2 touchPosition;
     float4x4 projectionMatrix;
     float4x4 viewMatrix;
+    float4 nearTransparency;
 };
 
 struct Material {
