@@ -80,6 +80,7 @@
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
+		63AA9E6E223EFCCE004B9989 /* squareFrame.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AA9E6D223EFCCE004B9989 /* squareFrame.png */; };
 		63BA72112128C05A0023E879 /* MotionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA72102128C05A0023E879 /* MotionController.swift */; };
 		63C7A1732231D2DA00DB1439 /* VidController+ARSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */; };
 		63C7A1752233CCCF00DB1439 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1742233CCCF00DB1439 /* Triangle.swift */; };
@@ -167,6 +168,7 @@
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
+		63AA9E6D223EFCCE004B9989 /* squareFrame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = squareFrame.png; sourceTree = "<group>"; };
 		63BA72102128C05A0023E879 /* MotionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionController.swift; sourceTree = "<group>"; };
 		63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VidController+ARSessionDelegate.swift"; sourceTree = "<group>"; };
 		63C7A1742233CCCF00DB1439 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 		6393E7682054B0980098F96F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				63AA9E6D223EFCCE004B9989 /* squareFrame.png */,
 				6334C979205EEB6A00405E90 /* VidMetalLib.metallib */,
 				6393E7692054B0980098F96F /* cc14.raw */,
 			);
@@ -461,6 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6393E76A2054B0980098F96F /* cc14.raw in Resources */,
+				63AA9E6E223EFCCE004B9989 /* squareFrame.png in Resources */,
 				6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

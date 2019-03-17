@@ -44,6 +44,13 @@ open class Scene {
         if _debugARPlanes {
             prim.lightingType = .UnlitTransparent
             prim.material.diffuse = .white
+            if let bundle = try? FrameworkBundle.mainBundle() {
+                prim.setAlbedoTexture(resource: FrameworkBundle.squareFrameImage, bundle: bundle, options: nil, addToCache: true) { (error) in
+                    if let error = error {
+                        NSLog("setupARPlanes: \(error.localizedDescription)")
+                    }
+                }
+            }
         } else {
             prim.lightingType = .LitOpaque
             prim.material.diffuse = .transparent

@@ -101,6 +101,7 @@ public class Primitive {
         }
         self.name = primitive.name
         self.lightingType = primitive.lightingType
+        copyAlbedos(from: primitive)
     }
     
     convenience init(_ primitive: Primitive, add instance: Instance) {
@@ -110,6 +111,13 @@ public class Primitive {
         self.instances.append(instance)
         self.name = primitive.name
         self.lightingType = primitive.lightingType
+        copyAlbedos(from: primitive)
+    }
+    
+    private func copyAlbedos(from primitive: Primitive) {
+        for i in 0..<submeshes.count {
+            submeshes[i].albedoTexture = primitive.submeshes[i].albedoTexture
+        }
     }
     
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
