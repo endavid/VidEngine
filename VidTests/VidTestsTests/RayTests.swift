@@ -204,4 +204,24 @@ class RayTests: XCTestCase {
             assertAlmostEqual(float3(0, 6.4, -0.8), p2)
         }
     }
+    func testArbitraryRealExample() {
+        let ray = Ray(start: float3(-0.012088692, -0.037747566, -0.039436463), direction: float3(0.19631016, -0.78230625, -0.5911508))
+        let triangle = Triangle(a: float3(-0.5, 0.0, 0.5), b: float3(0.5, 0.0, 0.5), c: float3(0.5, 0.0, -0.5))
+        let transform = Transform(position: float3(0.2833359, -0.49168962, -0.65075946), scale: float3(0.6749687, 1.0, 1.3709693), rotation: Quaternion(w: 0.9603172, v: float3(0.00787969, -0.2787481, -0.005322565)))
+        // let's check intersection in model space first
+        let modelRay = transform.inverse() * ray
+        let d = modelRay.intersects(triangle: triangle)
+        XCTAssertNotNil(d)
+        // now let's check in world space
+        let worldTriangle = transform * triangle
+        let dw = ray.intersects(triangle: worldTriangle)
+        XCTAssertNotNil(dw)
+        if let d = d, let dw = dw {
+            let modelPoint = modelRay.travelDistance(d: d)
+            let point = transform * modelPoint
+            assertAlmostEqual(float3(-0.012464136, -0.49562043, -0.3383778), point)
+            let worldPoint = ray.travelDistance(d: dw)
+            assertAlmostEqual(worldPoint, point)
+        }
+    }
 }

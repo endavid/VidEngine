@@ -49,8 +49,7 @@ extension VidController: ARSessionDelegate {
                     let p = PlanePrimitive(instanceCount: 1)
                     scene.setupARPlanes(p)
                     p.name = arPlanesName
-                    p.transform = Transform(matrix: plane.transform)
-                    p.transform.scale = float3(plane.extent.x, 1, plane.extent.z)
+                    p.transform = t
                     p.instances[0].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
                     p.uuidInstanceMap[plane.identifier] = 0
                     scene.queue(p)
