@@ -26,7 +26,7 @@ public class CubePrimitive : Primitive {
     public override init(instanceCount: Int) {
         super.init(instanceCount: instanceCount)
         vertexBuffer = CubePrimitive.cubeVB
-        let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil)
+        let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB, albedoTexture: nil, sampler: .linearWithClamp)
         submeshes.append(mesh)
     }
     

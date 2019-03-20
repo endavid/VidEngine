@@ -59,6 +59,7 @@ public class Renderer {
     var device : MTLDevice! = nil
     var camera : Camera = Camera()
     let textureLibrary = TextureLibrary()
+    let textureSamplers: TextureSamplers
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     var frameState = FrameState()
     var arSession: ARSession?
@@ -109,6 +110,7 @@ public class Renderer {
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
         _whiteTexture = TextureUtils.createWhiteTexture(device: device)
+        textureSamplers = TextureSamplers(device: device)
         self.initGraphicPlugins(view, doAR: doAR)
         if doAR {
             arSession = ARSession()

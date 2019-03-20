@@ -176,7 +176,8 @@ class PrimitivePlugin: GraphicPlugin {
     }
     
     static func drawAll(encoder: MTLRenderCommandEncoder, primitives: [Primitive], defaultTexture: MTLTexture) {
-        var currentAlbedoTexture : MTLTexture? = nil
+        var currentAlbedoTexture: MTLTexture? = nil
+        var currentSampler: TextureSamplers.SamplerType? = nil
         for p in primitives {
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
@@ -192,6 +193,12 @@ class PrimitivePlugin: GraphicPlugin {
                 if currentAlbedoTexture == nil {
                     encoder.setFragmentTexture(defaultTexture, index: 0)
                     currentAlbedoTexture = defaultTexture
+                }
+                if currentSampler == nil || mesh.sampler != currentSampler! {
+                    if let sampler = Renderer.shared.textureSamplers.samplers[mesh.sampler] {
+                        encoder.setFragmentSamplerState(sampler, index: 0)
+                        currentSampler = mesh.sampler
+                    }
                 }
                 p.drawMesh(encoder: encoder, mesh: mesh)
             }

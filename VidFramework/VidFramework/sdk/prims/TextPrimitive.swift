@@ -72,7 +72,7 @@ public class TextPrimitive : Primitive {
             index += 6
         }
         let indexBuffer = Renderer.shared.createIndexBuffer("Text IB", elements: indices)
-        submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture))
+        submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture, sampler: .linearWithClamp))
     }
     
     private func enumerateGlyphsInFrame(frame: CTFrame, callback: (CGGlyph, Int, CGRect) -> ()) {

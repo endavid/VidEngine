@@ -93,40 +93,14 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
-        drawPrimitives(primitives, encoder: encoder)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: primitives, defaultTexture: Renderer.shared.whiteTexture)
         encoder.setRenderPipelineState(textPipelineState)
-        drawPrimitives(textPrimitives, encoder: encoder)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: textPrimitives, defaultTexture: Renderer.shared.whiteTexture)
         encoder.popDebugGroup()
         encoder.endEncoding()
         renderer.frameState.clearedTransparencyBuffer = true
     }
-        
-    private func drawPrimitives(_ prims: [Primitive], encoder: MTLRenderCommandEncoder) {
-        let whiteTexture = Renderer.shared.whiteTexture
-        var currentAlbedoTexture : MTLTexture? = nil
-        
-        for p in prims {
-            if p.submeshes.count > 0 {
-                encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
-                encoder.setVertexBuffer(p.uniformBuffer, offset: 0, index: 2)
-            }
-            for mesh in p.submeshes {
-                
-                if currentAlbedoTexture !== mesh.albedoTexture {
-                    if let tex = mesh.albedoTexture {
-                        encoder.setFragmentTexture(tex, index: 0)
-                    }
-                    currentAlbedoTexture = mesh.albedoTexture
-                }
-                if currentAlbedoTexture == nil {
-                    encoder.setFragmentTexture(whiteTexture, index: 0)
-                    currentAlbedoTexture = whiteTexture
-                }
-                p.drawMesh(encoder: encoder, mesh: mesh)
-            }
-        }
-    }
-    
+
     override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)

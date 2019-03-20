@@ -44,7 +44,7 @@ vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
     float3 worldNormal = normalize(quatMul(t.rotation, v.normal));
     float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
     outVertex.position = scene.projectionMatrix * viewPos;
-    outVertex.uv = float2(0,0);
+    outVertex.uv = v.texCoords * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     outVertex.normal = worldNormal;
     return outVertex;

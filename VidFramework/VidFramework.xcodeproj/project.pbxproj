@@ -81,6 +81,7 @@
 		639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0707203B7A6B00F9905D /* ComputePrimitive.swift */; };
 		639D070A203B7EF600F9905D /* VolumetricCompute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0709203B7EF600F9905D /* VolumetricCompute.swift */; };
 		63AA9E6E223EFCCE004B9989 /* squareFrame.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AA9E6D223EFCCE004B9989 /* squareFrame.png */; };
+		63AA9E702241B0D8004B9989 /* Samplers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AA9E6F2241B0D8004B9989 /* Samplers.swift */; };
 		63BA72112128C05A0023E879 /* MotionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA72102128C05A0023E879 /* MotionController.swift */; };
 		63C7A1732231D2DA00DB1439 /* VidController+ARSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */; };
 		63C7A1752233CCCF00DB1439 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1742233CCCF00DB1439 /* Triangle.swift */; };
@@ -169,6 +170,7 @@
 		639D0707203B7A6B00F9905D /* ComputePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePrimitive.swift; sourceTree = "<group>"; };
 		639D0709203B7EF600F9905D /* VolumetricCompute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumetricCompute.swift; sourceTree = "<group>"; };
 		63AA9E6D223EFCCE004B9989 /* squareFrame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = squareFrame.png; sourceTree = "<group>"; };
+		63AA9E6F2241B0D8004B9989 /* Samplers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Samplers.swift; sourceTree = "<group>"; };
 		63BA72102128C05A0023E879 /* MotionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionController.swift; sourceTree = "<group>"; };
 		63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VidController+ARSessionDelegate.swift"; sourceTree = "<group>"; };
 		63C7A1742233CCCF00DB1439 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
@@ -309,19 +311,20 @@
 		632D27F4203896C7000562F0 /* gfx */ = {
 			isa = PBXGroup;
 			children = (
-				6393E7AE2059ED0B0098F96F /* color */,
 				632D2809203896C7000562F0 /* Camera.swift */,
+				6393E7AE2059ED0B0098F96F /* color */,
 				632D2801203896C7000562F0 /* FontAtlas.swift */,
 				632D2805203896C7000562F0 /* FullScreenQuad.swift */,
 				632D27F6203896C7000562F0 /* GBuffer.swift */,
 				632D2806203896C7000562F0 /* GfxData.swift */,
 				632D2803203896C7000562F0 /* Image.swift */,
 				632D2808203896C7000562F0 /* Material.swift */,
+				632D27F7203896C7000562F0 /* plugins */,
 				632D2802203896C7000562F0 /* Renderer.swift */,
+				63AA9E6F2241B0D8004B9989 /* Samplers.swift */,
 				632D27F5203896C7000562F0 /* Scene.swift */,
 				632D280A203896C7000562F0 /* Texture.swift */,
 				63711CBE2042EEF600D046CF /* TextureInit.swift */,
-				632D27F7203896C7000562F0 /* plugins */,
 				6389DFC5222498DE001625B4 /* TextureUtils.swift */,
 			);
 			path = gfx;
@@ -489,6 +492,7 @@
 				63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */,
 				63711CC120461C5700D046CF /* TextureFilter.swift in Sources */,
 				632D2811203896C7000562F0 /* TextPrimitive.swift in Sources */,
+				63AA9E702241B0D8004B9989 /* Samplers.swift in Sources */,
 				6369035B206E22FA008EE410 /* WideColor.swift in Sources */,
 				6389DFB622178E96001625B4 /* SHBuffer.swift in Sources */,
 				6393E7B02059ED370098F96F /* CieLab.swift in Sources */,

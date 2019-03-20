@@ -21,10 +21,13 @@ public class PlanePrimitive : Primitive {
     // CCW list of triangles
     fileprivate static let triangleList : [UInt16] = [0, 2, 1, 1, 2, 3]
     
+    // used to compute UV scaling
+    var gridSizeMeters: Float = 0.1 // 10 cm
+    
     public override init(instanceCount: Int) {
         super.init(instanceCount: instanceCount)
         vertexBuffer = PlanePrimitive.planeVB
-        let mesh = Mesh(numIndices: PlanePrimitive.triangleList.count, indexBuffer: PlanePrimitive.planeIB, albedoTexture: nil)
+        let mesh = Mesh(numIndices: PlanePrimitive.triangleList.count, indexBuffer: PlanePrimitive.planeIB, albedoTexture: nil, sampler: .linearWithClamp)
         submeshes.append(mesh)
     }
     

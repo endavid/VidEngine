@@ -65,6 +65,8 @@ struct Scene {
 
 struct Material {
     float4 diffuse;
+    float2 uvScale;
+    float2 uvOffset;
 };
 
 struct PrimitiveInstance

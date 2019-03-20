@@ -84,7 +84,7 @@ public class ModelPrimitive : Primitive {
                 continue
             }
             let indexBuffer = Renderer.shared.createIndexBuffer(name + " IB", elements: indices)
-            let submesh = Mesh(numIndices: indices.count, indexBuffer: indexBuffer, albedoTexture: nil)
+            let submesh = Mesh(numIndices: indices.count, indexBuffer: indexBuffer, albedoTexture: nil, sampler: .linearWithClamp)
             let submeshIndex = submeshes.count
             submeshes.append(submesh)
             if let materials = materials,
@@ -114,7 +114,7 @@ public class ModelPrimitive : Primitive {
             vb[i] = vertices[i]
         }
         let indexBuffer = Renderer.shared.createIndexBuffer("model IB", elements: triangles)
-        let submesh = Mesh(numIndices: triangles.count, indexBuffer: indexBuffer, albedoTexture: nil)
+        let submesh = Mesh(numIndices: triangles.count, indexBuffer: indexBuffer, albedoTexture: nil, sampler: .linearWithClamp)
         submeshes.append(submesh)
     }
 

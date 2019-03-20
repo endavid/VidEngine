@@ -74,6 +74,6 @@ public class SpherePrimitive : Primitive {
             let n = Vec3((isInterior ? -1.0 : 1.0) * normalize(vertices[i]))
             vb[i] = TexturedVertex(position: x, normal: n, uv: uvs[i])
         }
-        submeshes.append(Mesh(numIndices: numIndices, indexBuffer: indexBuffer, albedoTexture: nil))
+        submeshes.append(Mesh(numIndices: numIndices, indexBuffer: indexBuffer, albedoTexture: nil, sampler: .linearWithClamp))
     }
 }

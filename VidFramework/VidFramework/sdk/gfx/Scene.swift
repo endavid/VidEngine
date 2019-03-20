@@ -50,6 +50,7 @@ open class Scene {
                         NSLog("setupARPlanes: \(error.localizedDescription)")
                     }
                 }
+                prim.sampler = .pointWithWrap
             }
         } else {
             prim.lightingType = .LitOpaque

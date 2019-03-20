@@ -23,7 +23,7 @@ vertex VertexOIT passGeometryOIT(
     TexturedVertex v = vdata[vid];
     float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
     outVertex.position = scene.projectionMatrix * viewPos;
-    outVertex.uv = v.texCoords;// * mat.uvScale + mat.uvOffset;
+    outVertex.uv = v.texCoords * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     //outVertex.color = float4(outVertex.uv, 0, 1);
     // distance from camera
@@ -32,11 +32,13 @@ vertex VertexOIT passGeometryOIT(
     return outVertex;
 }
 
-fragment FragmentOIT passFragmentOIT(VertexOIT inFrag [[stage_in]],
-                                     texture2d<float> tex [[ texture(0) ]])
+fragment FragmentOIT passFragmentOIT(
+  VertexOIT inFrag [[stage_in]],
+  texture2d<float> tex [[ texture(0) ]],
+  sampler sam [[ sampler(0) ]])
 {
     FragmentOIT out;
-    float4 texColor = tex.sample(linearSampler, inFrag.uv);
+    float4 texColor = tex.sample(sam, inFrag.uv);
     float4 color = texColor * inFrag.color;
     
     // scaled view depth

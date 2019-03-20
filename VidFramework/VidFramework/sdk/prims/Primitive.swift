@@ -17,6 +17,7 @@ public class Primitive {
         let indexBuffer: MTLBuffer
         // this is not in the Material because it can only be set for ALL instances
         var albedoTexture: MTLTexture?
+        var sampler: TextureSamplers.SamplerType
     }
     public struct Instance {
         public var transform: Transform
@@ -70,6 +71,15 @@ public class Primitive {
         }
     }
     
+    var sampler: TextureSamplers.SamplerType {
+        get {
+            return submeshes[0].sampler
+        }
+        set {
+            submeshes[0].sampler = newValue
+        }
+    }
+    
     
     init(instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")
@@ -117,6 +127,7 @@ public class Primitive {
     private func copyAlbedos(from primitive: Primitive) {
         for i in 0..<submeshes.count {
             submeshes[i].albedoTexture = primitive.submeshes[i].albedoTexture
+            submeshes[i].sampler = primitive.submeshes[i].sampler
         }
     }
     

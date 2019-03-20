@@ -23,11 +23,11 @@ extension VidController: ARSessionDelegate {
                 // Fallback on earlier versions
             }
             if let plane = anchor as? ARPlaneAnchor {
-                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier) {
-                    print("Updating plane \(plane.identifier.uuidString)")
+                if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier), let p = primitive as? PlanePrimitive {
                     var t = Transform(matrix: plane.transform)
                     t.scale = float3(plane.extent.x, 1, plane.extent.z)
-                    primitive.instances[instanceIndex].transform = t
+                    p.instances[instanceIndex].transform = t
+                    p.instances[instanceIndex].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
                 }
             }
         }
@@ -40,18 +40,20 @@ extension VidController: ARSessionDelegate {
                 t.scale = float3(plane.extent.x, 1, plane.extent.z)
                 if let primitive = scene.findPrimitive(by: arPlanesName), let planePrim = primitive as? PlanePrimitive {
                     scene.dequeue(primitive)
-                    let instance = Primitive.Instance(transform: t, material: .white)
+                    var instance = Primitive.Instance(transform: t, material: .white)
+                    instance.material.uvScale = Vec2(plane.extent.x / planePrim.gridSizeMeters, plane.extent.z / planePrim.gridSizeMeters)
                     let p = PlanePrimitive(planePrim, add: instance)
                     p.uuidInstanceMap[plane.identifier] = primitive.instanceCount
                     scene.queue(p)
                 } else {
-                    let primitive = PlanePrimitive(instanceCount: 1)
-                    scene.setupARPlanes(primitive)
-                    primitive.name = arPlanesName
-                    primitive.transform = Transform(matrix: plane.transform)
-                    primitive.transform.scale = float3(plane.extent.x, 1, plane.extent.z)
-                    primitive.uuidInstanceMap[plane.identifier] = 0
-                    scene.queue(primitive)
+                    let p = PlanePrimitive(instanceCount: 1)
+                    scene.setupARPlanes(p)
+                    p.name = arPlanesName
+                    p.transform = Transform(matrix: plane.transform)
+                    p.transform.scale = float3(plane.extent.x, 1, plane.extent.z)
+                    p.instances[0].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
+                    p.uuidInstanceMap[plane.identifier] = 0
+                    scene.queue(p)
                 }
             }
         }

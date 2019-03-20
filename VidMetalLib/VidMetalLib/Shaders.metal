@@ -58,6 +58,16 @@ fragment half4 passThroughTexturedFragment(
     return half4(out);
 }
 
+fragment half4 texturedFragment(
+  VertexInOut inFrag [[stage_in]],
+  texture2d<float> tex [[ texture(0) ]],
+  sampler sam [[ sampler(0) ]])
+{
+    float4 texColor = tex.sample(sam, inFrag.uv);
+    float4 out = texColor * inFrag.color;
+    return half4(out);
+}
+
 fragment half4 passLinearTexturedFragment(
     VertexInOut inFrag [[stage_in]],
     texture2d<float> tex [[ texture(0) ]],
