@@ -110,7 +110,7 @@ open class Scene {
     
     open func update(_ currentTime: CFTimeInterval, camera: Camera) {
         let ray = camera.getGazeRay()
-        updateCursor(gazeRay: ray)
+        updateCursor(gazeRay: ray, camera: camera)
     }
     
     public init() {
@@ -134,7 +134,7 @@ open class Scene {
         return nil
     }
     
-    private func updateCursor(gazeRay: Ray) {
+    private func updateCursor(gazeRay: Ray, camera: Camera) {
         guard let c = cursor else {
             return
         }
@@ -159,7 +159,7 @@ open class Scene {
             c.set(position: si.point, normal: si.normal)
         } else {
             let p = gazeRay.travelDistance(d: c.defaultDistanceFromCamera)
-            c.set(position: p, normal: gazeRay.direction)
+            c.set(position: p, rotation: camera.transform.rotation)
         }
     }
 }

@@ -39,8 +39,12 @@ public class Cursor3D {
     }
     
     func set(position: float3, normal: float3) {
+        let q = Quaternion.createRotation(start: float3(0,1,0), end: normal)
+        set(position: position, rotation: q)
+    }
+    func set(position: float3, rotation: Quaternion) {
         primitive.transform.position = position
-        primitive.transform.rotation = Quaternion.createRotation(start: float3(0,1,0), end: normal)
+        primitive.transform.rotation = rotation
     }
     
 }
