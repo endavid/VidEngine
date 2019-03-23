@@ -15,6 +15,7 @@ public enum FrameworkError: Error {
 public class FrameworkBundle {
     static let mainBundleId = "com.endavid.VidFramework"
     public static let squareFrameImage = "squareFrame.png"
+    public static let measureGridImage = "measureGrid.png"
     
     public static func mainBundle() throws -> Bundle {
         if let bundle = Bundle.init(identifier: mainBundleId) {

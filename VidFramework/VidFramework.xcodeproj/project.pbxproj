@@ -83,6 +83,7 @@
 		63AA9E6E223EFCCE004B9989 /* squareFrame.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AA9E6D223EFCCE004B9989 /* squareFrame.png */; };
 		63AA9E702241B0D8004B9989 /* Samplers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AA9E6F2241B0D8004B9989 /* Samplers.swift */; };
 		63AA9E7422466A5B004B9989 /* SVD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AA9E7322466A5A004B9989 /* SVD.swift */; };
+		63AA9E782246FDB4004B9989 /* measureGrid.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AA9E772246FDB4004B9989 /* measureGrid.png */; };
 		63BA72112128C05A0023E879 /* MotionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA72102128C05A0023E879 /* MotionController.swift */; };
 		63C7A1732231D2DA00DB1439 /* VidController+ARSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */; };
 		63C7A1752233CCCF00DB1439 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1742233CCCF00DB1439 /* Triangle.swift */; };
@@ -173,6 +174,7 @@
 		63AA9E6D223EFCCE004B9989 /* squareFrame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = squareFrame.png; sourceTree = "<group>"; };
 		63AA9E6F2241B0D8004B9989 /* Samplers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Samplers.swift; sourceTree = "<group>"; };
 		63AA9E7322466A5A004B9989 /* SVD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVD.swift; sourceTree = "<group>"; };
+		63AA9E772246FDB4004B9989 /* measureGrid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = measureGrid.png; sourceTree = "<group>"; };
 		63BA72102128C05A0023E879 /* MotionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionController.swift; sourceTree = "<group>"; };
 		63C7A1722231D2DA00DB1439 /* VidController+ARSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VidController+ARSessionDelegate.swift"; sourceTree = "<group>"; };
 		63C7A1742233CCCF00DB1439 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 		6393E7682054B0980098F96F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				63AA9E772246FDB4004B9989 /* measureGrid.png */,
 				63AA9E6D223EFCCE004B9989 /* squareFrame.png */,
 				6334C979205EEB6A00405E90 /* VidMetalLib.metallib */,
 				6393E7692054B0980098F96F /* cc14.raw */,
@@ -471,6 +474,7 @@
 			files = (
 				6393E76A2054B0980098F96F /* cc14.raw in Resources */,
 				63AA9E6E223EFCCE004B9989 /* squareFrame.png in Resources */,
+				63AA9E782246FDB4004B9989 /* measureGrid.png in Resources */,
 				6334C97A205EEB6A00405E90 /* VidMetalLib.metallib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

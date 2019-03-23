@@ -43,9 +43,9 @@ open class Scene {
     func setupARPlanes(_ prim: Primitive) {
         if _debugARPlanes {
             prim.lightingType = .UnlitTransparent
-            prim.material.diffuse = .white
+            prim.material.diffuse = LinearRGBA(r: 1, g: 1, b: 1, a: 0.7)
             if let bundle = try? FrameworkBundle.mainBundle() {
-                prim.setAlbedoTexture(resource: FrameworkBundle.squareFrameImage, bundle: bundle, options: nil, addToCache: true) { (error) in
+                prim.setAlbedoTexture(resource: FrameworkBundle.measureGridImage, bundle: bundle, options: nil, addToCache: true) { (error) in
                     if let error = error {
                         NSLog("setupARPlanes: \(error.localizedDescription)")
                     }
