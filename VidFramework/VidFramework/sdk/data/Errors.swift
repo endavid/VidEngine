@@ -13,6 +13,10 @@ public enum SerializationError: Error {
     case invalid(String, Any)
 }
 
+public enum MathError: Error {
+    case unsupported(String)
+}
+
 public enum FileError: Error {
     case missing(String)
     case corrupt(String)

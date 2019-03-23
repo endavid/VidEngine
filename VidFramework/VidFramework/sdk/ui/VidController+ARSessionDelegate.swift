@@ -24,7 +24,7 @@ extension VidController: ARSessionDelegate {
             }
             if let plane = anchor as? ARPlaneAnchor {
                 if let (primitive, instanceIndex) = scene.findPrimitiveInstance(by: plane.identifier), let p = primitive as? PlanePrimitive {
-                    var t = Transform(matrix: plane.transform)
+                    var t = Transform(rotationAndTranslation: plane.transform)
                     t.scale = float3(plane.extent.x, 1, plane.extent.z)
                     p.instances[instanceIndex].transform = t
                     p.instances[instanceIndex].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
@@ -36,7 +36,7 @@ extension VidController: ARSessionDelegate {
         let arPlanesName = Scene.arPlanesPrimitiveName
         for anchor in anchors {
             if let plane = anchor as? ARPlaneAnchor {
-                var t = Transform(matrix: plane.transform)
+                var t = Transform(rotationAndTranslation: plane.transform)
                 t.scale = float3(plane.extent.x, 1, plane.extent.z)
                 if let primitive = scene.findPrimitive(by: arPlanesName), let planePrim = primitive as? PlanePrimitive {
                     scene.dequeue(primitive)

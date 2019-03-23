@@ -17,6 +17,8 @@ class RayTests: XCTestCase {
     let origin = float3(0, 0, 0)
     let testTwist = Transform(position: float3(0,0,0), scale: float3(1,1,1), rotation: Quaternion(AngleAxis(angle: .pi / 2, axis: float3(0,0,1))))
     let testYrotation = Transform(position: float3(-0.2,0,-1), scale: float3(1,1,1), rotation: Quaternion(AngleAxis(angle: -.pi / 4, axis: float3(0,1,0))))
+    let testRay = Ray(start: float3(-0.012088692, -0.037747566, -0.039436463), direction: float3(0.19631016, -0.78230625, -0.5911508))
+    let testTransform = Transform(position: float3(0.2833359, -0.49168962, -0.65075946), scale: float3(0.6749687, 1.0, 1.3709693), rotation: Quaternion(w: 0.9603172, v: float3(0.00787969, -0.2787481, -0.005322565)))
     
     func testRayTriangleMidIntersection() {
         let t = testTriangle
@@ -96,14 +98,18 @@ class RayTests: XCTestCase {
     }
     func testTwistedRayTriangleIntersection() {
         let ray = Ray(start: origin, direction: float3(0,0,-1))
-        let rotatedRay = testTwist.inverse() * ray
-        let i = rotatedRay.intersects(triangle: testTriangle)
-        XCTAssertNotNil(i)
-        if let i = i {
-            let p1 = rotatedRay.travelDistance(d: i)
-            assertAlmostEqual(float3(0,0,-1), p1)
-            let p2 = ray.travelDistance(d: i)
-            assertAlmostEqual(float3(0,0,-1), p2)
+        let inv = try? testTwist.inverse()
+        XCTAssertNotNil(inv)
+        if let inv = inv {
+            let rotatedRay = inv * ray
+            let i = rotatedRay.intersects(triangle: testTriangle)
+            XCTAssertNotNil(i)
+            if let i = i {
+                let p1 = rotatedRay.travelDistance(d: i)
+                assertAlmostEqual(float3(0,0,-1), p1)
+                let p2 = ray.travelDistance(d: i)
+                assertAlmostEqual(float3(0,0,-1), p2)
+            }
         }
     }
     func testRayYRotatedTriangleIntersection() {
@@ -121,14 +127,18 @@ class RayTests: XCTestCase {
     }
     func testYRotatedRayTriangleIntersection() {
         let ray = Ray(start: origin, direction: float3(0,0,-1))
-        let rotatedRay = testYrotation.inverse() * ray
-        let i = rotatedRay.intersects(triangle: testCenteredTriangle)
-        XCTAssertNotNil(i)
-        if let i = i {
-            let p1 = rotatedRay.travelDistance(d: i)
-            assertAlmostEqual(float3(0.28284281,0,0), p1)
-            let p2 = ray.travelDistance(d: i)
-            assertAlmostEqual(float3(0,0,-0.8), p2)
+        let inv = try? testYrotation.inverse()
+        XCTAssertNotNil(inv)
+        if let inv = inv {
+            let rotatedRay = inv * ray
+            let i = rotatedRay.intersects(triangle: testCenteredTriangle)
+            XCTAssertNotNil(i)
+            if let i = i {
+                let p1 = rotatedRay.travelDistance(d: i)
+                assertAlmostEqual(float3(0.28284281,0,0), p1)
+                let p2 = ray.travelDistance(d: i)
+                assertAlmostEqual(float3(0,0,-0.8), p2)
+            }
         }
     }
     func testRayTranslatedTriangleIntersection() {
@@ -145,14 +155,18 @@ class RayTests: XCTestCase {
     func testTranslatedRayTriangleIntersection() {
         let transform = Transform(position: float3(0.01, -0.01, -5))
         let ray = Ray(start: origin, direction: float3(0,0,-1))
-        let tray = transform.inverse() * ray
-        let i = tray.intersects(triangle: testTriangle)
-        XCTAssertNotNil(i)
-        if let i = i {
-            let p1 = tray.travelDistance(d: i)
-            assertAlmostEqual(float3(-0.01, 0.01, -1), p1)
-            let p2 = ray.travelDistance(d: i)
-            assertAlmostEqual(float3(0,0,-6), p2)
+        let inv = try? transform.inverse()
+        XCTAssertNotNil(inv)
+        if let inv = inv {
+            let tray = inv * ray
+            let i = tray.intersects(triangle: testTriangle)
+            XCTAssertNotNil(i)
+            if let i = i {
+                let p1 = tray.travelDistance(d: i)
+                assertAlmostEqual(float3(-0.01, 0.01, -1), p1)
+                let p2 = ray.travelDistance(d: i)
+                assertAlmostEqual(float3(0,0,-6), p2)
+            }
         }
     }
     func testRayScaledTriangleIntersection() {
@@ -168,30 +182,24 @@ class RayTests: XCTestCase {
             XCTAssert(IsClose(i, 6.44980621))
         }
     }
+    
     func testRayInverse() {
         let t = Transform(position: float3(-1, 0, -2), scale: float3(2, 1, 2), rotation: Quaternion(AngleAxis(angle: .pi/2, axis: float3(0,1,0))))
         let p = t * float3(0.5, 0, 0)
         assertAlmostEqual(float3(-1,0,-3), p)
         let ray = Ray(start: origin, direction: float3(0, 0, -1))
-        let ir = t.inverse() * ray
-        let ti = t.toMatrix4().inverse
-        let d = ti * float4(ray.direction.x, ray.direction.y, ray.direction.z, 0)
-        let direction = normalize(d.xyz)
+        let m = t.toMatrix4()
+        let ir = m.inverse * ray
         assertAlmostEqual(float3(-1, 0, 0.5), ir.start)
         assertAlmostEqual(float3(1, 0, 0), ir.direction)
-        assertAlmostEqual(direction, ir.direction)
     }
+    
     func testScaledRayTriangleIntersection() {
         var transform = testYrotation
         transform.scale = float3(2, 10, 2)
         let ray = Ray(start: origin, direction: normalize(float3(0, 8, -1)))
-        let sray = transform.inverse() * ray
-        let ti = transform.toMatrix4().inverse
-        let start = ti * float4(origin.x, origin.y, origin.z, 1)
-        assertAlmostEqual(start.xyz, sray.start)
-        let d = ti * float4(ray.direction.x, ray.direction.y, ray.direction.z, 0)
-        let direction = normalize(d.xyz)
-        assertAlmostEqual(direction, sray.direction)
+        let m = transform.toMatrix4()
+        let sray = m.inverse * ray
         let i = sray.intersects(triangle: testCenteredTriangle)
         XCTAssertNotNil(i)
         if let i = i {
@@ -204,12 +212,20 @@ class RayTests: XCTestCase {
             assertAlmostEqual(float3(0, 6.4, -0.8), p2)
         }
     }
+    func testArbitraryRayRotation() {
+        let ray = testRay
+        let transform = testTransform
+        let modelRay = transform.toMatrix4().inverse * ray
+        let r = transform * modelRay
+        assertAlmostEqual(ray.start, r.start)
+        assertAlmostEqual(ray.direction, r.direction)
+    }
     func testArbitraryRealExample() {
-        let ray = Ray(start: float3(-0.012088692, -0.037747566, -0.039436463), direction: float3(0.19631016, -0.78230625, -0.5911508))
+        let ray = testRay
+        let transform = testTransform
         let triangle = Triangle(a: float3(-0.5, 0.0, 0.5), b: float3(0.5, 0.0, 0.5), c: float3(0.5, 0.0, -0.5))
-        let transform = Transform(position: float3(0.2833359, -0.49168962, -0.65075946), scale: float3(0.6749687, 1.0, 1.3709693), rotation: Quaternion(w: 0.9603172, v: float3(0.00787969, -0.2787481, -0.005322565)))
         // let's check intersection in model space first
-        let modelRay = transform.inverse() * ray
+        let modelRay = transform.toMatrix4().inverse * ray
         let d = modelRay.intersects(triangle: triangle)
         XCTAssertNotNil(d)
         // now let's check in world space
@@ -219,7 +235,6 @@ class RayTests: XCTestCase {
         if let d = d, let dw = dw {
             let modelPoint = modelRay.travelDistance(d: d)
             let point = transform * modelPoint
-            assertAlmostEqual(float3(-0.012464136, -0.49562043, -0.3383778), point)
             let worldPoint = ray.travelDistance(d: dw)
             assertAlmostEqual(worldPoint, point)
         }

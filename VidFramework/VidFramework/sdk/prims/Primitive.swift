@@ -202,9 +202,12 @@ public class Primitive {
         var point = float3(0,0,0)
         var triangle: Triangle?
         for i in instances {
-            // convert the ray to model space, less operations
-            // than converting all the triangles to world space
-            let modelRay = i.transform.inverse() * ray
+            // Convert the ray to model space, less operations
+            // than converting all the triangles to world space.
+            // And because there may be anisotropic scaling,
+            // use matrices intead of Transforms.
+            let toModel = i.transform.toMatrix4().inverse
+            let modelRay = toModel * ray
             for t in triangles {
                 if let d = modelRay.intersects(triangle: t), d < dist {
                     dist = d

@@ -21,13 +21,23 @@ public struct Transform {
         let tt = float4(position.x, position.y, position.z, 1.0)
         return float4x4([xx, yy, zz, tt])
     }
-    public func inverse() -> Transform {
+    public func inverse() throws -> Transform {
+        // M = T * R * S -> M^ = S^ * R^ * T^
+        // if the scale is not uniform, S^ * R^ will create
+        // a shear matrix, that can be decomposed using svd,
+        // S^ * R^ = U * S * V^, but not into rot * scale
+        if !scale.isClose(scale.x * float3(1,1,1)) {
+            throw MathError.unsupported("Transforms with anisotropic scaling can't be inverted")
+        }
         let r = rotation.inverse()
         let s = scale.inverse()
-        return Transform(
-            position: r * (s * -self.position),
-            scale: s,
-            rotation: r)
+        let scaleMatrix = float3x3(diagonal: s)
+        // verified that SR == (rotation.toMatrix3() * float3x3(diagonal: scale)).inverse
+        let SR = scaleMatrix * r.toMatrix3()
+        let ti = -position
+        // verified that t == SR * ti
+        let t = s * (r * ti)
+        return Transform(rotationAndScale: SR, translation: t)
     }
     public init(position: float3) {
         self.position = position
@@ -45,14 +55,28 @@ public struct Transform {
         self.scale = scale
         self.rotation = rotation
     }
-    public init(matrix: float4x4) {
+    public init(rotationAndTranslation matrix: float4x4) {
         let (c0, c1, c2, c3) = matrix.columns
-        
         position = float3(c3.x, c3.y, c3.z)
-        // assume scale = 1; otherwise we'd need to compute SVD
         scale = float3(1, 1, 1)
-        rotation = Quaternion.fromMatrix(float3x3(c0.xyz, c1.xyz, c2.xyz))
+        rotation = Quaternion(float3x3(c0.xyz, c1.xyz, c2.xyz))
     }
+    public init(rotationAndScale matrix: float3x3, translation: float3) {
+        position = translation
+        // https://math.stackexchange.com/a/1463487
+        // only works if there's no shear
+        let (a, b, c) = matrix.columns
+        scale = float3(length(a), length(b), length(c))
+        //let (u, s, v) = svd(matrix: matrix)
+        rotation = Quaternion(float3x3(a/scale.x, b/scale.y, c/scale.z))
+    }
+    public init(transform matrix: float4x4) {
+        let (c0, c1, c2, c3) = matrix.columns
+        let t = float3(c3.x, c3.y, c3.z)
+        let RS = float3x3(c0.xyz, c1.xyz, c2.xyz)
+        self.init(rotationAndScale: RS, translation: t)
+    }
+    
     public init() {
     }
     public func rotate(direction: float3) -> float3 {

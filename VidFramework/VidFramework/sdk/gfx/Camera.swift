@@ -49,7 +49,9 @@ public class Camera {
     /// inverse of the transform, to convert to view space
     public var viewTransform: Transform {
         get {
-            return transform.inverse()
+            // it shouldn't throw, as there's no anisotropic scaling
+            let inv = try? transform.inverse()
+            return inv!
         }
     }
     public var viewMatrix: float4x4 {

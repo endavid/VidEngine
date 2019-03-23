@@ -24,6 +24,13 @@ func assertAlmostEqual(_ expected: float4, _ actual: float4, epsilon: Float = 1e
     }
     XCTAssertLessThanOrEqual(d, epsilon)
 }
+func assertAlmostEqual(_ expected: float3x3, _ actual: float3x3, epsilon: Float = 1e-6) {
+    let (ex, ey, ez) = expected.columns
+    let (ax, ay, az) = actual.columns
+    assertAlmostEqual(ex, ax, epsilon: epsilon)
+    assertAlmostEqual(ey, ay, epsilon: epsilon)
+    assertAlmostEqual(ez, az, epsilon: epsilon)
+}
 func assertAlmostEqual(_ expected: float4x4, _ actual: float4x4, epsilon: Float = 1e-6) {
     let (ex, ey, ez, ew) = expected.columns
     let (ax, ay, az, aw) = actual.columns

@@ -191,10 +191,10 @@ open class VidController: UIViewController, MTKViewDelegate {
         //camera.transform.position = pos.xyz
         let orientation = camera.orientation
         if orientation == .landscapeRight {
-            camera.transform = Transform(matrix: frame.camera.transform)
+            camera.transform = Transform(rotationAndTranslation: frame.camera.transform)
         } else {
             let viewMatrix = frame.camera.viewMatrix(for: camera.orientation)
-            camera.transform = Transform(matrix: viewMatrix.inverse)
+            camera.transform = Transform(rotationAndTranslation: viewMatrix.inverse)
         }
         camera.projection = frame.camera.projectionMatrix(for: camera.orientation, viewportSize: view.bounds.size, zNear: CGFloat(camera.near), zFar: CGFloat(camera.far))
     }

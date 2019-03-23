@@ -69,3 +69,10 @@ public func * (t: Transform, ray: Ray) -> Ray {
     let direction = t.rotate(direction: ray.direction)
     return Ray(start: start, direction: direction)
 }
+
+public func * (m: float4x4, ray: Ray) -> Ray {
+    let s = m * float4(ray.start.x, ray.start.y, ray.start.z, 1)
+    let d = m.upper3x3 * ray.direction
+    let direction = normalize(d)
+    return Ray(start: s.xyz, direction: direction)
+}

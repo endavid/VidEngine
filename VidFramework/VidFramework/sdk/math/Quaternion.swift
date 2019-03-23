@@ -65,6 +65,11 @@ public struct Quaternion : CustomStringConvertible {
         m[3,3] = w2 + x2 + y2 + z2 // = 1 if unit quaternion
         return m
     }
+    public func toMatrix3() -> float3x3 {
+        let m = self.toMatrix4()
+        let (c0, c1, c2, _) = m.columns
+        return float3x3(c0.xyz, c1.xyz, c2.xyz)
+    }
     
     public static func createRotation(start: float3, end: float3) -> Quaternion {
         let up = float3(start.x, start.z, start.y)
@@ -81,7 +86,7 @@ public struct Quaternion : CustomStringConvertible {
         let axis = normalize(cross(start, end))
         return Quaternion(AngleAxis(angle: angle, axis: axis))
     }
-    public static func fromMatrix(_ m: float3x3) -> Quaternion {
+    public init(_ m: float3x3) {
         let (cx, cy, cz) = m.columns
         let angle = acos((cx.x + cy.y + cz.z - 1.0) / 2.0)
         var axis = float3(0, 0, 1)
@@ -96,7 +101,7 @@ public struct Quaternion : CustomStringConvertible {
                 axis = normalize(d)
             }
         }
-        return Quaternion(AngleAxis(angle: angle, axis: axis))
+        self.init(AngleAxis(angle: angle, axis: axis))
     }
 }
 

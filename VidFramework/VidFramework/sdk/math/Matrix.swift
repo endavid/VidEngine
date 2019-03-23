@@ -52,4 +52,10 @@ public extension float4x4 {
                                             bottom: -size / aspectRatio, top: size / aspectRatio,
                                             near: near, far: far)
     }
+    public var upper3x3: float3x3 {
+        get {
+            let (c0, c1, c2, _) = columns
+            return float3x3(c0.xyz, c1.xyz, c2.xyz)
+        }
+    }
 }
