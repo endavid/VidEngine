@@ -11,7 +11,8 @@ import VidFramework
 import ARKit
 
 class ViewController: VidController {
-
+    var isDebug = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let cfg = ARWorldTrackingConfiguration()
@@ -31,8 +32,8 @@ class ViewController: VidController {
         let cube = CubePrimitive(instanceCount: 1)
         cube.lightingType = .UnlitOpaque
         cube.transform.scale = float3(0.05, 0.05, 0.05)
-        self.scene.cursor = Cursor3D(primitive: cube)
-        self.scene.debugARPlanes = true
+        scene.cursor = Cursor3D(primitive: cube)
+        scene.debugARPlanes = isDebug
     }
     
     @objc
@@ -65,8 +66,9 @@ class ViewController: VidController {
     func addLightProbe(position: float3, session: ARSession) {
         let extent = float3(0.5, 0.5, 0.5)
         let probe = SHLight(position: position, extent: extent, session: session)
-        probe.debug = .sphere
-        probe.showBoundingBox = true
+        probe.debug = isDebug ? .sphere : .none
+        probe.showBoundingBox = isDebug
+        scene.lights.append(probe)
         probe.queue()
     }
 }
