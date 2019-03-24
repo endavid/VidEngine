@@ -171,6 +171,23 @@ public class SHLight: LightSource {
         irradianceBuffer.label = "irradiances"
         _phase = .initSamples
         _sampleIndex = 0
+        super.init()
+        initDefaultLight()
+    }
+    
+    private func initDefaultLight() {
+        // gray with some blue on top, and dark gray on bottom
+        let s: Float = .pi / 4
+        shBuffer.setCoefficient(i: 0, s * Vec3(1.489313, 1.534833, 1.534833))
+        shBuffer.setCoefficient(i: 1, s * Vec3(0.004517199, 0.003428788, 0.003428788))
+        shBuffer.setCoefficient(i: 2, s * Vec3(0.05805949, 0.1300996, 0.1300996))
+        shBuffer.setCoefficient(i: 3, s * Vec3(-0.0004402802, -0.0005989054, -0.0005989054))
+        shBuffer.setCoefficient(i: 4, s * Vec3(-0.001946267, -0.001821843, -0.001821843))
+        shBuffer.setCoefficient(i: 5, s * Vec3(-0.001653977, -0.003708838, -0.003708838))
+        shBuffer.setCoefficient(i: 6, s * Vec3(-0.2170652, -0.1401097, -0.1401097))
+        shBuffer.setCoefficient(i: 7, s * Vec3(0.00438555, 0.004153608, 0.004153608))
+        shBuffer.setCoefficient(i: 8, s * Vec3(-0.0002386605, -0.0005158358, -0.0005158358))
+        sh.computeIrradianceApproximationMatrices()
     }
     
     func initOneRowOfSamples() {
