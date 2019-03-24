@@ -16,6 +16,19 @@ public class Cursor3D {
     public var targetSurface = TargetSurface.arPlanes
     public var defaultDistanceFromCamera: Float = 2
     private var _show: Bool = true
+    private var _intersecting: Bool = false
+    
+    public var intersecting: Bool {
+        get {
+            return _intersecting
+        }
+    }
+    
+    public var transform: Transform {
+        get {
+            return primitive.transform
+        }
+    }
     
     public var show: Bool {
         get {
@@ -45,6 +58,9 @@ public class Cursor3D {
     func set(position: float3, rotation: Quaternion) {
         primitive.transform.position = position
         primitive.transform.rotation = rotation
+    }
+    func setIntersection(_ value: Bool) {
+        _intersecting = value
     }
     
 }

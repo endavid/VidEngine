@@ -39,13 +39,12 @@ class ViewController: VidController {
     @objc
     func handleTap(gestureRecognize: UITapGestureRecognizer) {
         // Create anchor using the camera's current position
-        if let session = arSession {
-            // place the cube a bit further away from the camera
-            let pos = camera.transform * float3(0, 0, -0.2)
-            print(pos)
-            //addCube(position: pos)
-            addSphere(position: pos + float3(0, 0.1, 0))
-            addLightProbe(position: pos, session: session)
+        if let session = arSession, let c = scene.cursor, c.intersecting {
+            let t = c.transform
+            let sphereT = Transform(position: t.position + float3(0, 0.05, 0), scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
+            //addCube(position: t.position)
+            addSphere(transform: sphereT)
+            addLightProbe(position: t.position + float3(0, 0.25, 0), session: session)
         }
     }
     
@@ -56,10 +55,10 @@ class ViewController: VidController {
         cube.queue()
     }
     
-    func addSphere(position: float3) {
+    func addSphere(transform: Transform) {
         let desc = SphereDescriptor(isInterior: false, widthSegments: 8, heightSegments: 8)
         let sphere = SpherePrimitive(instanceCount: 1, descriptor: desc)
-        sphere.transform = Transform(position: position, scale: 0.1)
+        sphere.transform = transform
         sphere.queue()
     }
     

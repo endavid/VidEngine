@@ -157,9 +157,11 @@ open class Scene {
         }
         if let si = intersection {
             c.set(position: si.point, normal: si.normal)
+            c.setIntersection(true)
         } else {
             let p = gazeRay.travelDistance(d: c.defaultDistanceFromCamera)
             c.set(position: p, rotation: camera.transform.rotation)
+            c.setIntersection(false)
         }
     }
 }
