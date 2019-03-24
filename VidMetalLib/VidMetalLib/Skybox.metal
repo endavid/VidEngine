@@ -34,9 +34,10 @@ vertex VertexSkybox passSkyboxGeometry(
 
 fragment half4 passSkyboxFragment(
   VertexSkybox inFrag [[stage_in]],
-  texturecube<float> tex [[ texture(0) ]])
+  texturecube<float> tex [[ texture(0) ]],
+  sampler sam [[ sampler(0) ]])
 {
     float3 n = inFrag.normal;
-    float4 out = tex.sample(cubemapSampler, n);
+    float4 out = float4(tex.sample(sam, n).rgb, 1.0);
     return half4(out);
 }

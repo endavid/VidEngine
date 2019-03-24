@@ -37,6 +37,7 @@ class TextureSamplers {
         desc[.linearWithClamp]?.mipFilter = .linear
         desc[.linearWithClamp]?.sAddressMode = .clampToEdge
         desc[.linearWithClamp]?.tAddressMode = .clampToEdge
+        desc[.linearWithClamp]?.rAddressMode = .clampToEdge
         desc[.linearWithWrap]?.minFilter = .linear
         desc[.linearWithWrap]?.magFilter = .linear
         desc[.linearWithWrap]?.mipFilter = .linear
