@@ -63,7 +63,7 @@ public struct CieLab {
 }
 
 public extension CieXYZ {
-    public init(Lab: CieLab) {
+    init(Lab: CieLab) {
         let y = (Lab.L + 16) / 116
         let x = Lab.a / 500 + y
         let z = y - Lab.b / 200

@@ -8,34 +8,34 @@
 import simd
 
 public extension float3 {
-    public init(_ v: Vec3) {
+    init(_ v: Vec3) {
         self.init(v.x, v.y, v.z)
     }
-    public func inverse() -> float3 {
+    func inverse() -> float3 {
         return float3( x: fabsf(self.x)>0 ? 1/self.x : 0,
                        y: fabsf(self.y)>0 ? 1/self.y : 0,
                        z: fabsf(self.z)>0 ? 1/self.z : 0)
     }
     /// similar vectors
-    public func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
+    func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
         let diff = self - v
         return IsClose(length_squared(diff), 0, epsilon: epsilon * epsilon)
     }
     /// Rounds to decimal places value
-    public func rounded(toPlaces places:Int) -> float3 {
+    func rounded(toPlaces places:Int) -> float3 {
         return float3(
             self.x.rounded(toPlaces: places),
             self.y.rounded(toPlaces: places),
             self.z.rounded(toPlaces: places))
     }
     /// Check if is within the 0..1 bounds
-    public func inUnitCube() -> Bool {
+    func inUnitCube() -> Bool {
         return self.x >= 0 && self.x <= 1 && self.y >= 0 && self.y <= 1 && self.z >= 0 && self.z <= 1
     }
 }
 
 public extension float4 {
-    public var xyz: float3 {
+    var xyz: float3 {
         get {
             return float3(x, y, z)
         }

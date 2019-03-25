@@ -38,7 +38,7 @@ public struct CieXYZ {
 }
 
 public extension LinearRGBA {
-    public init(xyz: CieXYZ, colorSpace: RGBColorSpace) {
+    init(xyz: CieXYZ, colorSpace: RGBColorSpace) {
         let m = colorSpace.toRGB
         let rgb = m * xyz.xyz
         raw = float4(rgb.x, rgb.y, rgb.z, 1.0)

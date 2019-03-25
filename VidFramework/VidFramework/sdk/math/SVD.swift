@@ -39,9 +39,9 @@ func svd(array x:[Double], m:Int, n:Int) -> (u:[Double], s:[Double], v:[Double])
 
 public func svd(matrix m: float3x3) -> (float3x3, float3, float3x3) {
     let (c0, c1, c2) = m.columns
-    let d0 = c0.map { Double($0) }
-    let d1 = c1.map { Double($0) }
-    let d2 = c2.map { Double($0) }
+    let d0 = [Double(c0.x), Double(c0.y), Double(c0.z)]
+    let d1 = [Double(c1.x), Double(c1.y), Double(c1.z)]
+    let d2 = [Double(c2.x), Double(c2.y), Double(c2.z)]
     let flatArray = d0 + d1 + d2
     let (u, s, v) = svd(array: flatArray, m: 3, n: 3)
     let uf = u.map { Float($0) }

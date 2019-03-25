@@ -10,10 +10,10 @@
 import MetalKit
 
 public extension Texture {
-    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
+    init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt64], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
         self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba16Unorm, data: data, bytesPerPixel: 8, usage: usage, isLinear: isLinear)
     }
-    public init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt32], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
+    init(device: MTLDevice, id: String, width: Int, height: Int, data: [UInt32], usage: MTLTextureUsage = [.shaderRead], isLinear: Bool? = nil) {
         self.init(device: device, id: id, width: width, height: height, pixelFormat: .rgba8Unorm, data: data, bytesPerPixel: 4, usage: usage, isLinear: isLinear)
     }
     init(device: MTLDevice, id: String, width: Int, height: Int, pixelFormat: MTLPixelFormat, data: UnsafeRawPointer, bytesPerPixel: Int, usage: MTLTextureUsage, isLinear: Bool?) {
@@ -72,7 +72,7 @@ public extension MTLTexture {
             }
         }
     }
-    public func readAllBytes() -> [UInt8] {
+    func readAllBytes() -> [UInt8] {
         let pixelCount = width * height
         var imageBytes = [UInt8](repeating: 0, count: pixelCount * bytesPerPixel)
         let region = MTLRegionMake2D(0, 0, width, height)

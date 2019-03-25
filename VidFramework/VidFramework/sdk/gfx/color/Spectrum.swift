@@ -46,7 +46,7 @@ public class Spectrum {
 public extension CieXYZ {
     
     // http://www.fourmilab.ch/documents/specrend/
-    public init(spectrum: Spectrum) {
+    init(spectrum: Spectrum) {
         /* CIE colour matching functions xBar, yBar, and zBar for
          wavelengths from 380 through 780 nanometers, every 5
          nanometers.  For a wavelength lambda in this range:

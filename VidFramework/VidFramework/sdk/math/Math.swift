@@ -117,7 +117,7 @@ public func Factorial(_ n: Int) -> Double { // 64-bit ints aren't enough for big
 }
 
 public extension Array {
-    public func shuffled() -> [Element] {
+    func shuffled() -> [Element] {
         var list = self
         for i in 0..<(list.count - 1) {
             // I need a seeded rand() to make it deterministic
@@ -129,12 +129,12 @@ public extension Array {
         }
         return list
     }
-    public func randomElement() -> Element {
+    func randomElement() -> Element {
         let i = Rand(self.count)
         return self[i]
     }
     // https://stackoverflow.com/a/38156873/1765629
-    public func chunked(by chunkSize: Int) -> [[Element]] {
+    func chunked(by chunkSize: Int) -> [[Element]] {
         return stride(from: 0, to: self.count, by: chunkSize).map {
             Array(self[$0..<Swift.min($0 + chunkSize, self.count)])
         }
@@ -143,7 +143,7 @@ public extension Array {
 
 public extension Float {
     /// Rounds to decimal places value
-    public func rounded(toPlaces places:Int) -> Float {
+    func rounded(toPlaces places:Int) -> Float {
         let divisor = powf(10.0, Float(places))
         return (self * divisor).rounded() / divisor
     }
