@@ -12,6 +12,7 @@ import ARKit
 
 class ViewController: VidController {
     var isDebug = false
+    var model = ModelOption.sphere
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,22 +42,29 @@ class ViewController: VidController {
         // Create anchor using the camera's current position
         if let session = arSession, let c = scene.cursor, c.intersecting {
             let t = c.transform
-            let sphereT = Transform(position: t.position + float3(0, 0.05, 0), scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
-            //addCube(position: t.position)
-            addSphere(transform: sphereT)
+            addModel(transform: t)
             addLightProbe(position: t.position + float3(0, 0.25, 0), session: session)
         }
     }
     
-    func addCube(position: float3) {
+    func addModel(transform t: Transform) {
+        let tOnGround = Transform(position: t.position + float3(0, 0.05, 0), scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
+        switch model {
+        case .cube:
+            addCube(transform: tOnGround)
+        case .sphere:
+            addSphere(transform: tOnGround)
+        }
+    }
+    
+    func addCube(transform: Transform) {
         let cube = CubePrimitive(instanceCount: 1)
-        cube.transform.position = position
-        cube.transform.scale = float3(0.1, 0.1, 0.1)
+        cube.transform = transform
         cube.queue()
     }
     
     func addSphere(transform: Transform) {
-        let desc = SphereDescriptor(isInterior: false, widthSegments: 8, heightSegments: 8)
+        let desc = SphereDescriptor(isInterior: false, widthSegments: 16, heightSegments: 16)
         let sphere = SpherePrimitive(instanceCount: 1, descriptor: desc)
         sphere.transform = transform
         sphere.queue()

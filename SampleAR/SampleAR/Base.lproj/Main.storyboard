@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,9 +24,22 @@
                                     <action selector="toggleDebugging" destination="BYZ-38-t0r" eventType="touchUpInside" id="pn0-2b-Ml1"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9AO-Ag-o1x">
+                                <rect key="frame" x="163.5" y="599" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="2pu-5z-oEO"/>
+                                    <constraint firstAttribute="height" constant="48" id="lR0-3l-31r"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="add"/>
+                                <connections>
+                                    <segue destination="s82-AZ-ys5" kind="presentation" modalPresentationStyle="overCurrentContext" id="1ge-p0-9g3"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="9AO-Ag-o1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6et-Zf-tyU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9AO-Ag-o1x" secondAttribute="bottom" constant="20" id="bwI-7b-3u1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ORH-1k-1aW" secondAttribute="trailing" symbolic="YES" id="c9M-go-t5N"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ORH-1k-1aW" secondAttribute="bottom" constant="20" id="mtE-Z0-YsE"/>
                             <constraint firstItem="ORH-1k-1aW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="pdh-Se-qo3"/>
@@ -37,5 +50,46 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--Selection View Controller-->
+        <scene sceneID="XVY-qP-9do">
+            <objects>
+                <viewController id="s82-AZ-ys5" customClass="SelectionViewController" customModule="SampleAR" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GgY-99-7Ug">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cjh-7Z-SbB">
+                                <rect key="frame" x="0.0" y="225.5" width="375" height="216"/>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0a-Wr-ReV">
+                                <rect key="frame" x="169" y="449" width="37" height="30"/>
+                                <state key="normal" title="Done"/>
+                                <connections>
+                                    <action selector="pressDone:" destination="s82-AZ-ys5" eventType="touchUpInside" id="5h9-KE-aeS"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="A0a-Wr-ReV" firstAttribute="centerX" secondItem="GgY-99-7Ug" secondAttribute="centerX" id="5eo-Fg-SVP"/>
+                            <constraint firstAttribute="trailing" secondItem="Cjh-7Z-SbB" secondAttribute="trailing" id="Qj8-qA-sjl"/>
+                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="daT-eO-hSX"/>
+                            <constraint firstItem="A0a-Wr-ReV" firstAttribute="top" secondItem="Cjh-7Z-SbB" secondAttribute="bottom" constant="7.5" id="g3n-zB-B1z"/>
+                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="nM2-4I-GxZ"/>
+                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="leading" secondItem="GgY-99-7Ug" secondAttribute="leading" id="rMn-J5-P5o"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="xpo-8B-ibd"/>
+                    </view>
+                    <connections>
+                        <outlet property="pickerView" destination="Cjh-7Z-SbB" id="zKQ-Sb-BnU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="J5p-Es-3Ks" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1390" y="59"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="add" width="48" height="48"/>
+    </resources>
 </document>
