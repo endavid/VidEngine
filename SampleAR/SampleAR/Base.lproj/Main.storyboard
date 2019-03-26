@@ -54,29 +54,45 @@
         <scene sceneID="XVY-qP-9do">
             <objects>
                 <viewController id="s82-AZ-ys5" customClass="SelectionViewController" customModule="SampleAR" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="GgY-99-7Ug">
+                    <view key="view" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="GgY-99-7Ug">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cjh-7Z-SbB">
-                                <rect key="frame" x="0.0" y="225.5" width="375" height="216"/>
-                            </pickerView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0a-Wr-ReV">
-                                <rect key="frame" x="169" y="449" width="37" height="30"/>
-                                <state key="normal" title="Done"/>
-                                <connections>
-                                    <action selector="pressDone:" destination="s82-AZ-ys5" eventType="touchUpInside" id="5h9-KE-aeS"/>
-                                </connections>
-                            </button>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kiP-UN-VjG">
+                                <rect key="frame" x="10" y="193.5" width="355" height="280"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gVa-j9-cwt">
+                                    <rect key="frame" x="0.0" y="0.0" width="355" height="280"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cjh-7Z-SbB">
+                                            <rect key="frame" x="0.0" y="32" width="355" height="216"/>
+                                        </pickerView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0a-Wr-ReV">
+                                            <rect key="frame" x="159" y="248" width="37" height="30"/>
+                                            <state key="normal" title="Done"/>
+                                            <connections>
+                                                <action selector="pressDone:" destination="s82-AZ-ys5" eventType="touchUpInside" id="5h9-KE-aeS"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="Cjh-7Z-SbB" secondAttribute="trailing" id="L1d-A3-jrh"/>
+                                        <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="gVa-j9-cwt" secondAttribute="centerY" id="LPb-yv-fxC"/>
+                                        <constraint firstItem="Cjh-7Z-SbB" firstAttribute="leading" secondItem="gVa-j9-cwt" secondAttribute="leading" id="LWH-YM-RPQ"/>
+                                        <constraint firstItem="A0a-Wr-ReV" firstAttribute="top" secondItem="Cjh-7Z-SbB" secondAttribute="bottom" id="OlV-IK-6wz"/>
+                                        <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerX" secondItem="A0a-Wr-ReV" secondAttribute="centerX" id="Xnh-Va-rSK"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="280" id="N59-Ie-53Z"/>
+                                </constraints>
+                                <blurEffect style="extraLight"/>
+                            </visualEffectView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="A0a-Wr-ReV" firstAttribute="centerX" secondItem="GgY-99-7Ug" secondAttribute="centerX" id="5eo-Fg-SVP"/>
-                            <constraint firstAttribute="trailing" secondItem="Cjh-7Z-SbB" secondAttribute="trailing" id="Qj8-qA-sjl"/>
-                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="daT-eO-hSX"/>
-                            <constraint firstItem="A0a-Wr-ReV" firstAttribute="top" secondItem="Cjh-7Z-SbB" secondAttribute="bottom" constant="7.5" id="g3n-zB-B1z"/>
-                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="nM2-4I-GxZ"/>
-                            <constraint firstItem="Cjh-7Z-SbB" firstAttribute="leading" secondItem="GgY-99-7Ug" secondAttribute="leading" id="rMn-J5-P5o"/>
+                            <constraint firstItem="xpo-8B-ibd" firstAttribute="trailing" secondItem="kiP-UN-VjG" secondAttribute="trailing" constant="10" id="D03-fS-ABX"/>
+                            <constraint firstItem="kiP-UN-VjG" firstAttribute="leading" secondItem="GgY-99-7Ug" secondAttribute="leading" constant="10" id="FHq-Ud-Rjg"/>
+                            <constraint firstItem="kiP-UN-VjG" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="zYJ-dX-cAx"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xpo-8B-ibd"/>
                     </view>
@@ -86,7 +102,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J5p-Es-3Ks" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1390" y="59"/>
+            <point key="canvasLocation" x="1389.5999999999999" y="58.920539730134934"/>
         </scene>
     </scenes>
     <resources>

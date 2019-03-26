@@ -21,12 +21,9 @@ class SelectionViewController: UIViewController, UIPickerViewDelegate, UIPickerV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         pickerView.delegate = self
         pickerView.dataSource = self
     }
-    
 
     /*
     // MARK: - Navigation
