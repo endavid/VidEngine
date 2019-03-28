@@ -15,6 +15,7 @@ import VidFramework
 
 class ViewController: VidController {
     
+    let distanceFromCamera: Float = 2
     var world : World!
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
@@ -43,7 +44,8 @@ class ViewController: VidController {
         let p = sender.location(in: self.view)
         let x = Float(2.0 * p.x / self.view.frame.width - 1.0)
         let y = Float(-2.0 * p.y / self.view.frame.height + 1.0)
-        let w = camera.worldFromScreenCoordinates(x: x, y: y)
+        let ray = camera.rayFromScreenCoordinates(x: x, y: y)
+        let w = ray.travelDistance(d: distanceFromCamera)
         print("screenTap: \(x),\(y) \(w)")
         debugCube.transform.position = w
     }

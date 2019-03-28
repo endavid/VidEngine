@@ -118,17 +118,17 @@ public class Camera {
         // remember inverse projection as well. Handy for casting rays
         _projectionInverse = float4x4.perspectiveInverse(fov: fov, near: near, far: far, aspectRatio: aspectRatio);
     }
-
-    public func worldFromScreenCoordinates(x: Float, y: Float) -> float3 {
+    
+    /// The screen coordinates must be normalized between -1 and 1
+    public func rayFromScreenCoordinates(x: Float, y: Float) -> Ray {
+        let p = transform.position
         let screenHalfway = float4(x, y, 0.75, 1)
         let viewW = projectionInverse * screenHalfway
-        //let mierda = transform.toMatrix4() * inverseProjectionMatrix * screenHalfway
-        //let worldHalfWay = float3(mierda.x, mierda.y, mierda.z) * (1.0 / mierda.w)
         let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
         let worldHalfWay = transform * viewHalfWay
-        print("\(transform.position) \(viewW)")
-        return worldHalfWay
+        return Ray(start: p, direction: normalize(worldHalfWay - p))
     }
+    
     public init() {
     }
 }
