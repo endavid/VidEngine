@@ -54,20 +54,35 @@ class ViewController: VidController {
             addCube(transform: tOnGround)
         case .sphere:
             addSphere(transform: tOnGround)
+        default:
+            let tSmall = Transform(position: t.position, scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
+            addModelFile(model.rawValue, transform: tSmall)
         }
     }
     
     func addCube(transform: Transform) {
         let cube = CubePrimitive(instanceCount: 1)
         cube.transform = transform
-        cube.queue()
+        scene.queue(cube)
     }
     
     func addSphere(transform: Transform) {
         let desc = SphereDescriptor(isInterior: false, widthSegments: 16, heightSegments: 16)
         let sphere = SpherePrimitive(instanceCount: 1, descriptor: desc)
         sphere.transform = transform
-        sphere.queue()
+        scene.queue(sphere)
+    }
+    
+    func addModelFile(_ resource: String, transform: Transform) {
+        ModelPrimitive.loadAsync(forResource: resource, withExtension: "json", bundle: Bundle.main) { [weak self] (model, error) in
+            if let error = error {
+                NSLog(error.localizedDescription)
+            }
+            if let model = model, let scene = self?.scene {
+                model.transform = transform
+                scene.queue(model)
+            }
+        }
     }
     
     func addLightProbe(position: float3, session: ARSession) {

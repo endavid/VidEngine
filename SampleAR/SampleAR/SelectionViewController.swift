@@ -11,12 +11,13 @@ import UIKit
 enum ModelOption: String {
     case sphere = "sphere"
     case cube = "cube"
+    case houseSantorini = "houseSantorini"
 }
 
 class SelectionViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var pickerView: UIPickerView!
     
-    let modelList = [ModelOption.sphere, ModelOption.cube]
+    let modelList = [ModelOption.sphere, ModelOption.cube, ModelOption.houseSantorini]
     var selectedItem = ModelOption.sphere
     
     override func viewDidLoad() {

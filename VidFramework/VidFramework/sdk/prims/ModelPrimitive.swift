@@ -45,7 +45,7 @@ public class ModelPrimitive : Primitive {
         do {
             try parseJson(json, bundle: bundle)
         } catch let error {
-            print(error)
+            NSLog(error.localizedDescription)
             return nil
         }
     }
@@ -57,7 +57,7 @@ public class ModelPrimitive : Primitive {
     }
     
     func parseJson(_ json: [String: Any], bundle: Bundle?) throws {
-        guard let vertexData = json["vertices"] as? [Float] else {
+        guard let vertexData = json["vertices"] as? [NSNumber] else {
             throw SerializationError.missing("vertices")
         }
         guard let meshes = json["meshes"] as? [Any] else {
@@ -68,12 +68,13 @@ public class ModelPrimitive : Primitive {
         }
         let materials = json["materials"] as? [String: Any]
         let numVertices = vertexData.count / 8
+        let vertices = vertexData.map { $0.floatValue }
         vertexBuffer = Renderer.shared.createTexturedVertexBuffer(name + " VB", numElements: numVertices)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<numVertices {
-            let x = Vec3(vertexData[8*i], vertexData[8*i+1], vertexData[8*i+2])
-            let n = Vec3(vertexData[8*i+3], vertexData[8*i+1+4], vertexData[8*i+2+5])
-            let uv = Vec2(vertexData[8*i+6], 1-vertexData[8*i+7])
+            let x = Vec3(vertices[8*i], vertices[8*i+1], vertices[8*i+2])
+            let n = Vec3(vertices[8*i+3], vertices[8*i+1+4], vertices[8*i+2+5])
+            let uv = Vec2(vertices[8*i+6], 1-vertices[8*i+7])
             vb[i] = TexturedVertex(position: x, normal: n, uv: uv)
         }
         for m in meshes {
