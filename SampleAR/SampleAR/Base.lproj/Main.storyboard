@@ -35,12 +35,24 @@
                                     <segue destination="s82-AZ-ys5" kind="presentation" modalPresentationStyle="overCurrentContext" id="1ge-p0-9g3"/>
                                 </connections>
                             </button>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8sI-Oe-03b">
+                                <rect key="frame" x="0.0" y="20" width="375" height="85"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="85" id="BD4-Vz-Bqu"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="zqn-uP-gaF" kind="embed" id="wd3-9q-FsG"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="9AO-Ag-o1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6et-Zf-tyU"/>
+                            <constraint firstItem="8sI-Oe-03b" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="R8d-6W-rvF"/>
+                            <constraint firstItem="8sI-Oe-03b" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="YJB-AD-Qgw"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9AO-Ag-o1x" secondAttribute="bottom" constant="20" id="bwI-7b-3u1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ORH-1k-1aW" secondAttribute="trailing" symbolic="YES" id="c9M-go-t5N"/>
+                            <constraint firstItem="8sI-Oe-03b" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="hLH-dr-TCi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ORH-1k-1aW" secondAttribute="bottom" constant="20" id="mtE-Z0-YsE"/>
                             <constraint firstItem="ORH-1k-1aW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="pdh-Se-qo3"/>
                         </constraints>
@@ -49,6 +61,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="54" y="19"/>
         </scene>
         <!--Selection View Controller-->
         <scene sceneID="XVY-qP-9do">
@@ -104,8 +117,101 @@
             </objects>
             <point key="canvasLocation" x="1389.5999999999999" y="58.920539730134934"/>
         </scene>
+        <!--Status View Controller-->
+        <scene sceneID="6U7-1Q-e8O">
+            <objects>
+                <viewController id="zqn-uP-gaF" customClass="StatusViewController" customModule="SampleAR" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="AVB-35-2ey">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="85"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="100" translatesAutoresizingMaskIntoConstraints="NO" id="nm3-Cy-qFY" userLabel="Message Panel">
+                                <rect key="frame" x="16" y="20" width="125" height="32"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="G4p-Ro-crK">
+                                    <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wq5-bh-l1W">
+                                            <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="GEM-IB-fOq">
+                                                <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" text="Tracking status" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTY-ka-Cwb" userLabel="Messages label">
+                                                        <rect key="frame" x="16" y="8" width="93" height="16"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                        <nil key="textColor"/>
+                                                        <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <size key="shadowOffset" width="1" height="1"/>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="aTY-ka-Cwb" firstAttribute="leading" secondItem="GEM-IB-fOq" secondAttribute="leading" constant="16" id="6tK-le-gUp"/>
+                                                    <constraint firstItem="aTY-ka-Cwb" firstAttribute="centerY" secondItem="GEM-IB-fOq" secondAttribute="centerY" id="Vfz-tQ-6cZ"/>
+                                                    <constraint firstItem="aTY-ka-Cwb" firstAttribute="top" secondItem="GEM-IB-fOq" secondAttribute="top" constant="8" id="gTF-hf-qio"/>
+                                                    <constraint firstItem="aTY-ka-Cwb" firstAttribute="trailing" secondItem="GEM-IB-fOq" secondAttribute="trailing" constant="-16" id="i56-jM-amc"/>
+                                                </constraints>
+                                            </view>
+                                            <vibrancyEffect>
+                                                <blurEffect style="extraLight"/>
+                                            </vibrancyEffect>
+                                        </visualEffectView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="Wq5-bh-l1W" secondAttribute="trailing" id="AWL-pQ-lBU"/>
+                                        <constraint firstItem="Wq5-bh-l1W" firstAttribute="leading" secondItem="G4p-Ro-crK" secondAttribute="leading" id="lkN-C6-Kjt"/>
+                                        <constraint firstItem="Wq5-bh-l1W" firstAttribute="top" secondItem="G4p-Ro-crK" secondAttribute="top" id="wkM-uy-qkg"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="aTY-ka-Cwb" secondAttribute="bottom" constant="8" id="4Cm-AU-XSr"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </visualEffectView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yrx-nq-8sl" userLabel="Restart Experience Button Icon">
+                                <rect key="frame" x="331" y="0.0" width="44" height="59"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="59" id="IMW-VQ-Xa6"/>
+                                    <constraint firstAttribute="width" constant="44" id="OcY-On-S3C"/>
+                                </constraints>
+                                <inset key="contentEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="12"/>
+                                <state key="normal" image="restart"/>
+                                <state key="selected" image="restartPressed"/>
+                                <state key="highlighted" image="restartPressed"/>
+                                <connections>
+                                    <action selector="restartExperience:" destination="zqn-uP-gaF" eventType="touchUpInside" id="YDa-Xa-gSq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qhZ-9S-wBy" firstAttribute="trailing" secondItem="yrx-nq-8sl" secondAttribute="trailing" id="1OO-w6-lIQ"/>
+                            <constraint firstItem="yrx-nq-8sl" firstAttribute="top" secondItem="qhZ-9S-wBy" secondAttribute="top" id="A5h-dW-FiU"/>
+                            <constraint firstItem="nm3-Cy-qFY" firstAttribute="leading" secondItem="qhZ-9S-wBy" secondAttribute="leading" constant="16" id="Dab-Xq-S40"/>
+                            <constraint firstItem="yrx-nq-8sl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nm3-Cy-qFY" secondAttribute="trailing" constant="8" id="px7-Ig-R6b"/>
+                            <constraint firstItem="nm3-Cy-qFY" firstAttribute="top" secondItem="yrx-nq-8sl" secondAttribute="top" constant="20" id="r9l-Wk-xGf"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="qhZ-9S-wBy"/>
+                    </view>
+                    <connections>
+                        <outlet property="messageLabel" destination="aTY-ka-Cwb" id="yUj-fi-mQy"/>
+                        <outlet property="messagePanel" destination="nm3-Cy-qFY" id="jNT-1R-X7P"/>
+                        <outlet property="restartExperienceButton" destination="yrx-nq-8sl" id="5lb-Lg-ILy"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T5D-D1-CRV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="54" y="-378"/>
+        </scene>
     </scenes>
     <resources>
         <image name="add" width="48" height="48"/>
+        <image name="restart" width="20" height="23"/>
+        <image name="restartPressed" width="16" height="16"/>
     </resources>
 </document>

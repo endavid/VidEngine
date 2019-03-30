@@ -28,4 +28,20 @@ extension ViewController {
             }
         }
     }
+    
+    /// - Tag: restartExperience
+    func restartExperience() {
+        guard isRestartAvailable, !isLoading else { return }
+        isRestartAvailable = false
+        
+        statusViewController.cancelAllScheduledMessages()
+        
+        scene.removeAll()
+        resetTracking()
+        
+        // Disable restart for a while in order to give the session time to restart.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.isRestartAvailable = true
+        }
+    }
 }

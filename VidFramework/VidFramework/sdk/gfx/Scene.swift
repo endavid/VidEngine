@@ -58,13 +58,24 @@ open class Scene {
         }
     }
     
-    /// Add & queue for rendering
+    /// Add & queue Primitive for rendering
     public func queue(_ primitive: Primitive) {
-        primitives.append(primitive)
-        primitive.queue()
+        let alreadyQueued = primitives.contains { $0 === primitive }
+        if !alreadyQueued {
+            primitives.append(primitive)
+            primitive.queue()
+        }
+    }
+    /// Add & queue LightSource for rendering
+    public func queue(_ light: LightSource) {
+        let alreadyQueued = lights.contains { $0 === light }
+        if !alreadyQueued {
+            lights.append(light)
+            light.queue()
+        }
     }
     
-    /// Remove & dequeue
+    /// Remove & dequeue Primitive
     public func dequeue(_ primitive: Primitive) {
         let index = primitives.index { $0 === primitive }
         if let i = index {
@@ -72,7 +83,15 @@ open class Scene {
             primitive.dequeue()
         }
     }
-    
+    /// Remove & dequeue LightSource
+    public func dequeue(_ light: LightSource) {
+        let index = lights.index { $0 === light }
+        if let i = index {
+            lights.remove(at: i)
+            light.dequeue()
+        }
+    }
+
     /// Adds all elements to their respective rendering queues
     public func queueAll() {
         for p in primitives {

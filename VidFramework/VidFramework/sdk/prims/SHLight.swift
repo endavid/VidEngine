@@ -139,11 +139,21 @@ public class SHLight: LightSource {
     
     override public func dequeue() {
         super.dequeue()
+        _debugBB?.dequeue()
+        _debugDots?.dequeue()
+        _debugSphere?.dequeue()
         if let plugin: ARPlugin? = Renderer.shared?.getPlugin(),
             let p = plugin {
             p.dequeue(self)
         }
     }
+    
+    #if DEBUG
+    deinit {
+        // Just making sure that we clean up properly!
+        print("Removing probe \(identifier)")
+    }
+    #endif
     
     public init(position: float3, extent: float3, session: ARSession) {
         if #available(iOS 12.0, *) {

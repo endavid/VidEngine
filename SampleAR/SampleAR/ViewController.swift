@@ -13,6 +13,15 @@ import ARKit
 class ViewController: VidController {
     var isDebug = false
     var model = ModelOption.sphere
+    /// Marks if the AR experience is available for restart.
+    var isRestartAvailable = true
+    /// True when loading a model
+    var isLoading = false
+
+    /// The view controller that displays the status and "restart experience" UI.
+    lazy var statusViewController: StatusViewController = {
+        return children.lazy.compactMap({ $0 as? StatusViewController }).first!
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,11 +31,24 @@ class ViewController: VidController {
         arConfiguration = cfg
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(gestureRecognize:)))
         view.addGestureRecognizer(tapGesture)
+        // Hook up status view controller callback(s).
+        statusViewController.restartExperienceHandler = { [unowned self] in
+            self.restartExperience()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupScene()
+    }
+    
+    /// Creates a new AR configuration to run on the `session`.
+    func resetTracking() {
+        guard let session = arSession, let cfg = arConfiguration else {
+            return
+        }
+        session.run(cfg, options: [.resetTracking, .removeExistingAnchors])        
+        statusViewController.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .planeEstimation)
     }
 
     private func setupScene() {
@@ -44,7 +66,15 @@ class ViewController: VidController {
             let t = c.transform
             addModel(transform: t)
             addLightProbe(position: t.position + float3(0, 0.25, 0), session: session)
+            addAnchor(session: session, transform: t)
         }
+    }
+    
+    func addAnchor(session: ARSession, transform t: Transform) {
+        let tAnchor = Transform(position: t.position, scale: float3(1,1,1), rotation: t.rotation)
+        // Create a new anchor with the object's current transform and add it to the session
+        let newAnchor = ARAnchor(transform: tAnchor.toMatrix4())
+        session.add(anchor: newAnchor)
     }
     
     func addModel(transform t: Transform) {
@@ -74,7 +104,9 @@ class ViewController: VidController {
     }
     
     func addModelFile(_ resource: String, transform: Transform) {
+        isLoading = true
         ModelPrimitive.loadAsync(forResource: resource, withExtension: "json", bundle: Bundle.main) { [weak self] (model, error) in
+            self?.isLoading = false
             if let error = error {
                 NSLog(error.localizedDescription)
             }
@@ -90,8 +122,7 @@ class ViewController: VidController {
         let probe = SHLight(position: position, extent: extent, session: session)
         probe.debug = isDebug ? .sphere : .none
         probe.showBoundingBox = isDebug
-        scene.lights.append(probe)
-        probe.queue()
+        scene.queue(probe)
     }
 }
 
