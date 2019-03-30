@@ -34,7 +34,9 @@ open class Scene {
                 if let p = findPrimitive(by: Scene.arPlanesPrimitiveName) {
                     p.dequeue()
                     setupARPlanes(p)
-                    p.queue()
+                    if _debugARPlanes {
+                        p.queue()
+                    }
                 }
             }
         }
@@ -59,19 +61,23 @@ open class Scene {
     }
     
     /// Add & queue Primitive for rendering
-    public func queue(_ primitive: Primitive) {
+    public func queue(_ primitive: Primitive, render: Bool = true) {
         let alreadyQueued = primitives.contains { $0 === primitive }
         if !alreadyQueued {
             primitives.append(primitive)
-            primitive.queue()
+            if render {
+                primitive.queue()
+            }
         }
     }
     /// Add & queue LightSource for rendering
-    public func queue(_ light: LightSource) {
+    public func queue(_ light: LightSource, render: Bool = true) {
         let alreadyQueued = lights.contains { $0 === light }
         if !alreadyQueued {
             lights.append(light)
-            light.queue()
+            if render {
+                light.queue()
+            }
         }
     }
     

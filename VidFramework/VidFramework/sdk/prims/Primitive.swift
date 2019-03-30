@@ -80,6 +80,12 @@ public class Primitive {
         }
     }
     
+    #if DEBUG
+    deinit {
+        // Just making sure that we clean up properly!
+        print("Removing Primitive \(name)")
+    }
+    #endif
     
     init(instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")

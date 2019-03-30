@@ -151,7 +151,7 @@ public class SHLight: LightSource {
     #if DEBUG
     deinit {
         // Just making sure that we clean up properly!
-        print("Removing probe \(identifier)")
+        print("Removing SHLight \(identifier)")
     }
     #endif
     

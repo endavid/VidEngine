@@ -29,6 +29,8 @@ extension VidController: ARSessionDelegate {
                     p.instances[instanceIndex].transform = t
                     p.instances[instanceIndex].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
                 }
+            } else {
+                NSLog("Didn't update anchor: \(anchor.identifier.uuidString)")
             }
         }
     }
@@ -45,7 +47,7 @@ extension VidController: ARSessionDelegate {
                     let p = PlanePrimitive(planePrim, add: instance)
                     scene.setupARPlanes(p)
                     p.uuidInstanceMap[plane.identifier] = primitive.instanceCount
-                    scene.queue(p)
+                    scene.queue(p, render: scene.debugARPlanes)
                 } else {
                     let p = PlanePrimitive(instanceCount: 1)
                     scene.setupARPlanes(p)
@@ -53,7 +55,7 @@ extension VidController: ARSessionDelegate {
                     p.transform = t
                     p.instances[0].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
                     p.uuidInstanceMap[plane.identifier] = 0
-                    scene.queue(p)
+                    scene.queue(p, render: scene.debugARPlanes)
                 }
             }
         }
@@ -65,7 +67,7 @@ extension VidController: ARSessionDelegate {
                     let planePrim = primitive as? PlanePrimitive {
                     scene.dequeue(primitive)
                     if let p = PlanePrimitive(planePrim, without: instanceIndex) {
-                        scene.queue(p)
+                        scene.queue(p, render: scene.debugARPlanes)
                     }
                     print("Removing \(plane.identifier.uuidString)")
                 }

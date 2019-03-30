@@ -93,6 +93,7 @@ class ViewController: VidController {
     func addCube(transform: Transform) {
         let cube = CubePrimitive(instanceCount: 1)
         cube.transform = transform
+        cube.name = "cube"
         scene.queue(cube)
     }
     
@@ -100,6 +101,7 @@ class ViewController: VidController {
         let desc = SphereDescriptor(isInterior: false, widthSegments: 16, heightSegments: 16)
         let sphere = SpherePrimitive(instanceCount: 1, descriptor: desc)
         sphere.transform = transform
+        sphere.name = "sphere"
         scene.queue(sphere)
     }
     
