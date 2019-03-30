@@ -181,7 +181,11 @@ open class Scene {
             }
         }
         if let si = intersection {
-            c.set(position: si.point, normal: si.normal)
+            // same orientation as the camera, but rotate it
+            // so up vector points towards the surface normal
+            let cameraUp = camera.getUpVector()
+            let q = Quaternion.createRotation(start: cameraUp, end: si.normal)
+            c.set(position: si.point, rotation: q * camera.transform.rotation)
             c.setIntersection(true)
         } else {
             // if the cursor is an XZ plane, this will make it
