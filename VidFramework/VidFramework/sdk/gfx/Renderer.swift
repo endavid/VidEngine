@@ -51,7 +51,8 @@ public class Renderer {
     fileprivate var plugins : [GraphicPlugin] = []
     fileprivate var syncBufferIndex = 0
     fileprivate var _gBuffer : GBuffer! = nil
-    fileprivate var _whiteTexture : MTLTexture! = nil
+    fileprivate var _whiteTexture: MTLTexture! = nil
+    fileprivate var _clearTexture: MTLTexture! = nil
     fileprivate lazy var _fullScreenQuad : FullScreenQuad = {
         return FullScreenQuad(device: self.device)
     }()
@@ -66,9 +67,14 @@ public class Renderer {
     var capturedImageTextureY: CVMetalTexture?
     var capturedImageTextureCbCr: CVMetalTexture?
 
-    var whiteTexture : MTLTexture {
+    var whiteTexture: MTLTexture {
         get {
             return _whiteTexture
+        }
+    }
+    var clearTexture: MTLTexture {
+        get {
+            return _clearTexture
         }
     }
     
@@ -109,7 +115,8 @@ public class Renderer {
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         self.device = device
-        _whiteTexture = TextureUtils.createWhiteTexture(device: device)
+        _whiteTexture = TextureUtils.createTexture(device: device, color: 0xffffffff)
+        _clearTexture = TextureUtils.createTexture(device: device, color: 0x0)
         textureSamplers = TextureSamplers(device: device)
         self.initGraphicPlugins(view, doAR: doAR)
         if doAR {
@@ -235,7 +242,7 @@ public class Renderer {
     }
     
     // Transparency
-    func createOITRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
+    func createOITRenderPass(clear: Bool, clearDepth: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()
         rp.colorAttachments[0].texture = gBuffer.lightTexture
         rp.colorAttachments[0].loadAction = clear ? .clear : .load
@@ -248,8 +255,9 @@ public class Renderer {
         // alpha is stored in Red channel; it's a R16 texture
         rp.colorAttachments[1].clearColor = MTLClearColorMake(1, 1, 1, 1)
         rp.depthAttachment.texture = gBuffer.depthTexture
-        rp.depthAttachment.loadAction = .load
+        rp.depthAttachment.loadAction = clearDepth ? .clear : .load
         rp.depthAttachment.storeAction = .dontCare
+        rp.depthAttachment.clearDepth = 1.0
         return rp
     }
     

@@ -58,7 +58,7 @@ class PostEffectPlugin: GraphicPlugin {
         guard let renderer = Renderer.shared else {
             return
         }
-        if !renderer.frameState.clearedBackbuffer {
+        if !renderer.frameState.clearedBackbuffer && !renderer.frameState.clearedTransparencyBuffer {
             // nothing in backbuffer to dump to the drawable
             return
         }
@@ -83,7 +83,8 @@ class PostEffectPlugin: GraphicPlugin {
         } else {
             encoder.setRenderPipelineState(passThroughState)
         }
-        encoder.setFragmentTexture(renderer.gBuffer.shadedTexture, index: 0)
+        let colorTex = renderer.frameState.clearedBackbuffer ? renderer.gBuffer.shadedTexture : renderer.clearTexture
+        encoder.setFragmentTexture(colorTex, index: 0)
         renderer.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
     }

@@ -33,7 +33,6 @@
 		632D281D203896C7000562F0 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27F5203896C7000562F0 /* Scene.swift */; };
 		632D281E203896C7000562F0 /* GBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27F6203896C7000562F0 /* GBuffer.swift */; };
 		632D281F203896C7000562F0 /* GraphicPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27F8203896C7000562F0 /* GraphicPlugin.swift */; };
-		632D2820203896C7000562F0 /* ResolveWeightBlendedTransparency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */; };
 		632D2821203896C7000562F0 /* DeferredLightingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27FA203896C7000562F0 /* DeferredLightingPlugin.swift */; };
 		632D2822203896C7000562F0 /* PrimitivePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27FB203896C7000562F0 /* PrimitivePlugin.swift */; };
 		632D2823203896C7000562F0 /* RainPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D27FC203896C7000562F0 /* RainPlugin.swift */; };
@@ -123,7 +122,6 @@
 		632D27F5203896C7000562F0 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		632D27F6203896C7000562F0 /* GBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GBuffer.swift; sourceTree = "<group>"; };
 		632D27F8203896C7000562F0 /* GraphicPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicPlugin.swift; sourceTree = "<group>"; };
-		632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResolveWeightBlendedTransparency.swift; sourceTree = "<group>"; };
 		632D27FA203896C7000562F0 /* DeferredLightingPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredLightingPlugin.swift; sourceTree = "<group>"; };
 		632D27FB203896C7000562F0 /* PrimitivePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrimitivePlugin.swift; sourceTree = "<group>"; };
 		632D27FC203896C7000562F0 /* RainPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RainPlugin.swift; sourceTree = "<group>"; };
@@ -349,7 +347,6 @@
 				632D27FE203896C7000562F0 /* Primitive2DPlugin.swift */,
 				632D27FB203896C7000562F0 /* PrimitivePlugin.swift */,
 				632D27FC203896C7000562F0 /* RainPlugin.swift */,
-				632D27F9203896C7000562F0 /* ResolveWeightBlendedTransparency.swift */,
 				6389DFBF2223224E001625B4 /* UnlitOpaquePlugin.swift */,
 				632D27FF203896C7000562F0 /* UnlitTransparencyPlugin.swift */,
 			);
@@ -530,7 +527,6 @@
 				632D2832203896C7000562F0 /* Color.swift in Sources */,
 				6393E7B2205B141A0098F96F /* CieXYZ.swift in Sources */,
 				632D2826203896C7000562F0 /* UnlitTransparencyPlugin.swift in Sources */,
-				632D2820203896C7000562F0 /* ResolveWeightBlendedTransparency.swift in Sources */,
 				6393E7BA205B157F0098F96F /* NormalizedSRGBA.swift in Sources */,
 				632D282E203896C7000562F0 /* ModelPrimitive.swift in Sources */,
 				632D285E2038A223000562F0 /* VidController.swift in Sources */,

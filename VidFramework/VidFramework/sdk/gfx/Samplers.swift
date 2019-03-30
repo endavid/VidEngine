@@ -9,8 +9,8 @@
 import MetalKit
 
 /// Collection of the most common texture samplers
-class TextureSamplers {
-    enum SamplerType {
+public class TextureSamplers {
+    public enum SamplerType {
         case pointWithClamp, pointWithWrap, linearWithClamp, linearWithWrap
         static let all = [pointWithClamp, pointWithWrap, linearWithClamp, linearWithWrap]
     }

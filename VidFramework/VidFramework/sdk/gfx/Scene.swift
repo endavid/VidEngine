@@ -184,8 +184,11 @@ open class Scene {
             c.set(position: si.point, normal: si.normal)
             c.setIntersection(true)
         } else {
+            // if the cursor is an XZ plane, this will make it
+            // face the camera
+            let q = Quaternion(AngleAxis(angle: .pi / 2, axis: float3(1, 0, 0)))
             let p = gazeRay.travelDistance(d: c.defaultDistanceFromCamera)
-            c.set(position: p, rotation: camera.transform.rotation)
+            c.set(position: p, rotation: camera.transform.rotation * q)
             c.setIntersection(false)
         }
     }

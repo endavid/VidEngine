@@ -9,8 +9,8 @@
 import MetalKit
 
 class TextureUtils {
-    static func createWhiteTexture(device: MTLDevice) -> MTLTexture {
-        let data : [UInt32] = [0xffffffff]
+    static func createTexture(device: MTLDevice, color: UInt32) -> MTLTexture {
+        let data = [color]
         let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
         let texture = device.makeTexture(descriptor: texDescriptor)
         let region = MTLRegionMake2D(0, 0, 1, 1)

@@ -71,7 +71,7 @@ public class Primitive {
         }
     }
     
-    var sampler: TextureSamplers.SamplerType {
+    public var sampler: TextureSamplers.SamplerType {
         get {
             return submeshes[0].sampler
         }

@@ -82,7 +82,7 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         guard let renderer = Renderer.shared else {
             return
         }
-        let renderPassDescriptor = Renderer.shared.createOITRenderPass(clear: true)
+        let renderPassDescriptor = Renderer.shared.createOITRenderPass(clear: true, clearDepth: !renderer.frameState.clearedGBuffer)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }

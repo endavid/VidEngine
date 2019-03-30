@@ -52,10 +52,20 @@ class ViewController: VidController {
     }
 
     private func setupScene() {
-        let cube = CubePrimitive(instanceCount: 1)
-        cube.lightingType = .UnlitOpaque
-        cube.transform.scale = float3(0.05, 0.05, 0.05)
-        scene.cursor = Cursor3D(primitive: cube)
+        let plane = PlanePrimitive(instanceCount: 1)
+        plane.lightingType = .UnlitTransparent
+        plane.name = "cursorPlane"
+        plane.transform.scale = float3(0.1, 1, 0.1)
+        plane.material.diffuse = .white
+        if let bundle = try? FrameworkBundle.mainBundle() {
+            plane.setAlbedoTexture(resource: FrameworkBundle.squareFrameImage, bundle: bundle, options: nil, addToCache: true) { (error) in
+                if let error = error {
+                    NSLog("setupScene: \(error.localizedDescription)")
+                }
+            }
+            plane.sampler = .pointWithWrap
+        }
+        scene.cursor = Cursor3D(primitive: plane)
         scene.debugARPlanes = isDebug
     }
     
