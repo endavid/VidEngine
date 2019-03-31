@@ -48,6 +48,9 @@ extension VidController: ARSessionDelegate {
                     scene.setupARPlanes(p)
                     p.uuidInstanceMap[plane.identifier] = primitive.instanceCount
                     scene.queue(p, render: scene.debugARPlanes)
+                    #if DEBUG
+                    print("AR Add \(plane.identifier.uuidString)")
+                    #endif
                 } else {
                     let p = PlanePrimitive(instanceCount: 1)
                     scene.setupARPlanes(p)
@@ -56,6 +59,9 @@ extension VidController: ARSessionDelegate {
                     p.instances[0].material.uvScale = Vec2(plane.extent.x / p.gridSizeMeters, plane.extent.z / p.gridSizeMeters)
                     p.uuidInstanceMap[plane.identifier] = 0
                     scene.queue(p, render: scene.debugARPlanes)
+                    #if DEBUG
+                    print("AR 1st \(plane.identifier.uuidString)")
+                    #endif
                 }
             }
         }
@@ -69,7 +75,9 @@ extension VidController: ARSessionDelegate {
                     if let p = PlanePrimitive(planePrim, without: instanceIndex) {
                         scene.queue(p, render: scene.debugARPlanes)
                     }
-                    print("Removing \(plane.identifier.uuidString)")
+                    #if DEBUG
+                    print("AR Removing \(plane.identifier.uuidString)")
+                    #endif
                 }
             }
         }

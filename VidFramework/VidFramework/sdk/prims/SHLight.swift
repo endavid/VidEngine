@@ -160,7 +160,6 @@ public class SHLight: LightSource {
             let probeAnchor = AREnvironmentProbeAnchor(name: "sceneProbe", transform: Transform(position: position).toMatrix4(), extent: extent)
             session.add(anchor: probeAnchor)
             identifier = probeAnchor.identifier
-            print(probeAnchor)
         } else {
             identifier = UUID()
             NSLog("Environment Probe not available <iOS12.0")
@@ -258,6 +257,7 @@ public class SHLight: LightSource {
         let sphere = EnvironmentSphere(isInterior: false, widthSegments: 8, heightSegments: 8)
         sphere.transform = Transform(position: self.transform.position, scale: 0.1)
         sphere.albedoTexture = environmentTexture
+        sphere.name = "SHLight-debugSphere"
         return sphere
     }
     
