@@ -17,6 +17,7 @@ class ViewController: VidController {
     var isRestartAvailable = true
     /// True when loading a model
     var isLoading = false
+    @IBOutlet weak var blurView: UIVisualEffectView!
 
     /// The view controller that displays the status and "restart experience" UI.
     lazy var statusViewController: StatusViewController = {
@@ -135,6 +136,24 @@ class ViewController: VidController {
         probe.debug = isDebug ? .sphere : .none
         probe.showBoundingBox = isDebug
         scene.queue(probe)
+    }
+    
+    
+    // MARK: - Error handling
+    
+    func displayErrorMessage(title: String, message: String) {
+        // Blur the background.
+        blurView.isHidden = false
+        
+        // Present an alert informing about the error that has occurred.
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Restart Session", style: .default) { _ in
+            alertController.dismiss(animated: true, completion: nil)
+            self.blurView.isHidden = true
+            self.resetTracking()
+        }
+        alertController.addAction(restartAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 

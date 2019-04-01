@@ -17,6 +17,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dqa-FN-CKn">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Gsu-2R-aeb">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ORH-1k-1aW">
                                 <rect key="frame" x="16" y="617" width="96" height="30"/>
                                 <state key="normal" title="Toggle Debug"/>
@@ -27,10 +35,10 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9AO-Ag-o1x">
                                 <rect key="frame" x="163.5" y="599" width="48" height="48"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="48" id="2pu-5z-oEO"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="48" id="2pu-5z-oEO"/>
                                     <constraint firstAttribute="height" constant="48" id="lR0-3l-31r"/>
                                 </constraints>
-                                <state key="normal" title="Button" image="add"/>
+                                <state key="normal" image="add"/>
                                 <connections>
                                     <segue destination="s82-AZ-ys5" kind="presentation" modalPresentationStyle="overCurrentContext" id="1ge-p0-9g3"/>
                                 </connections>
@@ -47,8 +55,12 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Dqa-FN-CKn" secondAttribute="trailing" id="0eO-1y-q5t"/>
                             <constraint firstItem="9AO-Ag-o1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6et-Zf-tyU"/>
+                            <constraint firstItem="Dqa-FN-CKn" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="EJI-zJ-4M1"/>
+                            <constraint firstAttribute="bottom" secondItem="Dqa-FN-CKn" secondAttribute="bottom" id="L63-7g-9Ld"/>
                             <constraint firstItem="8sI-Oe-03b" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="R8d-6W-rvF"/>
+                            <constraint firstItem="Dqa-FN-CKn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Wmt-Wn-EKA"/>
                             <constraint firstItem="8sI-Oe-03b" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="YJB-AD-Qgw"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9AO-Ag-o1x" secondAttribute="bottom" constant="20" id="bwI-7b-3u1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ORH-1k-1aW" secondAttribute="trailing" symbolic="YES" id="c9M-go-t5N"/>
@@ -58,10 +70,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="blurView" destination="Dqa-FN-CKn" id="UIv-qK-POF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="54" y="19"/>
+            <point key="canvasLocation" x="53.600000000000001" y="18.440779610194905"/>
         </scene>
         <!--Selection View Controller-->
         <scene sceneID="XVY-qP-9do">
@@ -212,6 +227,6 @@
     <resources>
         <image name="add" width="48" height="48"/>
         <image name="restart" width="20" height="23"/>
-        <image name="restartPressed" width="16" height="16"/>
+        <image name="restartPressed" width="20" height="23"/>
     </resources>
 </document>

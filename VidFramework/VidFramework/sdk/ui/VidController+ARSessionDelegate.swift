@@ -82,6 +82,9 @@ extension VidController: ARSessionDelegate {
             }
         }
     }
+    open func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        // Check camera status
+    }
     open func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
     }
@@ -90,5 +93,8 @@ extension VidController: ARSessionDelegate {
     }
     open func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
+    }
+    open func sessionShouldAttemptRelocalization(_ session: ARSession) -> Bool {
+        return true
     }
 }

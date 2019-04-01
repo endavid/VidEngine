@@ -100,6 +100,9 @@ public class Primitive {
         if instanceIndex >= count {
             return nil
         }
+        if count - 1 == 0 {
+            return nil
+        }
         self.init(instanceCount: count - 1)
         var j = 0
         for i in 0..<count {
