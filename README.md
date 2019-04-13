@@ -6,10 +6,17 @@ It's an endless work-in-progress that I use in my spare to test things. It shoul
 
 Installation
 =========
-Simply add this repository as a submodule in your repository. Then,
+Simply add this repository as a submodule in your repository,
+
+    git submodule add git@github.com:endavid/VidEngine.git VidEngine
+
+Then,
 
 * Create a Workspace in Xcode
 * Add your project to the workspace
+    - An easy way to start is to create a Single View App from the iOS templates (File → New → Project).
+    - Under Target → Build Phases, add **MetalKit.framework** to `Link binary with libraries` section.
+    - Open `Main.storyboard`, select the `View`, and select `MTKView` class in the Identity inspector.
 * Add **VidFramework** project to the workspace: Add Files → select `xcodeproj` file.
     - If you want to check the shaders, also add **VidMetalLib** to your workspace. But note that at the moment, you need to build the shader libraries from the console (see *Build* section).
     - I would also add a sample app to your workspace. For instance, if you want to create an AR app, add **SampleAR** to your workspace.
@@ -18,6 +25,22 @@ Simply add this repository as a submodule in your repository. Then,
 Build
 ====
 Use the provided `build.sh`, because I can't figure out how to get the shaders in **VidMetalLib** to get linked to the correct location from Xcode... 😅
+
+App Configuration
+==============
+
+### Info.plist
+
+This engine is Metal-only, so that needs to be specified as a requirement in your Info.plist. If you are going to use AR, you will also need to include `arkit` to the list. Your `Info.plist` should have this section,
+
+```
+<key>UIRequiredDeviceCapabilities</key>
+<array>
+<string>armv7</string>
+<string>metal</string>
+<string>arkit</string>
+</array>
+```
 
 Overview
 =======
