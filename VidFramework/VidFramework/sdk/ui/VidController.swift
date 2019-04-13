@@ -153,6 +153,7 @@ open class VidController: UIViewController, MTKViewDelegate {
             timer = CADisplayLink(target: self, selector: #selector(VidController.newFrame(_:)))
             timer.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
             camera.setBounds(view.bounds)
+            camera.rotation = Quaternion()
         }
         if let arConfiguration = arConfiguration {
             arSession?.run(arConfiguration)
