@@ -10,12 +10,14 @@ Simply add this repository as a submodule in your repository. Then,
 
 * Create a Workspace in Xcode
 * Add your project to the workspace
-* Add VidFramework project to the workspace.
-* Select your project in Xcode, and in Target -> General -> Embedded Binaries, select VidFramework (it should appear if it's in your workspace). This should also add it to Linked Framework & Libraries. But if it doesn't, add it there as well. Also make sure it did add an entry in Build Phases -> Embed Frameworks.
+* Add **VidFramework** project to the workspace: Add Files → select `xcodeproj` file.
+    - If you want to check the shaders, also add **VidMetalLib** to your workspace. But note that at the moment, you need to build the shader libraries from the console (see *Build* section).
+    - I would also add a sample app to your workspace. For instance, if you want to create an AR app, add **SampleAR** to your workspace.
+* Select your project in Xcode, and in Target → General → Embedded Binaries, select VidFramework (it should appear if it's in your workspace). This should also add it to Linked Framework & Libraries. But if it doesn't, add it there as well. Also make sure it did add an entry in Build Phases → Embed Frameworks.
 
 Build
 ====
-Use the provided build.sh, because I can't figure out how to get the shaders in VidMetalLib to get linked to the correct location from Xcode... 😅
+Use the provided `build.sh`, because I can't figure out how to get the shaders in **VidMetalLib** to get linked to the correct location from Xcode... 😅
 
 Overview
 =======
@@ -30,7 +32,14 @@ Open the VidWorkspace and you should see several samples.
 
 ## SampleAR
 
-ARKit sample app using the VidEngine (WIP).
+ARKit sample app using the VidEngine.
+
+[![SampleAR app](http://img.youtube.com/vi/-6M8qgVsx54/0.jpg)](https://www.youtube.com/watch?v=-6M8qgVsx54 "SampleAR app")
+
+Details in these posts:
+* [Spherical Harmonics Lighting from ARKit Environment Probes](http://endavid.com/index.php?entry=85)
+* [How to combine Render Command Encoders that use a different shader in Metal](https://stackoverflow.com/q/55442494/1765629)
+
 
 ## SampleColorPalette
 
@@ -61,9 +70,8 @@ This demonstrates the support of font rendering in the 3D world using Signed-Dis
 
 
 ## GPU Quaternions performance tests
-You need to find these ones in the commit history.
 
-Tags:
+You need to find these tags in the commit history:
 
     instanced-spheres-quaternions
     instanced-sphere-matrices
