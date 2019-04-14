@@ -30,7 +30,7 @@ public class ModelPrimitive : Primitive {
             if let e = error {
                 NSLog(e.localizedDescription)
             } else if let data = data,
-                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                let json = ((try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]) as [String : Any]??) {
                 if let json = json {
                     model =  ModelPrimitive(json: json, bundle: bundle)
                 }

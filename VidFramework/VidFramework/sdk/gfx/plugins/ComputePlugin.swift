@@ -19,7 +19,7 @@ class ComputePlugin: GraphicPlugin {
         }
     }
     func dequeue(_ prim: ComputePrimitive) {
-        let index = computePrimitives.index { $0 === prim }
+        let index = computePrimitives.firstIndex { $0 === prim }
         if let i = index {
             computePrimitives.remove(at: i)
         }

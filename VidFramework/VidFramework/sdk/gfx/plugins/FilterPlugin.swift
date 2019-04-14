@@ -19,7 +19,7 @@ class FilterPlugin: GraphicPlugin {
         }
     }
     func dequeue(_ filterChain: FilterChain) {
-        let index = filterChains.index { $0 === filterChain }
+        let index = filterChains.firstIndex { $0 === filterChain }
         if let i = index {
             filterChains.remove(at: i)
         }

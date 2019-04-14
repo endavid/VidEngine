@@ -302,7 +302,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         distanceMap.initialize(repeating: maxDist, count: count)
         // nearest boundary point map - zero out nearest boundary point map
         let boundaryPointMap = UnsafeMutablePointer<int2>.allocate(capacity: count)
-        let zero = int2(0)
+        let zero = int2(repeating: 0)
         boundaryPointMap.initialize(repeating: zero, count: count)
         let distUnit :Float = 1
         let distDiag :Float = sqrtf(2)

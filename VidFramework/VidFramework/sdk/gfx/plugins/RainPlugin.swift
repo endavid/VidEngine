@@ -33,7 +33,7 @@ class RainPlugin: GraphicPlugin {
         }
     }
     func dequeue(_ rain: Rain) {
-        let index = rains.index { $0 === rain }
+        let index = rains.firstIndex { $0 === rain }
         if let i = index {
             rains.remove(at: i)
         }

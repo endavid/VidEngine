@@ -36,7 +36,7 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     }
     override func dequeue(_ primitive: Primitive) {
         if let sphere = primitive as? EnvironmentSphere {
-            let index = envSpheres.index { $0 === sphere }
+            let index = envSpheres.firstIndex { $0 === sphere }
             if let i = index {
                 envSpheres.remove(at: i)
             }

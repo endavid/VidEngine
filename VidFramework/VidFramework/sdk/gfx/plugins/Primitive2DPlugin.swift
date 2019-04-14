@@ -35,7 +35,7 @@ class Primitive2DPlugin: GraphicPlugin {
         }
     }
     func dequeue(_ group: Group2D) {
-        let index = groups.index { $0 === group }
+        let index = groups.firstIndex { $0 === group }
         if let i = index {
             groups.remove(at: i)
         }

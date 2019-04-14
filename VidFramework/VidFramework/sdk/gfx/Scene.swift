@@ -83,7 +83,7 @@ open class Scene {
     
     /// Remove & dequeue Primitive
     public func dequeue(_ primitive: Primitive) {
-        let index = primitives.index { $0 === primitive }
+        let index = primitives.firstIndex { $0 === primitive }
         if let i = index {
             primitives.remove(at: i)
             primitive.dequeue()
@@ -91,7 +91,7 @@ open class Scene {
     }
     /// Remove & dequeue LightSource
     public func dequeue(_ light: LightSource) {
-        let index = lights.index { $0 === light }
+        let index = lights.firstIndex { $0 === light }
         if let i = index {
             lights.remove(at: i)
             light.dequeue()
@@ -142,7 +142,7 @@ open class Scene {
     }
     
     public func findPrimitive(by name: String) -> Primitive? {
-        let index = primitives.index { $0.name == name }
+        let index = primitives.firstIndex { $0.name == name }
         if let i = index {
             return primitives[i]
         }
@@ -150,7 +150,7 @@ open class Scene {
     }
     
     public func findPrimitiveInstance(by uuid: UUID) -> (Primitive, Int)? {
-        let index = primitives.index { $0.uuidInstanceMap[uuid] != nil }
+        let index = primitives.firstIndex { $0.uuidInstanceMap[uuid] != nil }
         if let i = index {
             let prim = primitives[i]
             let instanceIndex = prim.uuidInstanceMap[uuid]!

@@ -46,12 +46,12 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     
     func dequeue(_ primitive: Primitive) {
         if let textPrim = primitive as? TextPrimitive {
-            let index = textPrimitives.index { $0 === textPrim }
+            let index = textPrimitives.firstIndex { $0 === textPrim }
             if let i = index {
                 textPrimitives.remove(at: i)
             }
         } else {
-            let index = primitives.index { $0 === primitive }
+            let index = primitives.firstIndex { $0 === primitive }
             if let i = index {
                 primitives.remove(at: i)
             }

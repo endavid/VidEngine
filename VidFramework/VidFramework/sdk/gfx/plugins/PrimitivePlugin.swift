@@ -51,19 +51,19 @@ class PrimitivePlugin: GraphicPlugin {
     }
     
     func dequeue(_ primitive: Primitive) {
-        let index = primitives.index { $0 === primitive }
+        let index = primitives.firstIndex { $0 === primitive }
         if let i = index {
             primitives.remove(at: i)
         }
     }
     func dequeue(_ dot: Dots3D) {
-        let index = dots.index { $0 === dot }
+        let index = dots.firstIndex { $0 === dot }
         if let i = index {
             dots.remove(at: i)
         }
     }
     func dequeue(_ wire: WirePrimitive) {
-        let index = wires.index { $0 === wire }
+        let index = wires.firstIndex { $0 === wire }
         if let i = index {
             wires.remove(at: i)
         }

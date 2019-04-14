@@ -47,12 +47,12 @@ class DeferredLightingPlugin: GraphicPlugin {
     }
     func dequeue(_ light: LightSource) {
         if let l = light as? DirectionalLight {
-            let index = directionalLights.index { $0 === l }
+            let index = directionalLights.firstIndex { $0 === l }
             if let i = index {
                 directionalLights.remove(at: i)
             }
         } else if let l = light as? SHLight {
-            let index = shLights.index { $0 === l }
+            let index = shLights.firstIndex { $0 === l }
             if let i = index {
                 shLights.remove(at: i)
             }

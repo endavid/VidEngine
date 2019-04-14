@@ -11,7 +11,6 @@ import VidFramework
 
 class ViewController: VidController {
     private let mainScenePath = "CornellBox"
-    private var scene: Scene?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +24,7 @@ class ViewController: VidController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        scene?.dequeueAll()
+        scene.dequeueAll()
     }
 
     private func setupScene() {
