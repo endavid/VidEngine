@@ -276,12 +276,15 @@ open class VidController: UIViewController, MTKViewDelegate {
             let fov = 2.0 * DegToRad(camera.fov)
             let x = fov * Float((p1.x - p0.x) / self.view.frame.width)
             let y = fov * Float((p1.y - p0.y) / self.view.frame.height)
-            cameraAngleX += x
-            cameraAngleY += y
-            let aax = AngleAxis(angle: cameraAngleX, axis: float3(0,1,0))
-            let aay = AngleAxis(angle: cameraAngleY, axis: float3(1,0,0))
-            camera.transform.rotation = Quaternion(aay) * Quaternion(aax)
+            onApplyCameraDeltas(dx: x, dy: y)
         }
+    }
+    open func onApplyCameraDeltas(dx: Float, dy: Float) {
+        cameraAngleX += dx
+        cameraAngleY += dy
+        let aax = AngleAxis(angle: cameraAngleX, axis: float3(0,1,0))
+        let aay = AngleAxis(angle: cameraAngleY, axis: float3(1,0,0))
+        camera.transform.rotation = Quaternion(aay) * Quaternion(aax)
     }
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if Renderer.shared == nil {
