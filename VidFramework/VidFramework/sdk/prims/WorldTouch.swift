@@ -42,8 +42,8 @@ public class WorldTouch {
                 break
             }
             let loc = t.location(in: view)
-            let u = 2 * Float(loc.x / view.bounds.width) - 1
-            let v = 1 - 2 * Float(loc.y / view.bounds.height)
+            let u = Float(loc.x / view.bounds.width)
+            let v = Float(loc.y / view.bounds.height)
             touchUVs[i] = Vec2(u, v)
             locations[i] = loc
             i += 1
