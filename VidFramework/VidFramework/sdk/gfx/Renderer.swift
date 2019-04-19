@@ -294,13 +294,13 @@ public class Renderer {
     }
     
     func createTexturedVertexBuffer(_ label: String, numElements: Int) -> MTLBuffer {
-        let buffer = device.makeBuffer(length: numElements * MemoryLayout<TexturedVertex>.size, options: [])
+        let buffer = device.makeBuffer(length: numElements * MemoryLayout<TexturedVertex>.stride, options: [])
         buffer?.label = label
         return buffer!
     }
         
     func createTransformsBuffer(_ label: String, numElements: Int) -> MTLBuffer {
-        let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.size, options: [])
+        let buffer = device.makeBuffer(length: numElements * MemoryLayout<Transform>.stride, options: [])
         buffer?.label = label
         return buffer!
     }
@@ -311,7 +311,7 @@ public class Renderer {
     
     public static func createSyncBuffer<T>(from array: [T], label: String, device: MTLDevice) -> MTLBuffer? {
         let numElements = array.count * Renderer.NumSyncBuffers
-        guard let buffer = device.makeBuffer(length: numElements * MemoryLayout<T>.size, options: []) else {
+        guard let buffer = device.makeBuffer(length: numElements * MemoryLayout<T>.stride, options: []) else {
             NSLog("Failed to create MTLBuffer")
             return nil
         }
@@ -321,7 +321,7 @@ public class Renderer {
     
     public static func createBuffer<T>(from array: [T], device: MTLDevice) -> MTLBuffer? {
         let count = array.count
-        guard let buffer = device.makeBuffer(length: count * MemoryLayout<T>.size, options: []) else {
+        guard let buffer = device.makeBuffer(length: count * MemoryLayout<T>.stride, options: []) else {
             NSLog("Failed to create MTLBuffer")
             return nil
         }
@@ -333,7 +333,7 @@ public class Renderer {
     }
     
     public static func createBuffer<T>(from data: T, device: MTLDevice, numCopies: Int = 1) -> MTLBuffer? {
-        guard let buffer = device.makeBuffer(length: numCopies * MemoryLayout<T>.size, options: []) else {
+        guard let buffer = device.makeBuffer(length: numCopies * MemoryLayout<T>.stride, options: []) else {
             NSLog("Failed to create MTLBuffer")
             return nil
         }
