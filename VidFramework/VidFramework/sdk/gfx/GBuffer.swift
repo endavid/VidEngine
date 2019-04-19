@@ -36,7 +36,7 @@ struct GBuffer {
         width = Int(size.width)
         height = Int(size.height)
         let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
-        depthDesc.usage = .renderTarget
+        depthDesc.usage = [.renderTarget, .shaderRead]
         let stencilDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .stencil8, width: width, height: height, mipmapped: false)
         stencilDesc.usage = .renderTarget
         let albedoDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
