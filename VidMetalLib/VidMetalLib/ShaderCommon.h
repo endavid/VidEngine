@@ -75,7 +75,7 @@ struct PrimitiveInstance
 {
     Transform  transform;
     Material   material;
-    uint32_t   objectId;
+    uint16_t   objectId;
     // alignment in Swift side is 16 bytes
     uint16_t   padding0;
     uint32_t   padding1;
