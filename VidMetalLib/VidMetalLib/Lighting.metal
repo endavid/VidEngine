@@ -47,7 +47,7 @@ vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
     outVertex.uv = v.texCoords * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     outVertex.normal = worldNormal;
-    outVertex.objectId = 1;
+    outVertex.objectId = instances[iid].objectId;
     return outVertex;
 }
 

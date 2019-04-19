@@ -22,6 +22,7 @@ public class Primitive {
     public struct Instance {
         public var transform: Transform
         public var material: Material
+        public var objectId: UInt16
     }
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
     var vertexBuffer : MTLBuffer!
@@ -89,9 +90,9 @@ public class Primitive {
     
     init(instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")
-        self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white), count: instanceCount)
+        self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white, objectId: 0), count: instanceCount)
         let device = Renderer.shared.device
-        uniformBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
+        uniformBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
         uniformBuffer.label = "primUniforms"
     }
     
@@ -171,9 +172,9 @@ public class Primitive {
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
         let uniformB = uniformBuffer.contents()
-        bufferOffset = MemoryLayout<Instance>.size * instances.count * syncBufferIndex
+        bufferOffset = MemoryLayout<Instance>.stride * instances.count * syncBufferIndex
         let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
-        memcpy(uniformData, &instances, MemoryLayout<Instance>.size * instances.count)
+        memcpy(uniformData, &instances, MemoryLayout<Instance>.stride * instances.count)
     }
     
     public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {

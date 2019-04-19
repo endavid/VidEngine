@@ -73,8 +73,14 @@ struct Material {
 
 struct PrimitiveInstance
 {
-    Transform transform;
-    Material material;
+    Transform  transform;
+    Material   material;
+    uint32_t   objectId;
+    // alignment in Swift side is 16 bytes
+    uint16_t   padding0;
+    uint32_t   padding1;
+    uint32_t   padding2;
+    uint32_t   padding3;
 };
 
 constexpr sampler pointSampler(

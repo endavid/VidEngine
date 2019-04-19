@@ -36,18 +36,6 @@ class VidTestsTests: XCTestCase {
         super.tearDown()
     }
     
-    func testVector2() {
-        var v = float2(0, 3)
-        XCTAssertEqual(0, v.x)
-        XCTAssertEqual(3, v.y)
-        XCTAssertEqual(4 * 2, MemoryLayout<float2>.size)
-        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 2)
-        memcpy(unsafe, &v, MemoryLayout<float2>.size)
-        XCTAssertEqual(0, unsafe[0])
-        XCTAssertEqual(3, unsafe[1])
-        unsafe.deallocate()
-    }
-    
     func testSpherical() {
         let sph = Spherical(v: float3(0,1,0))
         XCTAssertEqual(sph.r, 1)

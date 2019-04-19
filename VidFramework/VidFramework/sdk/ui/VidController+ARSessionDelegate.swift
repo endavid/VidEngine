@@ -42,7 +42,7 @@ extension VidController: ARSessionDelegate {
                 t.scale = float3(plane.extent.x, 1, plane.extent.z)
                 if let primitive = scene.findPrimitive(by: arPlanesName), let planePrim = primitive as? PlanePrimitive {
                     scene.dequeue(primitive)
-                    var instance = Primitive.Instance(transform: t, material: .white)
+                    var instance = Primitive.Instance(transform: t, material: .white, objectId: 0)
                     instance.material.uvScale = Vec2(plane.extent.x / planePrim.gridSizeMeters, plane.extent.z / planePrim.gridSizeMeters)
                     let p = PlanePrimitive(planePrim, add: instance)
                     scene.setupARPlanes(p)
