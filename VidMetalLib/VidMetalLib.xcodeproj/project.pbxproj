@@ -44,8 +44,8 @@
 		632D27A720389353000562F0 = {
 			isa = PBXGroup;
 			children = (
-				632D27B020389353000562F0 /* VidMetalLib */,
 				632D27AF20389353000562F0 /* Products */,
+				632D27B020389353000562F0 /* VidMetalLib */,
 			);
 			sourceTree = "<group>";
 		};

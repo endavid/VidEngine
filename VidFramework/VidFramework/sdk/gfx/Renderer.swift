@@ -271,6 +271,9 @@ public class Renderer {
         rp.colorAttachments[1].loadAction = clear ? .clear : .load
         rp.colorAttachments[1].storeAction = .store
         rp.colorAttachments[1].clearColor = MTLClearColorMake(0, 1, 0, 0)
+        rp.colorAttachments[2].texture = gBuffer.objectTexture
+        rp.colorAttachments[2].loadAction = clear ? .clear : .load
+        rp.colorAttachments[2].storeAction = .store
         rp.depthAttachment.texture = gBuffer.depthTexture
         rp.depthAttachment.loadAction = clear ? .clear : .load
         rp.depthAttachment.storeAction = .store

@@ -17,10 +17,11 @@ struct VertexInOut {
 };
 
 struct VertexGBuffer {
-    float4  position [[position]];
-    float4  color;
-    float3  normal;
-    float2  uv;
+    float4    position [[position]];
+    float4    color;
+    float3    normal;
+    float2    uv;
+    uint16_t  objectId;
 };
 
 struct VertexOIT {
@@ -31,8 +32,9 @@ struct VertexOIT {
 };
 
 struct FragmentGBuffer {
-    half4 albedo [[ color(0) ]];
-    float4 normal [[ color(1) ]];
+    half4    albedo   [[ color(0) ]];
+    float4   normal   [[ color(1) ]];
+    uint16_t objectId [[ color(2) ]];
 };
 
 struct FragmentOIT {

@@ -47,6 +47,7 @@ vertex VertexGBuffer passLightGeometry(uint vid [[ vertex_id ]],
     outVertex.uv = v.texCoords * mat.uvScale + mat.uvOffset;
     outVertex.color = mat.diffuse;
     outVertex.normal = worldNormal;
+    outVertex.objectId = 1;
     return outVertex;
 }
 
@@ -58,6 +59,7 @@ fragment FragmentGBuffer passLightFragment(
     float4 texColor = tex.sample(linearSampler, inFrag.uv);
     outFragment.albedo = half4(texColor * inFrag.color);
     outFragment.normal = float4(inFrag.normal, 1.0);
+    outFragment.objectId = inFrag.objectId;
     return outFragment;
 };
 

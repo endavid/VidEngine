@@ -23,6 +23,8 @@ struct GBuffer {
     let stencilTexture: MTLTexture
     let albedoTexture: MTLTexture
     let normalTexture: MTLTexture
+    /// Buffer where we store the object IDs
+    let objectTexture: MTLTexture
     /// light accumulation buffer; cleared and reused for transparency
     let lightTexture: MTLTexture
     /// For Order-Independent Transparency
@@ -41,6 +43,8 @@ struct GBuffer {
         albedoDesc.usage = [.renderTarget, .shaderRead]
         let normalDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
         normalDesc.usage = [.renderTarget, .shaderRead]
+        let objectDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r16Uint, width: width, height: height, mipmapped: false)
+        objectDesc.usage = [.renderTarget, .shaderRead]
         let lightDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Float, width: width, height: height, mipmapped: false)
         lightDesc.usage = [.renderTarget, .shaderRead]
         let revealDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r16Float, width: width, height: height, mipmapped: false)
@@ -55,6 +59,8 @@ struct GBuffer {
         albedoTexture.label = "GBuffer:Albedo"
         normalTexture = device.makeTexture(descriptor: normalDesc)!
         normalTexture.label = "GBuffer:Normal"
+        objectTexture = device.makeTexture(descriptor: objectDesc)!
+        objectTexture.label = "GBuffer:ObjectId"
         lightTexture = device.makeTexture(descriptor: lightDesc)!
         lightTexture.label = "LightAccumulation"
         revealTexture = device.makeTexture(descriptor: revealDesc)!
@@ -76,6 +82,8 @@ struct GBuffer {
         pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = false
         pipelineStateDescriptor.colorAttachments[1].pixelFormat = normalTexture.pixelFormat
         pipelineStateDescriptor.colorAttachments[1].isBlendingEnabled = false
+        pipelineStateDescriptor.colorAttachments[2].pixelFormat = objectTexture.pixelFormat
+        pipelineStateDescriptor.colorAttachments[2].isBlendingEnabled = false
         pipelineStateDescriptor.sampleCount = albedoTexture.sampleCount
         pipelineStateDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
         pipelineStateDescriptor.stencilAttachmentPixelFormat = stencilTexture.pixelFormat
