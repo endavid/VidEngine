@@ -103,7 +103,7 @@ class ARPlugin: GraphicPlugin {
             try capturedImagePipelineState = device.makeRenderPipelineState(descriptor: capturedImagePipelineStateDescriptor)
             try readCubemapState = device.makeRenderPipelineState(descriptor: readCubemapDesc)
         } catch let error {
-            NSLog("Failed to created captured image pipeline state, error \(error)")
+            logInitError(error)
         }
         
         let capturedImageDepthStateDescriptor = MTLDepthStencilDescriptor()

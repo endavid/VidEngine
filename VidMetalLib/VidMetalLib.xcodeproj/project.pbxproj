@@ -19,6 +19,7 @@
 		637215ED2141D6850077F456 /* AR.metal in Sources */ = {isa = PBXBuildFile; fileRef = 637215EC2141D6850077F456 /* AR.metal */; };
 		6389DFBC2221F48B001625B4 /* Harmonics.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFBB2221F48B001625B4 /* Harmonics.metal */; };
 		6389DFC222235073001625B4 /* Skybox.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6389DFC122235073001625B4 /* Skybox.metal */; };
+		639A336C226A68BF00A9206F /* Interaction.metal in Sources */ = {isa = PBXBuildFile; fileRef = 639A336B226A68BF00A9206F /* Interaction.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		637215EE2141D6F80077F456 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		6389DFBB2221F48B001625B4 /* Harmonics.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Harmonics.metal; sourceTree = "<group>"; };
 		6389DFC122235073001625B4 /* Skybox.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Skybox.metal; sourceTree = "<group>"; };
+		639A336B226A68BF00A9206F /* Interaction.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Interaction.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -64,6 +66,7 @@
 				6311EE58222A9F5400B5A87F /* Dots.metal */,
 				632D27BD20389456000562F0 /* Fx.metal */,
 				6389DFBB2221F48B001625B4 /* Harmonics.metal */,
+				639A336B226A68BF00A9206F /* Interaction.metal */,
 				632D27B820389456000562F0 /* Lighting.metal */,
 				632D27C62038946F000562F0 /* ShaderCommon.h */,
 				632D27C72038946F000562F0 /* ShaderMath.h */,
@@ -142,6 +145,7 @@
 				632D27BF20389456000562F0 /* Lighting.metal in Sources */,
 				6311EE59222A9F5400B5A87F /* Dots.metal in Sources */,
 				6311EE5F222C3BAC00B5A87F /* Wires.metal in Sources */,
+				639A336C226A68BF00A9206F /* Interaction.metal in Sources */,
 				6389DFC222235073001625B4 /* Skybox.metal in Sources */,
 				637215ED2141D6850077F456 /* AR.metal in Sources */,
 				632D27C420389456000562F0 /* Fx.metal in Sources */,

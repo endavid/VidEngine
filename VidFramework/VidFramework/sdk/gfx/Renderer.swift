@@ -158,6 +158,7 @@ public class Renderer {
         plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
+        plugins.append(TouchPlugin(device: device, library: library, view: view))
         plugins.append(RainPlugin(device: device, library: library, view: view))
         plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
     }

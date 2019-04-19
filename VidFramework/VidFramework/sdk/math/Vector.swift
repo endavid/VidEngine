@@ -86,6 +86,7 @@ public struct Vec3 {
 }
 
 public struct Vec2 {
+    public static let zero = Vec2(0, 0)
     let x : Float
     let y : Float
     init(_ x: Float, _ y: Float) {

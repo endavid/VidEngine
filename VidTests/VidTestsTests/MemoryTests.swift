@@ -20,6 +20,12 @@ class MemoryTests: XCTestCase {
         XCTAssertEqual(16, MemoryLayout<Primitive.Instance>.alignment)
     }
     
+    func testWorldTouch() {
+        XCTAssertEqual(14, MemoryLayout<WorldTouch.Point>.size)
+        XCTAssertEqual(16, MemoryLayout<WorldTouch.Point>.stride)
+        XCTAssertEqual(4, MemoryLayout<WorldTouch.Point>.alignment)
+    }
+    
     func testVector2() {
         var v = float2(0, 3)
         XCTAssertEqual(0, v.x)

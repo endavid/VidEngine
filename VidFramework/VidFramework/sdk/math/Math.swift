@@ -43,6 +43,10 @@ func Min(_ a: Float, b: Float) -> Float {
 func Min(_ a: Int, b: Int) -> Int {
     return (a<=b) ?a:b
 }
+// Distance
+func Distance(_ a: CGPoint, _ b: CGPoint) -> Float {
+    return hypotf(Float(a.x - b.x), Float(a.y - b.y))
+}
 /// Ceil for ints
 func CeilDiv(_ a: Int, b: Int) -> Int {
     return (a + b - 1) / b

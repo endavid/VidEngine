@@ -37,4 +37,8 @@ class GraphicPlugin {
     func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
         
     }
+    
+    func logInitError(_ error: Error) {
+        NSLog("Failed to initialize \(label) plugin: \(error.localizedDescription)")
+    }
 }
