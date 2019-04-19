@@ -11,7 +11,7 @@ import simd
 import VidFramework
 @testable import VidTests
 
-class MatTests: XCTestCase {
+class MathTests: XCTestCase {
     func testSVDMatrix3() {
         let m = float3x3(
             float3(1, 3, 9),

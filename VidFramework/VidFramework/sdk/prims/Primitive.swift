@@ -89,7 +89,6 @@ public class Primitive {
     
     init(instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")
-        print(MemoryLayout<Instance>.size)
         self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white), count: instanceCount)
         let device = Renderer.shared.device
         uniformBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
