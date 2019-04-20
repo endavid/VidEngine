@@ -21,8 +21,8 @@ class MemoryTests: XCTestCase {
     }
     
     func testWorldTouch() {
-        XCTAssertEqual(14, MemoryLayout<WorldTouch.Point>.size)
-        XCTAssertEqual(16, MemoryLayout<WorldTouch.Point>.stride)
+        XCTAssertEqual(18, MemoryLayout<WorldTouch.Point>.size)
+        XCTAssertEqual(20, MemoryLayout<WorldTouch.Point>.stride)
         XCTAssertEqual(4, MemoryLayout<WorldTouch.Point>.alignment)
     }
     

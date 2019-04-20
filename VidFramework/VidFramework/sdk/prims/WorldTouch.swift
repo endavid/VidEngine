@@ -8,20 +8,49 @@
 
 import Metal
 
+extension UITouch {
+    func uv(in view: UIView) -> Vec2 {
+        let loc = location(in: view)
+        let u = Float(loc.x / view.bounds.width)
+        let v = Float(loc.y / view.bounds.height)
+        return Vec2(u, v)
+    }
+}
+
+struct TouchData {
+    static let zero = TouchData(uv: .zero, hash: 0)
+    public var uv: Vec2
+    public var hash: UInt32
+}
+
 /// If you need to detect touches in your 3D scene, add this
 /// to your scene
 public class WorldTouch {
     public struct Point {
         public var worldPosition: Vec3
+        public var hash: UInt32
         public var objectId: UInt16
     }
-    var touchUVs: [Vec2]
+    enum Phase {
+        case
+        set,
+        collecting,
+        stopped
+    }
+    var touchData: [TouchData]
     var points: [Point]
-    var locations: [CGPoint]
+    let touchCount: Int
     let touchBuffer: MTLBuffer!
     let pointBuffer: MTLBuffer!
     var touchOffset = 0
     var pointOffset = 0
+    private var _phase = Phase.stopped
+    
+    var phase: Phase {
+        get {
+            return _phase
+        }
+    }
     
     public func queue() {
         if let p: TouchPlugin? = Renderer.shared.getPlugin() {
@@ -35,57 +64,63 @@ public class WorldTouch {
     }
     
     public func setTouches(_ touches: Set<UITouch>, in view: UIView) {
-        let count = touchUVs.count
         var i = 0
         for t in touches {
-            if i == count {
+            if i == touchCount {
                 break
             }
-            let loc = t.location(in: view)
-            let u = Float(loc.x / view.bounds.width)
-            let v = Float(loc.y / view.bounds.height)
-            touchUVs[i] = Vec2(u, v)
-            locations[i] = loc
+            let uv = t.uv(in: view)
+            let hash = UInt32(truncatingIfNeeded: t.hashValue)
+            touchData[i] = TouchData(uv: uv, hash: hash)
             i += 1
+        }
+        if _phase == .stopped {
+            _phase = .set
         }
     }
     
+    public func clearTouches() {
+        _phase = .stopped
+        points = [Point](repeating: Point(worldPosition: Vec3.zero, hash: 0, objectId: 0), count: touchCount)
+        touchData = [TouchData](repeating: .zero, count: touchCount)
+    }
+    
     public func getPoint(from touch: UITouch, in view: UIView) -> Point? {
-        let loc = touch.location(in: view)
-        var d = Float.greatestFiniteMagnitude
-        var index = 0
-        for i in 0..<locations.count {
-            let dd = Distance(locations[i], loc)
-            if dd < d {
-                index = i
-                d = dd
-            }
+        if _phase != .collecting {
+            return nil
         }
-        let maxErrorDistance: Float = 1
-        if d < maxErrorDistance {
-            return points[index]
+        let hash = UInt32(truncatingIfNeeded: touch.hashValue)
+        for i in 0..<touchCount {
+            if points[i].hash == hash {
+                // print("getPoint: \(points[i].objectId) \(hash)")
+                return points[i]
+            }
         }
         return nil
     }
     
     public init(maxTouchCount: Int) {
-        touchUVs = [Vec2](repeating: Vec2.zero, count: maxTouchCount)
-        points = [Point](repeating: Point(worldPosition: Vec3.zero, objectId: 0), count: maxTouchCount)
-        locations = [CGPoint](repeating: CGPoint.zero, count: maxTouchCount)
+        touchCount = maxTouchCount
+        touchData = [TouchData](repeating: .zero, count: touchCount)
+        points = [Point](repeating: Point(worldPosition: Vec3.zero, hash: 0, objectId: 0), count: maxTouchCount)
         let device = Renderer.shared.device!
-        touchBuffer = Renderer.createSyncBuffer(from: touchUVs, label: "touchBuffer", device: device)
+        touchBuffer = Renderer.createSyncBuffer(from: touchData, label: "touchBuffer", device: device)
         pointBuffer = Renderer.createSyncBuffer(from: points, label: "pointBuffer", device: device)
     }
     
     func updateBuffers(_ syncBufferIndex: Int) {
-        copyTouchUVsToBuffer(syncBufferIndex)
+        if _phase == .stopped {
+            return
+        }
+        copyTouchDataToBuffer(syncBufferIndex)
         getPointsFromBuffers(syncBufferIndex)
+        _phase = .collecting
     }
-    func copyTouchUVsToBuffer(_ syncBufferIndex: Int) {
+    func copyTouchDataToBuffer(_ syncBufferIndex: Int) {
         let b = touchBuffer.contents()
-        touchOffset = MemoryLayout<Vec2>.stride * touchUVs.count * syncBufferIndex
-        let data = b.advanced(by: touchOffset).assumingMemoryBound(to: Float.self)
-        memcpy(data, &touchUVs, MemoryLayout<Vec2>.stride * touchUVs.count)
+        touchOffset = MemoryLayout<TouchData>.stride * touchCount * syncBufferIndex
+        let data = b.advanced(by: touchOffset).assumingMemoryBound(to: TouchData.self)
+        memcpy(data, &touchData, MemoryLayout<TouchData>.stride * touchCount)
     }
     func getPointsFromBuffers(_ syncBufferIndex: Int) {
         // offset for writing
@@ -99,8 +134,11 @@ public class WorldTouch {
     }
     
     func readSamples(encoder: MTLRenderCommandEncoder) {
+        if _phase != .collecting {
+            return
+        }
         encoder.setVertexBuffer(touchBuffer, offset: touchOffset, index: 0)
         encoder.setVertexBuffer(pointBuffer, offset: pointOffset, index: 2)
-        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: touchUVs.count)
+        encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: touchCount)
     }
 }

@@ -22,7 +22,12 @@ class TouchPlugin: GraphicPlugin {
     
     override var isEmpty: Bool {
         get {
-            return worldTouches.isEmpty
+            for t in worldTouches {
+                if t.phase != .stopped {
+                    return false
+                }
+            }
+            return true
         }
     }
     
