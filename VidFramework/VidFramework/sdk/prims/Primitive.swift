@@ -27,18 +27,29 @@ public class Primitive {
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
     var vertexBuffer : MTLBuffer!
     public var name: String = ""
+    /// Data that can be set per instance
     public var instances: [Instance]
-    let uniformBuffer: MTLBuffer!
+    /// Prevent rendering of a particular instance
+    public var isHidden: [Bool]
+    let instanceBuffer: MTLBuffer!
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
     var uuidInstanceMap: [UUID: Int] = [:]
     var bufferOffset = 0
+    private var _visibleInstanceCount = 0
     
     public var instanceCount: Int {
         get {
             return instances.count
         }
     }
+    
+    var visibleInstanceCount: Int {
+        get {
+            return _visibleInstanceCount
+        }
+    }
+    
     // convenience getter & setter for the case we have only 1 instance
     public var transform: Transform {
         get {
@@ -92,8 +103,9 @@ public class Primitive {
         assert(instanceCount > 0, "The number of instances should be >0")
         self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white, objectId: 0), count: instanceCount)
         let device = Renderer.shared.device
-        uniformBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
-        uniformBuffer.label = "primUniforms"
+        instanceBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
+        instanceBuffer.label = "instances"
+        isHidden = [Bool](repeating: false, count: instanceCount)
     }
     
     convenience init?(_ primitive: Primitive, without instanceIndex: Int) {
@@ -142,7 +154,7 @@ public class Primitive {
     }
     
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
-        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: self.instanceCount)
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: visibleInstanceCount)
     }
     
     public func queue() {
@@ -171,10 +183,18 @@ public class Primitive {
     
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
-        let uniformB = uniformBuffer.contents()
+        let b = instanceBuffer.contents()
         bufferOffset = MemoryLayout<Instance>.stride * instances.count * syncBufferIndex
-        let uniformData = uniformB.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)
-        memcpy(uniformData, &instances, MemoryLayout<Instance>.stride * instances.count)
+        let data = b.advanced(by: bufferOffset).assumingMemoryBound(to: Instance.self)
+        var j = 0
+        for i in 0..<instanceCount {
+            if isHidden[i] {
+                continue
+            }
+            data[j] = instances[i]
+            j += 1
+        }
+        _visibleInstanceCount = j
     }
     
     public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {

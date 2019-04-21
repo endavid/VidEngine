@@ -92,7 +92,6 @@ public class WorldTouch {
         let hash = UInt32(truncatingIfNeeded: touch.hashValue)
         for i in 0..<touchCount {
             if points[i].hash == hash {
-                // print("getPoint: \(points[i].objectId) \(hash)")
                 return points[i]
             }
         }

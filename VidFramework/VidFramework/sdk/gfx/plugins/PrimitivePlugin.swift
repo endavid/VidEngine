@@ -179,9 +179,12 @@ class PrimitivePlugin: GraphicPlugin {
         var currentAlbedoTexture: MTLTexture? = nil
         var currentSampler: TextureSamplers.SamplerType? = nil
         for p in primitives {
+            if p.visibleInstanceCount == 0 {
+                continue
+            }
             if p.submeshes.count > 0 {
                 encoder.setVertexBuffer(p.vertexBuffer, offset: 0, index: 0)
-                encoder.setVertexBuffer(p.uniformBuffer, offset: p.bufferOffset, index: 2)
+                encoder.setVertexBuffer(p.instanceBuffer, offset: p.bufferOffset, index: 2)
             }
             for mesh in p.submeshes {
                 if currentAlbedoTexture !== mesh.albedoTexture {
