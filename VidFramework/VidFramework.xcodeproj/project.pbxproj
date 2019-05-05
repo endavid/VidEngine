@@ -76,6 +76,7 @@
 		6393E7B8205B15500098F96F /* LinearRGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7B7205B15500098F96F /* LinearRGBA.swift */; };
 		6393E7BA205B157F0098F96F /* NormalizedSRGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */; };
 		6393E7BC205B159B0098F96F /* ColorSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7BB205B159B0098F96F /* ColorSpace.swift */; };
+		63968A05227EE25800F573BF /* DataIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63968A04227EE25800F573BF /* DataIO.swift */; };
 		639A3368226A46C600A9206F /* WorldTouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639A3367226A46C600A9206F /* WorldTouch.swift */; };
 		639A336A226A670A00A9206F /* TouchPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639A3369226A670A00A9206F /* TouchPlugin.swift */; };
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
@@ -168,6 +169,7 @@
 		6393E7B7205B15500098F96F /* LinearRGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinearRGBA.swift; sourceTree = "<group>"; };
 		6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalizedSRGBA.swift; sourceTree = "<group>"; };
 		6393E7BB205B159B0098F96F /* ColorSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSpace.swift; sourceTree = "<group>"; };
+		63968A04227EE25800F573BF /* DataIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIO.swift; sourceTree = "<group>"; };
 		639A3367226A46C600A9206F /* WorldTouch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTouch.swift; sourceTree = "<group>"; };
 		639A3369226A670A00A9206F /* TouchPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchPlugin.swift; sourceTree = "<group>"; };
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				632D27F2203896C7000562F0 /* Collections.swift */,
+				63968A04227EE25800F573BF /* DataIO.swift */,
 				632D27F3203896C7000562F0 /* Errors.swift */,
 				632D2866203984E3000562F0 /* FrameworkBundle.swift */,
 			);
@@ -505,6 +508,7 @@
 				63711CC120461C5700D046CF /* TextureFilter.swift in Sources */,
 				632D2811203896C7000562F0 /* TextPrimitive.swift in Sources */,
 				63AA9E702241B0D8004B9989 /* Samplers.swift in Sources */,
+				63968A05227EE25800F573BF /* DataIO.swift in Sources */,
 				6369035B206E22FA008EE410 /* WideColor.swift in Sources */,
 				6389DFB622178E96001625B4 /* SHBuffer.swift in Sources */,
 				6393E7B02059ED370098F96F /* CieLab.swift in Sources */,

@@ -19,24 +19,14 @@ public class ModelPrimitive : Primitive {
     ///   - bundle: bundle where to look for the resource.
     ///   - completion: callback for when the resource is ready.
     public static func loadAsync(forResource res: String, withExtension ext: String, bundle: Bundle, completion: @escaping (ModelPrimitive?, Error?) -> Void) {
-        // about @escaping http://stackoverflow.com/a/38990967/1765629
-        guard let url = bundle.url(forResource: res, withExtension: ext) else {
-            completion(nil, FileError.missing(res))
-            return
-        }
-        // http://stackoverflow.com/a/39423764/1765629
-        URLSession.shared.dataTask(with:url) { (data, response, error) in
-            var model: ModelPrimitive? = nil
-            if let e = error {
-                NSLog(e.localizedDescription)
-            } else if let data = data,
-                let json = ((try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]) as [String : Any]??) {
-                if let json = json {
-                    model =  ModelPrimitive(json: json, bundle: bundle)
-                }
+        DataIO.loadAsync(forResource: res, withExtension: ext, bundle: bundle) { (json, error) in
+            if let json = json {
+                let model = ModelPrimitive(json: json, bundle: bundle)
+                completion(model, error)
+            } else {
+                completion(nil, error)
             }
-            completion(model, nil)
-            }.resume()
+        }
     }
     
     /// Create multiple instances of a model with a hash map from a Json file.
