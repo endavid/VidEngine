@@ -155,19 +155,21 @@ public class SHLight: LightSource {
     }
     #endif
     
-    public init(position: float3, extent: float3, session: ARSession) {
-        if #available(iOS 12.0, *) {
-            let probeAnchor = AREnvironmentProbeAnchor(name: "sceneProbe", transform: Transform(position: position).toMatrix4(), extent: extent)
-            session.add(anchor: probeAnchor)
-            identifier = probeAnchor.identifier
-        } else {
-            identifier = UUID()
-            NSLog("Environment Probe not available <iOS12.0")
+    public static func loadAsync(forResource res: String, withExtension ext: String, bundle: Bundle, completion: @escaping (SHLight?, Error?) -> Void) {
+        DataIO.loadAsync(forResource: res, withExtension: ext, bundle: bundle) { (json, error) in
+            if let json = json {
+                let light = SHLight(position: .zero, extent: .one, json: json)
+                completion(light, error)
+            } else {
+                completion(nil, error)
+            }
         }
+    }
+    
+    init(position: float3, extent: float3, tonemap: float4, id: UUID) {
+        identifier = id
         let device = Renderer.shared.device!
         let t = Transform(position: position, scale: extent)
-        let s: Float = 2.0 / .pi // divide by .pi to convert irradiance to radiance
-        let tonemap = float4(s, s, s, 1.0)
         _instance = Instance(transform: t, tonemap: tonemap)
         shBuffer = SHBuffer(device: Renderer.shared.device, numBands: 3, sqrtSamples: 100)
         sh = SphericalHarmonics(shBuffer)
@@ -181,7 +183,62 @@ public class SHLight: LightSource {
         _phase = .initSamples
         _sampleIndex = 0
         super.init()
+    }
+    
+    public convenience init(position: float3, extent: float3, session: ARSession) {
+        var id = UUID()
+        if #available(iOS 12.0, *) {
+            let probeAnchor = AREnvironmentProbeAnchor(name: "sceneProbe", transform: Transform(position: position).toMatrix4(), extent: extent)
+            session.add(anchor: probeAnchor)
+            id = probeAnchor.identifier
+        } else {
+            NSLog("Environment Probe not available <iOS12.0")
+        }
+        let s: Float = 2.0 / .pi // divide by .pi to convert irradiance to radiance
+        let tonemap = float4(s, s, s, 1.0)
+        self.init(position: position, extent: extent, tonemap: tonemap, id: id)
         initDefaultLight()
+    }
+    
+    public convenience init(position: float3, extent: float3, json: [String : Any]) {
+        self.init(position: position, extent: extent, tonemap: .one, id: UUID())
+        do {
+            try parseJson(json)
+        } catch let error {
+            NSLog(error.localizedDescription)
+        }
+    }
+    
+    private func parseJson(_ json: [String : Any]) throws {
+        let numCoeffs = json["numCoeffs"] as? Int ?? 9
+        guard let coeffs = json["coeffs"] as? [Any] else {
+            throw SerializationError.missing("coeffs")
+        }
+        if coeffs.count != numCoeffs {
+            throw SerializationError.invalid("coeffs", coeffs)
+        }
+        for i in 0..<numCoeffs {
+            guard let numbers = coeffs[i] as? [NSNumber] else {
+                continue
+            }
+            let c = numbers.map { $0.floatValue }
+            shBuffer.setCoefficient(i: i, Vec3(c[0], c[1], c[2]))
+        }
+        guard let mIrradiance = json["mIrradiance"] as? [Any] else {
+            sh.computeIrradianceApproximationMatrices()
+            return
+        }
+        if mIrradiance.count != 3 {
+            throw SerializationError.invalid("mIrradiance", mIrradiance)
+        }
+        for i in 0...2 {
+            guard let numbers = mIrradiance[i] as? [NSNumber] else {
+                continue
+            }
+            let c = numbers.map { $0.floatValue }
+            let m = float4x4(rowMajorElements: c)
+            sh.storage.setIrradiance(i: i, m)
+        }
     }
     
     private func initDefaultLight() {

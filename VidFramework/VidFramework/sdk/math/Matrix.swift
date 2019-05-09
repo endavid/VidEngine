@@ -58,4 +58,11 @@ public extension float4x4 {
             return float3x3(c0.xyz, c1.xyz, c2.xyz)
         }
     }
+    init(rowMajorElements v: [Float]) {
+        let col0 = float4(v[0], v[4], v[8], v[12])
+        let col1 = float4(v[1], v[5], v[9], v[13])
+        let col2 = float4(v[2], v[6], v[10], v[14])
+        let col3 = float4(v[3], v[7], v[11], v[15])
+        self.init(col0, col1, col2, col3)
+    }
 }

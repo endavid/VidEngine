@@ -8,6 +8,8 @@
 import simd
 
 public extension float3 {
+    static let one = float3(1,1,1)
+    
     init(_ v: Vec3) {
         self.init(v.x, v.y, v.z)
     }
@@ -35,6 +37,8 @@ public extension float3 {
 }
 
 public extension float4 {
+    static let one = float4(1,1,1,1)
+
     var xyz: float3 {
         get {
             return float3(x, y, z)
