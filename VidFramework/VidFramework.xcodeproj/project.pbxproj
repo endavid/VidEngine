@@ -77,6 +77,7 @@
 		6393E7BA205B157F0098F96F /* NormalizedSRGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */; };
 		6393E7BC205B159B0098F96F /* ColorSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393E7BB205B159B0098F96F /* ColorSpace.swift */; };
 		63968A05227EE25800F573BF /* DataIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63968A04227EE25800F573BF /* DataIO.swift */; };
+		63968A0922872A7C00F573BF /* SkySphere.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63968A0822872A7C00F573BF /* SkySphere.swift */; };
 		639A3368226A46C600A9206F /* WorldTouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639A3367226A46C600A9206F /* WorldTouch.swift */; };
 		639A336A226A670A00A9206F /* TouchPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639A3369226A670A00A9206F /* TouchPlugin.swift */; };
 		639D0706203B774F00F9905D /* ComputePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639D0705203B774F00F9905D /* ComputePlugin.swift */; };
@@ -170,6 +171,7 @@
 		6393E7B9205B157F0098F96F /* NormalizedSRGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalizedSRGBA.swift; sourceTree = "<group>"; };
 		6393E7BB205B159B0098F96F /* ColorSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSpace.swift; sourceTree = "<group>"; };
 		63968A04227EE25800F573BF /* DataIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIO.swift; sourceTree = "<group>"; };
+		63968A0822872A7C00F573BF /* SkySphere.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkySphere.swift; sourceTree = "<group>"; };
 		639A3367226A46C600A9206F /* WorldTouch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTouch.swift; sourceTree = "<group>"; };
 		639A3369226A670A00A9206F /* TouchPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchPlugin.swift; sourceTree = "<group>"; };
 		639D0705203B774F00F9905D /* ComputePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputePlugin.swift; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				6311EE60222C3D3C00B5A87F /* WireCube.swift */,
 				6311EE5C222BF34F00B5A87F /* WirePrimitive.swift */,
 				639A3367226A46C600A9206F /* WorldTouch.swift */,
+				63968A0822872A7C00F573BF /* SkySphere.swift */,
 			);
 			path = prims;
 			sourceTree = "<group>";
@@ -550,6 +553,7 @@
 				639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */,
 				63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */,
 				639A3368226A46C600A9206F /* WorldTouch.swift in Sources */,
+				63968A0922872A7C00F573BF /* SkySphere.swift in Sources */,
 				632D2827203896C7000562F0 /* DeferredShadingPlugin.swift in Sources */,
 				632D282C203896C7000562F0 /* FullScreenQuad.swift in Sources */,
 				632D2814203896C7000562F0 /* Spherical.swift in Sources */,
