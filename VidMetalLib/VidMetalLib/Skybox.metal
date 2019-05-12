@@ -21,14 +21,17 @@ vertex VertexSkybox passSkyboxGeometry(
   uint iid [[ instance_id ]],
   constant TexturedVertex* vdata [[ buffer(0) ]],
   constant Scene& scene [[ buffer(1) ]],
-  constant Transform* instances [[ buffer(2) ]])
+  constant PrimitiveInstance* instances [[ buffer(2) ]])
 {
     VertexSkybox outVertex;
-    Transform t = instances[iid];
+    Transform t = instances[iid].transform;
+    Material mat = instances[iid].material;
     TexturedVertex v = vdata[vid];
     float4 viewPos = scene.viewMatrix * float4(t * v.position, 1.0);
     outVertex.position = scene.projectionMatrix * viewPos;
     outVertex.normal = quatMul(t.rotation, v.normal);
+    // we can invert normals with uvScale
+    outVertex.normal *= mat.uvScale.x;
     return outVertex;
 }
 

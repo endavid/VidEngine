@@ -17,5 +17,14 @@ public class EnvironmentSphere: SpherePrimitive {
         let desc = SphereDescriptor(isInterior: isInterior, widthSegments: widthSegments, heightSegments: heightSegments)
         super.init(instanceCount: 1, descriptor: desc)
         lightingType = .UnlitOpaque
+        if isInterior {
+            // this is to invert normals in the shader,
+            // used for sampling the cubemap correctly
+            material.uvScale = Vec2(-1, -1)
+        }
+    }
+    public func setCubemapTexture(resource: String, bundle: Bundle, addToCache: Bool, completion: @escaping (Error?) -> Void) {
+        let options = TextureLoadOptions(options: nil, type: .cubemap)
+        setAlbedoTexture(resource: resource, bundle: bundle, options: options, addToCache: addToCache, completion: completion)
     }
 }

@@ -14,9 +14,4 @@ public class SkySphere: EnvironmentSphere {
         name = "SkySphere"
         transform = Transform(position: .zero, scale: 2 * radius)
     }
-    
-    public func setCubemapTexture(resource: String, bundle: Bundle, addToCache: Bool, completion: @escaping (Error?) -> Void) {
-        let options = TextureLoadOptions(options: nil, type: .cubemap)
-        setAlbedoTexture(resource: resource, bundle: bundle, options: options, addToCache: addToCache, completion: completion)
-    }
 }

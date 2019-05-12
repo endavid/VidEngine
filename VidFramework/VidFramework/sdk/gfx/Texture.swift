@@ -308,6 +308,9 @@ extension MTKTextureLoader {
         let bytesPerRow = bytesPerPixel * size
         let bytesPerImage = bytesPerRow * size
         let ts = MTKTextureLoader.getTransformsForLayout(layout.0, size: CGFloat(size))
+        // Order: +X, -X, +Y, -Y, +Z, -Z
+        //  @see `MTLTextureType` https://developer.apple.com/documentation/metal/mtltexturetype
+        //  @see https://docs.unity3d.com/Manual/class-Cubemap.html
         for slice in 0..<6 {
             let portion = ts[slice]
             let data = MTKTextureLoader.dataFromCgImage(cgImage, region: portion)
