@@ -53,6 +53,13 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return LinearRGBA.toUInt64(raw)
         }
     }
+    public var uiColor: UIColor {
+        get {
+            // @todo use displayP3 if any channel is out of 0..1 bounds
+            let c = UIColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
+            return c
+        }
+    }
     public init(r: Float, g: Float, b: Float, a: Float) {
         raw = float4(r, g, b, a)
     }

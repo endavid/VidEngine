@@ -18,31 +18,33 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
     
-    var argb : UInt32 {
+    public var vector: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
         get {
             var fRed : CGFloat = 0
             var fGreen : CGFloat = 0
             var fBlue : CGFloat = 0
             var fAlpha : CGFloat = 0
             self.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
-            let alpha = UInt32(255.0 * fAlpha)
-            let red = UInt32(255.0 * fRed)
-            let green = UInt32(255.0 * fGreen)
-            let blue = UInt32(255.0 * fBlue)
+            return (fRed, fGreen, fBlue, fAlpha)
+        }
+    }
+    var argb : UInt32 {
+        get {
+            let v = self.vector
+            let alpha = UInt32(255.0 * v.a)
+            let red = UInt32(255.0 * v.r)
+            let green = UInt32(255.0 * v.g)
+            let blue = UInt32(255.0 * v.b)
             return (alpha << 24 | red << 16 | green << 8 | blue)
         }
     }
     var rgba : UInt32 {
         get {
-            var fRed : CGFloat = 0
-            var fGreen : CGFloat = 0
-            var fBlue : CGFloat = 0
-            var fAlpha : CGFloat = 0
-            self.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
-            let alpha = UInt32(255.0 * fAlpha)
-            let red = UInt32(255.0 * fRed)
-            let green = UInt32(255.0 * fGreen)
-            let blue = UInt32(255.0 * fBlue)
+            let v = self.vector
+            let alpha = UInt32(255.0 * v.a)
+            let red = UInt32(255.0 * v.r)
+            let green = UInt32(255.0 * v.g)
+            let blue = UInt32(255.0 * v.b)
             return (red << 24 | green << 16 | blue << 8 | alpha)
         }
     }
