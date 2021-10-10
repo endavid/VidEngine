@@ -12,15 +12,13 @@ public class LightSource {
     public var name: String = ""
     
     public func queue() {
-        if let plugin: DeferredLightingPlugin? = Renderer.shared?.getPlugin(),
-            let p = plugin {
+        if let p: DeferredLightingPlugin = Renderer.shared?.getPlugin() {
             p.queue(self)
         }
     }
     
     public func dequeue() {
-        if let plugin: DeferredLightingPlugin? = Renderer.shared?.getPlugin(),
-            let p = plugin {
+        if let p: DeferredLightingPlugin = Renderer.shared?.getPlugin() {
             p.dequeue(self)
         }
     }

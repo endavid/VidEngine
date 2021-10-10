@@ -131,8 +131,7 @@ public class SHLight: LightSource {
         // queue the deferred shading
         super.queue()
         // and the AR plugin
-        if let plugin: ARPlugin? = Renderer.shared?.getPlugin(),
-            let p = plugin {
+        if let p: ARPlugin = Renderer.shared?.getPlugin() {
             p.queue(self)
         }
     }
@@ -142,8 +141,7 @@ public class SHLight: LightSource {
         _debugBB?.dequeue()
         _debugDots?.dequeue()
         _debugSphere?.dequeue()
-        if let plugin: ARPlugin? = Renderer.shared?.getPlugin(),
-            let p = plugin {
+        if let p: ARPlugin = Renderer.shared?.getPlugin() {
             p.dequeue(self)
         }
     }

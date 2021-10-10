@@ -13,8 +13,8 @@ extension VidController: ARSessionDelegate {
         for anchor in anchors {
             if #available(iOS 12.0, *) {
                 if let probe = anchor as? AREnvironmentProbeAnchor,
-                    let plugin: ARPlugin? = Renderer.shared?.getPlugin(),
-                    let shLight = plugin?.findProbe(identifier: probe.identifier)
+                    let plugin: ARPlugin = Renderer.shared?.getPlugin(),
+                    let shLight = plugin.findProbe(identifier: probe.identifier)
                 {
                     shLight.environmentTexture = probe.environmentTexture
                     continue
