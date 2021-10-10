@@ -58,6 +58,17 @@ fragment half4 passThroughTexturedFragment(
     return half4(out);
 }
 
+fragment FragmentMini passThroughMRT2(
+    VertexInOut inFrag [[stage_in]],
+    texture2d<float> tex0 [[ texture(0) ]],
+    texture2d<float> tex1 [[ texture(1) ]])
+{
+    FragmentMini out;
+    out.normal = tex0.sample(linearSampler, inFrag.uv);
+    out.depth = tex1.sample(linearSampler, inFrag.uv).x;
+    return out;
+}
+
 fragment half4 texturedFragment(
   VertexInOut inFrag [[stage_in]],
   texture2d<float> tex [[ texture(0) ]],

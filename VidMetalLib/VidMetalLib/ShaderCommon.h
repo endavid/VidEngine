@@ -37,6 +37,11 @@ struct FragmentGBuffer {
     uint16_t objectId [[ color(2) ]];
 };
 
+struct FragmentMini {
+    float4   normal   [[ color(0) ]];
+    float    depth    [[ color(1) ]];
+};
+
 struct FragmentOIT {
     float4 accumulation [[ color(0) ]];
     float reveal [[ color(1) ]];

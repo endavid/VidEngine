@@ -157,6 +157,7 @@ public class Renderer {
         plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(DownsamplePlugin(device: device, library: library, view: view, gBuffer: gBuffer, downscaleLevel: 2))
         plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
         plugins.append(TouchPlugin(device: device, library: library, view: view))
         plugins.append(RainPlugin(device: device, library: library, view: view))
@@ -180,11 +181,15 @@ public class Renderer {
         }
         let w = _gBuffer?.width ?? 0
         let h = _gBuffer?.height ?? 0
-        if let metalLayer = view.layer as? CAMetalLayer {
-            let size = metalLayer.drawableSize
-            if w != Int(size.width) || h != Int(size.height ){
-                _gBuffer = GBuffer(device: device, size: size)
+        if #available(iOS 13.0, *) {
+            if let metalLayer = view.layer as? CAMetalLayer {
+                let size = metalLayer.drawableSize
+                if w != Int(size.width) || h != Int(size.height ){
+                    _gBuffer = GBuffer(device: device, size: size)
+                }
             }
+        } else {
+            // Fallback on earlier versions
         }
         // reset state
         frameState = FrameState()
