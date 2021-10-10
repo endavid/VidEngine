@@ -36,7 +36,7 @@ class ViewController: VidController {
         view.addGestureRecognizer(tapGest)
         
         debugCube = CubePrimitive(instanceCount: 1)
-        debugCube.transform.scale = float3(0.1,0.1,0.1)
+        debugCube.transform.scale = simd_float3(0.1,0.1,0.1)
         debugCube.queue()
     }
     

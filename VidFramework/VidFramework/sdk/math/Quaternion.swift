@@ -9,13 +9,13 @@
 import simd
 
 public struct Quaternion : CustomStringConvertible {
-    public var q = float4(0, 0, 0, 1) /// xyz: imaginary part; w: real part
+    public var q = simd_float4(0, 0, 0, 1) /// xyz: imaginary part; w: real part
     public var w : Float {
         get {
             return q.w
         }
     }
-    public var v : float3 {
+    public var v : simd_float3 {
         get {
             return q.xyz
         }
@@ -25,8 +25,8 @@ public struct Quaternion : CustomStringConvertible {
     }
     public init() {
     }
-    public init(w: Float, v: float3) {
-        q = float4(v.x, v.y, v.z, w)
+    public init(w: Float, v: simd_float3) {
+        q = simd_float4(v.x, v.y, v.z, w)
     }
     public init(_ angleAxis: AngleAxis) {
         let a = angleAxis.angle
@@ -71,11 +71,11 @@ public struct Quaternion : CustomStringConvertible {
         return float3x3(c0.xyz, c1.xyz, c2.xyz)
     }
     
-    public static func createRotation(start: float3, end: float3) -> Quaternion {
-        let up = float3(start.x, start.z, start.y)
+    public static func createRotation(start: simd_float3, end: simd_float3) -> Quaternion {
+        let up = simd_float3(start.x, start.z, start.y)
         return createRotation(start: start, end: end, up: up)
     }
-    public static func createRotation(start: float3, end: float3, up: float3) -> Quaternion {
+    public static func createRotation(start: simd_float3, end: simd_float3, up: simd_float3) -> Quaternion {
         if end.isClose(start, epsilon: 0.01) { // no rotation
             return Quaternion()
         }
@@ -89,9 +89,9 @@ public struct Quaternion : CustomStringConvertible {
     public init(_ m: float3x3) {
         let (cx, cy, cz) = m.columns
         let angle = acos((cx.x + cy.y + cz.z - 1.0) / 2.0)
-        var axis = float3(0, 0, 1)
+        var axis = simd_float3(0, 0, 1)
         if !IsClose(angle, 0) {
-            let d = float3(
+            let d = simd_float3(
                 cy.z - cz.y,
                 cz.x - cx.z,
                 cx.y - cy.x)
@@ -118,7 +118,7 @@ public func * (a: Quaternion, b: Quaternion) -> Quaternion {
     return Quaternion(w: scalar, v: v)
 }
 /// rotation of a vector by a UNIT quaternion
-public func * (q: Quaternion, v: float3) -> float3 {
+public func * (q: Quaternion, v: simd_float3) -> simd_float3 {
     let p = q * Quaternion(w: 0, v: v) * q.inverse()
     return p.v
 }

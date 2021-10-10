@@ -33,7 +33,7 @@ open class VidController: UIViewController, MTKViewDelegate {
     var elapsedTimeGPU: TimeInterval = 0.0
     let inflightSemaphore = DispatchSemaphore(value: Renderer.NumSyncBuffers)
     
-    private var currentTouch = float2(0, -2)
+    private var currentTouch = simd_float2(0, -2)
     private var cameraAngleX: Float = 0
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
@@ -282,8 +282,8 @@ open class VidController: UIViewController, MTKViewDelegate {
     open func onApplyCameraDeltas(dx: Float, dy: Float) {
         cameraAngleX += dx
         cameraAngleY += dy
-        let aax = AngleAxis(angle: cameraAngleX, axis: float3(0,1,0))
-        let aay = AngleAxis(angle: cameraAngleY, axis: float3(1,0,0))
+        let aax = AngleAxis(angle: cameraAngleX, axis: simd_float3(0,1,0))
+        let aay = AngleAxis(angle: cameraAngleY, axis: simd_float3(1,0,0))
         camera.transform.rotation = Quaternion(aay) * Quaternion(aax)
     }
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

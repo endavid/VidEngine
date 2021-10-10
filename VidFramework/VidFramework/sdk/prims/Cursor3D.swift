@@ -51,7 +51,7 @@ public class Cursor3D {
         primitive.queue()
     }
     
-    func set(position: float3, rotation: Quaternion) {
+    func set(position: simd_float3, rotation: Quaternion) {
         primitive.transform.position = position
         primitive.transform.rotation = rotation
     }

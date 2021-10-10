@@ -9,6 +9,6 @@
 import simd
 
 public struct Line {
-    public let start: float4
-    public let end: float4
+    public let start: simd_float4
+    public let end: simd_float4
 }

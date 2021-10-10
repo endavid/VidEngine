@@ -79,28 +79,28 @@ public class Camera {
         setPerspectiveProjection(fov: fov, near: near, far: far)
     }
     
-    public func getUpVector() -> float3 {
+    public func getUpVector() -> simd_float3 {
         // up vector at start is (0,1,0)
-        return transform.rotation * float3(0,1,0)
+        return transform.rotation * simd_float3(0,1,0)
     }
     
     public func getGazeRay() -> Ray {
-        let viewDirection = transform.rotation * float3(0,0,-1)
+        let viewDirection = transform.rotation * simd_float3(0,0,-1)
         let p = transform.position
         return Ray(start: p, direction: viewDirection)
     }
     
-    public func setViewDirection(_ dir: float3, up: float3) {
+    public func setViewDirection(_ dir: simd_float3, up: simd_float3) {
         // at start, camera is looking at -Z
-        transform.rotation = Quaternion.createRotation(start: float3(0,0,-1), end: dir, up: up)
+        transform.rotation = Quaternion.createRotation(start: simd_float3(0,0,-1), end: dir, up: up)
     }
     
-    public func setViewDirection(target: float3, up: float3) {
+    public func setViewDirection(target: simd_float3, up: simd_float3) {
         let dir = normalize(target - transform.position)
         setViewDirection(dir, up: up)
     }
     
-    public func setEyePosition(_ pos: float3) {
+    public func setEyePosition(_ pos: simd_float3) {
         transform.position = transform.rotation * pos
     }
     
@@ -122,9 +122,9 @@ public class Camera {
     /// The screen coordinates must be normalized between -1 and 1
     public func rayFromScreenCoordinates(x: Float, y: Float) -> Ray {
         let p = transform.position
-        let screenHalfway = float4(x, y, 0.75, 1)
+        let screenHalfway = simd_float4(x, y, 0.75, 1)
         let viewW = projectionInverse * screenHalfway
-        let viewHalfWay = float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
+        let viewHalfWay = simd_float3(viewW.x, viewW.y, viewW.z) * (1.0 / viewW.w)
         let worldHalfWay = transform * viewHalfWay
         return Ray(start: p, direction: normalize(worldHalfWay - p))
     }

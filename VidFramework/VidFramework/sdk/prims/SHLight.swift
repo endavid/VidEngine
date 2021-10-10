@@ -25,7 +25,7 @@ public class SHLight: LightSource {
     }
     struct Instance {
         var transform: Transform
-        var tonemap: float4
+        var tonemap: simd_float4
     }
     let irradianceBlendFrameCount = 30
     let identifier: UUID
@@ -166,7 +166,7 @@ public class SHLight: LightSource {
         }
     }
     
-    init(position: float3, extent: float3, tonemap: float4, id: UUID) {
+    init(position: simd_float3, extent: simd_float3, tonemap: simd_float4, id: UUID) {
         identifier = id
         let device = Renderer.shared.device!
         let t = Transform(position: position, scale: extent)
@@ -185,7 +185,7 @@ public class SHLight: LightSource {
         super.init()
     }
     
-    public convenience init(position: float3, extent: float3, session: ARSession) {
+    public convenience init(position: simd_float3, extent: simd_float3, session: ARSession) {
         var id = UUID()
         if #available(iOS 12.0, *) {
             let probeAnchor = AREnvironmentProbeAnchor(name: "sceneProbe", transform: Transform(position: position).toMatrix4(), extent: extent)
@@ -195,12 +195,12 @@ public class SHLight: LightSource {
             NSLog("Environment Probe not available <iOS12.0")
         }
         let s: Float = 2.0 / .pi // divide by .pi to convert irradiance to radiance
-        let tonemap = float4(s, s, s, 1.0)
+        let tonemap = simd_float4(s, s, s, 1.0)
         self.init(position: position, extent: extent, tonemap: tonemap, id: id)
         initDefaultLight()
     }
     
-    public convenience init(position: float3, extent: float3, json: [String : Any]) {
+    public convenience init(position: simd_float3, extent: simd_float3, json: [String : Any]) {
         self.init(position: position, extent: extent, tonemap: .one, id: UUID())
         do {
             try parseJson(json)
@@ -334,12 +334,12 @@ public class SHLight: LightSource {
     /// For debugging the values obtained
     func dump6Irradiances() {
         print("Updated probe \(identifier.uuidString)")
-        let up = sh.getIrradianceApproximation(normal: float3(0, 1, 0))
-        let down = sh.getIrradianceApproximation(normal: float3(0, -1, 0))
-        let west = sh.getIrradianceApproximation(normal: float3(-1, 0, 0))
-        let east = sh.getIrradianceApproximation(normal: float3(1, 0, 0))
-        let south = sh.getIrradianceApproximation(normal: float3(0, 0, 1))
-        let north = sh.getIrradianceApproximation(normal: float3(0, 0, -1))
+        let up = sh.getIrradianceApproximation(normal: simd_float3(0, 1, 0))
+        let down = sh.getIrradianceApproximation(normal: simd_float3(0, -1, 0))
+        let west = sh.getIrradianceApproximation(normal: simd_float3(-1, 0, 0))
+        let east = sh.getIrradianceApproximation(normal: simd_float3(1, 0, 0))
+        let south = sh.getIrradianceApproximation(normal: simd_float3(0, 0, 1))
+        let north = sh.getIrradianceApproximation(normal: simd_float3(0, 0, -1))
         print("SH up: \(up)")
         print("SH down: \(down)")
         print("SH west: \(west)")

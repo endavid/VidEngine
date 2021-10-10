@@ -12,7 +12,7 @@ public struct CieLab {
     private static let e: Float = 216/24389
     private static let k: Float = 24389/27
 
-    public let Lab: float3
+    public let Lab: simd_float3
     public var L: Float {
         get { return Lab.x }
     }
@@ -24,21 +24,21 @@ public struct CieLab {
     }
     public var rgba16U: UInt64 {
         get {
-            return LinearRGBA.toUInt64(float4(L/100, 0.5 + 0.5*a/128, 0.5 + 0.5*b/128, 1.0))
+            return LinearRGBA.toUInt64(simd_float4(L/100, 0.5 + 0.5*a/128, 0.5 + 0.5*b/128, 1.0))
         }
     }
     
     public init(L: Float, a: Float, b: Float) {
-        Lab = float3(L, a, b)
+        Lab = simd_float3(L, a, b)
     }
-    public init(Lab: float3) {
+    public init(Lab: simd_float3) {
         self.Lab = Lab
     }
     public init(xyz: CieXYZ) {
         let w = ReferenceWhite.D50.xyz
-        let r = float3(xyz.x / w.x, xyz.y / w.y, xyz.z / w.z)
-        let f = float3(CieLab.cubicRoot(r.x), CieLab.cubicRoot(r.y), CieLab.cubicRoot(r.z))
-        Lab = float3(116 * f.y - 16, 500 * (f.x - f.y), 200 * (f.y - f.z))
+        let r = simd_float3(xyz.x / w.x, xyz.y / w.y, xyz.z / w.z)
+        let f = simd_float3(CieLab.cubicRoot(r.x), CieLab.cubicRoot(r.y), CieLab.cubicRoot(r.z))
+        Lab = simd_float3(116 * f.y - 16, 500 * (f.x - f.y), 200 * (f.y - f.z))
     }
     private static func cubicRoot(_ c: Float) -> Float {
         if c <= CieLab.e {
@@ -68,6 +68,6 @@ public extension CieXYZ {
         let x = Lab.a / 500 + y
         let z = y - Lab.b / 200
         let w = ReferenceWhite.D50.xyz
-        xyz = float3(Lab.cube(x) * w.x, Lab.cubey(y) * w.y, Lab.cube(z) * w.z)
+        xyz = simd_float3(Lab.cube(x) * w.x, Lab.cubey(y) * w.y, Lab.cube(z) * w.z)
     }
 }

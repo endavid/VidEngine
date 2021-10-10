@@ -17,7 +17,7 @@ func assertAlmostEqual(_ expected: SHSample, _ actual: SHSample) {
     assertAlmostEqual(expected.coeff, actual.coeff)
 }
 
-func checkIrradiance(_ sh: SphericalHarmonics, color: float3, irradiance: float3, normal: float3) {
+func checkIrradiance(_ sh: SphericalHarmonics, color: simd_float3, irradiance: simd_float3, normal: simd_float3) {
     // every run the samples are random, so we make the epsilon a bit big
     let e: Float = 0.5
     assertAlmostEqual(color, sh.reconstruct(direction: normal), epsilon: e)
@@ -80,10 +80,10 @@ class SphericalHarmonicsTests: XCTestCase {
         sh.projectPolarFn(colorFromPolarCoordinates)
         
         // irradiance is the integral in the hemisphere, so a brighter value
-        checkIrradiance(sh, color: float3(-0.2, 1.05, 0.85), irradiance: float3(1.46, 2.37, 2.41), normal: float3(0, 1, 0))
-        checkIrradiance(sh, color: float3(-0.23, 1.0, 0.07), irradiance: float3(1.43, 2.46, 0.85), normal: float3(0, -1, 0))
-        checkIrradiance(sh, color: float3(1.14, 0.05, -0.04), irradiance: float3(2.43, 1.18, 1.33), normal: float3(1, 0, 0))
-        checkIrradiance(sh, color: float3(1, 1, 1), irradiance: float3(2.48, 2.65, 1.9), normal: float3(0, 0, -1))
+        checkIrradiance(sh, color: simd_float3(-0.2, 1.05, 0.85), irradiance: simd_float3(1.46, 2.37, 2.41), normal: simd_float3(0, 1, 0))
+        checkIrradiance(sh, color: simd_float3(-0.23, 1.0, 0.07), irradiance: simd_float3(1.43, 2.46, 0.85), normal: simd_float3(0, -1, 0))
+        checkIrradiance(sh, color: simd_float3(1.14, 0.05, -0.04), irradiance: simd_float3(2.43, 1.18, 1.33), normal: simd_float3(1, 0, 0))
+        checkIrradiance(sh, color: simd_float3(1, 1, 1), irradiance: simd_float3(2.48, 2.65, 1.9), normal: simd_float3(0, 0, -1))
 
     }
 }

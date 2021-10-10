@@ -190,7 +190,7 @@ open class Scene {
         } else {
             // if the cursor is an XZ plane, this will make it
             // face the camera
-            let q = Quaternion(AngleAxis(angle: .pi / 2, axis: float3(1, 0, 0)))
+            let q = Quaternion(AngleAxis(angle: .pi / 2, axis: simd_float3(1, 0, 0)))
             let p = gazeRay.travelDistance(d: c.defaultDistanceFromCamera)
             c.set(position: p, rotation: camera.transform.rotation * q)
             c.setIntersection(false)

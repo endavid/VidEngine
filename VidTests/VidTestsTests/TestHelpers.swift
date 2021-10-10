@@ -10,14 +10,14 @@ import XCTest
 import simd
 import VidFramework
 
-func assertAlmostEqual(_ expected: float3, _ actual: float3, epsilon: Float = 1e-6) {
+func assertAlmostEqual(_ expected: simd_float3, _ actual: simd_float3, epsilon: Float = 1e-6) {
     let d = distance(expected, actual)
     if d > epsilon {
         NSLog("expected: \(expected); actual: \(actual)")
     }
     XCTAssertLessThanOrEqual(d, epsilon)
 }
-func assertAlmostEqual(_ expected: float4, _ actual: float4, epsilon: Float = 1e-6) {
+func assertAlmostEqual(_ expected: simd_float4, _ actual: simd_float4, epsilon: Float = 1e-6) {
     let d = distance(expected, actual)
     if d > epsilon {
         NSLog("expected: \(expected); actual: \(actual)")
@@ -56,7 +56,7 @@ func assertAlmostEqual(_ expected: Spherical, _ actual: Spherical, epsilon: Floa
     XCTAssertLessThanOrEqual(d2, epsilon)
 }
 func assertAlmostEqual(_ expected: Vec3, _ actual: Vec3, epsilon: Float = 1e-6) {
-    assertAlmostEqual(float3(expected), float3(actual))
+    assertAlmostEqual(simd_float3(expected), simd_float3(actual))
 }
 func assertAlmostEqual(_ expected: [Double], _ actual: [Double], epsilon: Double = 1e-6) {
     XCTAssertEqual(expected.count, actual.count)

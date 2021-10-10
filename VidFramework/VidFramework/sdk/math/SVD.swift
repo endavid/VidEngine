@@ -37,7 +37,7 @@ func svd(array x:[Double], m:Int, n:Int) -> (u:[Double], s:[Double], v:[Double])
     return (U, s, v)
 }
 
-public func svd(matrix m: float3x3) -> (float3x3, float3, float3x3) {
+public func svd(matrix m: float3x3) -> (float3x3, simd_float3, float3x3) {
     let (c0, c1, c2) = m.columns
     let d0 = [Double(c0.x), Double(c0.y), Double(c0.z)]
     let d1 = [Double(c1.x), Double(c1.y), Double(c1.z)]
@@ -48,13 +48,13 @@ public func svd(matrix m: float3x3) -> (float3x3, float3, float3x3) {
     let sf = s.map { Float($0) }
     let vf = v.map { Float($0) }
     let U = float3x3(
-        float3(uf[0], uf[1], uf[2]),
-        float3(uf[3], uf[4], uf[5]),
-        float3(uf[6], uf[7], uf[8]))
-    let S = float3(sf[0], sf[4], sf[8])
+        simd_float3(uf[0], uf[1], uf[2]),
+        simd_float3(uf[3], uf[4], uf[5]),
+        simd_float3(uf[6], uf[7], uf[8]))
+    let S = simd_float3(sf[0], sf[4], sf[8])
     let V = float3x3(
-        float3(vf[0], vf[1], vf[2]),
-        float3(vf[3], vf[4], vf[5]),
-        float3(vf[6], vf[7], vf[8]))
+        simd_float3(vf[0], vf[1], vf[2]),
+        simd_float3(vf[3], vf[4], vf[5]),
+        simd_float3(vf[6], vf[7], vf[8]))
     return (U, S, V)
 }

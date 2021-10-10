@@ -11,7 +11,7 @@ import simd
 
 public struct Material {
     public static let white = Material(
-        diffuse: LinearRGBA(rgb: float3(1,1,1))
+        diffuse: LinearRGBA(rgb: simd_float3(1,1,1))
     )
     /// Diffuse color, in linear RGB color space.
     public var diffuse : LinearRGBA

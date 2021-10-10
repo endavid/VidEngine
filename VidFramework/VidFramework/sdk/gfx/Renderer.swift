@@ -17,10 +17,10 @@ import simd
 struct GraphicsData {
     var elapsedTime : Float = 0
     var currentPitch : Float = 0
-    var currentTouch = float2(0, 0)
+    var currentTouch = simd_float2(0, 0)
     var projectionMatrix = float4x4()
     var viewMatrix = float4x4()
-    var nearTransparency = float4(0, 0, 2, 2)
+    var nearTransparency = simd_float4(0, 0, 2, 2)
 }
 
 public enum RendererError: Error {

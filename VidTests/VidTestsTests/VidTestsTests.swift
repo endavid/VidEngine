@@ -37,7 +37,7 @@ class VidTestsTests: XCTestCase {
     }
     
     func testSpherical() {
-        let sph = Spherical(v: float3(0,1,0))
+        let sph = Spherical(v: simd_float3(0,1,0))
         XCTAssertEqual(sph.r, 1)
         XCTAssertEqual(sph.θ, 0)
         XCTAssertEqual(sph.φ, 0)
@@ -46,50 +46,50 @@ class VidTestsTests: XCTestCase {
     func testCameraProjection() {
         let camera = Camera()
         camera.setPerspectiveProjection(fov: 90, near: 0.1, far: 100, aspectRatio: 1)
-        camera.setViewDirection(float3(0,0,-1), up: float3(0,1,0))
-        camera.setEyePosition(float3(0,2,20))
+        camera.setViewDirection(simd_float3(0,0,-1), up: simd_float3(0,1,0))
+        camera.setEyePosition(simd_float3(0,2,20))
         assertAlmostEqual(float4x4([
-                float4(1,0,0,0),
-                float4(0,1,0,0),
-                float4(0,0,-1.002,-1.0),
-                float4(0,0,-0.2002,0)
+                simd_float4(1,0,0,0),
+                simd_float4(0,1,0,0),
+                simd_float4(0,0,-1.002,-1.0),
+                simd_float4(0,0,-0.2002,0)
             ]),
             camera.projection, epsilon: epsilon)
         assertAlmostEqual(float4x4([
-                float4(1,0,0,0),
-                float4(0,1,0,0),
-                float4(0,0,0,-4.995),
-                float4(0,0,-1,5.005)
+                simd_float4(1,0,0,0),
+                simd_float4(0,1,0,0),
+                simd_float4(0,0,0,-4.995),
+                simd_float4(0,0,-1,5.005)
             ]),
             camera.projectionInverse, epsilon: epsilon)
         assertAlmostEqual(Transform(
-                position: float3(0, 2, 20),
-                scale: float3(1, 1, 1),
-                rotation: Quaternion(w: 1, v: float3(0,0,0))
+                position: simd_float3(0, 2, 20),
+                scale: simd_float3(1, 1, 1),
+                rotation: Quaternion(w: 1, v: simd_float3(0,0,0))
             ),
             camera.transform, epsilon: epsilon)
-        let worldPoint = float3(0.6, 1.2, -5)
+        let worldPoint = simd_float3(0.6, 1.2, -5)
         var viewPoint = camera.viewTransform * worldPoint
         // checked with Octave
-        assertAlmostEqual(float3(0.6, -0.8, -25.0), viewPoint, epsilon: epsilon)
-        var worldPoint4 = float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
+        assertAlmostEqual(simd_float3(0.6, -0.8, -25.0), viewPoint, epsilon: epsilon)
+        var worldPoint4 = simd_float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
         var viewPoint4 = camera.viewMatrix * worldPoint4
-        assertAlmostEqual(float4(0.6, -0.8, -25.0, 1.0), viewPoint4, epsilon: epsilon)
+        assertAlmostEqual(simd_float4(0.6, -0.8, -25.0, 1.0), viewPoint4, epsilon: epsilon)
         let screenPoint = camera.projection * viewPoint4
-        assertAlmostEqual(float4(0.6, -0.8, 24.84980, 25.0), screenPoint, epsilon: epsilon)
+        assertAlmostEqual(simd_float4(0.6, -0.8, 24.84980, 25.0), screenPoint, epsilon: epsilon)
         var p = screenPoint * (1.0 / screenPoint.w)
         p = camera.projectionInverse * p
         p = p * (1.0 / p.w)
         assertAlmostEqual(p, viewPoint4, epsilon: epsilon)
-        let wp = camera.transform * float3(p.x, p.y, p.z)
+        let wp = camera.transform * simd_float3(p.x, p.y, p.z)
         assertAlmostEqual(wp, worldPoint, epsilon: epsilon)
-        let qx = Quaternion(AngleAxis(angle: .pi / 4, axis: float3(0,1,0)))
+        let qx = Quaternion(AngleAxis(angle: .pi / 4, axis: simd_float3(0,1,0)))
         camera.rotation = qx
         viewPoint = camera.viewTransform * worldPoint
-        assertAlmostEqual(float3(18.1019, -0.8, -17.2534), viewPoint, epsilon: epsilon)
-        worldPoint4 = float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
+        assertAlmostEqual(simd_float3(18.1019, -0.8, -17.2534), viewPoint, epsilon: epsilon)
+        worldPoint4 = simd_float4(worldPoint.x, worldPoint.y, worldPoint.z, 1.0)
         viewPoint4 = camera.viewMatrix * worldPoint4
-        assertAlmostEqual(float4(18.1019, -0.8, -17.2534, 1.0), viewPoint4, epsilon: epsilon)
+        assertAlmostEqual(simd_float4(18.1019, -0.8, -17.2534, 1.0), viewPoint4, epsilon: epsilon)
     }
     
     // average: 0.027 secs

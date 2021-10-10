@@ -13,16 +13,16 @@ public struct LinearRGBA: ColorWithAlpha {
     public static let white = LinearRGBA(r: 1,g: 1,b: 1,a: 1)
     public static let black = LinearRGBA(r: 0,g: 0,b: 0,a: 1)
     public static let transparent = LinearRGBA(r: 0,g: 0,b: 0,a: 0)
-    public let raw: float4
+    public let raw: simd_float4
     
-    static func toUInt32(_ rgba: float4) -> UInt32 {
+    static func toUInt32(_ rgba: simd_float4) -> UInt32 {
         let r = UInt32((Float(0xFF) * rgba.x).rounded())
         let g = UInt32((Float(0xFF) * rgba.y).rounded())
         let b = UInt32((Float(0xFF) * rgba.z).rounded())
         let a = UInt32((Float(0xFF) * rgba.w).rounded())
         return (a << 24 | b << 16 | g << 8 | r)
     }
-    static func toUInt64(_ rgba: float4) -> UInt64 {
+    static func toUInt64(_ rgba: simd_float4) -> UInt64 {
         let r = UInt64((Float(0xFFFF) * rgba.x).rounded())
         let g = UInt64((Float(0xFFFF) * rgba.y).rounded())
         let b = UInt64((Float(0xFFFF) * rgba.z).rounded())
@@ -51,12 +51,12 @@ public struct LinearRGBA: ColorWithAlpha {
             return raw.w
         }
     }
-    public var rgb: float3 {
+    public var rgb: simd_float3 {
         get {
-            return float3(r, g, b)
+            return simd_float3(r, g, b)
         }
     }
-    public var color: float3 {
+    public var color: simd_float3 {
         get {
             return rgb
         }
@@ -73,11 +73,11 @@ public struct LinearRGBA: ColorWithAlpha {
     }
     
     public init(r: Float, g: Float, b: Float, a: Float) {
-        raw = float4(r, g, b, a)
+        raw = simd_float4(r, g, b, a)
     }
     
-    public init(rgb: float3, a: Float = 1.0) {
-        raw = float4(rgb.x, rgb.y, rgb.z, a)
+    public init(rgb: simd_float3, a: Float = 1.0) {
+        raw = simd_float4(rgb.x, rgb.y, rgb.z, a)
     }
     
     public init(srgba: NormalizedSRGBA) {
@@ -87,7 +87,7 @@ public struct LinearRGBA: ColorWithAlpha {
             }
             return sign(c) * powf((abs(c) + 0.055) / 1.055, 2.4)
         }
-        raw = float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
+        raw = simd_float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
     }
     
     /// When using a UIColor, the inverse gamma will be applied and

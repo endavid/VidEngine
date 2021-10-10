@@ -10,9 +10,9 @@ import simd
 
 // Better UVs than PlatonicSolids
 class SubdivisionSphere {
-    var vertices: [float3] = []
+    var vertices: [simd_float3] = []
     var uvs: [Vec2] = []
-    var faces: [int3] = []
+    var faces: [simd_int3] = []
     
     // size = 1 by default (radius = 0.5)
     init(widthSegments: Int, heightSegments: Int) {
@@ -40,10 +40,10 @@ class SubdivisionSphere {
                 let v3 = indices[y+1][x]
                 let v4 = indices[y+1][x+1]
                 if y != 0 {
-                    faces.append(int3(v1, v2, v4))
+                    faces.append(simd_int3(v1, v2, v4))
                 }
                 if y != h-1 {
-                    faces.append(int3(v2, v3, v4))
+                    faces.append(simd_int3(v2, v3, v4))
                 }
             }
         }

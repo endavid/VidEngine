@@ -10,7 +10,7 @@ import simd
 
 public struct CieXYZ {
     public static let zero = CieXYZ(x: 0, y: 0, z: 0)
-    public let xyz : float3
+    public let xyz : simd_float3
     public var x : Float {
         get {
             return xyz.x
@@ -27,9 +27,9 @@ public struct CieXYZ {
         }
     }
     public init(x: Float, y: Float, z: Float) {
-        xyz = float3(x, y, z)
+        xyz = simd_float3(x, y, z)
     }
-    public init(xyz: float3) {
+    public init(xyz: simd_float3) {
         self.xyz = xyz
     }
     public init(rgb: LinearRGBA, colorSpace: RGBColorSpace) {
@@ -41,6 +41,6 @@ public extension LinearRGBA {
     init(xyz: CieXYZ, colorSpace: RGBColorSpace) {
         let m = colorSpace.toRGB
         let rgb = m * xyz.xyz
-        raw = float4(rgb.x, rgb.y, rgb.z, 1.0)
+        raw = simd_float4(rgb.x, rgb.y, rgb.z, 1.0)
     }
 }

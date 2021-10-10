@@ -56,7 +56,7 @@ class ViewController: VidController {
         let plane = PlanePrimitive(instanceCount: 1)
         plane.lightingType = .UnlitTransparent
         plane.name = "cursorPlane"
-        plane.transform.scale = float3(0.1, 1, 0.1)
+        plane.transform.scale = simd_float3(0.1, 1, 0.1)
         plane.material.diffuse = .white
         if let bundle = try? FrameworkBundle.mainBundle() {
             plane.setAlbedoTexture(resource: FrameworkBundle.squareFrameImage, bundle: bundle, options: nil, addToCache: true) { (error) in
@@ -76,27 +76,27 @@ class ViewController: VidController {
         if let session = arSession, let c = scene.cursor, c.intersecting {
             let t = c.transform
             addModel(transform: t)
-            addLightProbe(position: t.position + float3(0, 0.25, 0), session: session)
+            addLightProbe(position: t.position + simd_float3(0, 0.25, 0), session: session)
             addAnchor(session: session, transform: t)
         }
     }
     
     func addAnchor(session: ARSession, transform t: Transform) {
-        let tAnchor = Transform(position: t.position, scale: float3(1,1,1), rotation: t.rotation)
+        let tAnchor = Transform(position: t.position, scale: simd_float3(1,1,1), rotation: t.rotation)
         // Create a new anchor with the object's current transform and add it to the session
         let newAnchor = ARAnchor(transform: tAnchor.toMatrix4())
         session.add(anchor: newAnchor)
     }
     
     func addModel(transform t: Transform) {
-        let tOnGround = Transform(position: t.position + float3(0, 0.05, 0), scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
+        let tOnGround = Transform(position: t.position + simd_float3(0, 0.05, 0), scale: simd_float3(0.1, 0.1, 0.1), rotation: t.rotation)
         switch model {
         case .cube:
             addCube(transform: tOnGround)
         case .sphere:
             addSphere(transform: tOnGround)
         default:
-            let tSmall = Transform(position: t.position, scale: float3(0.1, 0.1, 0.1), rotation: t.rotation)
+            let tSmall = Transform(position: t.position, scale: simd_float3(0.1, 0.1, 0.1), rotation: t.rotation)
             addModelFile(model.rawValue, transform: tSmall)
         }
     }
@@ -130,8 +130,8 @@ class ViewController: VidController {
         }
     }
     
-    func addLightProbe(position: float3, session: ARSession) {
-        let extent = float3(0.5, 0.5, 0.5)
+    func addLightProbe(position: simd_float3, session: ARSession) {
+        let extent = simd_float3(0.5, 0.5, 0.5)
         let probe = SHLight(position: position, extent: extent, session: session)
         probe.debug = isDebug ? .sphere : .none
         probe.showBoundingBox = isDebug

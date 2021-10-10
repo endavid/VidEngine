@@ -9,7 +9,7 @@
 import simd
 
 public struct CiexyY {
-    public let xyY: float3
+    public let xyY: simd_float3
     public var x: Float {
         get {
             return xyY.x
@@ -34,7 +34,7 @@ public struct CiexyY {
         }
     }
     public init(x: Float, y: Float, Y: Float = 1) {
-        xyY = float3(x, y, Y)
+        xyY = simd_float3(x, y, Y)
     }
 }
 

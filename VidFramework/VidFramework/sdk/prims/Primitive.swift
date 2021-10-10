@@ -229,7 +229,7 @@ public class Primitive {
         let triangles = getTriangles()
         var dist = Float.greatestFiniteMagnitude
         var transform = Transform()
-        var point = float3(0,0,0)
+        var point = simd_float3(0,0,0)
         var triangle: Triangle?
         for i in instances {
             // Convert the ray to model space, less operations

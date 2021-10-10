@@ -54,7 +54,7 @@ public class SpherePrimitive : Primitive {
         }
     }
     
-    fileprivate func initBuffers(vertices: [float3], faces: [int3], uvs: [Vec2]) {
+    fileprivate func initBuffers(vertices: [simd_float3], faces: [simd_int3], uvs: [Vec2]) {
         var triangleList = [UInt16](repeating: 0, count: faces.count * 3)
         for i in 0..<faces.count {
             // isInterior -> CW winding

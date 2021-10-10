@@ -7,25 +7,25 @@
 
 import simd
 
-public extension float3 {
-    static let one = float3(1,1,1)
+public extension simd_float3 {
+    static let one = simd_float3(1,1,1)
     
     init(_ v: Vec3) {
         self.init(v.x, v.y, v.z)
     }
-    func inverse() -> float3 {
-        return float3( x: fabsf(self.x)>0 ? 1/self.x : 0,
+    func inverse() -> simd_float3 {
+        return simd_float3( x: fabsf(self.x)>0 ? 1/self.x : 0,
                        y: fabsf(self.y)>0 ? 1/self.y : 0,
                        z: fabsf(self.z)>0 ? 1/self.z : 0)
     }
     /// similar vectors
-    func isClose(_ v: float3, epsilon: Float = 0.0001) -> Bool {
+    func isClose(_ v: simd_float3, epsilon: Float = 0.0001) -> Bool {
         let diff = self - v
         return IsClose(length_squared(diff), 0, epsilon: epsilon * epsilon)
     }
     /// Rounds to decimal places value
-    func rounded(toPlaces places:Int) -> float3 {
-        return float3(
+    func rounded(toPlaces places:Int) -> simd_float3 {
+        return simd_float3(
             self.x.rounded(toPlaces: places),
             self.y.rounded(toPlaces: places),
             self.z.rounded(toPlaces: places))
@@ -36,12 +36,12 @@ public extension float3 {
     }
 }
 
-public extension float4 {
-    static let one = float4(1,1,1,1)
+public extension simd_float4 {
+    static let one = simd_float4(1,1,1,1)
 
-    var xyz: float3 {
+    var xyz: simd_float3 {
         get {
-            return float3(x, y, z)
+            return simd_float3(x, y, z)
         }
     }
 }
@@ -57,7 +57,7 @@ public struct Vec4 {
         self.z = z
         self.w = w
     }
-    init(_ v: float4) {
+    init(_ v: simd_float4) {
         self.x = v.x
         self.y = v.y
         self.z = v.z
@@ -82,7 +82,7 @@ public struct Vec3 {
         self.y = y
         self.z = z
     }
-    public init(_ v: float3) {
+    public init(_ v: simd_float3) {
         self.x = v.x
         self.y = v.y
         self.z = v.z

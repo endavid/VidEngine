@@ -27,12 +27,12 @@ class MemoryTests: XCTestCase {
     }
     
     func testVector2() {
-        var v = float2(0, 3)
+        var v = simd_float2(0, 3)
         XCTAssertEqual(0, v.x)
         XCTAssertEqual(3, v.y)
-        XCTAssertEqual(4 * 2, MemoryLayout<float2>.size)
+        XCTAssertEqual(4 * 2, MemoryLayout<simd_float2>.size)
         let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 2)
-        memcpy(unsafe, &v, MemoryLayout<float2>.size)
+        memcpy(unsafe, &v, MemoryLayout<simd_float2>.size)
         XCTAssertEqual(0, unsafe[0])
         XCTAssertEqual(3, unsafe[1])
         unsafe.deallocate()

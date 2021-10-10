@@ -12,8 +12,8 @@ import simd
 
 /// Creates a platonic solid. Used for creating spheres with different tesselation levels.
 class PlatonicSolid {
-    var vertices : [float3]
-    var faces : [int3]
+    var vertices : [simd_float3]
+    var faces : [simd_int3]
     var numEdges : Int
     fileprivate var edgeWalk : Int = 0
     fileprivate var start : [Int] = []
@@ -21,41 +21,41 @@ class PlatonicSolid {
     fileprivate var midpoint : [Int] = []
     
     init(numVertices: Int, numFaces: Int, numEdges: Int) {
-        vertices = [float3](repeating: float3(0,0,0), count: numVertices)
-        faces = [int3](repeating: int3(0,0,0), count: numFaces)
+        vertices = [simd_float3](repeating: simd_float3(0,0,0), count: numVertices)
+        faces = [simd_int3](repeating: simd_int3(0,0,0), count: numFaces)
         self.numEdges = numEdges
     }
     
     static func createTetrahedron() -> PlatonicSolid {
         let ps = PlatonicSolid(numVertices: 4, numFaces: 4, numEdges: 6)
         let sqrt3 = 1 / sqrtf(3.0)
-        ps.vertices[0] = float3( sqrt3,  sqrt3,  sqrt3)
-        ps.vertices[1] = float3(-sqrt3, -sqrt3,  sqrt3)
-        ps.vertices[2] = float3(-sqrt3,  sqrt3, -sqrt3)
-        ps.vertices[3] = float3( sqrt3, -sqrt3, -sqrt3)
-        ps.faces[0] = int3(0, 2, 1)
-        ps.faces[1] = int3(0, 1, 3)
-        ps.faces[2] = int3(2, 3, 1)
-        ps.faces[3] = int3(3, 2, 0)
+        ps.vertices[0] = simd_float3( sqrt3,  sqrt3,  sqrt3)
+        ps.vertices[1] = simd_float3(-sqrt3, -sqrt3,  sqrt3)
+        ps.vertices[2] = simd_float3(-sqrt3,  sqrt3, -sqrt3)
+        ps.vertices[3] = simd_float3( sqrt3, -sqrt3, -sqrt3)
+        ps.faces[0] = simd_int3(0, 2, 1)
+        ps.faces[1] = simd_int3(0, 1, 3)
+        ps.faces[2] = simd_int3(2, 3, 1)
+        ps.faces[3] = simd_int3(3, 2, 0)
         return ps
     }
     
     static func createOctahedron() -> PlatonicSolid {
         let ps = PlatonicSolid(numVertices: 6, numFaces: 8, numEdges: 12)
-        ps.vertices[0] = float3( 0,  0, -1)
-        ps.vertices[1] = float3( 1,  0,  0)
-        ps.vertices[2] = float3( 0, -1,  0)
-        ps.vertices[3] = float3(-1,  0,  0)
-        ps.vertices[4] = float3( 0,  1,  0)
-        ps.vertices[5] = float3( 0,  0,  1)
-        ps.faces[0] = int3(0, 1, 2)
-        ps.faces[1] = int3(0, 2, 3)
-        ps.faces[2] = int3(0, 3, 4)
-        ps.faces[3] = int3(0, 4, 1)
-        ps.faces[4] = int3(5, 2, 1)
-        ps.faces[5] = int3(5, 3, 2)
-        ps.faces[6] = int3(5, 4, 3)
-        ps.faces[7] = int3(5, 1, 4)
+        ps.vertices[0] = simd_float3( 0,  0, -1)
+        ps.vertices[1] = simd_float3( 1,  0,  0)
+        ps.vertices[2] = simd_float3( 0, -1,  0)
+        ps.vertices[3] = simd_float3(-1,  0,  0)
+        ps.vertices[4] = simd_float3( 0,  1,  0)
+        ps.vertices[5] = simd_float3( 0,  0,  1)
+        ps.faces[0] = simd_int3(0, 1, 2)
+        ps.faces[1] = simd_int3(0, 2, 3)
+        ps.faces[2] = simd_int3(0, 3, 4)
+        ps.faces[3] = simd_int3(0, 4, 1)
+        ps.faces[4] = simd_int3(5, 2, 1)
+        ps.faces[5] = simd_int3(5, 3, 2)
+        ps.faces[6] = simd_int3(5, 4, 3)
+        ps.faces[7] = simd_int3(5, 1, 4)
         return ps
     }
     
@@ -64,38 +64,38 @@ class PlatonicSolid {
         let t = (1+sqrtf(5))/2
         let tau = t/sqrtf(1+t*t)
         let one = 1/sqrtf(1+t*t)
-        ps.vertices[0]  = float3( tau,  one,    0)
-        ps.vertices[1]  = float3(-tau,  one,    0)
-        ps.vertices[2]  = float3(-tau, -one,    0)
-        ps.vertices[3]  = float3( tau, -one,    0)
-        ps.vertices[4]  = float3( one,    0,  tau)
-        ps.vertices[5]  = float3( one,    0, -tau)
-        ps.vertices[6]  = float3(-one,    0, -tau)
-        ps.vertices[7]  = float3(-one,    0,  tau)
-        ps.vertices[8]  = float3(   0,  tau,  one)
-        ps.vertices[9]  = float3(   0, -tau,  one)
-        ps.vertices[10] = float3(   0, -tau, -one)
-        ps.vertices[11] = float3(   0,  tau, -one)
-        ps.faces[0]  = int3( 4, 8, 7  )
-        ps.faces[1]  = int3( 4, 7, 9  )
-        ps.faces[2]  = int3( 5, 6, 11 )
-        ps.faces[3]  = int3( 5, 10, 6 )
-        ps.faces[4]  = int3( 0, 4, 3  )
-        ps.faces[5]  = int3( 0, 3, 5  )
-        ps.faces[6]  = int3( 2, 7, 1  )
-        ps.faces[7]  = int3( 2, 1, 6  )
-        ps.faces[8]  = int3( 8, 0, 11 )
-        ps.faces[9]  = int3( 8, 11, 1 )
-        ps.faces[10] = int3( 9, 10, 3 )
-        ps.faces[11] = int3( 9, 2, 10 )
-        ps.faces[12] = int3( 8, 4, 0  )
-        ps.faces[13] = int3( 11, 0, 5 )
-        ps.faces[14] = int3( 4, 9, 3  )
-        ps.faces[15] = int3( 5, 3, 10 )
-        ps.faces[16] = int3( 7, 8, 1  )
-        ps.faces[17] = int3( 6, 1, 11 )
-        ps.faces[18] = int3( 7, 2, 9  )
-        ps.faces[19] = int3( 6, 10, 2 )
+        ps.vertices[0]  = simd_float3( tau,  one,    0)
+        ps.vertices[1]  = simd_float3(-tau,  one,    0)
+        ps.vertices[2]  = simd_float3(-tau, -one,    0)
+        ps.vertices[3]  = simd_float3( tau, -one,    0)
+        ps.vertices[4]  = simd_float3( one,    0,  tau)
+        ps.vertices[5]  = simd_float3( one,    0, -tau)
+        ps.vertices[6]  = simd_float3(-one,    0, -tau)
+        ps.vertices[7]  = simd_float3(-one,    0,  tau)
+        ps.vertices[8]  = simd_float3(   0,  tau,  one)
+        ps.vertices[9]  = simd_float3(   0, -tau,  one)
+        ps.vertices[10] = simd_float3(   0, -tau, -one)
+        ps.vertices[11] = simd_float3(   0,  tau, -one)
+        ps.faces[0]  = simd_int3( 4, 8, 7  )
+        ps.faces[1]  = simd_int3( 4, 7, 9  )
+        ps.faces[2]  = simd_int3( 5, 6, 11 )
+        ps.faces[3]  = simd_int3( 5, 10, 6 )
+        ps.faces[4]  = simd_int3( 0, 4, 3  )
+        ps.faces[5]  = simd_int3( 0, 3, 5  )
+        ps.faces[6]  = simd_int3( 2, 7, 1  )
+        ps.faces[7]  = simd_int3( 2, 1, 6  )
+        ps.faces[8]  = simd_int3( 8, 0, 11 )
+        ps.faces[9]  = simd_int3( 8, 11, 1 )
+        ps.faces[10] = simd_int3( 9, 10, 3 )
+        ps.faces[11] = simd_int3( 9, 2, 10 )
+        ps.faces[12] = simd_int3( 8, 4, 0  )
+        ps.faces[13] = simd_int3( 11, 0, 5 )
+        ps.faces[14] = simd_int3( 4, 9, 3  )
+        ps.faces[15] = simd_int3( 5, 3, 10 )
+        ps.faces[16] = simd_int3( 7, 8, 1  )
+        ps.faces[17] = simd_int3( 6, 1, 11 )
+        ps.faces[18] = simd_int3( 7, 2, 9  )
+        ps.faces[19] = simd_int3( 6, 10, 2 )
         return ps
     }
     
@@ -113,10 +113,10 @@ class PlatonicSolid {
             let ab = Int32(searchMidpoint(Int(f.y), indexEnd: Int(f.x)))
             let bc = Int32(searchMidpoint(Int(f.z), indexEnd: Int(f.y)))
             let ca = Int32(searchMidpoint(Int(f.x), indexEnd: Int(f.z)))
-            faces.append(int3(f.x, ab, ca))
-            faces.append(int3(ca, ab, bc))
-            faces.append(int3(ca, bc, f.z))
-            faces.append(int3(ab, f.y, bc))
+            faces.append(simd_int3(f.x, ab, ca))
+            faces.append(simd_int3(ca, ab, bc))
+            faces.append(simd_int3(ca, bc, f.z))
+            faces.append(simd_int3(ab, f.y, bc))
         }
     }
     

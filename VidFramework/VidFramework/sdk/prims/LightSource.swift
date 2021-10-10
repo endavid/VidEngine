@@ -29,7 +29,7 @@ public class LightSource {
 public class DirectionalLight: LightSource {
     public struct Instance {
         public var color: LinearRGBA
-        public var direction: float4
+        public var direction: simd_float4
     }
     public var instances: [Instance]
     let uniformBuffer: MTLBuffer!
@@ -40,14 +40,14 @@ public class DirectionalLight: LightSource {
             return instances.count
         }
     }
-    public var direction: float3 {
+    public var direction: simd_float3 {
         get {
             let d = instances[0].direction
-            return float3(d.x, d.y, d.z)
+            return simd_float3(d.x, d.y, d.z)
         }
         set {
             let w = instances[0].direction.w
-            let d = float4(newValue.x, newValue.y, newValue.z, w)
+            let d = simd_float4(newValue.x, newValue.y, newValue.z, w)
             for i in 0..<instanceCount {
                 instances[i].direction = d
             }
@@ -68,7 +68,7 @@ public class DirectionalLight: LightSource {
         assert(instanceCount > 0, "The number of instances should be >0")
         assert(Renderer.shared != nil, "The Renderer hasn't been created")
         assert(Renderer.shared.device != nil, "Missing device")
-        self.instances = [Instance](repeating: Instance(color: LinearRGBA(r: 1, g: 1, b: 1, a: 1), direction: float4(0,1,0,0)), count: instanceCount)
+        self.instances = [Instance](repeating: Instance(color: LinearRGBA(r: 1, g: 1, b: 1, a: 1), direction: simd_float4(0,1,0,0)), count: instanceCount)
         self.uniformBuffer = Renderer.createSyncBuffer(from: instances, label: "directionalLights", device: Renderer.shared.device)
     }
     

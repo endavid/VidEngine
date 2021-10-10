@@ -11,7 +11,7 @@ import simd
 /// sRGB color with alpha, where every channel is normalized between 0 and 1
 /// Transforms use the 2.4 exponent. See https://en.wikipedia.org/wiki/SRGB
 public struct NormalizedSRGBA: ColorWithAlpha {
-    public let raw : float4
+    public let raw : simd_float4
     
     public var r : Float {
         get {
@@ -33,12 +33,12 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return raw.w
         }
     }
-    public var rgb: float3 {
+    public var rgb: simd_float3 {
         get {
-            return float3(r, g, b)
+            return simd_float3(r, g, b)
         }
     }
-    public var color: float3 {
+    public var color: simd_float3 {
         get {
             return rgb
         }
@@ -61,10 +61,10 @@ public struct NormalizedSRGBA: ColorWithAlpha {
         }
     }
     public init(r: Float, g: Float, b: Float, a: Float) {
-        raw = float4(r, g, b, a)
+        raw = simd_float4(r, g, b, a)
     }
-    public init(rgb: float3, a: Float = 1.0) {
-        raw = float4(rgb.x, rgb.y, rgb.z, a)
+    public init(rgb: simd_float3, a: Float = 1.0) {
+        raw = simd_float4(rgb.x, rgb.y, rgb.z, a)
     }
     
     public init(rgba: LinearRGBA) {
@@ -74,7 +74,7 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             }
             return sign(c) * (powf(abs(c), 1/2.4) * 1.055 - 0.055)
         }
-        self.raw = float4(f(rgba.r), f(rgba.g), f(rgba.b), rgba.a)
+        self.raw = simd_float4(f(rgba.r), f(rgba.g), f(rgba.b), rgba.a)
     }
     
     public init(_ color: UIColor) {

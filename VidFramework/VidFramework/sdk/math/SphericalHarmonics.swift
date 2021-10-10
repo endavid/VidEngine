@@ -237,15 +237,15 @@ public class SphericalHarmonics {
      * Reconstruct the approximated function for the given input direction,
      * given in spherical/polar coordinates
      */
-    public func reconstruct(θ: Double, φ: Double) -> float3
+    public func reconstruct(θ: Double, φ: Double) -> simd_float3
     {
-        var o = float3(0, 0, 0)
+        var o = simd_float3(0, 0, 0)
         for l in 0..<Int(storage.numBands) {
             for m in -l...l {
                 let ci = l * (l+1) + m // coefficient index
                 let sh = Float(SH(l: l,m: m,θ: θ,φ: φ))
                 let c = storage.getCoefficient(i: ci)
-                o += sh * float3(c)
+                o += sh * simd_float3(c)
             }
         }
         return o
@@ -254,7 +254,7 @@ public class SphericalHarmonics {
     /**
      * Reconstruct the approximated function for the given input direction
      */
-    public func reconstruct(direction: float3) -> float3
+    public func reconstruct(direction: simd_float3) -> simd_float3
     {
         let sp = Spherical(v: direction)
         return reconstruct(θ: Double(sp.θ), φ: Double(sp.φ))
@@ -308,11 +308,11 @@ public class SphericalHarmonics {
      * Computes the approximate irradiance for the given normal direction
      *  E(n) = n^ * M * n
      */
-    public func getIrradianceApproximation(normal: float3) -> float3 {
-        var v = float3()
+    public func getIrradianceApproximation(normal: simd_float3) -> simd_float3 {
+        var v = simd_float3()
         // In the original paper, (x,y,z) = (sinθcosφ, sinθsinφ, cosθ),
         // but in our Spherical class the vertical axis cosθ is Y
-        let n = float4(x: -normal.z, y: -normal.x, z: normal.y, w: 1)
+        let n = simd_float4(x: -normal.z, y: -normal.x, z: normal.y, w: 1)
         // for every color channel
         v.x = dot(n, storage.getIrradiance(i: 0) * n)
         v.y = dot(n, storage.getIrradiance(i: 1) * n)

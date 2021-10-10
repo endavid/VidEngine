@@ -17,7 +17,7 @@ class RotationAnim {
     var alpha : Float = 0
     var speed : Float = 1.1
     fileprivate func setRandomRotationTarget() {
-        let up = float3(0, 1, 0)
+        let up = simd_float3(0, 1, 0)
         let targetDirection = Spherical.randomSample().toCartesian()
         startRotation = targetRotation
         targetRotation = Quaternion.createRotation(start: up, end: targetDirection)
@@ -51,17 +51,17 @@ class GridScene : Scene {
     
     private func setupCubes(_ numRows: Int, _ numColumns: Int) {
         let prim = CubePrimitive(instanceCount: numRows * numColumns)
-        let cubeSize = float2(1, 1)
-        let marginSize = float2(0.2, 0.2)
+        let cubeSize = simd_float2(1, 1)
+        let marginSize = simd_float2(0.2, 0.2)
         let totalWidth = Float(numColumns) * cubeSize.x + Float(numColumns-1) * marginSize.x
         let totalHeight = Float(numRows) * cubeSize.y + Float(numRows-1) * marginSize.y
-        let startPoint = float2(-0.5*totalWidth+0.5*cubeSize.x, -0.5*totalHeight+0.5*cubeSize.y)
+        let startPoint = simd_float2(-0.5*totalWidth+0.5*cubeSize.x, -0.5*totalHeight+0.5*cubeSize.y)
         for i in 0..<numRows {
             for j in 0..<numColumns {
                 let x = startPoint.x + Float(j) * (cubeSize.x + marginSize.x)
                 let y = startPoint.y + Float(i) * (cubeSize.y + marginSize.y)
                 let index = i * numColumns + j
-                prim.instances[index].transform.position = float3(x, y, 0)
+                prim.instances[index].transform.position = simd_float3(x, y, 0)
                 rotationAnims.append(RotationAnim())
             }
         }
@@ -72,15 +72,15 @@ class GridScene : Scene {
     private func setupLights() {
         let sun = DirectionalLight(instanceCount: 1)
         sun.color = LinearRGBA(r: 1, g: 0.9, b: 0.8, a: 1.0)
-        sun.direction = normalize(float3(1, 1, 1))
+        sun.direction = normalize(simd_float3(1, 1, 1))
         sun.queue()
         lights.append(sun)
     }
     
     private func setupCamera() {
         camera = Camera()
-        camera?.setViewDirection(float3(0,0,-1), up: float3(0,1,0))
-        camera?.setEyePosition(float3(0,2,20))
+        camera?.setViewDirection(simd_float3(0,0,-1), up: simd_float3(0,1,0))
+        camera?.setEyePosition(simd_float3(0,2,20))
         camera?.setPerspectiveProjection(fov: 40, near: 0.1, far: 100)
     }
     

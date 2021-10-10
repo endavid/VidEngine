@@ -85,9 +85,9 @@ public class MdlParser {
             let v0 = vertices[i0]
             let v1 = vertices[i1]
             let v2 = vertices[i2]
-            let a = float3(v0.position)
-            let b = float3(v1.position)
-            let c = float3(v2.position)
+            let a = simd_float3(v0.position)
+            let b = simd_float3(v1.position)
+            let c = simd_float3(v2.position)
             let bc = normalize(c - b)
             let ba = normalize(a - b)
             let normal = cross(bc, ba)
@@ -175,12 +175,12 @@ public class MdlParser {
     
     fileprivate func readCamera(_ header: String) {
         var c = getComponents(lines.remove(at: 0))
-        let eyePoint = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
+        let eyePoint = simd_float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         //scene.camera.transform.position = eyePoint
         c = getComponents(lines.remove(at: 0))
-        let viewDirection = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
+        let viewDirection = simd_float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         c = getComponents(lines.remove(at: 0))
-        let up = float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
+        let up = simd_float3(Float(c[0]) ?? 0, Float(c[1]) ?? 0, Float(c[2]) ?? 0)
         let camera = Camera()
         camera.setViewDirection(viewDirection, up: up)
         camera.setEyePosition(eyePoint)

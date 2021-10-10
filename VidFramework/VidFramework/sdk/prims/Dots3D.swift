@@ -11,7 +11,7 @@ import MetalKit
 public class Dots3D {
     public struct Instance {
         public var transform: Transform
-        public var dotSize: float4
+        public var dotSize: simd_float4
     }
     let vertexBuffer: MTLBuffer
     let colorBuffer: MTLBuffer
@@ -42,7 +42,7 @@ public class Dots3D {
         self.vertexBuffer = vertexBuffer
         self.colorBuffer = colorBuffer
         self.vertexCount = vertexCount
-        let s = float4(1, 1, 1, 1) * dotSize
+        let s = simd_float4(1, 1, 1, 1) * dotSize
         instances = [Instance(transform: transform, dotSize: s)]
         let device = Renderer.shared.device
         instanceBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size, options: [])!

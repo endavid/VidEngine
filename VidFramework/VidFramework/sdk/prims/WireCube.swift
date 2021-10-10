@@ -11,14 +11,14 @@ import simd
 
 public class WireCube: WirePrimitive {
     init(instanceCount: Int) {
-        let a = 0.5 * float4(-1, +1, +1, 0)
-        let b = 0.5 * float4(-1, +1, -1, 0)
-        let c = 0.5 * float4(-1, -1, +1, 0)
-        let d = 0.5 * float4(-1, -1, -1, 0)
-        let e = 0.5 * float4(+1, +1, +1, 0)
-        let f = 0.5 * float4(+1, +1, -1, 0)
-        let g = 0.5 * float4(+1, -1, +1, 0)
-        let h = 0.5 * float4(+1, -1, -1, 0)
+        let a = 0.5 * simd_float4(-1, +1, +1, 0)
+        let b = 0.5 * simd_float4(-1, +1, -1, 0)
+        let c = 0.5 * simd_float4(-1, -1, +1, 0)
+        let d = 0.5 * simd_float4(-1, -1, -1, 0)
+        let e = 0.5 * simd_float4(+1, +1, +1, 0)
+        let f = 0.5 * simd_float4(+1, +1, -1, 0)
+        let g = 0.5 * simd_float4(+1, -1, +1, 0)
+        let h = 0.5 * simd_float4(+1, -1, -1, 0)
         let lines = [
             Line(start: a, end: b),
             Line(start: a, end: c),

@@ -25,7 +25,7 @@ public struct Spherical {
     }
     
     /// Converts from Cartesian to Spherical coordinates
-    public init (v: float3) {
+    public init (v: simd_float3) {
         r = length(v)
         θ = acosf(v.y / r)
         // convert -pi..pi to 0..2pi
@@ -39,8 +39,8 @@ public struct Spherical {
         φ = 0
     }
     
-    public func toCartesian() -> float3 {
-        return r * float3(sinf(θ) * sinf(φ), cosf(θ), sinf(θ) * cos(φ))
+    public func toCartesian() -> simd_float3 {
+        return r * simd_float3(sinf(θ) * sinf(φ), cosf(θ), sinf(θ) * cos(φ))
     }
     
     public static func randomSample() -> Spherical {

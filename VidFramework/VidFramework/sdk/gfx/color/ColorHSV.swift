@@ -13,7 +13,7 @@ import simd
 /// and Saturation and Value, between 0 and 1
 /// https://en.wikipedia.org/wiki/HSL_and_HSV
 public struct ColorHSV {
-    public let raw: float4
+    public let raw: simd_float4
     public var h: Float {
         get {
             return raw.x
@@ -34,12 +34,12 @@ public struct ColorHSV {
             return raw.w
         }
     }
-    public var hsv: float3 {
+    public var hsv: simd_float3 {
         get {
-            return float3(h, s, v)
+            return simd_float3(h, s, v)
         }
     }
-    public var rgb: float3 {
+    public var rgb: simd_float3 {
         get {
             let chroma = v * s
             let h_ = h / 60
@@ -67,16 +67,16 @@ public struct ColorHSV {
                 b1 = x
             }
             let m = v - chroma
-            return float3(r1 + m, g1 + m, b1 + m)
+            return simd_float3(r1 + m, g1 + m, b1 + m)
         }
     }
     public init(h: Float, s: Float, v: Float, a: Float = 1) {
-        raw = float4(h, s, v, a)
+        raw = simd_float4(h, s, v, a)
     }
-    public init(hsv: float3, a: Float = 1.0) {
-        raw = float4(hsv.x, hsv.y, hsv.z, a)
+    public init(hsv: simd_float3, a: Float = 1.0) {
+        raw = simd_float4(hsv.x, hsv.y, hsv.z, a)
     }
-    public init(rgb: float3, a: Float = 1.0) {
+    public init(rgb: simd_float3, a: Float = 1.0) {
         let r = rgb.x, g = rgb.y, b = rgb.z
         let M = max(r, g, b)
         let m = min(r, g, b)
@@ -97,6 +97,6 @@ public struct ColorHSV {
         if !IsClose(0, v) {
             s = chroma / v
         }
-        raw = float4(h, s, v, a)
+        raw = simd_float4(h, s, v, a)
     }
 }

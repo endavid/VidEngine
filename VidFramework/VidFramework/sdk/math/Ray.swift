@@ -9,10 +9,10 @@
 import simd
 
 public struct Ray {
-    public let start: float3
-    public let direction: float3
+    public let start: simd_float3
+    public let direction: simd_float3
     
-    public init(start: float3, direction: float3) {
+    public init(start: simd_float3, direction: simd_float3) {
         self.start = start
         self.direction = direction
     }
@@ -53,15 +53,15 @@ public struct Ray {
         return nil
     }
     
-    public func travelDistance(d: Float) -> float3 {
+    public func travelDistance(d: Float) -> simd_float3 {
         return start + d * direction
     }
 }
 
 public struct SurfaceIntersection {
     let distance: Float
-    let point: float3
-    let normal: float3
+    let point: simd_float3
+    let normal: simd_float3
 }
 
 public func * (t: Transform, ray: Ray) -> Ray {
@@ -71,7 +71,7 @@ public func * (t: Transform, ray: Ray) -> Ray {
 }
 
 public func * (m: float4x4, ray: Ray) -> Ray {
-    let s = m * float4(ray.start.x, ray.start.y, ray.start.z, 1)
+    let s = m * simd_float4(ray.start.x, ray.start.y, ray.start.z, 1)
     let d = m.upper3x3 * ray.direction
     let direction = normalize(d)
     return Ray(start: s.xyz, direction: direction)
