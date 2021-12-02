@@ -28,7 +28,7 @@ class P3MinusSrgbSampler: ColorSampler {
     }
     
     func getNextSample() -> LinearRGBA? {
-        var sample: float3?
+        var sample: simd_float3?
         while i < size && j < size && k < size && sample == nil {
             sample = getNext()
             advanceIndices()
@@ -39,7 +39,7 @@ class P3MinusSrgbSampler: ColorSampler {
         return nil
     }
     
-    private func getNext() -> float3? {
+    private func getNext() -> simd_float3? {
         let p3 = toRgb(i, j, k)
         let srgb = p3ToSrgb * p3
         if !srgb.inUnitCube() {
@@ -49,8 +49,8 @@ class P3MinusSrgbSampler: ColorSampler {
         return nil
     }
     
-    private func toRgb(_ a: Int, _ b: Int, _ c: Int) -> float3 {
-        return float3(Float(a), Float(b), Float(c)) * toNormal
+    private func toRgb(_ a: Int, _ b: Int, _ c: Int) -> simd_float3 {
+        return simd_float3(Float(a), Float(b), Float(c)) * toNormal
     }
     
     private func advanceIndices() {

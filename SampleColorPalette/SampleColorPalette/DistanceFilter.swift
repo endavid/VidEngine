@@ -10,9 +10,9 @@ import VidFramework
 import simd
 
 class DistanceFilter: TextureFilter {
-    var target: float4
+    var target: simd_float4
     
-    init?(device: MTLDevice, library: MTLLibrary, input: Texture, target: float4) {
+    init?(device: MTLDevice, library: MTLLibrary, input: Texture, target: simd_float4) {
         self.target = target
         guard let vfn = library.makeFunction(name: "passThrough2DVertex"),
             let ffn = library.makeFunction(name: "passComputeDistance")
@@ -46,7 +46,7 @@ class DistanceFilter: TextureFilter {
         guard let contents = fragmentBuffer?.contents() else {
             return
         }
-        let data = contents.advanced(by: fragmentBufferOffset).assumingMemoryBound(to: float4.self)
-        memcpy(data, &target, MemoryLayout<float4>.size)
+        let data = contents.advanced(by: fragmentBufferOffset).assumingMemoryBound(to: simd_float4.self)
+        memcpy(data, &target, MemoryLayout<simd_float4>.size)
     }
 }

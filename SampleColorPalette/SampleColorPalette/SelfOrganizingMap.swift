@@ -83,8 +83,8 @@ class SelfOrganizingMapFilter: TextureFilter {
         var neighborhoodRadius: Float
         var dummy0: Float
         var dummy1: Float
-        var target: float4
-        init(learningRate: Float, neighborhoodRadius: Float, target: float4) {
+        var target: simd_float4
+        init(learningRate: Float, neighborhoodRadius: Float, target: simd_float4) {
             self.learningRate = learningRate
             self.neighborhoodRadius = neighborhoodRadius
             self.target = target
