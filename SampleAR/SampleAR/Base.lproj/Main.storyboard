@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -25,7 +25,7 @@
                                 </view>
                                 <blurEffect style="light"/>
                             </visualEffectView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ORH-1k-1aW">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ORH-1k-1aW">
                                 <rect key="frame" x="16" y="617" width="96" height="30"/>
                                 <state key="normal" title="Toggle Debug"/>
                                 <connections>
@@ -44,7 +44,7 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8sI-Oe-03b">
-                                <rect key="frame" x="0.0" y="20" width="375" height="85"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="85"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="85" id="BD4-Vz-Bqu"/>
                                 </constraints>
@@ -53,7 +53,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Dqa-FN-CKn" secondAttribute="trailing" id="0eO-1y-q5t"/>
                             <constraint firstItem="9AO-Ag-o1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6et-Zf-tyU"/>
@@ -68,7 +68,6 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ORH-1k-1aW" secondAttribute="bottom" constant="20" id="mtE-Z0-YsE"/>
                             <constraint firstItem="ORH-1k-1aW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="pdh-Se-qo3"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="blurView" destination="Dqa-FN-CKn" id="UIv-qK-POF"/>
@@ -86,23 +85,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kiP-UN-VjG">
+                            <visualEffectView opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kiP-UN-VjG">
                                 <rect key="frame" x="10" y="193.5" width="355" height="280"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gVa-j9-cwt">
+                                <view key="contentView" opaque="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gVa-j9-cwt">
                                     <rect key="frame" x="0.0" y="0.0" width="355" height="280"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cjh-7Z-SbB">
+                                        <pickerView opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cjh-7Z-SbB">
                                             <rect key="frame" x="0.0" y="32" width="355" height="216"/>
                                         </pickerView>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0a-Wr-ReV">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0a-Wr-ReV">
                                             <rect key="frame" x="159" y="248" width="37" height="30"/>
-                                            <state key="normal" title="Done"/>
+                                            <state key="normal" title="Done">
+                                                <color key="titleColor" systemColor="systemBlueColor"/>
+                                            </state>
                                             <connections>
                                                 <action selector="pressDone:" destination="s82-AZ-ys5" eventType="touchUpInside" id="5h9-KE-aeS"/>
                                             </connections>
                                         </button>
                                     </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="Cjh-7Z-SbB" secondAttribute="trailing" id="L1d-A3-jrh"/>
                                         <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerY" secondItem="gVa-j9-cwt" secondAttribute="centerY" id="LPb-yv-fxC"/>
@@ -110,6 +112,11 @@
                                         <constraint firstItem="A0a-Wr-ReV" firstAttribute="top" secondItem="Cjh-7Z-SbB" secondAttribute="bottom" id="OlV-IK-6wz"/>
                                         <constraint firstItem="Cjh-7Z-SbB" firstAttribute="centerX" secondItem="A0a-Wr-ReV" secondAttribute="centerX" id="Xnh-Va-rSK"/>
                                     </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
                                 </view>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="280" id="N59-Ie-53Z"/>
@@ -117,12 +124,12 @@
                                 <blurEffect style="extraLight"/>
                             </visualEffectView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="xpo-8B-ibd"/>
                         <constraints>
                             <constraint firstItem="xpo-8B-ibd" firstAttribute="trailing" secondItem="kiP-UN-VjG" secondAttribute="trailing" constant="10" id="D03-fS-ABX"/>
                             <constraint firstItem="kiP-UN-VjG" firstAttribute="leading" secondItem="GgY-99-7Ug" secondAttribute="leading" constant="10" id="FHq-Ud-Rjg"/>
                             <constraint firstItem="kiP-UN-VjG" firstAttribute="centerY" secondItem="GgY-99-7Ug" secondAttribute="centerY" id="zYJ-dX-cAx"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="xpo-8B-ibd"/>
                     </view>
                     <connections>
                         <outlet property="pickerView" destination="Cjh-7Z-SbB" id="zKQ-Sb-BnU"/>
@@ -141,19 +148,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="100" translatesAutoresizingMaskIntoConstraints="NO" id="nm3-Cy-qFY" userLabel="Message Panel">
-                                <rect key="frame" x="16" y="20" width="125" height="32"/>
+                                <rect key="frame" x="16" y="20" width="119" height="30.5"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="G4p-Ro-crK">
-                                    <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="119" height="30.5"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wq5-bh-l1W">
-                                            <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="119" height="30.5"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="GEM-IB-fOq">
-                                                <rect key="frame" x="0.0" y="0.0" width="125" height="32"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="119" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" text="Tracking status" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTY-ka-Cwb" userLabel="Messages label">
-                                                        <rect key="frame" x="16" y="8" width="93" height="16"/>
+                                                        <rect key="frame" x="16" y="8" width="87" height="14.5"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                         <nil key="textColor"/>
                                                         <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -203,6 +210,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="qhZ-9S-wBy"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="qhZ-9S-wBy" firstAttribute="trailing" secondItem="yrx-nq-8sl" secondAttribute="trailing" id="1OO-w6-lIQ"/>
@@ -211,7 +219,6 @@
                             <constraint firstItem="yrx-nq-8sl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nm3-Cy-qFY" secondAttribute="trailing" constant="8" id="px7-Ig-R6b"/>
                             <constraint firstItem="nm3-Cy-qFY" firstAttribute="top" secondItem="yrx-nq-8sl" secondAttribute="top" constant="20" id="r9l-Wk-xGf"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="qhZ-9S-wBy"/>
                     </view>
                     <connections>
                         <outlet property="messageLabel" destination="aTY-ka-Cwb" id="yUj-fi-mQy"/>
@@ -228,5 +235,11 @@
         <image name="add" width="48" height="48"/>
         <image name="restart" width="20" height="23"/>
         <image name="restartPressed" width="20" height="23"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

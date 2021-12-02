@@ -20,6 +20,7 @@
 		63BA72292129E4DD0023E879 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63BA72272129E4DD0023E879 /* LaunchScreen.storyboard */; };
 		63BA7231212AADC00023E879 /* VidFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BA7230212AADC00023E879 /* VidFramework.framework */; };
 		63BA7232212AADC00023E879 /* VidFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BA7230212AADC00023E879 /* VidFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		63E429452759275900A21F2E /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E429442759275900A21F2E /* UIViewExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +52,7 @@
 		63BA72282129E4DD0023E879 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63BA722A2129E4DD0023E879 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63BA7230212AADC00023E879 /* VidFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VidFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63E429442759275900A21F2E /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				63BA72202129E4DC0023E879 /* ViewController.swift */,
 				63AA9E7922479B81004B9989 /* ViewController+Actions.swift */,
 				638E064A2252AF6600509324 /* ViewController+ARSessionDelegate.swift */,
+				63E429442759275900A21F2E /* UIViewExtension.swift */,
 			);
 			path = SampleAR;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 				6362F0092249936500C3926F /* SelectionViewController.swift in Sources */,
 				63AA9E7A22479B81004B9989 /* ViewController+Actions.swift in Sources */,
 				638E064B2252AF6600509324 /* ViewController+ARSessionDelegate.swift in Sources */,
+				63E429452759275900A21F2E /* UIViewExtension.swift in Sources */,
 				63BA721F2129E4DC0023E879 /* AppDelegate.swift in Sources */,
 				6362F010224FD79500C3926F /* StatusViewController.swift in Sources */,
 			);

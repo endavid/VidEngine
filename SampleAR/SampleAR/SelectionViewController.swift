@@ -50,10 +50,15 @@ class SelectionViewController: UIViewController, UIPickerViewDelegate, UIPickerV
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return modelList.count
     }
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return modelList[row].rawValue
-    }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedItem = modelList[row]
+    }
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        if #available(iOS 13.0, *) {
+            return NSAttributedString(string: modelList[row].rawValue, attributes: [NSAttributedString.Key.foregroundColor: UIColor.label])
+        } else {
+            // Fallback on earlier versions
+            return NSAttributedString(string: modelList[row].rawValue, attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        }
     }
 }
