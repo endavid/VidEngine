@@ -175,9 +175,9 @@ class ColorTests: XCTestCase {
         let gP3 = simd_float3(Float(g.components![0]), Float(g.components![1]), Float(g.components![2]))
         let bP3 = simd_float3(Float(b.components![0]), Float(b.components![1]), Float(b.components![2]))
         // values from ColorSync utility (gamma already applied)
-        XCTAssertTrue(simd_float3(0.9175, 0.2002, 0.1386).isClose(rP3))
-        XCTAssertTrue(simd_float3(0.4585, 0.9852, 0.2983).isClose(gP3))
-        XCTAssertTrue(simd_float3(0, 0, 0.9597).isClose(bP3))
+        XCTAssertTrue(simd_float3(0.9175, 0.2004, 0.1385).isClose(rP3))
+        XCTAssertTrue(simd_float3(0.4584, 0.9853, 0.2982).isClose(gP3))
+        XCTAssertTrue(simd_float3(0.0002, 0, 0.9596).isClose(bP3))
     }
     
     func testLabToXYZ() {
