@@ -94,6 +94,7 @@
 		63C7A1772233CD9C00DB1439 /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1762233CD9C00DB1439 /* Ray.swift */; };
 		63C7A1792235216700DB1439 /* Cursor3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7A1782235216700DB1439 /* Cursor3D.swift */; };
 		63DF0DDF20962CC500E25FA7 /* ColorHSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */; };
+		63E4294A2759342000A21F2E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E429492759342000A21F2E /* Util.swift */; };
 		63E5139920476D00000AC2F1 /* FilterChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139820476D00000AC2F1 /* FilterChain.swift */; };
 		63E5139B20476F75000AC2F1 /* FilterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5139A20476F75000AC2F1 /* FilterPlugin.swift */; };
 /* End PBXBuildFile section */
@@ -189,6 +190,7 @@
 		63C7A1762233CD9C00DB1439 /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		63C7A1782235216700DB1439 /* Cursor3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cursor3D.swift; sourceTree = "<group>"; };
 		63DF0DDE20962CC500E25FA7 /* ColorHSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHSV.swift; sourceTree = "<group>"; };
+		63E429492759342000A21F2E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		63E5139820476D00000AC2F1 /* FilterChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterChain.swift; sourceTree = "<group>"; };
 		63E5139A20476F75000AC2F1 /* FilterPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -235,6 +237,7 @@
 		632D27DD203896C7000562F0 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
+				63E429482759340E00A21F2E /* util */,
 				63BA720F2128BFE10023E879 /* motion */,
 				632D285C2038A20D000562F0 /* ui */,
 				632D27DE203896C7000562F0 /* parsers */,
@@ -414,6 +417,14 @@
 			path = motion;
 			sourceTree = "<group>";
 		};
+		63E429482759340E00A21F2E /* util */ = {
+			isa = PBXGroup;
+			children = (
+				63E429492759342000A21F2E /* Util.swift */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -556,6 +567,7 @@
 				639D0708203B7A6B00F9905D /* ComputePrimitive.swift in Sources */,
 				63711CBF2042EEF600D046CF /* TextureInit.swift in Sources */,
 				639A3368226A46C600A9206F /* WorldTouch.swift in Sources */,
+				63E4294A2759342000A21F2E /* Util.swift in Sources */,
 				63968A0922872A7C00F573BF /* SkySphere.swift in Sources */,
 				632D2827203896C7000562F0 /* DeferredShadingPlugin.swift in Sources */,
 				632D282C203896C7000562F0 /* FullScreenQuad.swift in Sources */,

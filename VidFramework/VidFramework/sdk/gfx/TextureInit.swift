@@ -59,7 +59,19 @@ public extension MTLTexture {
     }
     var bytesPerRow: Int {
         get {
-            return width * bytesPerPixel
+            let n = width * bytesPerPixel
+            if textureType == .typeCube {
+                return 6 * n
+            }
+            return n
+        }
+    }
+    var pixelCount: Int {
+        get {
+            if textureType == .typeCube {
+                return 6 * width * height
+            }
+            return width * height
         }
     }
     var defaultColorSpace: CGColorSpace? {
@@ -73,7 +85,6 @@ public extension MTLTexture {
         }
     }
     func readAllBytes() -> [UInt8] {
-        let pixelCount = width * height
         var imageBytes = [UInt8](repeating: 0, count: pixelCount * bytesPerPixel)
         let region = MTLRegionMake2D(0, 0, width, height)
         // getBytes will silently return nothing if the texture is not ready!
@@ -82,7 +93,6 @@ public extension MTLTexture {
         return imageBytes
     }
     func dataProviderRef() -> CGDataProvider? {
-        let pixelCount = width * height
         var imageBytes = readAllBytes()
         return CGDataProvider(data: NSData(bytes: &imageBytes, length: pixelCount * bytesPerPixel * MemoryLayout<UInt8>.size))
     }

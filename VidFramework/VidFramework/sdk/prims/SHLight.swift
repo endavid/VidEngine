@@ -78,6 +78,14 @@ public class SHLight: LightSource {
             _irradianceBlendStep = irradianceBlendFrameCount
         }
     }
+    public var environmentImage: UIImage? {
+        get {
+            guard let tex = environmentTexture else {
+                return nil
+            }
+            return UIImage(texture: tex)
+        }
+    }
     public var debug: DebugMode {
         get {
             if _debugSphere != nil {

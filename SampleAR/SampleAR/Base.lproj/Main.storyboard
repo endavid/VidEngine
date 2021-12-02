@@ -32,6 +32,13 @@
                                     <action selector="toggleDebugging" destination="BYZ-38-t0r" eventType="touchUpInside" id="pn0-2b-Ml1"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="est-Af-efC">
+                                <rect key="frame" x="288" y="617" width="67" height="30"/>
+                                <state key="normal" title="Env Maps"/>
+                                <connections>
+                                    <segue destination="NQt-TZ-sbW" kind="presentation" modalPresentationStyle="overCurrentContext" id="sYx-mt-BDh"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9AO-Ag-o1x">
                                 <rect key="frame" x="163.5" y="599" width="48" height="48"/>
                                 <constraints>
@@ -57,13 +64,16 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Dqa-FN-CKn" secondAttribute="trailing" id="0eO-1y-q5t"/>
                             <constraint firstItem="9AO-Ag-o1x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6et-Zf-tyU"/>
+                            <constraint firstItem="est-Af-efC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="9AO-Ag-o1x" secondAttribute="trailing" constant="8" symbolic="YES" id="BAg-6b-6Bm"/>
                             <constraint firstItem="Dqa-FN-CKn" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="EJI-zJ-4M1"/>
                             <constraint firstAttribute="bottom" secondItem="Dqa-FN-CKn" secondAttribute="bottom" id="L63-7g-9Ld"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="est-Af-efC" secondAttribute="bottom" constant="20" id="Ps0-x5-Wab"/>
                             <constraint firstItem="8sI-Oe-03b" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="R8d-6W-rvF"/>
                             <constraint firstItem="Dqa-FN-CKn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Wmt-Wn-EKA"/>
                             <constraint firstItem="8sI-Oe-03b" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="YJB-AD-Qgw"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9AO-Ag-o1x" secondAttribute="bottom" constant="20" id="bwI-7b-3u1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ORH-1k-1aW" secondAttribute="trailing" symbolic="YES" id="c9M-go-t5N"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="est-Af-efC" secondAttribute="trailing" constant="20" id="eNz-bf-Y5f"/>
                             <constraint firstItem="8sI-Oe-03b" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="hLH-dr-TCi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ORH-1k-1aW" secondAttribute="bottom" constant="20" id="mtE-Z0-YsE"/>
                             <constraint firstItem="ORH-1k-1aW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="pdh-Se-qo3"/>
@@ -137,7 +147,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J5p-Es-3Ks" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1389.5999999999999" y="58.920539730134934"/>
+            <point key="canvasLocation" x="1282" y="-319"/>
         </scene>
         <!--Status View Controller-->
         <scene sceneID="6U7-1Q-e8O">
@@ -229,6 +239,78 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T5D-D1-CRV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="54" y="-378"/>
+        </scene>
+        <!--Env Map Selection View Controller-->
+        <scene sceneID="iOd-pa-YTz">
+            <objects>
+                <viewController id="NQt-TZ-sbW" customClass="EnvMapSelectionViewController" customModule="SampleAR" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="cje-V5-4iS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4yu-iE-2W7">
+                                <rect key="frame" x="16" y="143.5" width="343" height="380"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DjC-0d-UC1">
+                                        <rect key="frame" x="142" y="341" width="59" height="31"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Done"/>
+                                        <connections>
+                                            <action selector="pressDone:" destination="NQt-TZ-sbW" eventType="touchUpInside" id="IOD-ku-G2Z"/>
+                                        </connections>
+                                    </button>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ddC-Ta-6Tr">
+                                        <rect key="frame" x="0.0" y="8" width="343" height="330"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="84i-Si-Kg8">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="330"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="leading" secondItem="ddC-Ta-6Tr" secondAttribute="leading" id="Qxh-qF-LsL"/>
+                                            <constraint firstAttribute="trailing" secondItem="84i-Si-Kg8" secondAttribute="trailing" id="VnK-jM-oL9"/>
+                                            <constraint firstAttribute="bottom" secondItem="84i-Si-Kg8" secondAttribute="bottom" id="c5b-au-o3r"/>
+                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="centerX" secondItem="ddC-Ta-6Tr" secondAttribute="centerX" id="pro-9V-aXK"/>
+                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="top" secondItem="ddC-Ta-6Tr" secondAttribute="top" id="v5d-pE-S6R"/>
+                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="centerY" secondItem="ddC-Ta-6Tr" secondAttribute="centerY" id="yQY-p0-m8d"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="contentLayoutGuide" id="rN3-m2-kV6"/>
+                                        <viewLayoutGuide key="frameLayoutGuide" id="VV8-pu-6sG"/>
+                                    </scrollView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="ddC-Ta-6Tr" secondAttribute="trailing" id="3od-9g-Ssm"/>
+                                    <constraint firstItem="ddC-Ta-6Tr" firstAttribute="leading" secondItem="4yu-iE-2W7" secondAttribute="leading" id="JHi-ux-Hkj"/>
+                                    <constraint firstItem="DjC-0d-UC1" firstAttribute="bottom" secondItem="4yu-iE-2W7" secondAttribute="bottomMargin" id="MSP-UO-YlA"/>
+                                    <constraint firstItem="ddC-Ta-6Tr" firstAttribute="top" secondItem="4yu-iE-2W7" secondAttribute="topMargin" id="Ux4-JT-AYc"/>
+                                    <constraint firstItem="ddC-Ta-6Tr" firstAttribute="centerX" secondItem="DjC-0d-UC1" secondAttribute="centerX" id="d47-WM-6cX"/>
+                                    <constraint firstItem="DjC-0d-UC1" firstAttribute="centerX" secondItem="4yu-iE-2W7" secondAttribute="centerX" id="osf-dk-nAA"/>
+                                    <constraint firstItem="DjC-0d-UC1" firstAttribute="top" secondItem="ddC-Ta-6Tr" secondAttribute="bottom" constant="3" id="vrH-iq-pUO"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Shs-D5-tC2"/>
+                        <constraints>
+                            <constraint firstItem="4yu-iE-2W7" firstAttribute="centerY" secondItem="cje-V5-4iS" secondAttribute="centerY" id="MNl-vf-B3v"/>
+                            <constraint firstItem="4yu-iE-2W7" firstAttribute="trailing" secondItem="cje-V5-4iS" secondAttribute="trailingMargin" id="RGa-l3-cjq"/>
+                            <constraint firstItem="4yu-iE-2W7" firstAttribute="leading" secondItem="cje-V5-4iS" secondAttribute="leadingMargin" id="c34-8m-gHe"/>
+                            <constraint firstItem="4yu-iE-2W7" firstAttribute="top" secondItem="Shs-D5-tC2" secondAttribute="top" constant="143.5" id="s0C-dn-laM"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contentView" destination="84i-Si-Kg8" id="xdk-rp-FTA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZeN-yb-oCm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1280.8" y="357.57121439280365"/>
         </scene>
     </scenes>
     <resources>
