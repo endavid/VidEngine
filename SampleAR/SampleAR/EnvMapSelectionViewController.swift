@@ -52,10 +52,31 @@ class EnvMapSelectionViewController: UIViewController {
         let rect = CGRect(x: x, y: y, width: width, height: height)
         let button = UIButton(frame: rect)
         button.setImage(shLight.environmentImage, for: .normal)
+        button.tag = probeCount
+        button.addTarget(self, action: #selector(EnvMapSelectionViewController.buttonAction(_:)), for: UIControl.Event.primaryActionTriggered)
         return button
     }
     
     @IBAction func pressDone(_ sender: AnyObject) {
         presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func buttonAction(_ sender:UIButton!) {
+        guard let image = sender.image(for: .normal) else {
+            NSLog("Missing image for button: \(sender.tag)")
+            return
+        }
+        shareImage(image)
+    }
+    
+    func shareImage(_ image: UIImage) {
+        guard let imageData = image.pngData() else {
+            return
+        }
+        let activityItems : [AnyObject] = [imageData as AnyObject]
+        let activity = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        // sourceView is needed on iPad or it'll crash
+        activity.popoverPresentationController?.sourceView = self.view
+        self.present(activity, animated: true, completion: nil)
     }
 }
