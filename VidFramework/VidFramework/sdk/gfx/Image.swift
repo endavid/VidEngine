@@ -27,21 +27,18 @@ extension UIImage {
             NSLog("UIImage.init: unknown ColorSpace")
             return nil
         }
-        let isFloat = texture.bitsPerComponent == 16
-        let bitmapInfo:CGBitmapInfo = [isFloat ? .byteOrder16Little : .byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue)]
-        
         guard let provider = texture.dataProviderRef() else {
             NSLog("UIImage.init: missing dataProvider")
             return nil
         }
         guard let cgim = CGImage(
             width: texture.width,
-            height: texture.height,
+            height: texture.imageHeight,
             bitsPerComponent: texture.bitsPerComponent,
             bitsPerPixel: texture.bitsPerPixel,
             bytesPerRow: texture.bytesPerRow,
             space: rgbColorSpace,
-            bitmapInfo: bitmapInfo,
+            bitmapInfo: texture.cgBitmapInfo,
             provider: provider,
             decode: nil,
             shouldInterpolate: false,

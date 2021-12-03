@@ -164,9 +164,9 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wq5-bh-l1W">
-                                            <rect key="frame" x="0.0" y="0.0" width="119" height="30.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="119" height="31"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="GEM-IB-fOq">
-                                                <rect key="frame" x="0.0" y="0.0" width="119" height="30"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="119" height="31"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" text="Tracking status" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTY-ka-Cwb" userLabel="Messages label">
@@ -259,22 +259,8 @@
                                             <action selector="pressDone:" destination="NQt-TZ-sbW" eventType="touchUpInside" id="IOD-ku-G2Z"/>
                                         </connections>
                                     </button>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ddC-Ta-6Tr">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ddC-Ta-6Tr">
                                         <rect key="frame" x="0.0" y="8" width="343" height="330"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="84i-Si-Kg8">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="330"/>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            </view>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="leading" secondItem="ddC-Ta-6Tr" secondAttribute="leading" id="Qxh-qF-LsL"/>
-                                            <constraint firstAttribute="trailing" secondItem="84i-Si-Kg8" secondAttribute="trailing" id="VnK-jM-oL9"/>
-                                            <constraint firstAttribute="bottom" secondItem="84i-Si-Kg8" secondAttribute="bottom" id="c5b-au-o3r"/>
-                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="centerX" secondItem="ddC-Ta-6Tr" secondAttribute="centerX" id="pro-9V-aXK"/>
-                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="top" secondItem="ddC-Ta-6Tr" secondAttribute="top" id="v5d-pE-S6R"/>
-                                            <constraint firstItem="84i-Si-Kg8" firstAttribute="centerY" secondItem="ddC-Ta-6Tr" secondAttribute="centerY" id="yQY-p0-m8d"/>
-                                        </constraints>
                                         <viewLayoutGuide key="contentLayoutGuide" id="rN3-m2-kV6"/>
                                         <viewLayoutGuide key="frameLayoutGuide" id="VV8-pu-6sG"/>
                                     </scrollView>
@@ -285,7 +271,6 @@
                                     <constraint firstItem="ddC-Ta-6Tr" firstAttribute="leading" secondItem="4yu-iE-2W7" secondAttribute="leading" id="JHi-ux-Hkj"/>
                                     <constraint firstItem="DjC-0d-UC1" firstAttribute="bottom" secondItem="4yu-iE-2W7" secondAttribute="bottomMargin" id="MSP-UO-YlA"/>
                                     <constraint firstItem="ddC-Ta-6Tr" firstAttribute="top" secondItem="4yu-iE-2W7" secondAttribute="topMargin" id="Ux4-JT-AYc"/>
-                                    <constraint firstItem="ddC-Ta-6Tr" firstAttribute="centerX" secondItem="DjC-0d-UC1" secondAttribute="centerX" id="d47-WM-6cX"/>
                                     <constraint firstItem="DjC-0d-UC1" firstAttribute="centerX" secondItem="4yu-iE-2W7" secondAttribute="centerX" id="osf-dk-nAA"/>
                                     <constraint firstItem="DjC-0d-UC1" firstAttribute="top" secondItem="ddC-Ta-6Tr" secondAttribute="bottom" constant="3" id="vrH-iq-pUO"/>
                                 </constraints>
@@ -305,7 +290,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="contentView" destination="84i-Si-Kg8" id="xdk-rp-FTA"/>
+                        <outlet property="scrollView" destination="ddC-Ta-6Tr" id="Qfb-Qb-gJc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZeN-yb-oCm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
