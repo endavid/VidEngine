@@ -87,7 +87,7 @@ public extension MTLTexture {
         get {
             switch pixelFormat {
             case .rgba16Float:
-                return CGColorSpace(name: CGColorSpace.displayP3)
+                return CGColorSpace(name: CGColorSpace.linearSRGB)
             case .rgba16Unorm:
                 return CGColorSpace(name: CGColorSpace.displayP3)
             default:
