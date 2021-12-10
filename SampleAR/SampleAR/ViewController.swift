@@ -12,6 +12,8 @@ import ARKit
 
 class ViewController: VidController {
     var isDebug = false
+    var isGlobalLight = false
+    var localSHLightSize: Float = 0.5
     var model = ModelOption.sphere
     /// Marks if the AR experience is available for restart.
     var isRestartAvailable = true
@@ -76,7 +78,8 @@ class ViewController: VidController {
         if let session = arSession, let c = scene.cursor, c.intersecting {
             let t = c.transform
             addModel(transform: t)
-            addLightProbe(position: t.position + simd_float3(0, 0.25, 0), session: session)
+            let offsetY: Float = isGlobalLight ? 1.5 : (localSHLightSize / 2)
+            addLightProbe(position: t.position + simd_float3(0, offsetY, 0), session: session)
             addAnchor(session: session, transform: t)
         }
     }
@@ -131,7 +134,7 @@ class ViewController: VidController {
     }
     
     func addLightProbe(position: simd_float3, session: ARSession) {
-        let extent = simd_float3(0.5, 0.5, 0.5)
+        let extent = (isGlobalLight ? Float.infinity : localSHLightSize) * simd_float3.one
         let probe = SHLight(position: position, extent: extent, session: session)
         probe.debug = isDebug ? .sphere : .none
         probe.showBoundingBox = isDebug

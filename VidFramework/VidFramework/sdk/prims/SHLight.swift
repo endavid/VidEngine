@@ -27,6 +27,7 @@ public class SHLight: LightSource {
         var transform: Transform
         var tonemap: simd_float4
     }
+    let maxDistanceMeters: Float = 100
     let irradianceBlendFrameCount = 30
     let identifier: UUID
     let shBuffer: SHBuffer
@@ -175,7 +176,8 @@ public class SHLight: LightSource {
     init(position: simd_float3, extent: simd_float3, tonemap: simd_float4, id: UUID) {
         identifier = id
         let device = Renderer.shared.device!
-        let t = Transform(position: position, scale: extent)
+        let s = min(maxDistanceMeters * simd_float3.one, extent)
+        let t = Transform(position: position, scale: s)
         _instance = Instance(transform: t, tonemap: tonemap)
         shBuffer = SHBuffer(device: Renderer.shared.device, numBands: 3, sqrtSamples: 100)
         sh = SphericalHarmonics(shBuffer)

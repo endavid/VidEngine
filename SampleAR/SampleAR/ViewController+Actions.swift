@@ -9,15 +9,15 @@
 import VidFramework
 
 extension ViewController {
-    @IBAction func toggleDebugging() {
-        if isDebug {
-            scene.debugARPlanes = false
-            setSHDebugMode(.none)
-        } else {
+    func setDebugging(_ isOn: Bool) {
+        if isOn {
             scene.debugARPlanes = true
             setSHDebugMode(.sphere)
+        } else {
+            scene.debugARPlanes = false
+            setSHDebugMode(.none)
         }
-        isDebug = !isDebug
+        isDebug = isOn
     }
     
     func setSHDebugMode(_ mode: SHLight.DebugMode) {

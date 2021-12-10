@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6339E3C92763ADD000CC934F /* iconSettings.png in Resources */ = {isa = PBXBuildFile; fileRef = 6339E3C82763ADD000CC934F /* iconSettings.png */; };
+		6339E3CB2763AE2100CC934F /* icon-colorModel.png in Resources */ = {isa = PBXBuildFile; fileRef = 6339E3CA2763AE2100CC934F /* icon-colorModel.png */; };
+		6339E3CD2763B13D00CC934F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6339E3CC2763B13D00CC934F /* SettingsViewController.swift */; };
 		6362F0092249936500C3926F /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362F0082249936500C3926F /* SelectionViewController.swift */; };
 		6362F00D224D8FF000C3926F /* houseSantorini.json in Resources */ = {isa = PBXBuildFile; fileRef = 6362F00B224D8FF000C3926F /* houseSantorini.json */; };
 		6362F00E224D8FF000C3926F /* houseSantorini.png in Resources */ = {isa = PBXBuildFile; fileRef = 6362F00C224D8FF000C3926F /* houseSantorini.png */; };
@@ -39,6 +42,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6339E3C82763ADD000CC934F /* iconSettings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconSettings.png; sourceTree = "<group>"; };
+		6339E3CA2763AE2100CC934F /* icon-colorModel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-colorModel.png"; sourceTree = "<group>"; };
+		6339E3CC2763B13D00CC934F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		6362F0082249936500C3926F /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
 		6362F00B224D8FF000C3926F /* houseSantorini.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = houseSantorini.json; sourceTree = "<group>"; };
 		6362F00C224D8FF000C3926F /* houseSantorini.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = houseSantorini.png; sourceTree = "<group>"; };
@@ -72,6 +78,8 @@
 		6362F00A224D8FF000C3926F /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				6339E3CA2763AE2100CC934F /* icon-colorModel.png */,
+				6339E3C82763ADD000CC934F /* iconSettings.png */,
 				6362F00B224D8FF000C3926F /* houseSantorini.json */,
 				6362F00C224D8FF000C3926F /* houseSantorini.png */,
 			);
@@ -111,6 +119,7 @@
 				638E064A2252AF6600509324 /* ViewController+ARSessionDelegate.swift */,
 				63E429442759275900A21F2E /* UIViewExtension.swift */,
 				63E4294627592E3900A21F2E /* EnvMapSelectionViewController.swift */,
+				6339E3CC2763B13D00CC934F /* SettingsViewController.swift */,
 			);
 			path = SampleAR;
 			sourceTree = "<group>";
@@ -176,6 +185,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				63BA72292129E4DD0023E879 /* LaunchScreen.storyboard in Resources */,
+				6339E3C92763ADD000CC934F /* iconSettings.png in Resources */,
+				6339E3CB2763AE2100CC934F /* icon-colorModel.png in Resources */,
 				63BA72262129E4DD0023E879 /* Assets.xcassets in Resources */,
 				6362F00D224D8FF000C3926F /* houseSantorini.json in Resources */,
 				6362F00E224D8FF000C3926F /* houseSantorini.png in Resources */,
@@ -198,6 +209,7 @@
 				63E429452759275900A21F2E /* UIViewExtension.swift in Sources */,
 				63BA721F2129E4DC0023E879 /* AppDelegate.swift in Sources */,
 				6362F010224FD79500C3926F /* StatusViewController.swift in Sources */,
+				6339E3CD2763B13D00CC934F /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
