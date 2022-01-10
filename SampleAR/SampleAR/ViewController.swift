@@ -78,7 +78,7 @@ class ViewController: VidController {
         if let session = arSession, let c = scene.cursor, c.intersecting {
             let t = c.transform
             addModel(transform: t)
-            let offsetY: Float = isGlobalLight ? 1.5 : (localSHLightSize / 2)
+            let offsetY: Float = isGlobalLight ? 1.2 : (localSHLightSize / 2)
             addLightProbe(position: t.position + simd_float3(0, offsetY, 0), session: session)
             addAnchor(session: session, transform: t)
         }
@@ -99,8 +99,8 @@ class ViewController: VidController {
         case .sphere:
             addSphere(transform: tOnGround)
         default:
-            let tSmall = Transform(position: t.position, scale: simd_float3(0.1, 0.1, 0.1), rotation: t.rotation)
-            addModelFile(model.rawValue, transform: tSmall)
+            let tNormalSize = Transform(position: t.position, scale: .one, rotation: t.rotation)
+            addModelFile(model.rawValue, transform: tNormalSize)
         }
     }
     

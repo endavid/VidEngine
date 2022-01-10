@@ -14,6 +14,7 @@
 		6362F00D224D8FF000C3926F /* houseSantorini.json in Resources */ = {isa = PBXBuildFile; fileRef = 6362F00B224D8FF000C3926F /* houseSantorini.json */; };
 		6362F00E224D8FF000C3926F /* houseSantorini.png in Resources */ = {isa = PBXBuildFile; fileRef = 6362F00C224D8FF000C3926F /* houseSantorini.png */; };
 		6362F010224FD79500C3926F /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6362F00F224FD79500C3926F /* StatusViewController.swift */; };
+		6367FDA7278C4ACD0090BB79 /* snapAvatar.json in Resources */ = {isa = PBXBuildFile; fileRef = 6367FDA6278C4ACD0090BB79 /* snapAvatar.json */; };
 		638E064B2252AF6600509324 /* ViewController+ARSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638E064A2252AF6600509324 /* ViewController+ARSessionDelegate.swift */; };
 		63AA9E7A22479B81004B9989 /* ViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AA9E7922479B81004B9989 /* ViewController+Actions.swift */; };
 		63BA721F2129E4DC0023E879 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA721E2129E4DC0023E879 /* AppDelegate.swift */; };
@@ -49,6 +50,7 @@
 		6362F00B224D8FF000C3926F /* houseSantorini.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = houseSantorini.json; sourceTree = "<group>"; };
 		6362F00C224D8FF000C3926F /* houseSantorini.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = houseSantorini.png; sourceTree = "<group>"; };
 		6362F00F224FD79500C3926F /* StatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
+		6367FDA6278C4ACD0090BB79 /* snapAvatar.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = snapAvatar.json; sourceTree = "<group>"; };
 		638E064A2252AF6600509324 /* ViewController+ARSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSessionDelegate.swift"; sourceTree = "<group>"; };
 		63AA9E7922479B81004B9989 /* ViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Actions.swift"; sourceTree = "<group>"; };
 		63BA721B2129E4DC0023E879 /* SampleAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +80,7 @@
 		6362F00A224D8FF000C3926F /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				6367FDA6278C4ACD0090BB79 /* snapAvatar.json */,
 				6339E3CA2763AE2100CC934F /* icon-colorModel.png */,
 				6339E3C82763ADD000CC934F /* iconSettings.png */,
 				6362F00B224D8FF000C3926F /* houseSantorini.json */,
@@ -184,6 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6367FDA7278C4ACD0090BB79 /* snapAvatar.json in Resources */,
 				63BA72292129E4DD0023E879 /* LaunchScreen.storyboard in Resources */,
 				6339E3C92763ADD000CC934F /* iconSettings.png in Resources */,
 				6339E3CB2763AE2100CC934F /* icon-colorModel.png in Resources */,
