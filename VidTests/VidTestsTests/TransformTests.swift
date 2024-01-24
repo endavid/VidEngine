@@ -170,4 +170,11 @@ class TransformTests: XCTestCase {
             assertAlmostEqual((mi * point).xyz, ti * point.xyz)
         }
     }
+    
+    func testPerspective() {
+        let p = float4x4.perspective(fov: 0.5, near: 0.1, far: 100, aspectRatio: 1)
+        let pInv = float4x4.perspectiveInverse(fov: 0.5, near: 0.1, far: 100, aspectRatio: 1)
+        let id = pInv * p
+        assertAlmostEqual(float4x4.identity, id)
+    }
 }
