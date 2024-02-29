@@ -8,8 +8,7 @@
 
 import XCTest
 import simd
-import VidFramework
-@testable import VidTests
+@testable import VidEngine
 
 func assertVectorRotation(angleAxis: AngleAxis, vector: simd_float3, expected: simd_float3) {
     let q = Quaternion(angleAxis)

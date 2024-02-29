@@ -211,7 +211,7 @@ public class SphericalHarmonics {
         }
         normalizeCoefficients()
         // compute matrices for later
-        computeIrradianceApproximationMatrices()
+        try? computeIrradianceApproximationMatrices()
     }
     
     func updateCoefficients(sampleIndex i: Int, _ v: Vec3) {
@@ -266,10 +266,9 @@ public class SphericalHarmonics {
      * For normal direction n, E(n) = n^ * M * n
      * @see "An efficient representation for Irradiance Environment Maps"
      */
-    func computeIrradianceApproximationMatrices() {
+    func computeIrradianceApproximationMatrices() throws {
         if storage.numBands < 3 {
-            NSLog("Not enough coefficients!")
-            return
+            throw SphericalHarmonicsError.notEnoughCoefficients
         }
         let pi = Float.pi
         let a0 = pi * 1.0

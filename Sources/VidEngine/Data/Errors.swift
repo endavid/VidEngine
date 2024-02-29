@@ -17,6 +17,10 @@ public enum MathError: Error {
     case unsupported(String)
 }
 
+public enum SphericalHarmonicsError: Error {
+    case notEnoughCoefficients
+}
+
 public enum FileError: Error {
     case missing(String)
     case corrupt(String)

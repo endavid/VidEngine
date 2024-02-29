@@ -36,5 +36,12 @@ class MathTests: XCTestCase {
         assertAlmostEqual(octaveU, u, epsilon: 1e-5)
         assertAlmostEqual(octaveV, v, epsilon: 1e-5)
     }
+    func testLine() {
+        let a = simd_float4(0, 1, -1, 2)
+        let b = simd_float4(1, -1, 10, -3)
+        let line = Line(start: a, end: b)
+        assertAlmostEqual(a, line.start, epsilon: 1e-20)
+        assertAlmostEqual(b, line.end, epsilon: 1e-20)
+    }
 }
 

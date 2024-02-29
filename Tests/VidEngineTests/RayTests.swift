@@ -8,8 +8,7 @@
 
 import XCTest
 import simd
-import VidFramework
-@testable import VidTests
+@testable import VidEngine
 
 class RayTests: XCTestCase {
     let testTriangle = Triangle(a: simd_float3(-2,0,-1), b: simd_float3(2, 0, -1), c: simd_float3(0,2,-1))

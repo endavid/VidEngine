@@ -8,8 +8,7 @@
 
 import XCTest
 import simd
-import VidFramework
-@testable import VidTests
+@testable import VidEngine
 
 func assertAlmostEqual(_ expected: SHSample, _ actual: SHSample) {
     assertAlmostEqual(expected.sph, actual.sph)
