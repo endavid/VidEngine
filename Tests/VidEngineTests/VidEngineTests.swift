@@ -9,4 +9,9 @@ final class VidEngineTests: XCTestCase {
         // Defining Test Cases and Test Methods
         // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
     }
+    func testBundle() {
+        XCTAssertNotNil(VidBundle.metallib)
+        XCTAssertNotNil(VidBundle.imageSquareFrame)
+        XCTAssertNotNil(VidBundle.imageMeasureGrid)
+    }
 }
