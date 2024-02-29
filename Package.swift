@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "VidEngine",
     platforms: [
-        .macOS(.v11),
+        .macOS(.v12),
         .iOS(.v13)
     ],
     products: [
@@ -27,6 +27,10 @@ let package = Package(
         ),
         .testTarget(
             name: "VidEngineTests",
-            dependencies: ["VidEngine"]),
+            dependencies: ["VidEngine"],
+            resources: [
+                .copy("Resources/dummy.json")
+            ]
+        ),
     ]
 )
