@@ -21,4 +21,8 @@ public class VidBundle {
     public static let imageMeasureGrid: URL? = {
         return Bundle.module.url(forResource: "measureGrid", withExtension: "png")
     }()
+    // 14-Color categorization LUT
+    static let rawCC14: URL? = {
+        return Bundle.module.url(forResource: "cc14", withExtension: "raw")
+    }()
 }

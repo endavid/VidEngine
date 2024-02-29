@@ -6,7 +6,12 @@
 //  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
+#else
+import Cocoa
+public typealias UIColor = NSColor
+#endif
 import simd
 
 extension UIColor {

@@ -6,6 +6,7 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
+import Foundation
 import simd
 
 /// sRGB color with alpha, where every channel is normalized between 0 and 1

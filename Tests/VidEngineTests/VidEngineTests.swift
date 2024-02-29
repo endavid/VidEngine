@@ -13,5 +13,6 @@ final class VidEngineTests: XCTestCase {
         XCTAssertNotNil(VidBundle.metallib)
         XCTAssertNotNil(VidBundle.imageSquareFrame)
         XCTAssertNotNil(VidBundle.imageMeasureGrid)
+        XCTAssertNotNil(VidBundle.rawCC14)
     }
 }

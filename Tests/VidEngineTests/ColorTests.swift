@@ -8,8 +8,7 @@
 
 import XCTest
 import simd
-import VidFramework
-@testable import VidTests
+@testable import VidEngine
 
 class ColorTests: XCTestCase {
     

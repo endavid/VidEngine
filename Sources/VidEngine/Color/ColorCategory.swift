@@ -29,10 +29,7 @@ public class UniversalColorCategorization {
     private var lut: [UInt8]
     
     public init?() {
-        guard let bundle = try? FrameworkBundle.mainBundle() else {
-            return nil
-        }
-        guard let url = bundle.url(forResource: "cc14", withExtension: "raw") else {
+        guard let url = VidBundle.rawCC14 else {
             return nil
         }
         guard let data = NSData(contentsOf: url) else {
