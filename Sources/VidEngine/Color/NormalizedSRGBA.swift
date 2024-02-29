@@ -8,6 +8,11 @@
 
 import Foundation
 import simd
+#if canImport(UIKit)
+import UIKit
+#else
+import Cocoa
+#endif
 
 /// sRGB color with alpha, where every channel is normalized between 0 and 1
 /// Transforms use the 2.4 exponent. See https://en.wikipedia.org/wiki/SRGB
@@ -54,6 +59,7 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return LinearRGBA.toUInt64(raw)
         }
     }
+#if canImport(UIKit)
     public var uiColor: UIColor {
         get {
             // @todo use displayP3 if any channel is out of 0..1 bounds
@@ -61,6 +67,30 @@ public struct NormalizedSRGBA: ColorWithAlpha {
             return c
         }
     }
+    public init(_ color: UIColor) {
+        var fRed : CGFloat = 0
+        var fGreen : CGFloat = 0
+        var fBlue : CGFloat = 0
+        var fAlpha : CGFloat = 0
+        color.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
+        self.init(r: Float(fRed), g: Float(fGreen), b: Float(fBlue), a: Float(fAlpha))
+    }
+#else
+    public var nsColor: NSColor {
+        get {
+            let c = NSColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
+            return c
+        }
+    }
+    public init(_ color: NSColor) {
+        var fRed : CGFloat = 0
+        var fGreen : CGFloat = 0
+        var fBlue : CGFloat = 0
+        var fAlpha : CGFloat = 0
+        color.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
+        self.init(r: Float(fRed), g: Float(fGreen), b: Float(fBlue), a: Float(fAlpha))
+    }
+#endif
     public init(r: Float, g: Float, b: Float, a: Float) {
         raw = simd_float4(r, g, b, a)
     }
@@ -77,14 +107,4 @@ public struct NormalizedSRGBA: ColorWithAlpha {
         }
         self.raw = simd_float4(f(rgba.r), f(rgba.g), f(rgba.b), rgba.a)
     }
-    
-    public init(_ color: UIColor) {
-        var fRed : CGFloat = 0
-        var fGreen : CGFloat = 0
-        var fBlue : CGFloat = 0
-        var fAlpha : CGFloat = 0
-        color.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
-        self.init(r: Float(fRed), g: Float(fGreen), b: Float(fBlue), a: Float(fAlpha))
-    }
-    
 }

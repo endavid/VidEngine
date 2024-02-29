@@ -10,7 +10,7 @@
 import UIKit
 #else
 import Cocoa
-public typealias UIColor = NSColor
+typealias UIColor = NSColor
 #endif
 import simd
 

@@ -6,6 +6,11 @@
 //  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
+#if canImport(UIKit)
+import UIKit
+#else
+import Cocoa
+#endif
 import simd
 
 /// Linear RGB with alpha
@@ -89,11 +94,20 @@ public struct LinearRGBA: ColorWithAlpha {
         }
         raw = simd_float4(f(srgba.r), f(srgba.g), f(srgba.b), srgba.a)
     }
-    
+
+#if canImport(UIKit)
     /// When using a UIColor, the inverse gamma will be applied and
     /// the color converted to linear RGB.
     public init(_ color: UIColor) {
         let sRGB = NormalizedSRGBA(color)
         self.init(srgba: sRGB)
     }
+#else
+    /// When using a NSColor, the inverse gamma will be applied and
+    /// the color converted to linear RGB.
+    public init(_ color: NSColor) {
+        let sRGB = NormalizedSRGBA(color)
+        self.init(srgba: sRGB)
+    }
+#endif
 }

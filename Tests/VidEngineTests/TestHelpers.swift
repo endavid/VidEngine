@@ -10,6 +10,16 @@ import XCTest
 import simd
 import VidEngine
 
+func assertAlmostEqual(_ expected: Float, _ actual: Float, epsilon: Float = 1e-6) {
+    let d = fabsf(expected - actual)
+    if d > epsilon {
+        NSLog("expected: \(expected); actual: \(actual)")
+    }
+    XCTAssertLessThanOrEqual(d, epsilon)
+}
+func assertAlmostEqual(_ expected: CGFloat, _ actual: CGFloat, epsilon: Float = 1e-6) {
+    assertAlmostEqual(Float(expected), Float(actual), epsilon: epsilon)
+}
 func assertAlmostEqual(_ expected: simd_float3, _ actual: simd_float3, epsilon: Float = 1e-6) {
     let d = distance(expected, actual)
     if d > epsilon {

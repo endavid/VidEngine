@@ -201,30 +201,17 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(simd_float3(76.0714, 4.8516, -10.5185).isClose(gray, epsilon: e))
     }
     
-    func testP3UIColor() {
-        let c = UIColor(displayP3Red: 1, green: 0.5, blue: 0, alpha: 1)
-        let v = c.vector
-        XCTAssertTrue(IsClose(v.r, 1.07399773597717))
-        XCTAssertTrue(IsClose(v.g, 0.462588369846344))
-        XCTAssertTrue(IsClose(v.b, -0.210467934608459))
-        XCTAssertTrue(IsClose(v.a, 1))
+    func testDisplayP3() {
         let nsrgb = NormalizedSRGBA(rgb: simd_float3(1, 0.5, 0))
         let p3 = LinearRGBA(srgba: nsrgb)
         let srgb = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ * p3.rgb
         let cgamma = NormalizedSRGBA(rgba: LinearRGBA(rgb: srgb))
-        XCTAssertTrue(IsClose(Float(v.r), cgamma.r))
-        XCTAssertTrue(IsClose(Float(v.g), cgamma.g))
-        XCTAssertTrue(IsClose(Float(v.b), cgamma.b, epsilon: 0.0005))
-        let s = NormalizedSRGBA(c)
-        XCTAssertTrue(IsClose(Float(v.r), s.r))
-        XCTAssertTrue(IsClose(Float(v.g), s.g))
-        XCTAssertTrue(IsClose(Float(v.b), s.b))
-        let l = LinearRGBA(srgba: s)
-        XCTAssertTrue(IsClose(srgb.x, l.r, epsilon: 0.0005))
-        XCTAssertTrue(IsClose(srgb.y, l.g, epsilon: 0.0005))
-        XCTAssertTrue(IsClose(srgb.z, l.b, epsilon: 0.0005))
+        assertAlmostEqual(1.07399773597717, cgamma.r, epsilon: 1e-3)
+        assertAlmostEqual(0.462588369846344, cgamma.g, epsilon: 1e-4)
+        assertAlmostEqual(-0.210467934608459, cgamma.b, epsilon: 1e-3)
     }
-    
+        
+#if canImport(UIKit)
     func testToUIColor() {
         let srgb = NormalizedSRGBA(r: 1, g: 0.5, b: 0.2, a: 1)
         let c = srgb.uiColor
@@ -234,6 +221,49 @@ class ColorTests: XCTestCase {
         XCTAssertTrue(IsClose(v.b, 0.2))
         XCTAssertTrue(IsClose(v.a, 1))
     }
+    func testP3UIColor() {
+        let c = UIColor(displayP3Red: 1, green: 0.5, blue: 0, alpha: 1)
+        let v = c.vector
+        assertAlmostEqual(1.07399773597717, v.r)
+        assertAlmostEqual(0.462588369846344, v.g)
+        assertAlmostEqual(-0.210467934608459, v.b)
+        assertAlmostEqual(1, v.a)
+        let nsrgb = NormalizedSRGBA(rgb: simd_float3(1, 0.5, 0))
+        let p3 = LinearRGBA(srgba: nsrgb)
+        let srgb = RGBColorSpace.sRGB.toRGB * RGBColorSpace.dciP3.toXYZ * p3.rgb
+        let cgamma = NormalizedSRGBA(rgba: LinearRGBA(rgb: srgb))
+        assertAlmostEqual(Float(v.r), cgamma.r)
+        assertAlmostEqual(Float(v.g), cgamma.g)
+        assertAlmostEqual(Float(v.b), cgamma.b, epsilon: 0.0005)
+        let s = NormalizedSRGBA(c)
+        XCTAssertTrue(IsClose(Float(v.r), s.r))
+        XCTAssertTrue(IsClose(Float(v.g), s.g))
+        XCTAssertTrue(IsClose(Float(v.b), s.b))
+        let l = LinearRGBA(srgba: s)
+        assertAlmostEqual(srgb.x, l.r, epsilon: 0.0005)
+        assertAlmostEqual(srgb.y, l.g, epsilon: 0.0005)
+        assertAlmostEqual(srgb.z, l.b, epsilon: 0.0005)
+    }
+#else
+    func testToNSColor() {
+        let srgb = NormalizedSRGBA(r: 1, g: 0.5, b: 0.2, a: 1)
+        let c = srgb.nsColor
+        let v = c.vector
+        XCTAssertTrue(IsClose(v.r, 1))
+        XCTAssertTrue(IsClose(v.g, 0.5))
+        XCTAssertTrue(IsClose(v.b, 0.2))
+        XCTAssertTrue(IsClose(v.a, 1))
+    }
+    func testP3NSColor() {
+        let c = NSColor(displayP3Red: 1, green: 0.5, blue: 0, alpha: 1)
+        let v = c.vector
+        // on macOS, NSColor does not use extended RGB, so values stay the same!
+        assertAlmostEqual(1, v.r)
+        assertAlmostEqual(0.5, v.g)
+        assertAlmostEqual(0, v.b)
+        assertAlmostEqual(1, v.a)
+    }
+#endif
     
     func testHSVtoRGB() {
         XCTAssertTrue(ColorHSV(h: 0, s: 1, v: 0.5).rgb.isClose(simd_float3(0.5, 0, 0)))
