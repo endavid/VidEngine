@@ -8,7 +8,13 @@
 
 import Foundation
 import CoreGraphics
+#if canImport(UIKit)
 import UIKit
+public typealias VidFont = UIFont
+#else
+import Cocoa
+public typealias VidFont = NSFont
+#endif
 import MetalKit
 import simd
 
@@ -30,8 +36,13 @@ class GlyphDescriptor: NSObject, NSSecureCoding {
     }
     required init(coder aDecoder: NSCoder) {
         glyphIndex = CGGlyph(aDecoder.decodeInteger(forKey: "GlyphIndex"))
+        #if canImport(UIKit)
         topLeftTexCoord = aDecoder.decodeCGPoint(forKey: "TopLeftTexCoord")
         bottomRightTexCoord = aDecoder.decodeCGPoint(forKey: "BottomRightTexCoord")
+        #else
+        topLeftTexCoord = aDecoder.decodePoint(forKey: "TopLeftTexCoord")
+        bottomRightTexCoord = aDecoder.decodePoint(forKey: "BottomRightTexCoord")
+        #endif
     }
     func encode(with aCoder: NSCoder) {
         aCoder.encode(Int(glyphIndex), forKey: "GlyphIndex")
@@ -45,19 +56,23 @@ public class FontAtlas: NSObject, NSSecureCoding {
     
     static let atlasSize: Int = 4096
     var glyphs : [GlyphDescriptor] = []
-    let parentFont: UIFont
+    let parentFont: VidFont
     var fontPointSize: Float
     let textureSize: Int
-    private var _fontTexture: MTLTexture!
+    private var _fontTexture: MTLTexture?
     private var _textureData: NSData?
-    public var fontTexture: MTLTexture {
-        get {
-            return _fontTexture
+
+    func getFontTexture(device: MTLDevice) throws -> MTLTexture {
+        if let t = _fontTexture {
+            return t
         }
+        let t = try createTexture(device: device)
+        _fontTexture = t
+        return t
     }
     
     /// If the FontAtlas has been created before, it will attempt to load it from disk
-    public static func createFontAtlas(font: UIFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
+    public static func createFontAtlas(device: MTLDevice, font: VidFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
         let candidates = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if let documentsPath = candidates.first {
             let dirUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
@@ -67,18 +82,18 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 return fontAtlas
             }
             // cache miss
-            let fontAtlas = try FontAtlas(font: font, textureSize: textureSize)
+            let fontAtlas = try FontAtlas(device: device, font: font, textureSize: textureSize)
             if archive {
                 NSKeyedArchiver.archiveRootObject(fontAtlas, toFile: fontUrl.path)
             }
             return fontAtlas
         } else {
             NSLog("Failed to get documentsPath. Can't cache the texture.")
-            return try FontAtlas(font: font, textureSize: textureSize)
+            return try FontAtlas(device: device, font: font, textureSize: textureSize)
         }
     }
     
-    public init(font: UIFont, textureSize: Int) throws {
+    public init(device: MTLDevice, font: VidFont, textureSize: Int) throws {
         self.parentFont = font
         self.textureSize = textureSize
         if textureSize > FontAtlas.atlasSize {
@@ -90,9 +105,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         fontPointSize = Float(font.pointSize)
         super.init()
         createTextureData()
-        do {
-            _fontTexture = try createTexture(device: Renderer.shared.device)
-        }
+        _fontTexture = try createTexture(device: device)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -105,7 +118,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
             NSLog("Invalid font size")
             return nil
         }
-        guard let font = UIFont(name: fontName, size: CGFloat(fontPointSize)) else {
+        guard let font = VidFont(name: fontName, size: CGFloat(fontPointSize)) else {
             NSLog("Invalid font: \(fontName):\(fontPointSize)")
             return nil
         }
@@ -126,13 +139,6 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
         _textureData = td
         super.init()
-        do {
-            guard let texture = try? createTexture(device: Renderer.shared.device) else {
-                NSLog("Failed to create texture")
-                return nil
-            }
-            _fontTexture = texture
-        }
     }
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(parentFont.fontName, forKey: "FontName")
@@ -188,7 +194,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         distanceField.deallocate()
     }
     
-    private func createAtlasForFont(context: CGContext, font: UIFont, width: Int, height: Int) {
+    private func createAtlasForFont(context: CGContext, font: VidFont, width: Int, height: Int) {
         // Turn off antialiasing so we only get fully-on or fully-off pixels.
         // This implicitly disables subpixel antialiasing and hinting.
         context.setAllowsAntialiasing(false)
@@ -202,7 +208,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         
         fontPointSize = pointSizeThatFitsForFont(font, rect:CGRect(x: 0, y: 0, width: width, height: height))
         let ctFont = CTFontCreateWithName(font.fontName as CFString, CGFloat(fontPointSize), nil)
-        guard let parentFont = UIFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
+        guard let parentFont = VidFont(name: font.fontName, size: CGFloat(fontPointSize)) else {
             // should throw an exception
             return
         }
@@ -252,7 +258,7 @@ public class FontAtlas: NSObject, NSSecureCoding {
         }
     }
     
-    private func pointSizeThatFitsForFont(_ font: UIFont, rect: CGRect) -> Float {
+    private func pointSizeThatFitsForFont(_ font: VidFont, rect: CGRect) -> Float {
         var fittedSize = Float(font.pointSize)
         while isLikelyToFit(font: font, size: CGFloat(fittedSize), rect: rect) {
             fittedSize += 1
@@ -263,9 +269,9 @@ public class FontAtlas: NSObject, NSSecureCoding {
         return fittedSize
     }
     
-    private func isLikelyToFit(font: UIFont, size: CGFloat, rect: CGRect) -> Bool {
+    private func isLikelyToFit(font: VidFont, size: CGFloat, rect: CGRect) -> Bool {
         let textureArea = rect.size.width * rect.size.height
-        guard let trialFont = UIFont(name: font.fontName, size: size) else {
+        guard let trialFont = VidFont(name: font.fontName, size: size) else {
             return false
         }
         let trialCTFont = CTFontCreateWithName(font.fontName as CFString, size, nil)
@@ -276,14 +282,14 @@ public class FontAtlas: NSObject, NSSecureCoding {
         return (estimatedGlyphTotalArea < textureArea)
     }
     
-    private func estimatedLineWidthForFont(_ font: UIFont) -> CGFloat {
+    private func estimatedLineWidthForFont(_ font: VidFont) -> CGFloat {
         let myString = "!" as NSString
         let size: CGSize = myString.size(withAttributes: [NSAttributedString.Key.font: font])
         let estimatedStrokeWidth = Float(size.width)
         return CGFloat(ceilf(estimatedStrokeWidth))
     }
     
-    private func estimatedGlyphSizeForFont(_ font: UIFont) -> CGSize {
+    private func estimatedGlyphSizeForFont(_ font: VidFont) -> CGSize {
         let exemplarString = "{ǺOJMQYZa@jmqyw" as NSString
         let exemplarStringSize = exemplarString.size(withAttributes: [NSAttributedString.Key.font: font ])
         let averageGlyphWidth = ceilf(Float(exemplarStringSize.width) / Float(exemplarString.length))

@@ -11,20 +11,22 @@ import Metal
 import MetalKit
 
 /// Uses Weight-blended OIT
-class UnlitTransparencyPlugin : GraphicPlugin {
+class UnlitTransparencyPlugin: GraphicPlugin {
     fileprivate var pipelineState: MTLRenderPipelineState! = nil
     fileprivate var textPipelineState: MTLRenderPipelineState! = nil
     fileprivate var depthState : MTLDepthStencilState! = nil
     fileprivate var textPrimitives : [TextPrimitive] = []
     fileprivate var primitives : [Primitive] = []
     
-    override var label: String {
+    var isEnabled: Bool = true
+    
+    var label: String {
         get {
             return "UnlitTransparency"
         }
     }
     
-    override var isEmpty: Bool {
+    var isEmpty: Bool {
         get {
             return textPrimitives.isEmpty && primitives.isEmpty
         }
@@ -59,8 +61,6 @@ class UnlitTransparencyPlugin : GraphicPlugin {
     }
     
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
-        super.init(device: device, library: library, view: view)
-        
         let pipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library)
         let textPipelineStateDescriptor = gBuffer.createOITPipelineDescriptor(device: device, library: library, fragmentShader: "passTextFragmentOIT")
         
@@ -75,14 +75,11 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         }
     }
     
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(renderer: Renderer, drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if isEmpty {
             return
         }
-        guard let renderer = Renderer.shared else {
-            return
-        }
-        let renderPassDescriptor = Renderer.shared.createOITRenderPass(clear: true, clearDepth: !renderer.frameState.clearedGBuffer)
+        let renderPassDescriptor = renderer.createOITRenderPass(clear: true, clearDepth: !renderer.frameState.clearedGBuffer)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
@@ -93,15 +90,15 @@ class UnlitTransparencyPlugin : GraphicPlugin {
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
         renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
-        PrimitivePlugin.drawAll(encoder: encoder, primitives: primitives, defaultTexture: Renderer.shared.whiteTexture)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: primitives, defaultTexture: renderer.whiteTexture, samplers: renderer.textureSamplers)
         encoder.setRenderPipelineState(textPipelineState)
-        PrimitivePlugin.drawAll(encoder: encoder, primitives: textPrimitives, defaultTexture: Renderer.shared.whiteTexture)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: textPrimitives, defaultTexture: renderer.whiteTexture, samplers: renderer.textureSamplers)
         encoder.popDebugGroup()
         encoder.endEncoding()
         renderer.frameState.clearedTransparencyBuffer = true
     }
 
-    override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
+    func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

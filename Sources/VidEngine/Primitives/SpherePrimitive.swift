@@ -37,12 +37,12 @@ public class SpherePrimitive : Primitive {
     fileprivate let isInterior : Bool
     
     /// @param tesselationLevel: 2: 162 vertices; 3: 642 vertices; 4: 2562 vertices
-    public init(instanceCount: Int, descriptor: SphereDescriptor) {
+    public init(renderer: Renderer, instanceCount: Int, descriptor: SphereDescriptor) {
         self.isInterior = descriptor.isInterior
-        super.init(instanceCount: instanceCount)
+        super.init(device: renderer.device, instanceCount: instanceCount)
         if descriptor.isRegularGrid {
             let ss = SubdivisionSphere(widthSegments: descriptor.widthSegments, heightSegments: descriptor.heightSegments)
-            initBuffers(vertices: ss.vertices, faces: ss.faces, uvs: ss.uvs)
+            initBuffers(renderer: renderer, vertices: ss.vertices, faces: ss.faces, uvs: ss.uvs)
         }
         else {
             let ps = PlatonicSolid.createIcosahedron()
@@ -50,11 +50,11 @@ public class SpherePrimitive : Primitive {
                 ps.subdivide()
             }
             let uvs = ps.computeTexCoordsFromSphericalProjection()
-            initBuffers(vertices: ps.vertices, faces: ps.faces, uvs: uvs)
+            initBuffers(renderer: renderer, vertices: ps.vertices, faces: ps.faces, uvs: uvs)
         }
     }
     
-    fileprivate func initBuffers(vertices: [simd_float3], faces: [simd_int3], uvs: [Vec2]) {
+    fileprivate func initBuffers(renderer: Renderer, vertices: [simd_float3], faces: [simd_int3], uvs: [Vec2]) {
         var triangleList = [UInt16](repeating: 0, count: faces.count * 3)
         for i in 0..<faces.count {
             // isInterior -> CW winding
@@ -66,8 +66,8 @@ public class SpherePrimitive : Primitive {
             triangleList[c] = UInt16(faces[i].z)
         }
         let numIndices = faces.count * 3
-        let indexBuffer = Renderer.shared.createIndexBuffer("sphere IB", elements: triangleList)
-        vertexBuffer = Renderer.shared.createTexturedVertexBuffer("sphere VB", numElements: vertices.count)
+        let indexBuffer = renderer.createIndexBuffer("sphere IB", elements: triangleList)
+        vertexBuffer = renderer.createTexturedVertexBuffer("sphere VB", numElements: vertices.count)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         for i in 0..<vertices.count {
             let x = Vec3(vertices[i])

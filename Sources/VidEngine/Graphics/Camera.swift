@@ -3,10 +3,9 @@
 //  VidEngine
 //
 //  Created by David Gavilan on 8/13/16.
-//  Copyright © 2016 David Gavilan. All rights reserved.
 //
 import simd
-import UIKit
+import Foundation
 
 public class Camera {
     var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
@@ -18,12 +17,10 @@ public class Camera {
     private var _projection = float4x4()
     private var _projectionInverse = float4x4()
     
-    public var orientation: UIInterfaceOrientation {
+    /// width / height. Smaller than one for portrait orientations.
+    public var aspect: CGFloat {
         get {
-            if bounds.width > bounds.height {
-                return UIInterfaceOrientation.landscapeRight
-            }
-            return UIInterfaceOrientation.portrait
+            return bounds.width / bounds.height
         }
     }
 

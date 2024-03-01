@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2019/03/02.
-//  Copyright © 2019 David Gavilan. All rights reserved.
 //
 
 import MetalKit
@@ -25,27 +24,26 @@ public class Dots3D {
             return instances.count
         }
     }
-    public func queue() {
+    public func queue(renderer: Renderer) {
         switch lightingType {
         case .UnlitOpaque:
-            let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+            let p: UnlitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
         default:
             NSLog("\(lightingType) unsupported for Dots3D")
         }
     }
-    public func dequeue() {
-        let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+    public func dequeue(renderer: Renderer) {
+        let p: UnlitOpaquePlugin? = renderer.getPlugin()
         p?.dequeue(self)
     }
-    init(transform: Transform, dotSize: Float, vertexBuffer: MTLBuffer, colorBuffer: MTLBuffer, vertexCount: Int) {
+    init(device: MTLDevice, transform: Transform, dotSize: Float, vertexBuffer: MTLBuffer, colorBuffer: MTLBuffer, vertexCount: Int) {
         self.vertexBuffer = vertexBuffer
         self.colorBuffer = colorBuffer
         self.vertexCount = vertexCount
         let s = simd_float4(1, 1, 1, 1) * dotSize
         instances = [Instance(transform: transform, dotSize: s)]
-        let device = Renderer.shared.device
-        instanceBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size, options: [])!
+        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size, options: [])!
         instanceBuffer.label = "Dot3DInstances"
     }
     func draw(encoder: MTLRenderCommandEncoder) {

@@ -12,13 +12,13 @@ import MetalKit
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
     
-    public init(instanceCount: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
-        super.init(instanceCount: instanceCount)
+    public init(renderer: Renderer, instanceCount: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
+        super.init(device: renderer.device, instanceCount: instanceCount)
         self.lightingType = .UnlitTransparent
-        buildMeshWithString(text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
+        buildMeshWithString(renderer: renderer, text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
     }
     
-    private func buildMeshWithString(text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
+    private func buildMeshWithString(renderer: Renderer, text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
         let font = fontAtlas.parentFont.withSize(fontSize)
         let attrString = NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: font])
         let stringRange = CFRangeMake(0, attrString.length)
@@ -36,7 +36,7 @@ public class TextPrimitive : Primitive {
         let vertexCount = frameGlyphCount * 4
         let indexCount = frameGlyphCount * 6
         var indices = [UInt16](repeating: 0, count: indexCount)
-        vertexBuffer = Renderer.shared.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
+        vertexBuffer = renderer.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         var index = 0
         var vertex = 0
@@ -71,8 +71,13 @@ public class TextPrimitive : Primitive {
             indices[index+5] = gi4
             index += 6
         }
-        let indexBuffer = Renderer.shared.createIndexBuffer("Text IB", elements: indices)
-        submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontAtlas.fontTexture, sampler: .linearWithClamp))
+        let indexBuffer = renderer.createIndexBuffer("Text IB", elements: indices)
+        do {
+            let fontTexture = try fontAtlas.getFontTexture(device: renderer.device)
+            submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontTexture, sampler: .linearWithClamp))
+        } catch let error {
+            NSLog("buildMeshWithString: \(error.localizedDescription)")
+        }
     }
     
     private func enumerateGlyphsInFrame(frame: CTFrame, callback: (CGGlyph, Int, CGRect) -> ()) {
@@ -84,8 +89,12 @@ public class TextPrimitive : Primitive {
         var lineOriginArray = [CGPoint](repeating: CGPoint(), count: numLines)
         CTFrameGetLineOrigins(frame, entire, &lineOriginArray)
         var glyphIndexInFrame = 0
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        let context = UIGraphicsGetCurrentContext()
+        #if canImport(UIKit)
+        guard let cgContext = UIGraphicsGetCurrentContext() else { return }
+        #else
+        guard let currentContext = NSGraphicsContext.current else { return }
+        let cgContext = currentContext.cgContext
+        #endif
         for i in 0..<numLines {
             let lineObject = CFArrayGetValueAtIndex(lines, i)
             let line = unsafeBitCast(lineObject, to: CTLine.self)
@@ -103,7 +112,7 @@ public class TextPrimitive : Primitive {
                 for glyphIndex in 0..<glyphCount {
                     let glyph = glyphArray[glyphIndex]
                     let glyphOrigin = positionArray[glyphIndex]
-                    var glyphRect = CTRunGetImageBounds(run, context, CFRangeMake(glyphIndex, 1))
+                    var glyphRect = CTRunGetImageBounds(run, cgContext, CFRangeMake(glyphIndex, 1))
                     let boundsTransX = frameBoundingRect.origin.x + lineOrigin.x
                     let boundsTransY = frameBoundingRect.height + frameBoundingRect.origin.y - lineOrigin.y + glyphOrigin.y
                     let pathTransform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: boundsTransX, ty: boundsTransY)
@@ -113,6 +122,8 @@ public class TextPrimitive : Primitive {
                 }
             }
         }
+        #if canImport(UIKit)
         UIGraphicsEndImageContext()
+        #endif
     }
 }

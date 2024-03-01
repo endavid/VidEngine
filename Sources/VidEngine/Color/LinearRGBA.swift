@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2018/03/15.
-//  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
 #if canImport(UIKit)

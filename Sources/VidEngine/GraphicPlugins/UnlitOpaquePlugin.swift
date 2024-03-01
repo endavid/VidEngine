@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2019/02/24.
-//  Copyright © 2019 David Gavilan. All rights reserved.
 //
 
 import Metal
@@ -56,9 +55,8 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     func createEnvSphereDescriptor(device: MTLDevice, library: MTLLibrary, gBuffer: GBuffer) -> MTLRenderPipelineDescriptor {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "passSkyboxFragment", vertexShader: "passSkyboxGeometry")
     }
-    override func createEncoder(commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
-        let renderer = Renderer.shared!
-        let clear = !renderer.frameState.clearedBackbuffer
+    override func createEncoder(renderer: Renderer, commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
+        let clear = renderer.frameState.clearedBackbuffer
         let renderPassDescriptor = renderer.createUnlitRenderPass(clear: clear)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         if let e = encoder {
@@ -77,11 +75,11 @@ class UnlitOpaquePlugin: PrimitivePlugin {
         }
         _whiteCubemap = TextureUtils.createWhiteCubemap(device: device)
     }
-    override func draw(encoder: MTLRenderCommandEncoder) {
-        super.draw(encoder: encoder)
-        drawEnvSpheres(encoder: encoder)
+    override func draw(renderer: Renderer, encoder: MTLRenderCommandEncoder) {
+        super.draw(renderer: renderer, encoder: encoder)
+        drawEnvSpheres(renderer: renderer, encoder: encoder)
     }
-    func drawEnvSpheres(encoder: MTLRenderCommandEncoder) {
+    func drawEnvSpheres(renderer: Renderer, encoder: MTLRenderCommandEncoder) {
         if envSpheres.isEmpty {
             return
         }
@@ -90,8 +88,8 @@ class UnlitOpaquePlugin: PrimitivePlugin {
         encoder.setDepthStencilState(depthState)
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
-        Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)
-        PrimitivePlugin.drawAll(encoder: encoder, primitives: envSpheres, defaultTexture: _whiteCubemap)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: envSpheres, defaultTexture: _whiteCubemap, samplers: renderer.textureSamplers)
         encoder.popDebugGroup()
     }
     override func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {

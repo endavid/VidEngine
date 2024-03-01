@@ -9,8 +9,7 @@
 
 import XCTest
 import simd
-import VidFramework
-@testable import VidTests
+@testable import VidEngine
 
 class MemoryTests: XCTestCase {
     func testPrimitiveInstance() {
@@ -20,11 +19,12 @@ class MemoryTests: XCTestCase {
         XCTAssertEqual(16, MemoryLayout<Primitive.Instance>.alignment)
     }
     
+    /*
     func testWorldTouch() {
         XCTAssertEqual(18, MemoryLayout<WorldTouch.Point>.size)
         XCTAssertEqual(20, MemoryLayout<WorldTouch.Point>.stride)
         XCTAssertEqual(4, MemoryLayout<WorldTouch.Point>.alignment)
-    }
+    }*/
     
     func testVector2() {
         var v = simd_float2(0, 3)

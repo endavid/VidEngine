@@ -3,7 +3,6 @@
 //  VidEngine
 //
 //  Created by David Gavilan on 8/11/16.
-//  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
 import Metal
@@ -19,13 +18,15 @@ class PrimitivePlugin: GraphicPlugin {
     fileprivate var wireState: MTLRenderPipelineState! = nil
     var depthState : MTLDepthStencilState! = nil
     
-    override var label: String {
+    var isEnabled: Bool = true
+    
+    var label: String {
         get {
             return "GenericPrimitives"
         }
     }
     
-    override var isEmpty: Bool {
+    var isEmpty: Bool {
         get {
             return primitives.isEmpty && dots.isEmpty
         }
@@ -82,8 +83,7 @@ class PrimitivePlugin: GraphicPlugin {
         return nil
     }
     
-    func createEncoder(commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
-        let renderer = Renderer.shared!
+    func createEncoder(renderer: Renderer, commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
         let clear = !renderer.frameState.clearedGBuffer
         let renderPassDescriptor = renderer.createRenderPassWithGBuffer(clear: clear)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -95,8 +95,6 @@ class PrimitivePlugin: GraphicPlugin {
     }
     
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, gBuffer: GBuffer) {
-        super.init(device: device, library: library, view: view)
-        
         let pipelineDesc = createPipelineDescriptor(device: device, library: library, gBuffer: gBuffer)
         let depthDesc = createDepthDescriptor(gBuffer: gBuffer)
         let dotsDesc = createDotsDescriptor(device: device, library: library, gBuffer: gBuffer)
@@ -112,25 +110,25 @@ class PrimitivePlugin: GraphicPlugin {
         }
     }
     
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
+    func draw(renderer: Renderer, drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if isEmpty {
             return
         }
-        guard let encoder = createEncoder(commandBuffer: commandBuffer) else {
+        guard let encoder = createEncoder(renderer: renderer, commandBuffer: commandBuffer) else {
             return
         }
         encoder.label = self.label
-        draw(encoder: encoder)
+        draw(renderer: renderer, encoder: encoder)
         encoder.endEncoding()
     }
     
-    func draw(encoder: MTLRenderCommandEncoder) {
-        drawPrimitives(encoder: encoder)
+    func draw(renderer: Renderer, encoder: MTLRenderCommandEncoder) {
+        drawPrimitives(renderer: renderer, encoder: encoder)
         drawDots(encoder: encoder)
         drawWires(encoder: encoder)
     }
 
-    private func drawPrimitives(encoder: MTLRenderCommandEncoder) {
+    private func drawPrimitives(renderer: Renderer, encoder: MTLRenderCommandEncoder) {
         encoder.pushDebugGroup(self.label+":primitives")
         encoder.setRenderPipelineState(primState)
         encoder.setDepthStencilState(depthState)
@@ -139,8 +137,8 @@ class PrimitivePlugin: GraphicPlugin {
         //   and the normal direction of the vector product
         encoder.setFrontFacing(.counterClockwise)
         encoder.setCullMode(.back)
-        Renderer.shared.setGraphicsDataBuffer(encoder, atIndex: 1)
-        PrimitivePlugin.drawAll(encoder: encoder, primitives: self.primitives, defaultTexture: Renderer.shared.whiteTexture)
+        renderer.setGraphicsDataBuffer(encoder, atIndex: 1)
+        PrimitivePlugin.drawAll(encoder: encoder, primitives: self.primitives, defaultTexture: renderer.whiteTexture, samplers: renderer.textureSamplers)
         encoder.popDebugGroup()
     }
     
@@ -175,7 +173,7 @@ class PrimitivePlugin: GraphicPlugin {
         encoder.popDebugGroup()
     }
     
-    static func drawAll(encoder: MTLRenderCommandEncoder, primitives: [Primitive], defaultTexture: MTLTexture) {
+    static func drawAll(encoder: MTLRenderCommandEncoder, primitives: [Primitive], defaultTexture: MTLTexture, samplers: TextureSamplers) {
         var currentAlbedoTexture: MTLTexture? = nil
         var currentSampler: TextureSamplers.SamplerType? = nil
         for p in primitives {
@@ -198,7 +196,7 @@ class PrimitivePlugin: GraphicPlugin {
                     currentAlbedoTexture = defaultTexture
                 }
                 if currentSampler == nil || mesh.sampler != currentSampler! {
-                    if let sampler = Renderer.shared.textureSamplers.samplers[mesh.sampler] {
+                    if let sampler = samplers.samplers[mesh.sampler] {
                         encoder.setFragmentSamplerState(sampler, index: 0)
                         currentSampler = mesh.sampler
                     }
@@ -208,7 +206,7 @@ class PrimitivePlugin: GraphicPlugin {
         }
     }
     
-    override func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
+    func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {
         for p in primitives {
             p.updateBuffers(syncBufferIndex)
         }

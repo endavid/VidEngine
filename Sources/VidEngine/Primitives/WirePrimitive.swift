@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2019/03/03.
-//  Copyright © 2019 David Gavilan. All rights reserved.
 //
 
 import MetalKit
@@ -46,26 +45,25 @@ public class WirePrimitive {
             }
         }
     }
-    public func queue() {
+    public func queue(renderer: Renderer) {
         switch lightingType {
         case .UnlitOpaque:
-            let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+            let p: UnlitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
         default:
             NSLog("\(lightingType) unsupported for WirePrimitive")
         }
     }
-    public func dequeue() {
-        let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+    public func dequeue(renderer: Renderer) {
+        let p: UnlitOpaquePlugin? = renderer.getPlugin()
         p?.dequeue(self)
     }
     
-    init(instanceCount: Int, lines: [Line]) {
+    init(device: MTLDevice, instanceCount: Int, lines: [Line]) {
         lineCount = lines.count
         let instance = Instance(transform: Transform(), color: LinearRGBA(.white))
         instances = [Instance](repeating: instance, count: instanceCount)
-        let device = Renderer.shared.device!
-        instanceBuffer = device.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
+        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
         instanceBuffer.label = "WirePrimitiveInstances"
         vertexBuffer = device.makeBuffer(length: lines.count * MemoryLayout<Line>.size, options: [])
         let b = vertexBuffer.contents()

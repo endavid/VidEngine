@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2019/02/24.
-//  Copyright © 2019 David Gavilan. All rights reserved.
 //
 
 import Metal

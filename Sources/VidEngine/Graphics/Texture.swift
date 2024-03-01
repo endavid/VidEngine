@@ -92,7 +92,7 @@ extension MTKTextureLoader {
     }
     
     // ref. https://developer.apple.com/library/content/samplecode/LargeImageDownsizing/
-    private static func downsize(image: UIImage, scale: CGFloat) -> CGImage? {
+    private static func downsize(image: VidImage, scale: CGFloat) -> CGImage? {
         let destResolution = CGSize(width: Int(image.size.width * scale), height: Int(image.size.height * scale))
         let kSourceImageTileSizeMB : CGFloat = 40.0 // The tile size will be (x)MB of uncompressed image data
         let pixelsPerMB = 262144
@@ -194,8 +194,8 @@ extension MTKTextureLoader {
     
     // http://stackoverflow.com/q/42567140/1765629
     // https://forums.developer.apple.com/thread/73478
-    func newTexture(with uiImage: UIImage, options: TextureLoadOptions?, completionHandler: MTKTextureLoader.Callback) {
-        if let cgImage = uiImage.cgImage {
+    func newTexture(with image: VidImage, options: TextureLoadOptions?, completionHandler: MTKTextureLoader.Callback) {
+        if let cgImage = image.cgImage {
             if options?.type == .cubemap {
                 let tex = newCubemapTexture(with: cgImage)
                 completionHandler(tex, nil)
@@ -209,7 +209,7 @@ extension MTKTextureLoader {
         }
     }
     
-    func newCubemapTexture(posX: UIImage, negX: UIImage, posY: UIImage, negY: UIImage, posZ: UIImage, negZ: UIImage, completionHandler: MTKTextureLoader.Callback) {
+    func newCubemapTexture(posX: VidImage, negX: VidImage, posY: VidImage, negY: VidImage, posZ: VidImage, negZ: VidImage, completionHandler: MTKTextureLoader.Callback) {
         if let cgPosX = posX.cgImage,
             let cgNegX = negX.cgImage,
             let cgPosY = posY.cgImage,
@@ -354,7 +354,7 @@ extension MTKTextureLoader {
                     let cachesURL = URL(fileURLWithPath: cachePath, isDirectory: true)
                     let cachedFileURL = cachesURL.appendingPathComponent(response.suggestedFilename ?? NSUUID().uuidString)
                     try? FileManager.default.moveItem(at: tempURL, to: cachedFileURL)
-                    if let uiImage = UIImage(contentsOfFile: cachedFileURL.path) {
+                    if let uiImage = VidImage(contentsOfFile: cachedFileURL.path) {
                         NSLog("Image size: \(uiImage.size.width)x\(uiImage.size.height)")
                         let maxDim = CGFloat(Texture.maxSize)
                         if uiImage.size.width > maxDim || uiImage.size.height > maxDim {
@@ -393,8 +393,8 @@ extension MTKTextureLoader {
     func newTexture(withContentsOf fileUrl: URL, options: TextureLoadOptions?, completionHandler: @escaping MTKTextureLoader.Callback) {
         if options?.type == .cubemap {
             if let data = try? Data(contentsOf: fileUrl),
-                let uiImage = UIImage(data: data) {
-                self.newTexture(with: uiImage, options: options, completionHandler: completionHandler)
+                let image = VidImage(data: data) {
+                self.newTexture(with: image, options: options, completionHandler: completionHandler)
             } else {
                 completionHandler(nil, TextureError.CouldNotBeCreated)
             }
@@ -410,12 +410,12 @@ extension MTKTextureLoader {
             let dataNegY = try? Data(contentsOf: negY),
             let dataPosZ = try? Data(contentsOf: posZ),
             let dataNegZ = try? Data(contentsOf: negZ),
-            let uiPosX = UIImage(data: dataPosX),
-            let uiNegX = UIImage(data: dataNegX),
-            let uiPosY = UIImage(data: dataPosY),
-            let uiNegY = UIImage(data: dataNegY),
-            let uiPosZ = UIImage(data: dataPosZ),
-            let uiNegZ = UIImage(data: dataNegZ)
+            let uiPosX = VidImage(data: dataPosX),
+            let uiNegX = VidImage(data: dataNegX),
+            let uiPosY = VidImage(data: dataPosY),
+            let uiNegY = VidImage(data: dataNegY),
+            let uiPosZ = VidImage(data: dataPosZ),
+            let uiNegZ = VidImage(data: dataNegZ)
         {
             self.newCubemapTexture(posX: uiPosX, negX: uiNegX, posY: uiPosY, negY: uiNegY, posZ: uiPosZ, negZ: uiNegZ, completionHandler: completionHandler)
         } else {
@@ -436,22 +436,19 @@ public class TextureLibrary {
         return bundle.url(forResource: String(name), withExtension: String(ext))
     }
     
-    public func getTextureAsync(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTexture(device: MTLDevice, resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool) async throws -> MTLTexture {
         if let t = lib[resource] {
-            completion(t, nil)
-            return
+            return t
         }
         guard let url = getUrl(forResource: resource, bundle: bundle) else {
-            completion(nil, TextureError.ResourceNotFound)
-            return
+            throw TextureError.ResourceNotFound
         }
-        getTextureAsync(id: resource, fileUrl: url, options: options, addToCache: addToCache, completion: completion)
+        return try await getTexture(device: device, id: resource, fileUrl: url, options: options, addToCache: addToCache)
     }
     
-    public func getTextureAsync(id: String, posX: String, negX: String, posY: String, negY: String, posZ: String, negZ: String, bundle: Bundle, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTexture(device: MTLDevice, id: String, posX: String, negX: String, posY: String, negY: String, posZ: String, negZ: String, bundle: Bundle, addToCache: Bool) async throws -> MTLTexture {
         if let t = lib[id] {
-            completion(t, nil)
-            return
+            return t
         }
         guard let urlPosX = getUrl(forResource: posX, bundle: bundle),
             let urlNegX = getUrl(forResource: negX, bundle: bundle),
@@ -460,10 +457,9 @@ public class TextureLibrary {
             let urlPosZ = getUrl(forResource: posZ, bundle: bundle),
             let urlNegZ = getUrl(forResource: negZ, bundle: bundle)
             else {
-                completion(nil, TextureError.ResourceNotFound)
-                return
+            throw TextureError.ResourceNotFound
         }
-        getTextureAsync(id: id, posX: urlPosX, negX: urlNegX, posY: urlPosY, negY: urlNegY, posZ: urlPosZ, negZ: urlNegZ, addToCache: addToCache, completion: completion)
+        return try await getTexture(device: device, id: id, posX: urlPosX, negX: urlNegX, posY: urlPosY, negY: urlNegY, posZ: urlPosZ, negZ: urlNegZ, addToCache: addToCache)
     }
     
     private func processNewTexture(id: String, addToCache: Bool, texture: MTLTexture?, error: Error?, completion: @escaping (MTLTexture?, Error?) -> Void) {
@@ -479,49 +475,72 @@ public class TextureLibrary {
             completion(nil, TextureError.CouldNotBeCreated)
         }
     }
-    
-    public func getTextureAsync(id: String, fileUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+        
+    public func getTexture(device: MTLDevice, id: String, fileUrl: URL, options: TextureLoadOptions?, addToCache: Bool) async throws -> MTLTexture {
         if let t = lib[id] {
-            completion(t, nil)
-            return
-        }
-        guard let device = Renderer.shared.device else {
-            completion(nil, RendererError.MissingDevice)
-            return
+            return t
         }
         let textureLoader = MTKTextureLoader(device: device)
-        textureLoader.newTexture(withContentsOf: fileUrl, options: options) { [weak self] (texture, error) in
-            self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
+        // convert closure-based code into async/await
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<MTLTexture, Error>) in
+            textureLoader.newTexture(withContentsOf: fileUrl, options: options) { [weak self] (texture, error) in
+                if let t = texture {
+                    if addToCache {
+                        self?.lib[id] = t
+                    }
+                    continuation.resume(returning: t)
+                } else {
+                    if let desc = error?.localizedDescription {
+                        NSLog(desc)
+                    }
+                    continuation.resume(throwing: TextureError.CouldNotBeCreated)
+                }
+            }
+        }
+    }
+    public func getTexture(device: MTLDevice, id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool) async throws -> MTLTexture {
+        if let t = lib[id] {
+            return t
+        }
+        let textureLoader = MTKTextureLoader(device: device)
+        // convert closure-based code into async/await
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<MTLTexture, Error>) in
+            textureLoader.newTexture(withContentsOfRemote: remoteUrl, options: options) { [weak self] (texture, error) in
+                if let t = texture {
+                    if addToCache {
+                        self?.lib[id] = t
+                    }
+                    continuation.resume(returning: t)
+                } else {
+                    if let desc = error?.localizedDescription {
+                        NSLog(desc)
+                    }
+                    continuation.resume(throwing: TextureError.CouldNotBeCreated)
+                }
+            }
         }
     }
     
-    public func getTextureAsync(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
+    public func getTexture(device: MTLDevice, id: String, posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, addToCache: Bool) async throws -> MTLTexture {
         if let t = lib[id] {
-            completion(t, nil)
-            return
-        }
-        guard let device = Renderer.shared.device else {
-            completion(nil, RendererError.MissingDevice)
-            return
+            return t
         }
         let textureLoader = MTKTextureLoader(device: device)
-        textureLoader.newTexture(withContentsOfRemote: remoteUrl, options: options) { [weak self] (texture, error) in
-            self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
-        }
-    }
-    
-    public func getTextureAsync(id: String, posX: URL, negX: URL, posY: URL, negY: URL, posZ: URL, negZ: URL, addToCache: Bool, completion: @escaping (MTLTexture?, Error?) -> Void) {
-        if let t = lib[id] {
-            completion(t, nil)
-            return
-        }
-        guard let device = Renderer.shared.device else {
-            completion(nil, RendererError.MissingDevice)
-            return
-        }
-        let textureLoader = MTKTextureLoader(device: device)
-        textureLoader.newTexture(posX: posX, negX: negX, posY: posY, negY: negY, posZ: posZ, negZ: negZ) { [weak self] (texture, error) in
-            self?.processNewTexture(id: id, addToCache: addToCache, texture: texture, error: error, completion: completion)
+        // convert closure-based code into async/await
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<MTLTexture, Error>) in
+            textureLoader.newTexture(posX: posX, negX: negX, posY: posY, negY: negY, posZ: posZ, negZ: negZ) { [weak self] (texture, error) in
+                if let t = texture {
+                    if addToCache {
+                        self?.lib[id] = t
+                    }
+                    continuation.resume(returning: t)
+                } else {
+                    if let desc = error?.localizedDescription {
+                        NSLog(desc)
+                    }
+                    continuation.resume(throwing: TextureError.CouldNotBeCreated)
+                }
+            }
         }
     }
     

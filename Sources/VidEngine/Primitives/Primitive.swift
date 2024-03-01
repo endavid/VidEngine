@@ -3,7 +3,6 @@
 //  VidEngine
 //
 //  Created by David Gavilan on 8/13/16.
-//  Copyright © 2016 David Gavilan. All rights reserved.
 //
 
 import Metal
@@ -95,20 +94,19 @@ public class Primitive {
     #if DEBUG
     deinit {
         // Just making sure that we clean up properly!
-        print("Removing Primitive \(name)")
+        logDebug("Removing Primitive \(name)")
     }
     #endif
     
-    init(instanceCount: Int) {
+    init(device: MTLDevice, instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")
         self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white, objectId: 0), count: instanceCount)
-        let device = Renderer.shared.device
-        instanceBuffer = device!.makeBuffer(length: Renderer.NumSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
+        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
         instanceBuffer.label = "instances"
         isHidden = [Bool](repeating: false, count: instanceCount)
     }
     
-    convenience init?(_ primitive: Primitive, without instanceIndex: Int) {
+    convenience init?(device: MTLDevice, primitive: Primitive, without instanceIndex: Int) {
         let count = primitive.instances.count
         if instanceIndex >= count {
             return nil
@@ -116,7 +114,7 @@ public class Primitive {
         if count - 1 == 0 {
             return nil
         }
-        self.init(instanceCount: count - 1)
+        self.init(device: device, instanceCount: count - 1)
         var j = 0
         for i in 0..<count {
             if i == instanceIndex {
@@ -136,9 +134,9 @@ public class Primitive {
         copyAlbedos(from: primitive)
     }
     
-    convenience init(_ primitive: Primitive, add instance: Instance) {
+    convenience init(device: MTLDevice, primitive: Primitive, add instance: Instance) {
         let count = primitive.instances.count
-        self.init(instanceCount: count + 1)
+        self.init(device: device, instanceCount: count + 1)
         self.instances = primitive.instances
         self.instances.append(instance)
         self.name = primitive.name
@@ -157,24 +155,24 @@ public class Primitive {
         encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: visibleInstanceCount)
     }
     
-    public func queue() {
+    public func queue(_ renderer: Renderer) {
         switch lightingType {
         case .LitOpaque:
-            let p: LitOpaquePlugin? = Renderer.shared.getPlugin()
+            let p: LitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
         case .UnlitOpaque:
-            let p: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
+            let p: UnlitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
         case .UnlitTransparent:
-            let p : UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
+            let p: UnlitTransparencyPlugin? = renderer.getPlugin()
             p?.queue(self)
         }
     }
     
-    public func dequeue() {
-        let p1: LitOpaquePlugin? = Renderer.shared.getPlugin()
-        let p2: UnlitOpaquePlugin? = Renderer.shared.getPlugin()
-        let p3: UnlitTransparencyPlugin? = Renderer.shared.getPlugin()
+    public func dequeue(_ renderer: Renderer) {
+        let p1: LitOpaquePlugin? = renderer.getPlugin()
+        let p2: UnlitOpaquePlugin? = renderer.getPlugin()
+        let p3: UnlitTransparencyPlugin? = renderer.getPlugin()
         // just in case, dequeue from all
         p1?.dequeue(self)
         p2?.dequeue(self)
@@ -197,20 +195,17 @@ public class Primitive {
         _visibleInstanceCount = j
     }
     
-    public func setAlbedoTexture(resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
+    public func setAlbedoTexture(renderer: Renderer, resource: String, bundle: Bundle, options: TextureLoadOptions?, addToCache: Bool) async throws {
+        let texture = try await renderer.textureLibrary.getTexture(device: renderer.device, resource: resource, bundle: bundle, options: options, addToCache: addToCache)
         for i in 0..<submeshes.count {
-            Renderer.shared.textureLibrary.getTextureAsync(resource: resource, bundle: bundle, options: options, addToCache: addToCache) { [weak self] (texture, error) in
-                self?.submeshes[i].albedoTexture = texture
-            }
+            submeshes[i].albedoTexture = texture
         }
     }
     
-    public func setAlbedoTexture(id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool, completion: @escaping (Error?) -> Void) {
+    public func setAlbedoTexture(renderer: Renderer, id: String, remoteUrl: URL, options: TextureLoadOptions?, addToCache: Bool) async throws {
+        let texture = try await renderer.textureLibrary.getTexture(device: renderer.device, id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache)
         for i in 0..<submeshes.count {
-            Renderer.shared.textureLibrary.getTextureAsync(id: id, remoteUrl: remoteUrl, options: options, addToCache: addToCache) { [weak self] (texture, error) in
-                self?.submeshes[i].albedoTexture = texture
-                completion(error)
-            }
+            submeshes[i].albedoTexture = texture
         }
     }
     

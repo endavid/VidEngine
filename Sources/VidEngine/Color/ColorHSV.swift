@@ -3,7 +3,6 @@
 //  VidFramework
 //
 //  Created by David Gavilan on 2018/04/29.
-//  Copyright © 2018 David Gavilan. All rights reserved.
 //
 
 import simd

@@ -3,7 +3,6 @@
 //  VidEngine
 //
 //  Created by David Gavilan on 2017/05/29.
-//  Copyright © 2017 David Gavilan. All rights reserved.
 //
 
 import Foundation
