@@ -7,6 +7,11 @@
 
 import MetalKit
 import simd
+#if canImport(ARKit)
+import ARKit
+#else
+typealias ARSession = Void
+#endif
 
 // this data is updated by the game (Model in M-V-C)
 // The number of floats must be a multiple of 4
@@ -41,6 +46,7 @@ public class Renderer {
     let textureLibrary = TextureLibrary()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     var frameState = FrameState()
+    var arSession: ARSession?
     
     private var _graphicsDataBuffer: MTLBuffer! = nil
     private var _syncBufferIndex = 0
@@ -80,13 +86,55 @@ public class Renderer {
         encoder.setVertexBuffer(_graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
     
-    init(_ device: MTLDevice, view: MTKView, width: Int, height: Int) {
+    init(view: MTKView, doAR: Bool = false) throws {
+        guard let device = view.device else {
+            throw RenderError.missingDevice
+        }
         self.device = device
         _graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.numSyncBuffers, options: [])
         _graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         textureSamplers = TextureSamplers(device: device)
+        self.initGraphicPlugins(view, doAR: doAR)
+        if doAR {
+            arSession = ARSession()
+        }
+    }
+    
+    func makeVidLibrary() -> MTLLibrary? {
+        guard let url = VidBundle.metallib else {
+            NSLog("Missing default.metallib in bundle")
+            return nil
+        }
+        do {
+            let library = try device.makeLibrary(URL: url)
+            return library
+        } catch {
+            NSLog("makeLibrary failed for default.metallib")
+            return nil
+        }
+    }
+    
+    private func initGraphicPlugins(_ view: MTKView, doAR: Bool) {
+        guard let library = makeVidLibrary() else {
+            return
+        }
+        // order is important!
+        //plugins.append(FilterPlugin())
+        if (doAR) {
+        //    plugins.append(ARPlugin(device: device, library: library, view: view))
+        }
+        plugins.append(LitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        //plugins.append(DeferredLightingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        //plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        //plugins.append(DownsamplePlugin(device: device, library: library, view: view, gBuffer: gBuffer, downscaleLevel: 2))
+        //plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
+        //plugins.append(TouchPlugin(device: device, library: library, view: view))
+        //plugins.append(RainPlugin(device: device, library: library, view: view))
+        //plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
     }
     
     // MARK: Render passes

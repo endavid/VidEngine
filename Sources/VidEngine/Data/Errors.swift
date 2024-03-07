@@ -24,3 +24,7 @@ public enum FileError: Error {
     case missing(String)
     case corrupt(String)
 }
+
+public enum RenderError: Error {
+    case missingDevice
+}
