@@ -7,34 +7,39 @@
 //
 //  Ref. https://swiftunboxed.com/internals/size-stride-alignment/
 
-import XCTest
+import Testing
+import Foundation
 import simd
 @testable import VidEngine
 
-class MemoryTests: XCTestCase {
-    func testPrimitiveInstance() {
-        XCTAssertEqual(82, MemoryLayout<Primitive.Instance>.size)
-        XCTAssertEqual(96, MemoryLayout<Primitive.Instance>.stride)
+struct MemoryTests {
+    @Test func testPrimitiveInstance() {
+        #expect(82 == MemoryLayout<Primitive.Instance>.size)
+        #expect(96 == MemoryLayout<Primitive.Instance>.stride)
         // the alignment is 16 because we have some float4 (SIMD)
-        XCTAssertEqual(16, MemoryLayout<Primitive.Instance>.alignment)
+        #expect(16 == MemoryLayout<Primitive.Instance>.alignment)
     }
     
-    /*
+    @Test func testVector2() {
+        var v = simd_float2(0, 3)
+        #expect(0 == v.x)
+        #expect(3 == v.y)
+        #expect(4 * 2 == MemoryLayout<simd_float2>.size)
+        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 2)
+        memcpy(unsafe, &v, MemoryLayout<simd_float2>.size)
+        #expect(0 == unsafe[0])
+        #expect(3 == unsafe[1])
+        unsafe.deallocate()
+    }
+
+}
+
+/*
+class MemoryTests: XCTestCase {
     func testWorldTouch() {
         XCTAssertEqual(18, MemoryLayout<WorldTouch.Point>.size)
         XCTAssertEqual(20, MemoryLayout<WorldTouch.Point>.stride)
         XCTAssertEqual(4, MemoryLayout<WorldTouch.Point>.alignment)
-    }*/
-    
-    func testVector2() {
-        var v = simd_float2(0, 3)
-        XCTAssertEqual(0, v.x)
-        XCTAssertEqual(3, v.y)
-        XCTAssertEqual(4 * 2, MemoryLayout<simd_float2>.size)
-        let unsafe = UnsafeMutablePointer<Float>.allocate(capacity: 2)
-        memcpy(unsafe, &v, MemoryLayout<simd_float2>.size)
-        XCTAssertEqual(0, unsafe[0])
-        XCTAssertEqual(3, unsafe[1])
-        unsafe.deallocate()
     }
 }
+*/

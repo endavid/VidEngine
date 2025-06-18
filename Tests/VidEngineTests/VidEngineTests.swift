@@ -1,18 +1,14 @@
-import XCTest
+import Testing
 @testable import VidEngine
 
-final class VidEngineTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+// Ref. https://leocoout.medium.com/welcome-swift-testing-goodbye-xctest-7501b7a5b304
 
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
-    }
+struct VidEngineTests {
+    @Test("Make sure all the necessary bundles are present")
     func testBundle() {
-        XCTAssertNotNil(VidBundle.metallib)
-        XCTAssertNotNil(VidBundle.imageSquareFrame)
-        XCTAssertNotNil(VidBundle.imageMeasureGrid)
-        XCTAssertNotNil(VidBundle.rawCC14)
+        #expect(VidBundle.metallib != nil)
+        #expect(VidBundle.imageSquareFrame != nil)
+        #expect(VidBundle.imageMeasureGrid != nil)
+        #expect(VidBundle.rawCC14 != nil)
     }
 }
