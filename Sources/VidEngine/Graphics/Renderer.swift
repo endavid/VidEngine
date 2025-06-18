@@ -42,6 +42,7 @@ public class Renderer {
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let numSyncBuffers = 3
     let device: MTLDevice
+    var camera = Camera()
     let textureSamplers: TextureSamplers
     let textureLibrary = TextureLibrary()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
@@ -91,6 +92,7 @@ public class Renderer {
             throw RenderError.missingDevice
         }
         self.device = device
+        _whiteTexture = TextureUtils.createTexture(device: device, color: 0xffffffff)
         _graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.numSyncBuffers, options: [])
         _graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
@@ -135,6 +137,34 @@ public class Renderer {
         //plugins.append(TouchPlugin(device: device, library: library, view: view))
         //plugins.append(RainPlugin(device: device, library: library, view: view))
         //plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
+    }
+    
+    func draw(_ view: MTKView, commandBuffer: MTLCommandBuffer) {
+        guard let currentDrawable = view.currentDrawable else {
+            return
+        }
+        let w = _gBuffer.width
+        let h = _gBuffer.height
+        if #available(iOS 13.0, *) {
+            if let metalLayer = view.layer as? CAMetalLayer {
+                let size = metalLayer.drawableSize
+                if w != Int(size.width) || h != Int(size.height ){
+                    _gBuffer = GBuffer(device: device, size: size)
+                }
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+        // reset state
+        frameState = FrameState()
+        // process all plugins
+        for plugin in plugins {
+            plugin.draw(renderer: self, drawable: currentDrawable, commandBuffer: commandBuffer, camera: camera)
+        }
+        commandBuffer.present(currentDrawable)
+        // syncBufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
+        _syncBufferIndex = (_syncBufferIndex + 1) % Renderer.numSyncBuffers
+        commandBuffer.commit()
     }
     
     // MARK: Render passes
