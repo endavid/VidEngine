@@ -125,6 +125,7 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     #if canImport(UIKit)
     override open func viewWillAppear(_ animated: Bool) {
         initRenderer()
+        onAppear()
     }
     override open func viewWillDisappear(_ animated: Bool) {
         destroyRenderer()
@@ -132,6 +133,7 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     #else
     override open func viewWillAppear() {
         initRenderer()
+        onAppear()
     }
     override open func viewWillDisappear() {
         destroyRenderer()
@@ -257,6 +259,12 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
         elapsedTimeGPU = displayLink.duration
         lastFrameTimestamp = displayLink.timestamp
         self.update(elapsed)
+    }
+    
+    /// Platform-agnostic replacement for `viewWillAppear`.
+    /// Override this instead of `viewWillAppear`
+    open func onAppear() {
+        
     }
     
     open func update(_ elapsed: TimeInterval) {

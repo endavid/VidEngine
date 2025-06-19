@@ -31,6 +31,7 @@ struct RendererTests {
         let renderer = try Renderer(view: view)
         let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
         cube.lightingType = .UnlitOpaque
+        cube.transform.position = [0, 0, -5]
         cube.queue(renderer)
         let commandQueue = try #require(device.makeCommandQueue())
         let commandBuffer = try #require(commandQueue.makeCommandBuffer())
