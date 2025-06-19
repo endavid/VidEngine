@@ -35,6 +35,7 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     private var cameraAngleY: Float = 0
     private var debugCube: CubePrimitive!
     private var _clearColor = UIColor.black
+    private var _isWideColor = false
     private var motionController: MotionController?
     //public var scene = Scene()
     public var arConfiguration: ARConfiguration?
@@ -62,13 +63,21 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
             _renderer.camera = newValue
         }
     }
-    public var isWideColor = false {
-        didSet {
-            if let view = self.view as? MTKView {
-                // The pixel format for a MetalKit view must be bgra8Unorm, bgra8Unorm_srgb, rgba16Float, BGRA10_XR, or bgra10_XR_sRGB.
-                // our shaders will be in linear RGB, so automatically apply γ
-                view.colorPixelFormat = isWideColor ? .bgra10_xr_srgb : .bgra8Unorm_srgb
-            }
+    public var isWideColor: Bool {
+        get {
+            return _isWideColor
+        }
+        set {
+            let supportsExtRange = device.supportsFamily(.apple3)
+            let isWide = supportsExtRange && newValue
+            if _isWideColor != isWide {
+                if let view = self.view as? MTKView {
+                    // The pixel format for a MetalKit view must be bgra8Unorm, bgra8Unorm_srgb, rgba16Float, BGRA10_XR, or bgra10_XR_sRGB.
+                    // our shaders will be in linear RGB, so automatically apply γ
+                    view.colorPixelFormat = isWideColor ? .bgra10_xr_srgb : .bgra8Unorm_srgb
+                }
+                _isWideColor = isWide
+            }                
         }
     }
     public var isMotionControllerActive: Bool {

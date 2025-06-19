@@ -27,6 +27,7 @@ struct RendererTests {
     @Test func testRenderer() async throws {
         let frame = CGRect(x: 0, y: 0, width: 320, height: 240)
         let device = try #require(MTLCreateSystemDefaultDevice())
+        print("ℹ Device family: \(device.family)")
         let view = await MTKView(frame: frame, device: device)
         let renderer = try Renderer(view: view)
         let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
