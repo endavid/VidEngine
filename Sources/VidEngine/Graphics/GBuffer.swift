@@ -38,10 +38,12 @@ struct GBuffer {
     init(device: MTLDevice, size: CGSize) {
         width = Int(size.width)
         height = Int(size.height)
-        let depthDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
-        depthDesc.usage = [.renderTarget, .shaderRead]
-        let stencilDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .stencil8, width: width, height: height, mipmapped: false)
-        stencilDesc.usage = .renderTarget
+        // in the iOS simulator, you can't have depth & stencil as 2 separate textures, so use combined format
+        let depthStencilDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float_stencil8, width: width, height: height, mipmapped: false)
+        depthStencilDesc.usage = [.renderTarget, .shaderRead]
+        // Depth, Stencil, DepthStencil textures cannot be allocated with MTLStorageModeShared on the iOS simulator
+        // Since the CPU doesn't need to access this texture, .private is fine
+        depthStencilDesc.storageMode = .private
         let albedoDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
         albedoDesc.usage = [.renderTarget, .shaderRead]
         let normalDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Snorm, width: width, height: height, mipmapped: false)
@@ -54,10 +56,10 @@ struct GBuffer {
         revealDesc.usage = [.renderTarget, .shaderRead]
         let shadedDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm_srgb, width: width, height: height, mipmapped: false)
         shadedDesc.usage = [.renderTarget, .shaderRead]
-        depthTexture = device.makeTexture(descriptor: depthDesc)!
-        depthTexture.label = "GBuffer:Depth"
-        stencilTexture = device.makeTexture(descriptor: stencilDesc)!
-        stencilTexture.label = "GBuffer:Stencil"
+        // create textures
+        depthTexture = device.makeTexture(descriptor: depthStencilDesc)!
+        depthTexture.label = "GBuffer:DepthStencil"
+        stencilTexture = depthTexture
         albedoTexture = device.makeTexture(descriptor: albedoDesc)!
         albedoTexture.label = "GBuffer:Albedo"
         normalTexture = device.makeTexture(descriptor: normalDesc)!

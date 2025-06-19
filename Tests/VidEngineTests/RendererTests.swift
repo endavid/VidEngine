@@ -47,7 +47,12 @@ struct RendererTests {
         let cgImage = try #require(renderer.getTextureAsImage(GBufferTexture.shaded))
         // Save as PNG
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("rendered_output.png")
-        CGImageWriteToFile(cgImage, filename: outputURL)
-        print("✅ Saved rendered output to \(outputURL.path)")
+        
+        if #available(macOS 13.0, iOS 14.0, *) {
+            CGImageWriteToFile(cgImage, filename: outputURL)
+            print("✅ Saved rendered output to \(outputURL.path)")
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }
