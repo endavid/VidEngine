@@ -13,9 +13,15 @@ import simd
 @testable import VidEngine
 
 struct MemoryTests {
+    @Test func testGraphicsData() {
+        #expect(256 == MemoryLayout<GraphicsData>.size)
+        #expect(256 == MemoryLayout<GraphicsData>.stride)
+        #expect(16 == MemoryLayout<GraphicsData>.alignment)
+    }
+    
     @Test func testPrimitiveInstance() {
-        #expect(82 == MemoryLayout<Primitive.Instance>.size)
-        #expect(96 == MemoryLayout<Primitive.Instance>.stride)
+        #expect(256 == MemoryLayout<Primitive.Instance>.size)
+        #expect(256 == MemoryLayout<Primitive.Instance>.stride)
         // the alignment is 16 because we have some float4 (SIMD)
         #expect(16 == MemoryLayout<Primitive.Instance>.alignment)
     }

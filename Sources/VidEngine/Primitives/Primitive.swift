@@ -22,6 +22,12 @@ public class Primitive {
         public var transform: Transform
         public var material: Material
         public var objectId: UInt16
+        // add padding to make the size 256, so the iOS simulator
+        // doesn't crash with "the offset into the buffer scene that is bound at buffer index 1 must be a multiple of 256 but was set to 96."
+        public var padMatrix0 = simd_float4x4()
+        public var padMatrix1 = simd_float4x4()
+        public var padVector0 = simd_float4(0,0,0,0)
+        public var padVector1 = simd_float4(0,0,0,0)
     }
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
     var vertexBuffer: MTLBuffer?

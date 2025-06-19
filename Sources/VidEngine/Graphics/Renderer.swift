@@ -20,6 +20,11 @@ struct GraphicsData {
     var projectionMatrix = float4x4()
     var viewMatrix = float4x4()
     var nearTransparency = simd_float4(0, 0, 2, 2)
+    // add padding to make the size 256, so the iOS simulator
+    // doesn't crash with "the offset into the buffer scene that is bound at buffer index 1 must be a multiple of 256 but was set to 160."
+    var padMatrix : float4x4 = float4x4()
+    var padVector0 = simd_float4(0, 0, 0, 0)
+    var padVector1 = simd_float4(0, 0, 0, 0)
 }
 
 public class Renderer {

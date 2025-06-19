@@ -68,6 +68,9 @@ struct Scene {
     float4x4 projectionMatrix;
     float4x4 viewMatrix;
     float4 nearTransparency;
+    float4x4 padding0;
+    float4 padding1;
+    float4 padding2;
 };
 
 struct Material {
@@ -81,11 +84,11 @@ struct PrimitiveInstance
     Transform  transform;
     Material   material;
     uint16_t   objectId;
-    // alignment in Swift side is 16 bytes
-    uint16_t   padding0;
-    uint32_t   padding1;
-    uint32_t   padding2;
-    uint32_t   padding3;
+    // pad up to 256 because the iOS simulators wants me to
+    float4x4   padding0;
+    float4x4   padding1;
+    float4   padding2;
+    float4   padding3;
 };
 
 constexpr sampler pointSampler(
