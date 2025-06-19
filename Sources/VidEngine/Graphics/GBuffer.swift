@@ -15,6 +15,10 @@ enum LightMask: UInt32 {
     case all = 0x88
 }
 
+enum GBufferTexture {
+    case depth, stencil, albedo, object, light, reveal, shaded
+}
+
 struct GBuffer {
     let width : Int
     let height : Int

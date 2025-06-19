@@ -239,4 +239,15 @@ public class Renderer {
         buffer?.label = label
         return buffer!
     }
+    
+    func getTextureAsImage(_ id: GBufferTexture) -> CGImage? {
+        // On Intel Macs, the default storageMode is managed, so we need to blit the texture.
+        // On ARM Macs, it's shared, so we can write the texture straight away
+        switch id {
+        case .shaded:
+            return CGImageFrom(texture: _gBuffer.shadedTexture, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
+        default:
+            return nil
+        }
+    }
 }

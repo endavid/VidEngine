@@ -42,9 +42,11 @@ struct RendererTests {
             Task { @MainActor in
                 renderer.draw(view, commandBuffer: commandBuffer)
             }
-        }
+        }        
+        let cgImage = try #require(renderer.getTextureAsImage(GBufferTexture.shaded))
         // Save as PNG
-        //let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("rendered_output.png")
-        //print("✅ Saved rendered output to \(outputURL.path)")
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("rendered_output.png")
+        CGImageWriteToFile(cgImage, filename: outputURL)
+        print("✅ Saved rendered output to \(outputURL.path)")
     }
 }
