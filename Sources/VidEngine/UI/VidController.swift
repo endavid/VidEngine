@@ -11,13 +11,16 @@ public typealias ViewController = UIViewController
 import AppKit
 public typealias ViewController = NSViewController
 #endif
+#if canImport(ARKit)
+import ARKit
+#endif
 import Metal
 import MetalKit
 import AVFoundation
 import simd
 
 @available(macOS 14.0, iOS 10.0, *)
-open class VidController: ViewController, MTKViewDelegate {
+open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     public var device: MTLDevice! = nil
     
     private var _renderer: Renderer!

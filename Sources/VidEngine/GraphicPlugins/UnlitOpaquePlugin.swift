@@ -56,8 +56,8 @@ class UnlitOpaquePlugin: PrimitivePlugin {
         return gBuffer.createUnlitPipelineDescriptor(device: device, library: library, isBlending: false, fragmentShader: "passSkyboxFragment", vertexShader: "passSkyboxGeometry")
     }
     override func createEncoder(renderer: Renderer, commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
-        let clear = renderer.frameState.clearedBackbuffer
-        let renderPassDescriptor = renderer.createUnlitRenderPass(clear: clear)
+        let needsClear = !renderer.frameState.clearedBackbuffer
+        let renderPassDescriptor = renderer.createUnlitRenderPass(clear: needsClear)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         if let e = encoder {
             e.label = self.label

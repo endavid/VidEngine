@@ -7,6 +7,9 @@
 
 import MetalKit
 import simd
+#if canImport(ARKit)
+import ARKit
+#endif
 
 // this data is updated by the game (Model in M-V-C)
 // The number of floats must be a multiple of 4
@@ -52,12 +55,21 @@ public class Renderer {
     private var _syncBufferIndex = 0
     private var _gBuffer: GBuffer
     private var _whiteTexture: MTLTexture! = nil
+    private var _clearTexture: MTLTexture! = nil
+    private lazy var _fullScreenQuad : FullScreenQuad = {
+        return FullScreenQuad(renderer: self)
+    }()
     // Instead of a Render Graph, we have an ordered list of plugins for now
     private var plugins : [GraphicPlugin] = []
     
     var whiteTexture: MTLTexture {
         get {
             return _whiteTexture
+        }
+    }
+    var clearTexture: MTLTexture {
+        get {
+            return _clearTexture
         }
     }
     
@@ -82,6 +94,12 @@ public class Renderer {
         }
     }
     
+    var fullScreenQuad : FullScreenQuad {
+        get {
+            return _fullScreenQuad
+        }
+    }
+    
     func setGraphicsDataBuffer(_ encoder: MTLRenderCommandEncoder, atIndex: Int) {
         encoder.setVertexBuffer(_graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
@@ -92,6 +110,7 @@ public class Renderer {
         }
         self.device = device
         _whiteTexture = TextureUtils.createTexture(device: device, color: 0xffffffff)
+        _clearTexture = TextureUtils.createTexture(device: device, color: 0x0)
         _graphicsDataBuffer = device.makeBuffer(length: MemoryLayout<GraphicsData>.size * Renderer.numSyncBuffers, options: [])
         _graphicsDataBuffer.label = "GraphicsData"
         // dummy buffer so _gBuffer is never null
@@ -132,7 +151,7 @@ public class Renderer {
         plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         //plugins.append(DownsamplePlugin(device: device, library: library, view: view, gBuffer: gBuffer, downscaleLevel: 2))
-        //plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
+        plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
         //plugins.append(TouchPlugin(device: device, library: library, view: view))
         //plugins.append(RainPlugin(device: device, library: library, view: view))
         //plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
@@ -178,6 +197,15 @@ public class Renderer {
     }
     
     // MARK: Render passes
+    
+    func createRenderPassWithColorAttachmentTexture(_ texture: MTLTexture, clear: Bool) -> MTLRenderPassDescriptor {
+        let renderPass = MTLRenderPassDescriptor()
+        renderPass.colorAttachments[0].texture = texture
+        renderPass.colorAttachments[0].loadAction = clear ? .clear : .load
+        renderPass.colorAttachments[0].storeAction = .store
+        renderPass.colorAttachments[0].clearColor = clearColor
+        return renderPass
+    }
     
     func createUnlitRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()

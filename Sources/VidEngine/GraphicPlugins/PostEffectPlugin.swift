@@ -15,9 +15,16 @@ class PostEffectPlugin: GraphicPlugin {
     private var passThroughState: MTLRenderPipelineState! = nil
     private var withOITState: MTLRenderPipelineState! = nil
 
-    override var label: String {
+    var isEnabled: Bool = true
+    
+    var label: String {
         get {
             return "PostFx"
+        }
+    }
+    var isEmpty: Bool {
+        get {
+            return false
         }
     }
     
@@ -43,7 +50,6 @@ class PostEffectPlugin: GraphicPlugin {
     }
     
     init(device: MTLDevice, library: MTLLibrary, view: MTKView, blend: Bool) {
-        super.init(device: device, library: library, view: view)
         let passThroughDesc = createPipelineDescriptor(library: library, view: view, blend: blend, fragment: "passThroughTexturedFragment")
         let withOITDesc = createPipelineDescriptor(library: library, view: view, blend: blend, fragment: "blendWithOIT")
         do {
@@ -54,16 +60,13 @@ class PostEffectPlugin: GraphicPlugin {
         }
     }
     
-    override func draw(drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
-        guard let renderer = Renderer.shared else {
-            return
-        }
+    func draw(renderer: Renderer, drawable: CAMetalDrawable, commandBuffer: MTLCommandBuffer, camera: Camera) {
         if !renderer.frameState.clearedBackbuffer && !renderer.frameState.clearedTransparencyBuffer {
             // nothing in backbuffer to dump to the drawable
             return
         }
-        let clear = !renderer.frameState.clearedDrawable
-        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: clear)
+        let needsClear = !renderer.frameState.clearedDrawable
+        let renderPassDescriptor = renderer.createRenderPassWithColorAttachmentTexture(drawable.texture, clear: needsClear)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
@@ -87,6 +90,10 @@ class PostEffectPlugin: GraphicPlugin {
         encoder.setFragmentTexture(colorTex, index: 0)
         renderer.fullScreenQuad.draw(encoder: encoder)
         encoder.popDebugGroup()
+    }
+    
+    func updateBuffers(_ syncBufferIndex: Int, camera: Camera) {
+        
     }
     
 }

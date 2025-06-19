@@ -11,6 +11,10 @@ import Foundation
 import simd
 public typealias ARConfiguration = String
 
+protocol ARSessionDelegate {
+    
+}
+
 public class ARMockCamera {
     var transform = simd_float4x4()
     var projectionMatrix = simd_float4x4()
