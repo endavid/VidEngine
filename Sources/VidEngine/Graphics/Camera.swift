@@ -6,6 +6,23 @@
 //
 import simd
 import Foundation
+#if canImport(UIKit)
+import UIKit
+#else
+public enum UIInterfaceOrientation {
+    case unknown, portrait, portraitUpsideDown, landscapeLeft, landscapeRight
+    var isLandscape: Bool {
+        get {
+            return self == .landscapeLeft || self == .landscapeRight
+        }
+    }
+    var isPortrait: Bool {
+        get {
+            return self == .portrait || self == .portraitUpsideDown
+        }
+    }
+}
+#endif
 
 public class Camera {
     var bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
@@ -16,6 +33,15 @@ public class Camera {
     private var _viewMatrix = float4x4()
     private var _projection = float4x4()
     private var _projectionInverse = float4x4()
+    
+    public var orientation: UIInterfaceOrientation {
+        get {
+            if bounds.width > bounds.height {
+                return UIInterfaceOrientation.landscapeRight
+            }
+            return UIInterfaceOrientation.portrait
+        }
+    }
     
     /// width / height. Smaller than one for portrait orientations.
     public var aspect: CGFloat {

@@ -7,11 +7,6 @@
 
 import MetalKit
 import simd
-#if canImport(ARKit)
-import ARKit
-#else
-typealias ARSession = Void
-#endif
 
 // this data is updated by the game (Model in M-V-C)
 // The number of floats must be a multiple of 4
@@ -42,12 +37,16 @@ public class Renderer {
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
     static let numSyncBuffers = 3
     let device: MTLDevice
-    var camera = Camera()
     let textureSamplers: TextureSamplers
     let textureLibrary = TextureLibrary()
+    var camera = Camera()
+    var graphicsData = GraphicsData()
     var clearColor = MTLClearColorMake(38/255, 35/255, 35/255, 1.0)
     var frameState = FrameState()
     var arSession: ARSession?
+    // These textures are for capturing the camera feed in an AR app
+    var capturedImageTextureY: CVMetalTexture?
+    var capturedImageTextureCbCr: CVMetalTexture?
     
     private var _graphicsDataBuffer: MTLBuffer! = nil
     private var _syncBufferIndex = 0
@@ -137,6 +136,17 @@ public class Renderer {
         //plugins.append(TouchPlugin(device: device, library: library, view: view))
         //plugins.append(RainPlugin(device: device, library: library, view: view))
         //plugins.append(Primitive2DPlugin(device: device, library: library, view: view))
+    }
+    
+    func updateBuffers() {
+        let uniformB = _graphicsDataBuffer.contents()
+        let uniformData = uniformB.advanced(by: MemoryLayout<GraphicsData>.size * _syncBufferIndex).assumingMemoryBound(to: Float.self)
+        graphicsData.projectionMatrix = camera.projection
+        graphicsData.viewMatrix = camera.viewMatrix
+        memcpy(uniformData, &graphicsData, MemoryLayout<GraphicsData>.size)
+        for p in plugins {
+            p.updateBuffers(_syncBufferIndex, camera: camera)
+        }
     }
     
     func draw(_ view: MTKView, commandBuffer: MTLCommandBuffer) {
