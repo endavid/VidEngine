@@ -13,9 +13,9 @@ import MetalKit
 /// If isInterior is true, then the front-facing triangles
 /// are the ones inside the sphere.
 public class EnvironmentSphere: SpherePrimitive {
-    public init(renderer: Renderer, isInterior: Bool, widthSegments: Int, heightSegments: Int) {
+    public init(isInterior: Bool, widthSegments: Int, heightSegments: Int) {
         let desc = SphereDescriptor(isInterior: isInterior, widthSegments: widthSegments, heightSegments: heightSegments)
-        super.init(renderer: renderer, instanceCount: 1, descriptor: desc)
+        super.init(instanceCount: 1, descriptor: desc)
         lightingType = .UnlitOpaque
         if isInterior {
             // this is to invert normals in the shader,

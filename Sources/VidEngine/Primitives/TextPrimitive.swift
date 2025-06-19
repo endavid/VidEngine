@@ -11,11 +11,25 @@ import MetalKit
 
 /// Text is rendered with a quad per glyph, using a `FontAtlas`
 public class TextPrimitive : Primitive {
+    let fontAtlas: FontAtlas
+    let text: String
+    let fontSizeMeters: Float
+    let enclosingFrame: CGRect
     
-    public init(renderer: Renderer, instanceCount: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
-        super.init(device: renderer.device, instanceCount: instanceCount)
+    public init(instanceCount: Int, font: FontAtlas, text: String, fontSizeMeters: Float, enclosingFrame: CGRect) {
+        self.fontAtlas = font
+        self.text = text
+        self.fontSizeMeters = fontSizeMeters
+        self.enclosingFrame = enclosingFrame
+        super.init(instanceCount: instanceCount)
         self.lightingType = .UnlitTransparent
-        buildMeshWithString(renderer: renderer, text: text, rect: enclosingFrame, fontAtlas: font, fontSize: CGFloat(fontSizeMeters))
+    }
+    
+    override func initBuffers(_ renderer: Renderer) {
+        super.initBuffers(renderer)
+        if vertexBuffer == nil {
+            buildMeshWithString(renderer: renderer, text: text, rect: enclosingFrame, fontAtlas: fontAtlas, fontSize: CGFloat(fontSizeMeters))
+        }
     }
     
     private func buildMeshWithString(renderer: Renderer, text: String, rect: CGRect, fontAtlas: FontAtlas, fontSize: CGFloat) {
@@ -36,7 +50,8 @@ public class TextPrimitive : Primitive {
         let vertexCount = frameGlyphCount * 4
         let indexCount = frameGlyphCount * 6
         var indices = [UInt16](repeating: 0, count: indexCount)
-        vertexBuffer = renderer.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
+        let vertexBuffer = renderer.createTexturedVertexBuffer("Text VB", numElements: vertexCount)
+        self.vertexBuffer = vertexBuffer
         let vb = vertexBuffer.contents().assumingMemoryBound(to: TexturedVertex.self)
         var index = 0
         var vertex = 0

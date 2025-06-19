@@ -29,9 +29,9 @@ struct RendererTests {
         let device = try #require(MTLCreateSystemDefaultDevice())
         let view = await MTKView(frame: frame, device: device)
         let renderer = try Renderer(view: view)
-        let plugin: UnlitOpaquePlugin = try #require(renderer.getPlugin())
         let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
-        plugin.queue(cube)
+        cube.lightingType = .UnlitOpaque
+        cube.queue(renderer)
         let commandQueue = try #require(device.makeCommandQueue())
         let commandBuffer = try #require(commandQueue.makeCommandBuffer())
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in

@@ -23,7 +23,11 @@ public class CubePrimitive : Primitive {
     internal static let numIndices = CubePrimitive.triangleList.count
     
     public init(renderer: Renderer, instanceCount: Int) {
-        super.init(device: renderer.device, instanceCount: instanceCount)
+        super.init(instanceCount: instanceCount)
+    }
+    
+    override func initBuffers(_ renderer: Renderer) {
+        super.initBuffers(renderer)
         // initialize these buffers only once, because we
         // want to share them with all the cubes
         if CubePrimitive.cubeIB == nil {
@@ -32,9 +36,11 @@ public class CubePrimitive : Primitive {
         if CubePrimitive.cubeVB == nil {
             CubePrimitive.cubeVB = CubePrimitive.createCubeVertexBuffer(renderer)
         }
-        vertexBuffer = CubePrimitive.cubeVB
-        let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB!, albedoTexture: nil, sampler: .linearWithClamp)
-        submeshes.append(mesh)
+        if vertexBuffer == nil {
+            vertexBuffer = CubePrimitive.cubeVB
+            let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB!, albedoTexture: nil, sampler: .linearWithClamp)
+            submeshes.append(mesh)
+        }
     }
     
     static func createCubeIndexBuffer(_ renderer: Renderer) -> MTLBuffer {

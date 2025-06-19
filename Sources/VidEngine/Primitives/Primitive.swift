@@ -24,13 +24,13 @@ public class Primitive {
         public var objectId: UInt16
     }
     // To implement instanced rendering: http://metalbyexample.com/instanced-rendering/
-    var vertexBuffer : MTLBuffer!
+    var vertexBuffer: MTLBuffer?
     public var name: String = ""
     /// Data that can be set per instance
     public var instances: [Instance]
     /// Prevent rendering of a particular instance
     public var isHidden: [Bool]
-    let instanceBuffer: MTLBuffer!
+    var instanceBuffer: MTLBuffer?
     public var lightingType: LightingType = .LitOpaque
     var submeshes: [Mesh] = []
     var uuidInstanceMap: [UUID: Int] = [:]
@@ -98,15 +98,13 @@ public class Primitive {
     }
     #endif
     
-    init(device: MTLDevice, instanceCount: Int) {
+    init(instanceCount: Int) {
         assert(instanceCount > 0, "The number of instances should be >0")
         self.instances = [Instance](repeating: Instance(transform: Transform(), material: Material.white, objectId: 0), count: instanceCount)
-        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
-        instanceBuffer.label = "instances"
         isHidden = [Bool](repeating: false, count: instanceCount)
     }
     
-    convenience init?(device: MTLDevice, primitive: Primitive, without instanceIndex: Int) {
+    convenience init?(primitive: Primitive, without instanceIndex: Int) {
         let count = primitive.instances.count
         if instanceIndex >= count {
             return nil
@@ -114,7 +112,7 @@ public class Primitive {
         if count - 1 == 0 {
             return nil
         }
-        self.init(device: device, instanceCount: count - 1)
+        self.init(instanceCount: count - 1)
         var j = 0
         for i in 0..<count {
             if i == instanceIndex {
@@ -134,14 +132,25 @@ public class Primitive {
         copyAlbedos(from: primitive)
     }
     
-    convenience init(device: MTLDevice, primitive: Primitive, add instance: Instance) {
+    convenience init(primitive: Primitive, add instance: Instance) {
         let count = primitive.instances.count
-        self.init(device: device, instanceCount: count + 1)
+        self.init(instanceCount: count + 1)
         self.instances = primitive.instances
         self.instances.append(instance)
         self.name = primitive.name
         self.lightingType = primitive.lightingType
         copyAlbedos(from: primitive)
+    }
+    
+    private func initInstanceBuffer(device: MTLDevice) {
+        if instanceBuffer == nil {
+            instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.stride * instanceCount, options: [])
+            instanceBuffer?.label = "\(name):instances"
+        }
+    }
+    
+    func initBuffers(_ renderer: Renderer) {
+        initInstanceBuffer(device: renderer.device)
     }
     
     private func copyAlbedos(from primitive: Primitive) {
@@ -156,6 +165,7 @@ public class Primitive {
     }
     
     public func queue(_ renderer: Renderer) {
+        initBuffers(renderer)
         switch lightingType {
         case .LitOpaque:
             let p: LitOpaquePlugin? = renderer.getPlugin()
@@ -181,7 +191,9 @@ public class Primitive {
     
     // this gets called when we need to update the buffers used by the GPU
     func updateBuffers(_ syncBufferIndex: Int) {
-        let b = instanceBuffer.contents()
+        guard let b = instanceBuffer?.contents() else {
+            return
+        }
         bufferOffset = MemoryLayout<Instance>.stride * instances.count * syncBufferIndex
         let data = b.advanced(by: bufferOffset).assumingMemoryBound(to: Instance.self)
         var j = 0

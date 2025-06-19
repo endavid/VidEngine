@@ -14,7 +14,7 @@ public class Dots3D {
     }
     let vertexBuffer: MTLBuffer
     let colorBuffer: MTLBuffer
-    let instanceBuffer: MTLBuffer
+    var instanceBuffer: MTLBuffer?
     let vertexCount: Int
     var bufferOffset = 0
     public var lightingType = LightingType.UnlitOpaque
@@ -25,6 +25,7 @@ public class Dots3D {
         }
     }
     public func queue(renderer: Renderer) {
+        initBuffers(renderer)
         switch lightingType {
         case .UnlitOpaque:
             let p: UnlitOpaquePlugin? = renderer.getPlugin()
@@ -37,19 +38,29 @@ public class Dots3D {
         let p: UnlitOpaquePlugin? = renderer.getPlugin()
         p?.dequeue(self)
     }
-    init(device: MTLDevice, transform: Transform, dotSize: Float, vertexBuffer: MTLBuffer, colorBuffer: MTLBuffer, vertexCount: Int) {
+    init(transform: Transform, dotSize: Float, vertexBuffer: MTLBuffer, colorBuffer: MTLBuffer, vertexCount: Int) {
         self.vertexBuffer = vertexBuffer
         self.colorBuffer = colorBuffer
         self.vertexCount = vertexCount
         let s = simd_float4(1, 1, 1, 1) * dotSize
         instances = [Instance(transform: transform, dotSize: s)]
-        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size, options: [])!
-        instanceBuffer.label = "Dot3DInstances"
+
     }
+    
+    func initBuffers(_ renderer: Renderer) {
+        if instanceBuffer == nil {
+            instanceBuffer = renderer.device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size, options: [])!
+            instanceBuffer?.label = "Dot3DInstances"
+        }
+    }
+    
     func draw(encoder: MTLRenderCommandEncoder) {
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: vertexCount, instanceCount: instanceCount)
     }
     func updateBuffers(_ syncBufferIndex: Int) {
+        guard let instanceBuffer = self.instanceBuffer else {
+            return
+        }
         let b = instanceBuffer.contents()
         bufferOffset = MemoryLayout<Instance>.size * instanceCount * syncBufferIndex
         let data = b.advanced(by: bufferOffset).assumingMemoryBound(to: Float.self)

@@ -20,7 +20,7 @@ import simd
 open class VidController: ViewController, MTKViewDelegate {
     public var device: MTLDevice! = nil
     
-    var renderer: Renderer!
+    private var _renderer: Renderer!
     var commandQueue: MTLCommandQueue! = nil
     // in macOS 13.0 or earlier, we could use CVDisplayLink instead
     var timer: CADisplayLink! = nil
@@ -35,7 +35,12 @@ open class VidController: ViewController, MTKViewDelegate {
     private var motionController: MotionController?
     //public var scene = Scene()
     public var arConfiguration: ARConfiguration?
-    
+
+    public var renderer: Renderer {
+        get {
+            return _renderer
+        }
+    }
     public var clearColor: UIColor {
         get {
             return _clearColor
@@ -43,15 +48,15 @@ open class VidController: ViewController, MTKViewDelegate {
         set {
             _clearColor = newValue
             let c = LinearRGBA(newValue)
-            renderer.clearColor = MTLClearColor(red: Double(c.r), green: Double(c.g), blue: Double(c.b), alpha: Double(c.a))
+            _renderer.clearColor = MTLClearColor(red: Double(c.r), green: Double(c.g), blue: Double(c.b), alpha: Double(c.a))
         }
     }
     public var camera: Camera {
         get {
-            return renderer.camera
+            return _renderer.camera
         }
         set {
-            renderer.camera = newValue
+            _renderer.camera = newValue
         }
     }
     public var isWideColor = false {
@@ -80,17 +85,17 @@ open class VidController: ViewController, MTKViewDelegate {
     }
     public var isAREnabled: Bool {
         get {
-            return renderer.arSession != nil
+            return _renderer.arSession != nil
         }
     }
     public var arSession: ARSession? {
         get {
-            return renderer.arSession
+            return _renderer.arSession
         }
     }
     public var textureLibrary: TextureLibrary {
         get {
-            return renderer.textureLibrary
+            return _renderer.textureLibrary
         }
     }
     
@@ -135,11 +140,11 @@ open class VidController: ViewController, MTKViewDelegate {
         if device == nil {
             return
         }
-        if renderer == nil {
+        if _renderer == nil {
             // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
             let view = self.view as! MTKView
             do {
-                renderer = try Renderer(view: view, doAR: arConfiguration != nil)
+                _renderer = try Renderer(view: view, doAR: arConfiguration != nil)
                 // init with 0 and send 3 signals on init to fix crash when closing window
                 // https://forums.developer.apple.com/forums/thread/126781
                 // https://lists.apple.com/archives/cocoa-dev/2014/Apr/msg00485.html
@@ -168,14 +173,14 @@ open class VidController: ViewController, MTKViewDelegate {
     }
     
     private func destroyRenderer() {
-        guard let renderer = renderer else {
+        guard let renderer = _renderer else {
             return
         }
         renderer.arSession?.pause()
         NotificationCenter.default.removeObserver(self)
         timer.remove(from: .main, forMode: RunLoop.Mode.default)
         timer = nil
-        self.renderer = nil
+        self._renderer = nil
         inflightSemaphore.signal()
     }
     
@@ -204,7 +209,7 @@ open class VidController: ViewController, MTKViewDelegate {
     }
     
     public func draw(in view: MTKView) {
-        guard let renderer = self.renderer else {
+        guard let renderer = self._renderer else {
             return
         }
         // use semaphore to encode 3 frames ahead

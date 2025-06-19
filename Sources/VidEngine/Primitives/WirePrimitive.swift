@@ -12,9 +12,9 @@ public class WirePrimitive {
         public var transform: Transform
         public var color: LinearRGBA
     }
-    let vertexBuffer: MTLBuffer!
-    let instanceBuffer: MTLBuffer!
-    let lineCount: Int
+    var vertexBuffer: MTLBuffer?
+    var instanceBuffer: MTLBuffer?
+    let lines: [Line]
     var bufferOffset = 0
     public var instances: [Instance]
     public var lightingType = LightingType.UnlitOpaque
@@ -22,6 +22,11 @@ public class WirePrimitive {
     public var instanceCount: Int {
         get {
             return instances.count
+        }
+    }
+    public var lineCount: Int {
+        get {
+            return lines.count
         }
     }
     // convenience getters & setters for the case we have only 1 instance
@@ -46,6 +51,7 @@ public class WirePrimitive {
         }
     }
     public func queue(renderer: Renderer) {
+        initBuffers(renderer)
         switch lightingType {
         case .UnlitOpaque:
             let p: UnlitOpaquePlugin? = renderer.getPlugin()
@@ -59,16 +65,26 @@ public class WirePrimitive {
         p?.dequeue(self)
     }
     
-    init(device: MTLDevice, instanceCount: Int, lines: [Line]) {
-        lineCount = lines.count
+    init(instanceCount: Int, lines: [Line]) {
+        self.lines = lines
         let instance = Instance(transform: Transform(), color: LinearRGBA(.white))
         instances = [Instance](repeating: instance, count: instanceCount)
-        instanceBuffer = device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
-        instanceBuffer.label = "WirePrimitiveInstances"
-        vertexBuffer = device.makeBuffer(length: lines.count * MemoryLayout<Line>.size, options: [])
-        let b = vertexBuffer.contents()
-        let data = b.assumingMemoryBound(to: Line.self)
-        memcpy(data, lines, MemoryLayout<Line>.size * lines.count)
+
+    }
+    
+    func initBuffers(_ renderer: Renderer) {
+        if instanceBuffer == nil {
+            instanceBuffer = renderer.device.makeBuffer(length: Renderer.numSyncBuffers * MemoryLayout<Instance>.size * instanceCount, options: [])
+            instanceBuffer?.label = "WirePrimitiveInstances"
+        }
+        if vertexBuffer == nil {
+            vertexBuffer = renderer.device.makeBuffer(length: lines.count * MemoryLayout<Line>.size, options: [])
+            if let vb = vertexBuffer {
+                let b = vb.contents()
+                let data = b.assumingMemoryBound(to: Line.self)
+                memcpy(data, lines, MemoryLayout<Line>.size * lines.count)
+            }
+        }
     }
     
     func draw(encoder: MTLRenderCommandEncoder) {
@@ -76,6 +92,9 @@ public class WirePrimitive {
     }
     
     func updateBuffers(_ syncBufferIndex: Int) {
+        guard let instanceBuffer = self.instanceBuffer else {
+            return
+        }
         let size = MemoryLayout<Instance>.size * instanceCount
         bufferOffset = size * syncBufferIndex
         let b = instanceBuffer.contents()
