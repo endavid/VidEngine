@@ -33,18 +33,23 @@ struct RendererTests {
         let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
         cube.lightingType = .UnlitOpaque
         cube.transform.position = [0, 0, -5]
+        cube.transform.rotation = Quaternion(AngleAxis(angle: 0.5, axis: normalize([1, 1, 0])))
         cube.queue(renderer)
+        await renderer.camera.setBounds(view.bounds)
+        renderer.camera.rotation = Quaternion()
+        // the number of visible instances = 0 before the first update
+        renderer.updateBuffers()
         let commandQueue = try #require(device.makeCommandQueue())
         let commandBuffer = try #require(commandQueue.makeCommandBuffer())
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-             commandBuffer.addCompletedHandler { _ in
-                 continuation.resume()
-             }
+            commandBuffer.addCompletedHandler { _ in
+                continuation.resume()
+            }
             // Schedule the draw on the MainActor, after handler is attached
             Task { @MainActor in
                 renderer.draw(view, commandBuffer: commandBuffer)
             }
-        }        
+        }
         let cgImage = try #require(renderer.getTextureAsImage(GBufferTexture.shaded))
         // Save as PNG
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("rendered_output.png")
