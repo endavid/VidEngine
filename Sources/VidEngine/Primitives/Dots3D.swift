@@ -17,7 +17,7 @@ public class Dots3D {
     var instanceBuffer: MTLBuffer?
     let vertexCount: Int
     var bufferOffset = 0
-    public var lightingType = LightingType.UnlitOpaque
+    public var lightingType = LightingType.unlitOpaque
     public var instances: [Instance]
     public var instanceCount: Int {
         get {
@@ -27,7 +27,7 @@ public class Dots3D {
     public func queue(renderer: Renderer) {
         initBuffers(renderer)
         switch lightingType {
-        case .UnlitOpaque:
+        case .unlitOpaque:
             let p: UnlitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
         default:

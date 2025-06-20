@@ -30,9 +30,9 @@ public struct Material {
 public enum LightingType {
     case
     /// Opaque lit objects.
-    LitOpaque,
+    litOpaque,
     /// Opaque unlit objects.
-    UnlitOpaque,
+    unlitOpaque,
     /// Unlit transparent objects.
-    UnlitTransparent
+    unlitTransparent
 }

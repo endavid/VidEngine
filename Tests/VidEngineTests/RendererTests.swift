@@ -31,10 +31,16 @@ struct RendererTests {
         let view = await MTKView(frame: frame, device: device)
         let renderer = try Renderer(view: view)
         let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
-        cube.lightingType = .UnlitOpaque
+        cube.lightingType = .unlitOpaque
         cube.transform.position = [0, 0, -5]
         cube.transform.rotation = Quaternion(AngleAxis(angle: 0.5, axis: normalize([1, 1, 0])))
         cube.queue(renderer)
+        let plane = PlanePrimitive(instanceCount: 1)
+        plane.lightingType = .unlitOpaque
+        plane.transform.scale = [2, 1, 1]
+        plane.transform.position = [0, 0, -5.5]
+        plane.transform.rotation = Quaternion(AngleAxis(angle: 1.57, axis: normalize([1, 0, 0])))
+        plane.queue(renderer)
         await renderer.camera.setBounds(view.bounds)
         renderer.camera.rotation = Quaternion()
         // the number of visible instances = 0 before the first update

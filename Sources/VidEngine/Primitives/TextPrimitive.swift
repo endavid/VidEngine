@@ -22,7 +22,7 @@ public class TextPrimitive : Primitive {
         self.fontSizeMeters = fontSizeMeters
         self.enclosingFrame = enclosingFrame
         super.init(instanceCount: instanceCount)
-        self.lightingType = .UnlitTransparent
+        self.lightingType = .unlitTransparent
     }
     
     override func initBuffers(_ renderer: Renderer) {

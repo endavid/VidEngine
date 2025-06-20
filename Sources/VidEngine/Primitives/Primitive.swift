@@ -37,7 +37,7 @@ public class Primitive {
     /// Prevent rendering of a particular instance
     public var isHidden: [Bool]
     var instanceBuffer: MTLBuffer?
-    public var lightingType: LightingType = .LitOpaque
+    public var lightingType: LightingType = .litOpaque
     var submeshes: [Mesh] = []
     var uuidInstanceMap: [UUID: Int] = [:]
     var bufferOffset = 0
@@ -173,13 +173,13 @@ public class Primitive {
     public func queue(_ renderer: Renderer) {
         initBuffers(renderer)
         switch lightingType {
-        case .LitOpaque:
+        case .litOpaque:
             let p: LitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
-        case .UnlitOpaque:
+        case .unlitOpaque:
             let p: UnlitOpaquePlugin? = renderer.getPlugin()
             p?.queue(self)
-        case .UnlitTransparent:
+        case .unlitTransparent:
             let p: UnlitTransparencyPlugin? = renderer.getPlugin()
             p?.queue(self)
         }
