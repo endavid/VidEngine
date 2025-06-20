@@ -79,7 +79,7 @@ class UnlitTransparencyPlugin: GraphicPlugin {
         if isEmpty {
             return
         }
-        let renderPassDescriptor = renderer.createOITRenderPass(clear: true, clearDepth: !renderer.frameState.clearedGBuffer)
+        let renderPassDescriptor = renderer.createOITRenderPass(clear: true, clearDepth: !renderer.frameState.clearedDepth)
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
@@ -96,6 +96,7 @@ class UnlitTransparencyPlugin: GraphicPlugin {
         encoder.popDebugGroup()
         encoder.endEncoding()
         renderer.frameState.clearedTransparencyBuffer = true
+        renderer.frameState.clearedDepth = true
     }
 
     func updateBuffers(_ syncBufferIndex: Int, camera _: Camera) {

@@ -57,11 +57,13 @@ class UnlitOpaquePlugin: PrimitivePlugin {
     }
     override func createEncoder(renderer: Renderer, commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
         let needsClear = !renderer.frameState.clearedBackbuffer
-        let renderPassDescriptor = renderer.createUnlitRenderPass(clear: needsClear)
+        let needsClearDepth = !renderer.frameState.clearedDepth
+        let renderPassDescriptor = renderer.createUnlitRenderPass(clear: needsClear, clearDepth: needsClearDepth)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         if let e = encoder {
             e.label = self.label
             renderer.frameState.clearedBackbuffer = true
+            renderer.frameState.clearedDepth = true
         }
         return encoder
     }

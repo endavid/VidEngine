@@ -31,6 +31,7 @@ public class Renderer {
     struct FrameState {
         var clearedBackbuffer: Bool
         var clearedGBuffer: Bool
+        var clearedDepth: Bool
         var clearedLightbuffer: Bool
         var clearedTransparencyBuffer: Bool
         var clearedDrawable: Bool
@@ -40,6 +41,7 @@ public class Renderer {
             clearedLightbuffer = false
             clearedTransparencyBuffer = false
             clearedDrawable = false
+            clearedDepth = false
         }
     }
     // triple buffer so we can update stuff in the CPU while the GPU renders for 3 frames
@@ -212,14 +214,14 @@ public class Renderer {
         return renderPass
     }
     
-    func createUnlitRenderPass(clear: Bool) -> MTLRenderPassDescriptor {
+    func createUnlitRenderPass(clear: Bool, clearDepth: Bool) -> MTLRenderPassDescriptor {
         let rp = MTLRenderPassDescriptor()
         rp.colorAttachments[0].texture = gBuffer.shadedTexture
         rp.colorAttachments[0].loadAction = clear ? .clear : .load
         rp.colorAttachments[0].storeAction = .store
         rp.colorAttachments[0].clearColor = clearColor
         rp.depthAttachment.texture = gBuffer.depthTexture
-        rp.depthAttachment.loadAction = clear ? .clear : .load
+        rp.depthAttachment.loadAction = clearDepth ? .clear : .load
         rp.depthAttachment.storeAction = .store
         rp.depthAttachment.clearDepth = 1.0
         return rp

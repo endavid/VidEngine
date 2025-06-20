@@ -84,12 +84,13 @@ class PrimitivePlugin: GraphicPlugin {
     }
     
     func createEncoder(renderer: Renderer, commandBuffer: MTLCommandBuffer) -> MTLRenderCommandEncoder? {
-        let clear = !renderer.frameState.clearedGBuffer
-        let renderPassDescriptor = renderer.createRenderPassWithGBuffer(clear: clear)
+        let needsClear = !renderer.frameState.clearedGBuffer
+        let renderPassDescriptor = renderer.createRenderPassWithGBuffer(clear: needsClear)
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         if let e = encoder {
             e.label = self.label
             renderer.frameState.clearedGBuffer = true
+            renderer.frameState.clearedDepth = true
         }
         return encoder
     }
