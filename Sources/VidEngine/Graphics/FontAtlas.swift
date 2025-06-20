@@ -62,17 +62,17 @@ public class FontAtlas: NSObject, NSSecureCoding {
     private var _fontTexture: MTLTexture?
     private var _textureData: NSData?
 
-    func getFontTexture(device: MTLDevice) throws -> MTLTexture {
+    public func getFontTexture(_ renderer: Renderer) throws -> MTLTexture {
         if let t = _fontTexture {
             return t
         }
-        let t = try createTexture(device: device)
+        let t = try createTexture(device: renderer.device)
         _fontTexture = t
         return t
     }
     
     /// If the FontAtlas has been created before, it will attempt to load it from disk
-    public static func createFontAtlas(device: MTLDevice, font: VidFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
+    public static func createFontAtlas(font: VidFont, textureSize: Int, archive: Bool) throws -> FontAtlas {
         let candidates = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if let documentsPath = candidates.first {
             let dirUrl = URL(fileURLWithPath: documentsPath, isDirectory: true)
@@ -82,18 +82,18 @@ public class FontAtlas: NSObject, NSSecureCoding {
                 return fontAtlas
             }
             // cache miss
-            let fontAtlas = try FontAtlas(device: device, font: font, textureSize: textureSize)
+            let fontAtlas = try FontAtlas(font: font, textureSize: textureSize)
             if archive {
                 NSKeyedArchiver.archiveRootObject(fontAtlas, toFile: fontUrl.path)
             }
             return fontAtlas
         } else {
             NSLog("Failed to get documentsPath. Can't cache the texture.")
-            return try FontAtlas(device: device, font: font, textureSize: textureSize)
+            return try FontAtlas(font: font, textureSize: textureSize)
         }
     }
     
-    public init(device: MTLDevice, font: VidFont, textureSize: Int) throws {
+    public init(font: VidFont, textureSize: Int) throws {
         self.parentFont = font
         self.textureSize = textureSize
         if textureSize > FontAtlas.atlasSize {
@@ -105,7 +105,12 @@ public class FontAtlas: NSObject, NSSecureCoding {
         fontPointSize = Float(font.pointSize)
         super.init()
         createTextureData()
-        _fontTexture = try createTexture(device: device)
+    }
+    
+    func initTexture(_ renderer: Renderer) {
+        if _fontTexture == nil {
+            _fontTexture = try? createTexture(device: renderer.device)
+        }
     }
     
     required public init?(coder aDecoder: NSCoder) {
