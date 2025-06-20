@@ -24,6 +24,7 @@ public class CubePrimitive : Primitive {
     
     public init(renderer: Renderer, instanceCount: Int) {
         super.init(instanceCount: instanceCount)
+        submeshes.append(Mesh())
     }
     
     override func initBuffers(_ renderer: Renderer) {
@@ -38,8 +39,8 @@ public class CubePrimitive : Primitive {
         }
         if vertexBuffer == nil {
             vertexBuffer = CubePrimitive.cubeVB
-            let mesh = Mesh(numIndices: CubePrimitive.numIndices, indexBuffer: CubePrimitive.cubeIB!, albedoTexture: nil, sampler: .linearWithClamp)
-            submeshes.append(mesh)
+            submeshes[0].numIndices = CubePrimitive.numIndices
+            submeshes[0].indexBuffer = CubePrimitive.cubeIB
         }
     }
     

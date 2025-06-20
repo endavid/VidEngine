@@ -23,6 +23,7 @@ public class PlanePrimitive: Primitive {
     
     public override init(instanceCount: Int) {
         super.init(instanceCount: instanceCount)
+        submeshes.append(Mesh())
     }
     
     override func initBuffers(_ renderer: Renderer) {
@@ -37,8 +38,8 @@ public class PlanePrimitive: Primitive {
         }
         if vertexBuffer == nil {
             vertexBuffer = PlanePrimitive.planeVB
-            let mesh = Mesh(numIndices: PlanePrimitive.triangleList.count, indexBuffer: PlanePrimitive.planeIB!, albedoTexture: nil, sampler: .linearWithClamp)
-            submeshes.append(mesh)
+            submeshes[0].numIndices = PlanePrimitive.triangleList.count
+            submeshes[0].indexBuffer = PlanePrimitive.planeIB
         }
     }
     

@@ -44,7 +44,6 @@ public class Dots3D {
         self.vertexCount = vertexCount
         let s = simd_float4(1, 1, 1, 1) * dotSize
         instances = [Instance(transform: transform, dotSize: s)]
-
     }
     
     func initBuffers(_ renderer: Renderer) {

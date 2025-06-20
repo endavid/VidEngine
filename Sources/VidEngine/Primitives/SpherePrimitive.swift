@@ -39,7 +39,7 @@ public class SpherePrimitive : Primitive {
     public init(instanceCount: Int, descriptor: SphereDescriptor) {
         self.descriptor = descriptor
         super.init(instanceCount: instanceCount)
-
+        submeshes.append(Mesh())
     }
     
     override func initBuffers(_ renderer: Renderer) {
@@ -85,6 +85,7 @@ public class SpherePrimitive : Primitive {
             let n = Vec3((descriptor.isInterior ? -1.0 : 1.0) * normalize(vertices[i]))
             vb[i] = TexturedVertex(position: x, normal: n, uv: uvs[i])
         }
-        submeshes.append(Mesh(numIndices: numIndices, indexBuffer: indexBuffer, albedoTexture: nil, sampler: .linearWithClamp))
+        submeshes[0].numIndices = numIndices
+        submeshes[0].indexBuffer = indexBuffer
     }
 }

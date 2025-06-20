@@ -23,6 +23,7 @@ public class TextPrimitive : Primitive {
         self.enclosingFrame = enclosingFrame
         super.init(instanceCount: instanceCount)
         self.lightingType = .unlitTransparent
+        submeshes.append(Mesh())
     }
     
     override func initBuffers(_ renderer: Renderer) {
@@ -90,7 +91,10 @@ public class TextPrimitive : Primitive {
         let indexBuffer = renderer.createIndexBuffer("Text IB", elements: indices)
         do {
             let fontTexture = try fontAtlas.getFontTexture(renderer)
-            submeshes.append(Mesh(numIndices: index, indexBuffer: indexBuffer, albedoTexture: fontTexture, sampler: .linearWithClamp))
+            submeshes[0].numIndices = index
+            submeshes[0].indexBuffer = indexBuffer
+            submeshes[0].albedoTexture = fontTexture
+            submeshes[0].sampler = .linearWithClamp
         } catch let error {
             NSLog("buildMeshWithString: \(error.localizedDescription)")
         }

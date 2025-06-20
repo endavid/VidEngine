@@ -12,11 +12,16 @@ import MetalKit
 /// All primitives allow instancing.
 public class Primitive {
     struct Mesh {
-        let numIndices: Int
-        let indexBuffer: MTLBuffer
+        var numIndices: Int
+        var indexBuffer: MTLBuffer?
         // this is not in the Material because it can only be set for ALL instances
         var albedoTexture: MTLTexture?
         var sampler: TextureSamplers.SamplerType
+        
+        init() {
+            numIndices = 0
+            sampler = .linearWithClamp
+        }
     }
     public struct Instance {
         public var transform: Transform
@@ -167,7 +172,13 @@ public class Primitive {
     }
     
     func drawMesh(encoder: MTLRenderCommandEncoder, mesh: Mesh) {
-        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: mesh.indexBuffer, indexBufferOffset: 0, instanceCount: visibleInstanceCount)
+        if mesh.numIndices == 0 {
+            return
+        }
+        guard let indexBuffer = mesh.indexBuffer else {
+            return
+        }
+        encoder.drawIndexedPrimitives(type: .triangle, indexCount: mesh.numIndices, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0, instanceCount: visibleInstanceCount)
     }
     
     public func queue(_ renderer: Renderer) {
