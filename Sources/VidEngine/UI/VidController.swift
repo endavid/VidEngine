@@ -19,6 +19,17 @@ import MetalKit
 import AVFoundation
 import simd
 
+/// The core controller class that implements rendering.
+///
+/// Setup the renderer on `viewDidLoad`
+/// * `isWideColor`: uses displayP3 color space if true
+/// * `isMotionControllerActive`: sets up the gyroscope, for plugins that need it
+/// * `isARActive`: for AR applications.
+/// * `rendererConfig`: setup which renderer features (plugins) are available
+///
+/// Set up your scene objects after
+/// `viewWillAppear` has been called, since they will need the `Renderer`.
+/// Specify the `RendererConfig` during `viewDidLoad`.
 @available(macOS 14.0, iOS 10.0, *)
 open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     public var device: MTLDevice! = nil
@@ -39,6 +50,7 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
     private var motionController: MotionController?
     //public var scene = Scene()
     public var arConfiguration: ARConfiguration?
+    public var rendererConfig: RendererConfig = .basic
 
     public var renderer: Renderer {
         get {
@@ -158,7 +170,7 @@ open class VidController: ViewController, MTKViewDelegate, ARSessionDelegate {
             // already added in viewDidLoad, but if we dismissed the view and present it again, this will be necessary
             let view = self.view as! MTKView
             do {
-                _renderer = try Renderer(view: view, doAR: arConfiguration != nil)
+                _renderer = try Renderer(view: view, config: rendererConfig, doAR: arConfiguration != nil)
                 // init with 0 and send 3 signals on init to fix crash when closing window
                 // https://forums.developer.apple.com/forums/thread/126781
                 // https://lists.apple.com/archives/cocoa-dev/2014/Apr/msg00485.html

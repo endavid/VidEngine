@@ -111,7 +111,7 @@ public class Renderer {
         encoder.setVertexBuffer(_graphicsDataBuffer, offset: uniformBufferOffset, index: atIndex)
     }
     
-    init(view: MTKView, doAR: Bool = false) throws {
+    init(view: MTKView, config: RendererConfig = .basic, doAR: Bool = false) throws {
         guard let device = view.device else {
             throw RenderError.missingDevice
         }
@@ -123,7 +123,7 @@ public class Renderer {
         // dummy buffer so _gBuffer is never null
         _gBuffer = GBuffer(device: device, size: CGSize(width: 1, height: 1))
         textureSamplers = TextureSamplers(device: device)
-        self.initGraphicPlugins(view, doAR: doAR)
+        self.initGraphicPlugins(view, config: config, doAR: doAR)
         if doAR {
             arSession = ARSession()
         }
@@ -143,20 +143,26 @@ public class Renderer {
         }
     }
     
-    private func initGraphicPlugins(_ view: MTKView, doAR: Bool) {
+    private func initGraphicPlugins(_ view: MTKView, config: RendererConfig, doAR: Bool) {
         guard let library = makeVidLibrary() else {
             return
         }
         // order is important!
         //plugins.append(FilterPlugin())
-        if (doAR) {
+        if doAR {
         //    plugins.append(ARPlugin(device: device, library: library, view: view))
         }
-        plugins.append(LitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        if config.contains(.litOpaque) {
+            plugins.append(LitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        }
         //plugins.append(DeferredLightingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
         //plugins.append(DeferredShadingPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-        plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
-        plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        if config.contains(.unlitOpaque) {
+            plugins.append(UnlitOpaquePlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        }
+        if config.contains(.unlitTransparency) {
+            plugins.append(UnlitTransparencyPlugin(device: device, library: library, view: view, gBuffer: gBuffer))
+        }
         //plugins.append(DownsamplePlugin(device: device, library: library, view: view, gBuffer: gBuffer, downscaleLevel: 2))
         plugins.append(PostEffectPlugin(device: device, library: library, view: view, blend: doAR))
         //plugins.append(TouchPlugin(device: device, library: library, view: view))
