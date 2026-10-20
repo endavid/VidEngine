@@ -11,7 +11,7 @@ public typealias ViewController = UIViewController
 import AppKit
 public typealias ViewController = NSViewController
 #endif
-#if canImport(ARKit)
+#if os(iOS) && canImport(ARKit)
 import ARKit
 #endif
 import Metal

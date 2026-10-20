@@ -4,7 +4,7 @@
 //
 //  Created by David Gavilan Ruiz on 19/06/2025.
 //
-#if canImport(ARKit)
+#if os(iOS) && canImport(ARKit)
 import ARKit
 #else
 import Foundation

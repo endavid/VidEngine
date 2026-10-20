@@ -7,7 +7,7 @@
 
 import MetalKit
 import simd
-#if canImport(ARKit)
+#if os(iOS) && canImport(ARKit)
 import ARKit
 #endif
 
