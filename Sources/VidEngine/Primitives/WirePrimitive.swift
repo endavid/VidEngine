@@ -67,7 +67,7 @@ public class WirePrimitive {
     
     init(instanceCount: Int, lines: [Line]) {
         self.lines = lines
-        let instance = Instance(transform: Transform(), color: LinearRGBA(.white))
+        let instance = Instance(transform: Transform(), color: .white)
         instances = [Instance](repeating: instance, count: instanceCount)
 
     }

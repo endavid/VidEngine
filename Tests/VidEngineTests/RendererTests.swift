@@ -41,6 +41,13 @@ struct RendererTests {
         plane.transform.position = [0, 0, -5.5]
         plane.transform.rotation = Quaternion(AngleAxis(angle: 1.57, axis: normalize([1, 0, 0])))
         plane.queue(renderer)
+        let wireCube = WireCube(instanceCount: 2)
+        wireCube.instances[0].transform.position = [1, 1, -6]
+        wireCube.instances[0].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 1, 0])))
+        wireCube.instances[1].transform.position = [-1, -1, -6]
+        wireCube.instances[1].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 0, 1])))
+        wireCube.instances[1].color = LinearRGBA(r: 1, g: 0.01, b: 0.01, a: 1)
+        wireCube.queue(renderer: renderer)
         await renderer.camera.setBounds(view.bounds)
         renderer.camera.rotation = Quaternion()
         // the number of visible instances = 0 before the first update
