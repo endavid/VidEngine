@@ -29,7 +29,8 @@ let package = Package(
             name: "VidEngineTests",
             dependencies: ["VidEngine"],
             resources: [
-                .copy("Resources/dummy.json")
+                .copy("Resources/dummy.json"),
+                .copy("Resources/outdoor02b.jpg")
             ]
         ),
     ]

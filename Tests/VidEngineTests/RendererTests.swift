@@ -24,30 +24,56 @@ struct RendererTests {
             #expect(error as? RenderError == .missingDevice)
         }
     }
-    @Test func testRenderer() async throws {
+    
+    func setupScene(sceneId: Int, renderer: Renderer) async throws {
+        switch sceneId {
+        case 0:
+            let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
+            cube.lightingType = .unlitOpaque
+            cube.transform.position = [0, 0, -5]
+            cube.transform.rotation = Quaternion(AngleAxis(angle: 0.5, axis: normalize([1, 1, 0])))
+            cube.queue(renderer)
+            let plane = PlanePrimitive(instanceCount: 1)
+            plane.lightingType = .unlitOpaque
+            plane.transform.scale = [2, 1, 1]
+            plane.transform.position = [0, 0, -5.5]
+            plane.transform.rotation = Quaternion(AngleAxis(angle: 1.57, axis: normalize([1, 0, 0])))
+            plane.queue(renderer)
+            let wireCube = WireCube(instanceCount: 2)
+            wireCube.instances[0].transform.position = [1, 1, -6]
+            wireCube.instances[0].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 1, 0])))
+            wireCube.instances[1].transform.position = [-1, -1, -6]
+            wireCube.instances[1].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 0, 1])))
+            wireCube.instances[1].color = LinearRGBA(r: 1, g: 0.01, b: 0.01, a: 1)
+            wireCube.queue(renderer: renderer)
+            break
+        case 1:
+            let sky = SkySphere(radius: 50, widthSegments: 20, heightSegments: 10)
+            try await sky.setCubemapTexture(renderer: renderer, resource: "outdoor02b.jpg", bundle: Bundle.module, addToCache: false)
+            sky.queue(renderer)
+            let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
+            cube.lightingType = .unlitOpaque
+            cube.transform.position = [0, 0, -5]
+            cube.transform.rotation = Quaternion(AngleAxis(angle: 0.5, axis: normalize([1, 0, 1])))
+            cube.queue(renderer)
+        default:
+            break
+        }
+    }
+    
+    @Test(
+        "Render Test Scene",
+        arguments: [(0), (1)]
+    )
+    func testRenderer(sceneId: Int) async throws {
         let frame = CGRect(x: 0, y: 0, width: 320, height: 240)
         let device = try #require(MTLCreateSystemDefaultDevice())
         print("ℹ Device family: \(device.family)")
         let view = await MTKView(frame: frame, device: device)
         let renderer = try Renderer(view: view)
-        let cube = CubePrimitive(renderer: renderer, instanceCount: 1)
-        cube.lightingType = .unlitOpaque
-        cube.transform.position = [0, 0, -5]
-        cube.transform.rotation = Quaternion(AngleAxis(angle: 0.5, axis: normalize([1, 1, 0])))
-        cube.queue(renderer)
-        let plane = PlanePrimitive(instanceCount: 1)
-        plane.lightingType = .unlitOpaque
-        plane.transform.scale = [2, 1, 1]
-        plane.transform.position = [0, 0, -5.5]
-        plane.transform.rotation = Quaternion(AngleAxis(angle: 1.57, axis: normalize([1, 0, 0])))
-        plane.queue(renderer)
-        let wireCube = WireCube(instanceCount: 2)
-        wireCube.instances[0].transform.position = [1, 1, -6]
-        wireCube.instances[0].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 1, 0])))
-        wireCube.instances[1].transform.position = [-1, -1, -6]
-        wireCube.instances[1].transform.rotation = Quaternion(AngleAxis(angle: 0.25, axis: normalize([1, 0, 1])))
-        wireCube.instances[1].color = LinearRGBA(r: 1, g: 0.01, b: 0.01, a: 1)
-        wireCube.queue(renderer: renderer)
+
+        try await setupScene(sceneId: sceneId, renderer: renderer)
+        
         await renderer.camera.setBounds(view.bounds)
         renderer.camera.rotation = Quaternion()
         // the number of visible instances = 0 before the first update
@@ -65,7 +91,7 @@ struct RendererTests {
         }
         let cgImage = try #require(renderer.getTextureAsImage(GBufferTexture.shaded))
         // Save as PNG
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("rendered_output.png")
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("renderOutput_\(sceneId).png")
         
         if #available(macOS 13.0, iOS 14.0, *) {
             CGImageWriteToFile(cgImage, filename: outputURL)
